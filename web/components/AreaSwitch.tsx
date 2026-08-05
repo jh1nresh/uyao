@@ -23,8 +23,8 @@ export function AreaSwitch({ area }: { area: AreaSlug }) {
               aria-current={active ? "true" : undefined}
               className={
                 active
-                  ? "font-medium text-green no-underline"
-                  : "text-muted-2 no-underline hover:text-ink"
+                  ? "-my-3 inline-flex min-h-11 items-center px-2 font-medium text-green no-underline"
+                  : "-my-3 inline-flex min-h-11 items-center px-2 text-muted-2 no-underline hover:text-ink"
               }
             >
               {a.shortName}

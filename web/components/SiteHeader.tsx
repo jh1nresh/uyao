@@ -20,7 +20,8 @@ export function SiteHeader({
 }) {
   return (
     <header className="flex h-14 items-center gap-3 border-b border-line px-4 sm:px-7">
-      <Link href="/" className="flex flex-none items-center gap-2 no-underline">
+      {/* -my-3 py-3：把 26px 的 logo 撐成 50px 點擊區，版面高度不變 */}
+      <Link href="/" className="-my-3 flex flex-none items-center gap-2 py-3 no-underline">
         <CrossMark />
         <span className="text-[17px] font-black tracking-[.06em] text-ink">有藥</span>
         {showTagline && (
@@ -41,7 +42,10 @@ export function SiteHeader({
       </div>
       {/* 供給側入口。藥局端不需要後台帳號（預留確認走 LINE bot），
           所以連的是合作說明頁而不是登入頁。 */}
-      <Link href="/pharmacy" className="flex-none text-xs text-muted no-underline hover:text-ink">
+      <Link
+        href="/pharmacy"
+        className="-my-3.5 -mr-2 flex-none px-2 py-3.5 text-xs text-muted no-underline hover:text-ink"
+      >
         我是藥局
       </Link>
     </header>

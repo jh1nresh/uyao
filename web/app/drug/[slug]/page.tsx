@@ -56,7 +56,7 @@ export default async function DrugPage({
       <SiteHeader query={drug.name} showTagline />
 
       <nav aria-label="麵包屑" className="px-4 pt-6 text-xs text-muted-2 sm:px-7">
-        <Link href="/" className="text-muted-2 no-underline hover:text-ink">
+        <Link href="/" className="-my-3 inline-flex min-h-11 items-center text-muted-2 no-underline hover:text-ink">
           首頁
         </Link>
         {category && (
@@ -64,7 +64,7 @@ export default async function DrugPage({
             {" / "}
             <Link
               href={`/category/${category.slug}`}
-              className="text-muted-2 no-underline hover:text-ink"
+              className="-my-3 inline-flex min-h-11 items-center text-muted-2 no-underline hover:text-ink"
             >
               {category.name}
             </Link>

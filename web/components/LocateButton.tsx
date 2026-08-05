@@ -63,7 +63,7 @@ export function LocateButton({ area }: { area: AreaSlug }) {
         type="button"
         onClick={request}
         disabled={status === "prompting"}
-        className="border border-line-strong px-2.5 py-[3px] font-medium text-ink-2 hover:border-green hover:text-green disabled:text-muted-2"
+        className="inline-flex min-h-11 items-center border border-line-strong px-2.5 font-medium text-ink-2 hover:border-green hover:text-green disabled:text-muted-2 sm:min-h-0 sm:py-[3px]"
       >
         <span aria-hidden>◎</span> {status === "prompting" ? "定位中…" : "用我的位置排序"}
       </button>
