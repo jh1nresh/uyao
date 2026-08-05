@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import { ReserveSheet, type ReserveTarget } from "./ReserveSheet";
 import { StockBadge } from "./StockBadge";
@@ -27,6 +27,14 @@ export function PharmacyList({
 }) {
   const [view, setView] = useState<"list" | "map">("list");
   const { position } = useLocation();
+  const mapStores = useMemo(() => rows.map((r) => r.store), [rows]);
+  const annotations = useMemo(
+    () =>
+      Object.fromEntries(
+        rows.map((r) => [r.store.slug, { priceTwd: r.priceTwd, badge: r.badge }]),
+      ),
+    [rows],
+  );
   const [target, setTarget] = useState<ReserveTarget | null>(null);
 
   return (
@@ -59,10 +67,8 @@ export function PharmacyList({
       {view === "map" ? (
         <div className="mx-4 mb-1.5 sm:mx-7">
           <StoreMap
-            stores={rows.map((r) => r.store)}
-            annotations={Object.fromEntries(
-              rows.map((r) => [r.store.slug, { priceTwd: r.priceTwd, badge: r.badge }]),
-            )}
+            stores={mapStores}
+            annotations={annotations}
             userPosition={position}
           />
         </div>
