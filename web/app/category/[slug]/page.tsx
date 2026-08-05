@@ -48,14 +48,14 @@ export default async function CategoryPage({
     <>
       <SiteHeader showTagline />
 
-      <section className="px-4 pb-6 pt-6 sm:px-7">
+      <section className="px-4 pb-6 pt-6 sm:px-7 xl:px-12 2xl:px-16">
         <div className="mb-2.5 flex flex-wrap items-baseline gap-2.5">
           <h1 className="text-sm font-black">{category.name}</h1>
-          <p className="text-[11px] text-muted-2">
+          <p className="text-[13px] text-muted-2">
             {results.length} 項在附近有登錄 · {SERVICE_AREA_LABEL}
           </p>
           <div className="flex-1" />
-          <p className="text-[11px] text-muted-2">排序：庫存新鮮度 → 距離 → 價格</p>
+          <p className="text-[13px] text-muted-2">排序：庫存新鮮度 → 距離 → 價格</p>
         </div>
 
         <DrugResults results={results} />

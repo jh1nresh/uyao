@@ -26,22 +26,22 @@ export default async function SearchPage({
     <>
       <SiteHeader query={q} showTagline />
 
-      <section className="px-4 pb-6 pt-6 sm:px-7">
+      <section className="px-4 pb-6 pt-6 sm:px-7 xl:px-12 2xl:px-16">
         <div className="mb-2.5 flex flex-wrap items-baseline gap-2.5">
           <h1 className="text-sm font-black">
             {q ? `「${q}」的結果` : "搜尋藥品"}
           </h1>
-          <p className="text-[11px] text-muted-2">
+          <p className="text-[13px] text-muted-2">
             {q ? `${results.length} 項 · ${SERVICE_AREA_LABEL}` : "輸入藥品名、主成分或症狀"}
           </p>
           <div className="flex-1" />
-          <p className="text-[11px] text-muted-2">排序：庫存新鮮度 → 距離 → 價格</p>
+          <p className="text-[13px] text-muted-2">排序：庫存新鮮度 → 距離 → 價格</p>
         </div>
 
         {q ? (
           <DrugResults results={results} query={q} />
         ) : (
-          <div className="border border-line px-4 py-8 text-center text-[13px] text-muted">
+          <div className="border border-line px-4 py-8 text-center text-[15px] text-muted">
             上面輸入藥品名或症狀開始搜尋。
           </div>
         )}

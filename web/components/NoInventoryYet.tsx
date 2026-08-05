@@ -27,10 +27,10 @@ export function NoInventoryYet({
   stores: Store[];
 }) {
   return (
-    <section className="px-4 pb-6 pt-3.5 sm:px-7">
+    <section className="px-4 pb-6 pt-3.5 sm:px-7 xl:px-12 2xl:px-16">
       <div className="border border-line-strong bg-surface px-4 py-3.5">
-        <p className="text-[13px] font-bold text-ink">目前查不到即時庫存</p>
-        <p className="mt-1 text-[12px] leading-[1.7] text-muted">
+        <p className="text-[15px] font-bold text-ink">目前查不到即時庫存</p>
+        <p className="mt-1 text-[13px] leading-[1.7] text-muted">
           庫存來自藥局店內掃描器，{areaLabel}還沒有藥局裝上盒子。
           下面是這一區的藥局，可以直接打電話問有沒有「{drugName}」。
         </p>
@@ -40,7 +40,7 @@ export function NoInventoryYet({
 
       <div className="mt-2.5 flex flex-wrap items-baseline gap-2.5">
         <h2 className="text-sm font-black">{areaLabel}的藥局</h2>
-        <p className="text-[11px] text-muted-2">{stores.length} 家 · 打電話前先看營業時段</p>
+        <p className="text-[13px] text-muted-2">{stores.length} 家 · 打電話前先看營業時段</p>
       </div>
 
       <div className="mt-2">
@@ -53,7 +53,7 @@ export function NoInventoryYet({
         />
       </div>
 
-      <p className="mt-3 text-[11px] leading-[1.6] text-muted-2">
+      <p className="mt-3 text-[13px] leading-[1.6] text-muted-2">
         開藥局的？
         <Link href="/pharmacy" className="text-green">
           裝上盒子，你的庫存就會出現在這裡 →

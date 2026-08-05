@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 const INPUT =
-  "h-9 min-w-0 border border-line-strong bg-white px-3 text-[13px] text-ink outline-none placeholder:text-muted-2 focus:border-green";
+  "h-11 min-w-0 border border-line-strong bg-white px-3 text-[15px] text-ink outline-none placeholder:text-muted-2 focus:border-green sm:h-9";
 
 /**
  * 藥局試點申請 — 供給側的唯一表單。
@@ -46,7 +46,7 @@ export function PilotForm() {
 
   if (done) {
     return (
-      <div className="border border-green-tint-line bg-green-tint px-4 py-3.5 text-[13px] leading-[1.7] text-ink-2">
+      <div className="border border-green-tint-line bg-green-tint px-4 py-3.5 text-[15px] leading-[1.7] text-ink-2">
         <div className="font-bold text-ink">已收到申請</div>
         我們會用你留的聯絡方式跟你約時間，帶盒子過去接掃描器 —— 現場大約 5 分鐘，
         店內流程不用改。
@@ -90,18 +90,18 @@ export function PilotForm() {
         <button
           type="submit"
           disabled={pending}
-          className="h-9 flex-none bg-green px-[18px] text-[13px] font-bold text-white hover:bg-green-hover disabled:opacity-60"
+          className="h-11 flex-none bg-green px-[18px] text-[15px] font-bold text-white hover:bg-green-hover disabled:opacity-60 sm:h-9"
         >
           {pending ? "送出中…" : "申請免費試點"}
         </button>
       </div>
 
       {error && (
-        <p role="alert" className="text-[11.5px] text-ink">
+        <p role="alert" className="text-[13px] text-ink">
           {error}
         </p>
       )}
-      <p className="text-[11.5px] leading-[1.6] text-muted-2">
+      <p className="text-[13px] leading-[1.6] text-muted-2">
         免費試點期間不收費，也不綁約。盒子借你用，不合適就寄回。
       </p>
     </form>

@@ -52,7 +52,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${notoSansTC.variable} ${plexMono.variable}`}
     >
       <body>
-        <div className="mx-auto min-h-screen max-w-[1200px] bg-white sm:border-x sm:border-line">
+        <div className="min-h-screen bg-white">
           <DemoBanner />
           <LocationProvider>{children}</LocationProvider>
         </div>

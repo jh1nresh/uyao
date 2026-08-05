@@ -9,13 +9,13 @@ import Link from "next/link";
  */
 export function StorePreviewBanner({ storeName, storeSlug }: { storeName: string; storeSlug: string }) {
   return (
-    <div className="border-b-2 border-green bg-green-tint px-4 py-2.5 sm:px-7">
-      <p className="text-[12.5px] leading-[1.6] text-ink">
+    <div className="border-b-2 border-green bg-green-tint px-4 py-2.5 sm:px-7 xl:px-12 2xl:px-16">
+      <p className="text-[14px] leading-[1.6] text-ink">
         <b className="font-bold">示範預覽</b> · 下方的商品、價格與庫存徽章是模擬的，
         用來展示{storeName}裝上盒子之後這一頁會長什麼樣。
         <span className="text-muted">店名、地址、電話與營業時段是政府開放資料的真實內容。</span>
       </p>
-      <p className="mt-1 text-[11.5px] text-muted">
+      <p className="mt-1 text-[13px] text-muted">
         <Link href="/pharmacy" className="-my-2 inline-block py-2 font-medium text-green">
           申請免費試裝 →
         </Link>

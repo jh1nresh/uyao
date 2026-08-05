@@ -29,16 +29,16 @@ export function PreviewShelf({ store, items }: { store: Store; items: DrugRow[] 
             key={it.drug.slug}
             className="flex flex-col gap-[5px] border border-line px-3.5 py-3"
           >
-            <span className="text-[13px] font-medium text-ink">{it.drug.name}</span>
-            <span className="text-[11px] text-muted-2">
+            <span className="text-[15px] font-medium text-ink">{it.drug.name}</span>
+            <span className="text-[13px] text-muted-2">
               {it.drug.spec} · {it.drug.drugClass}
             </span>
             <span className="mt-0.5 flex items-center gap-2">
-              <span className="num text-[13px] font-semibold text-ink">
+              <span className="num text-[15px] font-semibold text-ink">
                 {formatPrice(it.priceTwd)}
               </span>
               <span className="flex-1" />
-              <StockBadge badge={it.badge} short className="text-[11px]" />
+              <StockBadge badge={it.badge} short className="text-[13px]" />
             </span>
             <button
               type="button"

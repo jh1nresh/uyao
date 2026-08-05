@@ -18,10 +18,10 @@ export function DrugResults({
   if (results.length === 0) {
     return (
       <>
-        <div className="border border-line px-4 py-8 text-center text-[13px] text-muted">
+        <div className="border border-line px-4 py-8 text-center text-[15px] text-muted">
           附近沒有符合的品項。
           <br />
-          <span className="text-[11.5px] text-muted-2">
+          <span className="text-[13px] text-muted-2">
             試試主成分或症狀（如「痠痛」「止癢」），或換個品名寫法。
           </span>
         </div>
@@ -38,7 +38,7 @@ export function DrugResults({
           href={`/drug/${r.drug.slug}`}
           className="block border-b border-line-soft no-underline last:border-b-0 hover:bg-surface-hover"
         >
-          <div className="hidden grid-cols-[1fr_220px_120px_150px] items-center gap-x-3 px-3.5 py-2.5 text-[13px] lg:grid">
+          <div className="hidden grid-cols-[1fr_220px_120px_150px] items-center gap-x-3 px-3.5 py-2.5 text-[15px] lg:grid">
             <span className="font-medium text-ink">
               {r.drug.name} {r.drug.spec}
             </span>
@@ -58,7 +58,7 @@ export function DrugResults({
 
           <div className="flex flex-col gap-0.5 px-4 py-2.5 lg:hidden">
             <div className="flex items-center gap-2">
-              <span className="text-[13.5px] font-medium text-ink">
+              <span className="text-[15px] font-medium text-ink">
                 {r.drug.name} {r.drug.spec}
               </span>
               <div className="flex-1" />
@@ -66,7 +66,7 @@ export function DrugResults({
                 {r.fromPriceTwd === null ? "—" : formatFromPrice(r.fromPriceTwd)}
               </span>
             </div>
-            <div className="flex items-center gap-2 text-[11.5px] text-muted">
+            <div className="flex items-center gap-2 text-[13px] text-muted">
               {r.storeCount} 家藥局
               <div className="flex-1" />
               <StockBadge badge={r.bestBadge} short />
