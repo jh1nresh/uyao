@@ -59,32 +59,32 @@ export function AreaStores({
                 href={`/store/${s.slug}`}
                 className="-my-2.5 flex min-h-11 min-w-0 flex-1 flex-col justify-center py-2.5 no-underline"
               >
-                <span className="block text-[13.5px] font-medium text-ink">{s.name}</span>
-                <span className="block text-[11.5px] text-muted">{s.address}</span>
+                <span className="block text-[15px] font-medium text-ink">{s.name}</span>
+                <span className="block text-[13px] text-muted">{s.address}</span>
               </Link>
               {d !== null && (
-                <span className="num flex-none text-[11.5px] text-ink-2">{formatDistance(d)}</span>
+                <span className="num flex-none text-[13px] text-ink-2">{formatDistance(d)}</span>
               )}
-              <span className="hidden flex-none text-[11px] text-muted-2 sm:block">
+              <span className="hidden flex-none text-[13px] text-muted-2 sm:block">
                 {hoursSummary(s)}
               </span>
               {showPhone &&
                 (s.phone ? (
                   <a
                     href={`tel:${s.phone.split("、")[0].replace(/-/g, "")}`}
-                    className="num inline-flex min-h-11 flex-none items-center border border-green px-3 text-[12px] font-bold text-green no-underline sm:min-h-0 sm:py-1.5"
+                    className="num inline-flex min-h-11 flex-none items-center border border-green px-3 text-[13px] font-bold text-green no-underline sm:min-h-0 sm:py-1.5"
                   >
                     {s.phone.split("、")[0]}
                   </a>
                 ) : (
-                  <span className="flex-none text-[11px] text-muted-2">未提供電話</span>
+                  <span className="flex-none text-[13px] text-muted-2">未提供電話</span>
                 ))}
             </div>
           );
         })}
       </div>
 
-      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] text-muted-2">
+      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted-2">
         <span>
           {position ? "距離你" : `距${areaLabel}中心`} ·{" "}
           {position ? "已依你的位置重新排序" : "按上面的定位鈕改用實際距離"}

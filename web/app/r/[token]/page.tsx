@@ -67,9 +67,9 @@ export default async function PickupPage({
     return (
       <>
         <SiteHeader showSearch={false} />
-        <section className="px-4 py-10 sm:px-7">
+        <section className="px-4 py-10 sm:px-7 xl:px-12 2xl:px-16">
           <h1 className="mb-2 text-lg font-black">查不到這筆預留</h1>
-          <p className="text-[13px] leading-[1.7] text-muted">
+          <p className="text-[15px] leading-[1.7] text-muted">
             連結可能不完整，或這筆預留已經超過保留期限。
             {!isStoreAvailable() &&
               "（也可能是系統暫時讀不到資料，請直接聯絡藥局。）"}
@@ -96,26 +96,26 @@ export default async function PickupPage({
     <>
       <SiteHeader showSearch={false} />
 
-      <section className="mx-auto max-w-[520px] px-4 py-6 sm:px-7">
+      <section className="mx-auto max-w-[520px] px-4 py-6 sm:px-7 xl:px-12 2xl:px-16">
         {r.demo && (
           /* 示範單長得跟真單一樣的話，拿去店裡會很尷尬 —— 一定要標出來 */
-          <div className="mb-3 border-2 border-green bg-green-tint px-3.5 py-2 text-[12.5px] leading-[1.6] text-ink">
+          <div className="mb-3 border-2 border-green bg-green-tint px-3.5 py-2 text-[14px] leading-[1.6] text-ink">
             <b className="font-bold">示範預留</b> ·
             這筆來自藥局示範頁，商品與庫存都是模擬的。請勿持此憑證前往門市。
           </div>
         )}
-        <div className={`mb-3 border px-3.5 py-2 text-[12.5px] font-bold ${toneClass}`}>
+        <div className={`mb-3 border px-3.5 py-2 text-[14px] font-bold ${toneClass}`}>
           {ui.label}
         </div>
-        <p className="mb-4 text-[12.5px] leading-[1.7] text-muted">{ui.body}</p>
+        <p className="mb-4 text-[14px] leading-[1.7] text-muted">{ui.body}</p>
 
         {/* 到店只需要唸這個 */}
         <div className="flex flex-col items-center gap-1 border border-line bg-surface px-4 py-6">
-          <div className="text-[11px] font-medium text-muted-2">取貨碼</div>
+          <div className="text-[13px] font-medium text-muted-2">取貨碼</div>
           <div className="num text-[44px] font-semibold leading-none tracking-[.12em] text-ink">
             {r.code}
           </div>
-          <div className="mt-1 text-[11.5px] text-muted">
+          <div className="mt-1 text-[13px] text-muted">
             到店請報這組號碼，藥師會核對手機尾號{" "}
             <span className="num font-medium text-ink">{contactTail(r)}</span>
           </div>
@@ -123,18 +123,18 @@ export default async function PickupPage({
 
         <div className="mt-3 border border-line">
           <div className="border-b border-line-soft px-3.5 py-3">
-            <div className="text-[13.5px] font-medium text-ink">{r.drugName}</div>
-            <div className="text-[11.5px] text-muted">{r.drugSpec}</div>
-            <div className="num mt-1 text-[13px] font-semibold text-ink">
+            <div className="text-[15px] font-medium text-ink">{r.drugName}</div>
+            <div className="text-[13px] text-muted">{r.drugSpec}</div>
+            <div className="num mt-1 text-[15px] font-semibold text-ink">
               {formatPrice(r.priceTwd)}
-              <span className="ml-1 font-sans text-[11px] font-normal text-muted">到店付款</span>
+              <span className="ml-1 font-sans text-[13px] font-normal text-muted">到店付款</span>
             </div>
           </div>
 
           <div className="px-3.5 py-3">
             <Link
               href={`/store/${r.storeSlug}`}
-              className="text-[13.5px] font-medium text-ink no-underline hover:text-green"
+              className="text-[15px] font-medium text-ink no-underline hover:text-green"
             >
               {r.storeName}
             </Link>
@@ -142,15 +142,15 @@ export default async function PickupPage({
               href={r.storeMapsUrl}
               target="_blank"
               rel="noreferrer noopener"
-              className="mt-0.5 block text-[11.5px] text-green no-underline"
+              className="mt-0.5 block text-[13px] text-green no-underline"
             >
               {r.storeAddress} · 開啟地圖 ↗
             </a>
-            <div className="mt-1 text-[11.5px] text-muted">{r.storeHours}</div>
+            <div className="mt-1 text-[13px] text-muted">{r.storeHours}</div>
           </div>
         </div>
 
-        <p className="mt-3 text-[11px] leading-[1.7] text-muted-2">
+        <p className="mt-3 text-[13px] leading-[1.7] text-muted-2">
           把這一頁截圖或加入書籤就好，不需要登入。
           <br />
           兩次預留未取將暫停預留權限。不提供線上交易，商品由藥師於門市交付。

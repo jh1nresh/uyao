@@ -30,23 +30,23 @@ export function StoreView({ store, preview }: { store: Store; preview: boolean }
       <SiteHeader area={store.area} />
       {preview && <StorePreviewBanner storeName={store.name} storeSlug={store.slug} />}
 
-      <div className="flex flex-col gap-6 border-b border-line px-4 pb-[22px] pt-6 sm:px-7 lg:flex-row lg:gap-8">
+      <div className="flex flex-col gap-6 border-b border-line px-4 pb-[22px] pt-6 sm:px-7 xl:px-12 2xl:px-16 lg:flex-row lg:gap-8">
         <div className="flex flex-1 flex-col gap-2">
           <div className="flex flex-wrap items-center gap-2.5">
             <h1 className="m-0 text-xl font-black sm:text-2xl">{store.name}</h1>
             {preview ? (
-              <span className="border border-green-tint-line bg-green-tint px-2 py-0.5 text-[11px] font-bold text-green">
+              <span className="border border-green-tint-line bg-green-tint px-2 py-0.5 text-[13px] font-bold text-green">
                 本店可預留
               </span>
             ) : (
-              <span className="border border-line-strong px-2 py-0.5 text-[11px] font-bold text-muted">
+              <span className="border border-line-strong px-2 py-0.5 text-[13px] font-bold text-muted">
                 尚未加入
               </span>
             )}
             <span className="text-xs text-muted-2">{store.district}</span>
           </div>
 
-          <p className="text-[13px] text-ink-2">
+          <p className="text-[15px] text-ink-2">
             {store.address}
             {store.phone && (
               <>
@@ -66,7 +66,7 @@ export function StoreView({ store, preview }: { store: Store; preview: boolean }
           </p>
 
           {(statusWarning || nhiNote) && (
-            <p className="border border-line-strong bg-surface px-3 py-2 text-[11.5px] leading-[1.6] text-muted">
+            <p className="border border-line-strong bg-surface px-3 py-2 text-[13px] leading-[1.6] text-muted">
               {statusWarning ?? nhiNote}
             </p>
           )}
@@ -102,7 +102,7 @@ export function StoreView({ store, preview }: { store: Store; preview: boolean }
                 <div key={h.label} className="contents">
                   <dt className="whitespace-nowrap">{h.label}</dt>
                   <dd
-                    className={`text-[11.5px] ${
+                    className={`text-[13px] ${
                       h.hours === "公休" || h.hours === "休息" ? "text-muted-2" : ""
                     }`}
                   >
@@ -112,10 +112,10 @@ export function StoreView({ store, preview }: { store: Store; preview: boolean }
               ))}
             </dl>
           ) : (
-            <p className="text-[11.5px] text-muted-2">尚無資料，建議先電話確認</p>
+            <p className="text-[13px] text-muted-2">尚無資料，建議先電話確認</p>
           )}
           {hoursNote(store.hoursSource) && (
-            <p className="mt-2 border-t border-line-soft pt-2 text-[11px] leading-[1.5] text-muted-2">
+            <p className="mt-2 border-t border-line-soft pt-2 text-[13px] leading-[1.5] text-muted-2">
               {hoursNote(store.hoursSource)}
             </p>
           )}
@@ -123,10 +123,10 @@ export function StoreView({ store, preview }: { store: Store; preview: boolean }
       </div>
 
       {preview ? (
-        <section className="px-4 pb-[26px] pt-5 sm:px-7">
+        <section className="px-4 pb-[26px] pt-5 sm:px-7 xl:px-12 2xl:px-16">
           <div className="mb-2.5 flex flex-wrap items-baseline gap-2.5">
             <h2 className="text-sm font-black">本店有貨商品</h2>
-            <p className="text-[11px] text-muted-2">
+            <p className="text-[13px] text-muted-2">
               {items.length} 項 · 全部可預留，到店付款
             </p>
           </div>
@@ -141,16 +141,16 @@ export function StoreView({ store, preview }: { store: Store; preview: boolean }
                   href={`/drug/${it.drug.slug}`}
                   className="flex flex-col gap-[5px] border border-line px-3.5 py-3 no-underline hover:border-green"
                 >
-                  <span className="text-[13px] font-medium text-ink">{it.drug.name}</span>
-                  <span className="text-[11px] text-muted-2">
+                  <span className="text-[15px] font-medium text-ink">{it.drug.name}</span>
+                  <span className="text-[13px] text-muted-2">
                     {it.drug.spec} · {it.drug.drugClass}
                   </span>
                   <span className="mt-0.5 flex items-center gap-2">
-                    <span className="num text-[13px] font-semibold text-ink">
+                    <span className="num text-[15px] font-semibold text-ink">
                       {formatPrice(it.priceTwd)}
                     </span>
                     <span className="flex-1" />
-                    <StockBadge badge={it.badge} short className="text-[11px]" />
+                    <StockBadge badge={it.badge} short className="text-[13px]" />
                   </span>
                 </Link>
               ))}
@@ -158,10 +158,10 @@ export function StoreView({ store, preview }: { store: Store; preview: boolean }
           )}
         </section>
       ) : (
-        <section className="px-4 pb-[26px] pt-5 sm:px-7">
+        <section className="px-4 pb-[26px] pt-5 sm:px-7 xl:px-12 2xl:px-16">
           <h2 className="mb-2.5 text-sm font-black">本店有貨商品</h2>
           <div className="border border-line px-4 py-6">
-            <p className="text-[13px] leading-[1.7] text-ink-2">
+            <p className="text-[15px] leading-[1.7] text-ink-2">
               這家藥局還沒有即時庫存。
               <br />
               <span className="text-muted">

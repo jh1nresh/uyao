@@ -55,7 +55,7 @@ export default async function DrugPage({
     <>
       <SiteHeader query={drug.name} showTagline />
 
-      <nav aria-label="麵包屑" className="px-4 pt-6 text-xs text-muted-2 sm:px-7">
+      <nav aria-label="麵包屑" className="px-4 pt-6 text-xs text-muted-2 sm:px-7 xl:px-12 2xl:px-16">
         <Link href="/" className="-my-3 inline-flex min-h-11 items-center text-muted-2 no-underline hover:text-ink">
           首頁
         </Link>
@@ -74,10 +74,10 @@ export default async function DrugPage({
         {drug.name}
       </nav>
 
-      <div className="flex gap-5 border-b border-line px-4 pb-[22px] pt-3.5 sm:px-7">
+      <div className="flex gap-5 border-b border-line px-4 pb-[22px] pt-3.5 sm:px-7 xl:px-12 2xl:px-16">
         <div
           aria-hidden
-          className="flex h-[104px] w-[104px] flex-none items-center justify-center border border-line bg-surface text-[11px] text-muted-2 max-sm:h-14 max-sm:w-14 max-sm:text-[10px]"
+          className="flex h-[104px] w-[104px] flex-none items-center justify-center border border-line bg-surface text-[13px] text-muted-2 max-sm:h-14 max-sm:w-14 max-sm:text-[12px]"
         >
           商品圖
         </div>
@@ -88,7 +88,7 @@ export default async function DrugPage({
               <span className="num text-sm font-medium text-muted">{drug.nameEn}</span>
             )}
           </h1>
-          <div className="flex flex-wrap items-center gap-2.5 text-[13px] text-ink-2">
+          <div className="flex flex-wrap items-center gap-2.5 text-[15px] text-ink-2">
             <span>
               {drug.form} · {drug.spec}
             </span>
@@ -104,7 +104,7 @@ export default async function DrugPage({
             <span className="text-line-strong" aria-hidden>
               |
             </span>
-            <span className="border border-green px-[7px] py-px text-[11px] font-bold text-green">
+            <span className="border border-green px-[7px] py-px text-[13px] font-bold text-green">
               {drug.drugClass}
             </span>
           </div>
@@ -130,10 +130,10 @@ export default async function DrugPage({
       )}
 
       {alternatives.length > 0 && (
-        <section className="px-4 pb-[26px] pt-5 sm:px-7">
+        <section className="px-4 pb-[26px] pt-5 sm:px-7 xl:px-12 2xl:px-16">
           <div className="mb-2.5 flex flex-wrap items-baseline gap-2">
             <h2 className="text-sm font-black">同成分替代品</h2>
-            <p className="text-[11px] font-normal text-muted-2">
+            <p className="text-[13px] font-normal text-muted-2">
               {drug.ingredients.join("＋")} · 沒貨時的出路
             </p>
           </div>
@@ -141,12 +141,12 @@ export default async function DrugPage({
             {alternatives.map((a) => (
               <div
                 key={a.drug.slug}
-                className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line-soft px-3.5 py-2.5 text-[13px] last:border-b-0"
+                className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line-soft px-3.5 py-2.5 text-[15px] last:border-b-0"
               >
                 <Link href={`/drug/${a.drug.slug}`} className="font-medium text-ink no-underline hover:text-green">
                   {a.drug.name} {a.drug.spec}
                 </Link>
-                <span className="text-[11px] text-muted-2">{a.drug.form}</span>
+                <span className="text-[13px] text-muted-2">{a.drug.form}</span>
                 <div className="flex-1" />
                 <span className="text-xs font-medium text-green">
                   <span className="num" aria-hidden>

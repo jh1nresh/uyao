@@ -27,6 +27,12 @@ const config: Config = {
         "map-bg": "#E9EDE8",
         "map-grid": "#DFE5DE",
       },
+      // 基準字級整體上調：原本全站最常用的是 11px，對「找藥的人」太小。
+      // xs/sm 是 token（用了 48 次），在這裡改一次就全站生效。
+      fontSize: {
+        xs: ["13px", { lineHeight: "1.5" }],
+        sm: ["15px", { lineHeight: "1.6" }],
+      },
       fontFamily: {
         sans: ["var(--font-sans)", "sans-serif"],
         mono: ["var(--font-mono)", "monospace"],

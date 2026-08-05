@@ -31,9 +31,9 @@ export default function StockBadgesPage() {
     <>
       <SiteHeader showTagline />
 
-      <section className="max-w-[560px] px-4 pb-7 pt-6 sm:px-7">
+      <section className="max-w-[560px] px-4 pb-7 pt-6 sm:px-7 xl:px-12 2xl:px-16">
         <h1 className="mb-1 text-sm font-black">誠實分級：來自盒子掃描新鮮度</h1>
-        <p className="mb-4 text-[11.5px] text-muted-2">
+        <p className="mb-4 text-[13px] text-muted-2">
           永遠不顯示確切數量（是估計值），只顯示狀態。全站同一套字符：● ○ ？
         </p>
 
@@ -43,13 +43,13 @@ export default function StockBadgesPage() {
               key={t.badge.tier}
               className="flex flex-col gap-1 border-b border-line-soft px-4 py-3 last:border-b-0 sm:flex-row sm:items-center sm:gap-3.5"
             >
-              <StockBadge badge={t.badge} className="w-[150px] flex-none text-[13px]" />
+              <StockBadge badge={t.badge} className="w-[150px] flex-none text-[15px]" />
               <p className="text-xs leading-[1.5] text-muted">{t.desc}</p>
             </div>
           ))}
         </div>
 
-        <p className="mt-3.5 text-[11.5px] leading-[1.7] text-muted">
+        <p className="mt-3.5 text-[13px] leading-[1.7] text-muted">
           排序規則跟比價網站相反：<b className="text-ink">有貨新鮮度 → 距離 → 價格</b>
           。買貼布的人要「現在拿到」，不是省 5 塊。
           <br />
