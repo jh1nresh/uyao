@@ -2,10 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 字型由 app/layout.tsx 的 next/font 掛上（自架 subset，見 scripts/subset-fonts.py）。
+   subset 沒涵蓋到的字（例如使用者在搜尋框打的字）會落到後面的系統中文字型。 */
 :root {
-  --font-sans: "Noto Sans TC", -apple-system, BlinkMacSystemFont, "PingFang TC",
-    "Microsoft JhengHei", sans-serif;
-  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-sans: var(--font-noto-sans-tc), -apple-system, BlinkMacSystemFont,
+    "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 html {
