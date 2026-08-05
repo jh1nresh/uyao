@@ -2,34 +2,98 @@ import { appendFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 
 /**
- * v1 沒有資料庫，表單與需求訊號落地成 jsonl。
+ * 表單與需求訊號的唯一出口。
  *
- * ⚠️ 這在 Vercel 上寫不進去 —— `/var/task` 是唯讀的，`mkdir` 直接 ENOENT。
- * 之前三個 route 各自 try/catch 只印錯誤不印內容，結果是**線上每一筆都靜默遺失**：
- * API 回 200、畫面顯示成功、資料進垃圾桶。
+ * 為什麼不是單純寫檔：Vercel 的 `/var/task` 是唯讀的，`mkdir` 直接 ENOENT，
+ * 結果是 API 回 200、畫面顯示成功、**資料靜默遺失**。所以這裡改成「送到所有
+ * 設定好的 sink，全部失敗才退回 log」。
  *
- * 在接上真正的儲存（KV / Postgres / webhook）之前，這裡至少保證資料還撈得回來：
- * 寫檔失敗就把整筆印成單行 JSON，前綴 `UYAO_RECORD`，可以用
- * `vercel logs <url> --json` 撈出來（見 `python3 -m pharmabox.demand --vercel`）。
+ * 不變條件：**任何一筆資料都不會無聲消失。** 全部 sink 都失敗時一定會印出
+ * 單行 `UYAO_RECORD <kind> {...}`，可以用
+ * `vercel logs <url> --json | python3 -m pharmabox.demand --stdin` 撈回來。
  *
- * log 保留期有限，這是止血不是解法。
+ * 目前實作的 sink：
+ *   fs        本機 dev 寫 `.data/<kind>.jsonl`。線上必定失敗，這是預期的。
+ *   webhook   設了 `RECORD_WEBHOOK_URL` 就送。任何吃 JSON POST 的端點都行
+ *             （Slack / Discord / Zapier / n8n / 自架）。
+ *             `PILOT_WEBHOOK_URL` 可單獨覆蓋藥局試點申請 —— 那是掉單代價
+ *             最高的一種，通常要送到會跳通知的地方。
+ *
+ * 要加 KV / Postgres 就在 SINKS 多一個函式，其餘不用動。這裡沒有先寫
+ * KV driver 是因為帳號上還沒有實例，寫了也驗不了。
  */
 export type RecordKind = "demand" | "pilot" | "reservations";
 
 export const LOG_SENTINEL = "UYAO_RECORD";
 
-export async function appendRecord(kind: RecordKind, record: object): Promise<void> {
-  const line = `${JSON.stringify(record)}\n`;
-  try {
-    const file = path.join(process.cwd(), ".data", `${kind}.jsonl`);
-    await mkdir(path.dirname(file), { recursive: true });
-    await appendFile(file, line, "utf8");
-  } catch (err) {
-    // 先把資料本身印出來（單行、可解析），再印失敗原因
-    console.log(`${LOG_SENTINEL} ${kind} ${JSON.stringify(record)}`);
-    console.error(
-      `[${kind}] 寫檔失敗，已改記 log —— 這不是持久化，接上真正的儲存前資料只在 log 保留期內有效`,
-      err instanceof Error ? err.message : err,
-    );
+/** webhook 不能拖垮請求；送不出去就當這個 sink 失敗。 */
+const WEBHOOK_TIMEOUT_MS = 3000;
+
+function webhookUrl(kind: RecordKind): string | undefined {
+  if (kind === "pilot" && process.env.PILOT_WEBHOOK_URL) {
+    return process.env.PILOT_WEBHOOK_URL;
   }
+  return process.env.RECORD_WEBHOOK_URL || undefined;
+}
+
+/** 給人看的一行摘要 —— webhook 收到的通常是聊天訊息，不是資料表。 */
+function summarize(kind: RecordKind, record: Record<string, unknown>): string {
+  if (kind === "pilot") {
+    return `🏥 藥局試點申請：${record.name}（${record.area || "未填區域"}）· ${record.contact}`;
+  }
+  if (kind === "demand") {
+    const what = record.drugSlug ? `${record.query}（${record.drugSlug}）` : record.query;
+    const who = record.contact ? ` · 留了 ${record.contact}` : "";
+    return `🔍 落空搜尋 [${record.kind}] ${what} @ ${record.area}${who}`;
+  }
+  return `📦 預留 ${record.code ?? ""} ${record.drugSlug ?? ""} @ ${record.storeSlug ?? ""}`;
+}
+
+async function toFile(kind: RecordKind, record: object): Promise<void> {
+  const file = path.join(process.cwd(), ".data", `${kind}.jsonl`);
+  await mkdir(path.dirname(file), { recursive: true });
+  await appendFile(file, `${JSON.stringify(record)}\n`, "utf8");
+}
+
+async function toWebhook(kind: RecordKind, record: object): Promise<void> {
+  const url = webhookUrl(kind);
+  if (!url) throw new Error("no webhook configured");
+
+  const text = summarize(kind, record as Record<string, unknown>);
+  const res = await fetch(url, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    // text 給 Slack、content 給 Discord、record 給程式讀 —— 一份 payload 三邊通吃
+    body: JSON.stringify({ kind, text, content: text, record }),
+    signal: AbortSignal.timeout(WEBHOOK_TIMEOUT_MS),
+  });
+  if (!res.ok) throw new Error(`webhook ${res.status}`);
+}
+
+const SINKS: Array<[string, (k: RecordKind, r: object) => Promise<void>]> = [
+  ["fs", toFile],
+  ["webhook", toWebhook],
+];
+
+export async function appendRecord(kind: RecordKind, record: object): Promise<void> {
+  const results = await Promise.allSettled(
+    SINKS.map(([, write]) => write(kind, record)),
+  );
+
+  const failures = results
+    .map((r, i) => (r.status === "rejected" ? `${SINKS[i][0]}: ${String(r.reason).slice(0, 120)}` : null))
+    .filter((x): x is string => x !== null);
+
+  if (failures.length < SINKS.length) {
+    // 至少有一個 sink 收下了。線上通常是 webhook 成功、fs 失敗，
+    // 那是預期狀況，不值得每筆都吵。
+    return;
+  }
+
+  // 全滅 —— 一定要把資料本身印出來，這是最後一道防線
+  console.log(`${LOG_SENTINEL} ${kind} ${JSON.stringify(record)}`);
+  console.error(
+    `[${kind}] 所有 sink 都失敗，資料只存在於這行 log（保留期有限，不是持久化）`,
+    failures.join(" | "),
+  );
 }
