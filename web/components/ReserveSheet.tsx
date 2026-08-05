@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { StockBadge } from "./StockBadge";
-import { formatDistance, formatPrice } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
+import { hoursSummary } from "@/lib/hours";
 import type { StockBadgeSpec, Store } from "@/lib/types";
 
 export interface ReserveTarget {
@@ -106,8 +107,7 @@ export function ReserveSheet({
             <div className="flex flex-wrap items-baseline gap-2">
               <h2 className="text-[17px] font-black">預留 · {target.store.name}</h2>
               <p className="text-[11px] text-muted">
-                <span className="num">{formatDistance(target.store.distanceM)}</span> ·{" "}
-                {target.store.openLabel}
+                {target.store.district} · {hoursSummary(target.store)}
               </p>
             </div>
 
@@ -195,9 +195,9 @@ function SuccessBody({
       <div className="border border-line px-3.5 py-3 text-[12.5px] leading-[1.6]">
         <div className="font-bold">{target.store.name}</div>
         <div className="text-muted">
-          {target.store.address} · <span className="num">{formatDistance(target.store.distanceM)}</span>
+          {target.store.address}
           <br />
-          {target.store.openLabel}
+          {hoursSummary(target.store)}
         </div>
       </div>
 

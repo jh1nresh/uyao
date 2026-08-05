@@ -4,15 +4,15 @@ import { AreaSwitch } from "@/components/AreaSwitch";
 import { SearchInput } from "@/components/SearchInput";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { StockBadge } from "@/components/StockBadge";
 import {
   CATEGORIES,
   drugsInCategory,
   getArea,
-  nearbyInStock,
+  storesInArea,
   toAreaSlug,
 } from "@/lib/data";
-import { formatDistance, formatFromPrice } from "@/lib/format";
+import { formatDistance } from "@/lib/format";
+import { hoursSummary } from "@/lib/hours";
 
 const STEPS = [
   { title: "搜尋", body: "輸入藥名或症狀，看附近哪幾家藥局現在有貨。" },
@@ -27,7 +27,7 @@ export default async function HomePage({
 }) {
   const { area: rawArea } = await searchParams;
   const area = toAreaSlug(rawArea);
-  const nearby = nearbyInStock(area);
+  const stores = storesInArea(area);
 
   return (
     <>
@@ -62,9 +62,9 @@ export default async function HomePage({
 
       <section className="px-4 pb-6 pt-5 sm:px-7">
         <div className="mb-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-2">
-          <h2 className="text-sm font-black">附近現在有貨</h2>
+          <h2 className="text-sm font-black">{getArea(area).shortName}的藥局</h2>
           <p className="text-[11px] text-muted-2">
-            依今日掃描紀錄 · {getArea(area).name}
+            {stores.length} 家 · 資料來自食藥署與健保署開放資料
           </p>
           {/* header 的切換器在手機上會收起來，這裡補一個 */}
           <div className="md:hidden">
@@ -72,49 +72,45 @@ export default async function HomePage({
           </div>
         </div>
 
-        <div className="border border-line">
-          {nearby.map((n) => (
-            <div
-              key={`${n.drug.slug}-${n.store.slug}`}
-              className="border-b border-line-soft last:border-b-0 hover:bg-surface-hover"
-            >
-              {/* Desktop */}
-              <div className="hidden grid-cols-[1fr_200px_110px_150px] items-center gap-x-3 px-3.5 py-2.5 text-[13px] lg:grid">
-                <Link href={`/drug/${n.drug.slug}`} className="font-medium text-ink no-underline hover:text-green">
-                  {n.drug.name} {n.drug.spec}
-                </Link>
-                <Link href={`/store/${n.store.slug}`} className="text-xs text-muted no-underline hover:text-ink">
-                  {n.store.name} · <span className="num">{formatDistance(n.store.distanceM)}</span>
-                </Link>
-                <div className="num text-right text-xs text-ink-2">
-                  {formatFromPrice(n.priceTwd)}
-                </div>
-                <StockBadge badge={n.badge} short className="justify-end text-xs" />
-              </div>
+        {/* 目前還沒有藥局裝盒子，所以這裡列的是「有哪些藥局」而不是「哪裡有貨」。
+            庫存徽章要等掃描流才有意義 —— 先不要假裝。 */}
+        <p className="mb-2.5 border border-line-strong bg-surface px-3.5 py-2.5 text-[12px] leading-[1.7] text-muted">
+          <b className="font-bold text-ink">即時庫存還沒開始</b> ——
+          庫存來自藥局店內的掃描器，目前這兩區還沒有藥局裝上盒子。
+          先把{getArea(area).shortName} {stores.length} 家藥局的基本資料整理在這裡，
+          有藥局加入之後就會顯示「現在有貨」。
+          <br />
+          <Link href="/pharmacy" className="font-medium text-green">
+            開藥局的？看盒子怎麼運作 →
+          </Link>
+        </p>
 
-              {/* Mobile */}
-              <Link
-                href={`/drug/${n.drug.slug}`}
-                className="flex flex-col gap-0.5 px-4 py-2.5 no-underline lg:hidden"
-              >
-                <div className="flex items-center gap-2">
-                  <span className="text-[13.5px] font-medium text-ink">
-                    {n.drug.name} {n.drug.spec}
-                  </span>
-                  <div className="flex-1" />
-                  <span className="num text-xs font-semibold text-ink">
-                    {formatFromPrice(n.priceTwd)}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 text-[11.5px] text-muted">
-                  {n.store.name} · <span className="num">{formatDistance(n.store.distanceM)}</span>
-                  <div className="flex-1" />
-                  <StockBadge badge={n.badge} short />
-                </div>
-              </Link>
-            </div>
+        <div className="border border-line">
+          {stores.slice(0, 12).map((s) => (
+            <Link
+              key={s.slug}
+              href={`/store/${s.slug}`}
+              className="flex items-center gap-3 border-b border-line-soft px-3.5 py-2.5 no-underline last:border-b-0 hover:bg-surface-hover"
+            >
+              <span className="min-w-0 flex-1">
+                <span className="block text-[13.5px] font-medium text-ink">{s.name}</span>
+                <span className="block text-[11.5px] text-muted">{s.address}</span>
+              </span>
+              {s.distanceM !== null && (
+                <span className="num flex-none text-[11.5px] text-ink-2">
+                  {formatDistance(s.distanceM)}
+                </span>
+              )}
+              <span className="flex-none text-[11px] text-muted-2">{hoursSummary(s)}</span>
+            </Link>
           ))}
         </div>
+
+        {stores.length > 12 && (
+          <p className="mt-2 text-[11px] text-muted-2">
+            另有 {stores.length - 12} 家 · 用上面的搜尋找特定藥品
+          </p>
+        )}
 
         <p className="mt-3 text-[11px] leading-[1.6] text-muted-2">
           庫存狀態怎麼讀？<Link href="/stock-badges" className="text-green">看徽章分級說明 →</Link>

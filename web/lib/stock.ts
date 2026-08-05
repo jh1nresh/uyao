@@ -32,7 +32,8 @@ export interface Sortable {
   badge: StockBadgeSpec;
   daysSinceScan: number | null;
   priceTwd: number;
-  store: { distanceM: number };
+  /** 還沒補座標的藥局距離是 null，排序時當成最遠 */
+  store: { distanceM: number | null };
 }
 
 export function compareByFreshness(a: Sortable, b: Sortable): number {
@@ -42,6 +43,8 @@ export function compareByFreshness(a: Sortable, b: Sortable): number {
   const days = (a.daysSinceScan ?? Infinity) - (b.daysSinceScan ?? Infinity);
   if (days !== 0) return days;
 
-  if (a.store.distanceM !== b.store.distanceM) return a.store.distanceM - b.store.distanceM;
+  const da = a.store.distanceM ?? Infinity;
+  const db = b.store.distanceM ?? Infinity;
+  if (da !== db) return da - db;
   return a.priceTwd - b.priceTwd;
 }

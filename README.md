@@ -40,6 +40,9 @@ python3 -m pytest
 | `daemon.py` | Pi 主程式（evdev grab → 全 pipeline） |
 | `dev_cli.py` | stdin 模擬掃描器，Mac 上開發整條 pipeline |
 | `prospects.py` | 藥局獲客名單：FDA 開放資料 → 過濾區域 → 排除連鎖 → 電訪 CSV |
+| `nhi.py` | 健保特約資料：醫事機構代碼（穩定 ID）、調劑時段、合約終止偵測 |
+| `places.py` | Google Places 補座標／營業時間／歇業狀態（需 API 金鑰） |
+| `seed.py` | 三份資料合成消費端的 `web/lib/stores.generated.json` |
 
 ## 藥局獲客名單
 
@@ -50,6 +53,23 @@ python3 -m pytest
 PYTHONPATH=src python3 -m pharmabox.prospects -o data/prospects.csv
 PYTHONPATH=src python3 -m pharmabox.prospects --districts 大安區,松山區 --refresh
 ```
+
+### 匯入消費端
+
+```bash
+PYTHONPATH=src python3 -m pharmabox.seed          # → web/lib/stores.generated.json
+export GOOGLE_MAPS_API_KEY=...                    # 選配：補座標與營業時間
+PYTHONPATH=src python3 -m pharmabox.places
+PYTHONPATH=src python3 -m pharmabox.seed          # 再跑一次就吃得到座標
+```
+
+沒有金鑰也產得出 seed，只是沒有座標（距離與地圖不顯示），營業時段退回
+健保署的粗粒度資料。**健保「固定看診時段」不是營業時間** —— 那是藥師可
+調劑健保處方的時段，所以站上標題會跟著資料來源改寫成「健保調劑時段」。
+
+健保合約終止日已過的有 20 家。那**不等於歇業**（可能只是退出健保仍賣成藥），
+所以文案只寫「合約已終止，建議先電話確認」，真正的歇業判斷要靠 Places 的
+`businessStatus`。
 
 連鎖名單（`NATIONAL_CHAINS` / `REGIONAL_CHAINS`）是**人工策展**不是自動推導：
 純用名稱出現頻率會把「健康／安康／永安／長青」這類吉祥字撞名的獨立藥局誤判成

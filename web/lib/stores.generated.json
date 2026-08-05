@@ -1,0 +1,5021 @@
+{
+  "generatedFrom": "FDA + NHI + Google Places",
+  "stores": [
+    {
+      "slug": "OK藥師藥局",
+      "name": "OK藥師藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區興安街95號",
+      "phone": "02-2517-0068",
+      "owner": "呂發財",
+      "nhiCode": "5901103183",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=OK藥師藥局+臺北市中山區興安街95號",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "中山伊通藥局",
+      "name": "中山伊通藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區伊通街97之2號",
+      "phone": "",
+      "owner": "吳佳穎",
+      "nhiCode": "5901104144",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=中山伊通藥局+臺北市中山區伊通街97之2號",
+      "hours": [
+        {
+          "label": "週一",
+          "hours": "晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "中山藥局",
+      "name": "中山藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區林森北路128號",
+      "phone": "02-2523-6979、0937-661-282",
+      "owner": "謝誌榮",
+      "nhiCode": "5901102891",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=中山藥局+臺北市中山區林森北路128號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週日",
+          "hours": "下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "中崙藥局",
+      "name": "中崙藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區八德路2段307號(1樓)",
+      "phone": "02-2711-4971",
+      "owner": "劉富舉",
+      "nhiCode": "5901101625",
+      "nhiContracted": true,
+      "nhiTerminatedOn": "20230831",
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=中崙藥局+臺北市中山區八德路2段307號(1樓)",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "中興藥局",
+      "name": "中興藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區長安東路2段226號",
+      "phone": "02-2777-4628",
+      "owner": "鄭陳智",
+      "nhiCode": "5901102962",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=中興藥局+臺北市中山區長安東路2段226號",
+      "hours": [
+        {
+          "label": "週一",
+          "hours": "晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "久大藥局",
+      "name": "久大藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區林森北路480號",
+      "phone": "02-2511-1594",
+      "owner": "李佩玲",
+      "nhiCode": "5901102015",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=久大藥局+臺北市中山區林森北路480號",
+      "hours": [
+        {
+          "label": "週一–週二",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週三",
+          "hours": "下午、晚上"
+        },
+        {
+          "label": "週四–週五",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "人人藥局",
+      "name": "人人藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區吉林路二六七號一樓",
+      "phone": "02-2563-0798",
+      "owner": "周正錕",
+      "nhiCode": null,
+      "nhiContracted": false,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=人人藥局+臺北市中山區吉林路二六七號一樓",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [],
+      "status": "listed"
+    },
+    {
+      "slug": "仁一藥局",
+      "name": "仁一藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區林森北路520號",
+      "phone": "02-2571-1742",
+      "owner": "吳松憲",
+      "nhiCode": "5901103325",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=仁一藥局+臺北市中山區林森北路520號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週日",
+          "hours": "下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "佳頤中西藥局",
+      "name": "佳頤中西藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區長春路147之1號",
+      "phone": "02-2564-1479",
+      "owner": "林汶頡",
+      "nhiCode": "5901103558",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=佳頤中西藥局+臺北市中山區長春路147之1號",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週日",
+          "hours": "下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "保德明水藥局",
+      "name": "保德明水藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區北安路608巷4弄1號",
+      "phone": "02-8509-7769",
+      "owner": "黃彥儒",
+      "nhiCode": "5901102971",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=保德明水藥局+臺北市中山區北安路608巷4弄1號",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "優豐藥局",
+      "name": "優豐藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區民生東路一段三十二號",
+      "phone": "02-2560-2565",
+      "owner": "李政坤",
+      "nhiCode": "5901100440",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=優豐藥局+臺北市中山區民生東路一段三十二號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週日",
+          "hours": "下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "元宏藥局",
+      "name": "元宏藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區北安路458巷41弄49號",
+      "phone": "02-2533-9728",
+      "owner": "黃宣溥",
+      "nhiCode": "5901103414",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=元宏藥局+臺北市中山區北安路458巷41弄49號",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週六–週日",
+          "hours": "上午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "可康藥局",
+      "name": "可康藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區林森北路373號(1樓)",
+      "phone": "02-2536-1078",
+      "owner": "施庭榆",
+      "nhiCode": "5901103790",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=可康藥局+臺北市中山區林森北路373號(1樓)",
+      "hours": [
+        {
+          "label": "週一",
+          "hours": "上午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "吉林藥局",
+      "name": "吉林藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區吉林路371號(1樓)",
+      "phone": "02-2586-5990",
+      "owner": "湯尚道",
+      "nhiCode": "5901103745",
+      "nhiContracted": true,
+      "nhiTerminatedOn": "20230106",
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=吉林藥局+臺北市中山區吉林路371號(1樓)",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "名祥藥局",
+      "name": "名祥藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區龍江路１６６號",
+      "phone": "02-2503-6265",
+      "owner": "朱熏祥",
+      "nhiCode": "5901100066",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=名祥藥局+臺北市中山區龍江路１６６號",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "名章藥局",
+      "name": "名章藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區興安街５１－５號１樓",
+      "phone": "02-2503-4331",
+      "owner": "廖學章",
+      "nhiCode": null,
+      "nhiContracted": false,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=名章藥局+臺北市中山區興安街５１－５號１樓",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [],
+      "status": "listed"
+    },
+    {
+      "slug": "啟美藥師藥局",
+      "name": "啟美藥師藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區錦州街282號",
+      "phone": "02-2517-8032",
+      "owner": "范宥富",
+      "nhiCode": "5901102444",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=啟美藥師藥局+臺北市中山區錦州街282號",
+      "hours": [
+        {
+          "label": "週一",
+          "hours": "上午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "喜康中西藥局",
+      "name": "喜康中西藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區錦州街185號1樓",
+      "phone": "",
+      "owner": "何金蓮",
+      "nhiCode": "5901103932",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=喜康中西藥局+臺北市中山區錦州街185號1樓",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "嘉恩藥局",
+      "name": "嘉恩藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區錦州街321號",
+      "phone": "02-2518-1418",
+      "owner": "陳姿吟",
+      "nhiCode": "5901101910",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=嘉恩藥局+臺北市中山區錦州街321號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "大信藥局",
+      "name": "大信藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區林森北路159巷6號",
+      "phone": "02-2571-9080",
+      "owner": "張正明",
+      "nhiCode": "5901100155",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=大信藥局+臺北市中山區林森北路159巷6號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "下午、晚上"
+        },
+        {
+          "label": "週日",
+          "hours": "晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "大愛藥師藥局",
+      "name": "大愛藥師藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區吉林路255號",
+      "phone": "02-2542-4723",
+      "owner": "陳士昌",
+      "nhiCode": "5901101992",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=大愛藥師藥局+臺北市中山區吉林路255號",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "大直健康藥局",
+      "name": "大直健康藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區北安路591號",
+      "phone": "02-2532-3310",
+      "owner": "鄭佳琳",
+      "nhiCode": "5901103110",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=大直健康藥局+臺北市中山區北安路591號",
+      "hours": [
+        {
+          "label": "週一–週二",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週三",
+          "hours": "上午、下午"
+        },
+        {
+          "label": "週四–週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週六–週日",
+          "hours": "上午、下午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "大直小太陽藥局",
+      "name": "大直小太陽藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區北安路607-1號",
+      "phone": "02-8509-3208",
+      "owner": "林秀美",
+      "nhiCode": "5901103334",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=大直小太陽藥局+臺北市中山區北安路607-1號",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "大直永安藥局",
+      "name": "大直永安藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區北安路567之2號",
+      "phone": "02-2533-2125、0932-959-455",
+      "owner": "余瑞峰",
+      "nhiCode": "5901103405",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=大直永安藥局+臺北市中山區北安路567之2號",
+      "hours": [
+        {
+          "label": "週一",
+          "hours": "上午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "大直藥局",
+      "name": "大直藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區北安路617號1樓",
+      "phone": "02-2532-0522",
+      "owner": "黃成仲",
+      "nhiCode": "5901101205",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=大直藥局+臺北市中山區北安路617號1樓",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "娸淇藥局",
+      "name": "娸淇藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區伊通街95號",
+      "phone": "02-2508-2762",
+      "owner": "李宜真",
+      "nhiCode": "5901103147",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=娸淇藥局+臺北市中山區伊通街95號",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "安悅藥局",
+      "name": "安悅藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區吉林路189號",
+      "phone": "02-2541-9879",
+      "owner": "蔡東宏",
+      "nhiCode": "5901103665",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=安悅藥局+臺北市中山區吉林路189號",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "富宥康藥局",
+      "name": "富宥康藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區北安路608巷5弄22號",
+      "phone": "02-2532-4769",
+      "owner": "汪政毅",
+      "nhiCode": "5901102686",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=富宥康藥局+臺北市中山區北安路608巷5弄22號",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "專心藥局",
+      "name": "專心藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區伊通街112之2號",
+      "phone": "02-2515-5847",
+      "owner": "朱思蓉",
+      "nhiCode": "5901102060",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=專心藥局+臺北市中山區伊通街112之2號",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週六",
+          "hours": "下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "展佑藥局",
+      "name": "展佑藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區長春路一四六之一號",
+      "phone": "02-2523-2803",
+      "owner": "洪慧婷",
+      "nhiCode": "5901101536",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=展佑藥局+臺北市中山區長春路一四六之一號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "康林藥局",
+      "name": "康林藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區興安街105號",
+      "phone": "02-2517-1867",
+      "owner": "蕭宏安",
+      "nhiCode": "5901102408",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=康林藥局+臺北市中山區興安街105號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週日",
+          "hours": "下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "康銓藥局",
+      "name": "康銓藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區農安街174號",
+      "phone": "02-2503-9393、0987-968-454",
+      "owner": "楊哲旻",
+      "nhiCode": "5901103576",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=康銓藥局+臺北市中山區農安街174號",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "廣福中西藥局",
+      "name": "廣福中西藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區錦州街406號",
+      "phone": "02-2518-9489",
+      "owner": "張永煌",
+      "nhiCode": "5901102999",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=廣福中西藥局+臺北市中山區錦州街406號",
+      "hours": [
+        {
+          "label": "週一",
+          "hours": "上午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "建元藥局",
+      "name": "建元藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區德惠街79巷8號",
+      "phone": "02-2598-6171、02-2597-3380",
+      "owner": "謝惠玲",
+      "nhiCode": null,
+      "nhiContracted": false,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=建元藥局+臺北市中山區德惠街79巷8號",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [],
+      "status": "listed"
+    },
+    {
+      "slug": "建誠中西藥局",
+      "name": "建誠中西藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區龍江路385之1號",
+      "phone": "02-2515-8608",
+      "owner": "蔡博全",
+      "nhiCode": "5901103227",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=建誠中西藥局+臺北市中山區龍江路385之1號",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週六",
+          "hours": "上午、下午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "弘元中西藥局",
+      "name": "弘元中西藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區長安東路2段64號1樓",
+      "phone": "02-2518-5688",
+      "owner": "林博弘",
+      "nhiCode": "5901103834",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=弘元中西藥局+臺北市中山區長安東路2段64號1樓",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週六",
+          "hours": "上午、下午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "德惠藥局",
+      "name": "德惠藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區德惠街122號",
+      "phone": "02-2597-1131、0925-859-057",
+      "owner": "葉益宏",
+      "nhiCode": "5901102597",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=德惠藥局+臺北市中山區德惠街122號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週日",
+          "hours": "上午、下午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "惠友藥局",
+      "name": "惠友藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區一江街６０號一樓",
+      "phone": "02-2571-2813",
+      "owner": "楊榮展",
+      "nhiCode": null,
+      "nhiContracted": false,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=惠友藥局+臺北市中山區一江街６０號一樓",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [],
+      "status": "listed"
+    },
+    {
+      "slug": "慈海藥局",
+      "name": "慈海藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區中原街一四三號",
+      "phone": "02-2594-0989",
+      "owner": "蕭玉珠",
+      "nhiCode": null,
+      "nhiContracted": false,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=慈海藥局+臺北市中山區中原街一四三號",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [],
+      "status": "listed"
+    },
+    {
+      "slug": "承恩藥局",
+      "name": "承恩藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區林森北路119巷55號1樓",
+      "phone": "02-2562-5117、02-2560-3749",
+      "owner": "徐桂蘭",
+      "nhiCode": null,
+      "nhiContracted": false,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=承恩藥局+臺北市中山區林森北路119巷55號1樓",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [],
+      "status": "listed"
+    },
+    {
+      "slug": "文德藥局",
+      "name": "文德藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區龍江路356巷22號1樓",
+      "phone": "02-2518-1178",
+      "owner": "林小紋",
+      "nhiCode": "5901101321",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=文德藥局+臺北市中山區龍江路356巷22號1樓",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "明水藥局",
+      "name": "明水藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區明水路651號1樓",
+      "phone": "02-2533-1121",
+      "owner": "李柏聖",
+      "nhiCode": "5901104019",
+      "nhiContracted": true,
+      "nhiTerminatedOn": "20240625",
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=明水藥局+臺北市中山區明水路651號1樓",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "明美藥局",
+      "name": "明美藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區長春路６９號１樓",
+      "phone": "02-2536-5419",
+      "owner": "楊游惠美",
+      "nhiCode": "5901100333",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=明美藥局+臺北市中山區長春路６９號１樓",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "易康藥局",
+      "name": "易康藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區堤頂大道2段302號(1樓)、304號(1樓)",
+      "phone": "02-8502-9138",
+      "owner": "王怡珺",
+      "nhiCode": "5901104251",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=易康藥局+臺北市中山區堤頂大道2段302號(1樓)、304號(1樓)",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "星安藥局",
+      "name": "星安藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區龍江路278號1樓",
+      "phone": "02-2516-8112",
+      "owner": "林郁璠",
+      "nhiCode": "5901104260",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=星安藥局+臺北市中山區龍江路278號1樓",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週日",
+          "hours": "上午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "昶青林森藥局",
+      "name": "昶青林森藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區林森北路119巷18號(1樓)",
+      "phone": "02-2563-9939",
+      "owner": "陳香光",
+      "nhiCode": "5901103192",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=昶青林森藥局+臺北市中山區林森北路119巷18號(1樓)",
+      "hours": [
+        {
+          "label": "週一–週四",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週五–週日",
+          "hours": "下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "晏晟藥局",
+      "name": "晏晟藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區林森北路６２５號",
+      "phone": "02-2585-1445",
+      "owner": "陳伶娥",
+      "nhiCode": "5901101161",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=晏晟藥局+臺北市中山區林森北路６２５號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "東東藥局",
+      "name": "東東藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區長春路257之2號1樓",
+      "phone": "02-2503-1730",
+      "owner": "陳盈宏",
+      "nhiCode": "5901103683",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=東東藥局+臺北市中山區長春路257之2號1樓",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "榮昌藥局",
+      "name": "榮昌藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區雙城街十七之三號",
+      "phone": "",
+      "owner": "許火登",
+      "nhiCode": "5901100717",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=榮昌藥局+臺北市中山區雙城街十七之三號",
+      "hours": [
+        {
+          "label": "週一",
+          "hours": "上午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "樂活苑藥局",
+      "name": "樂活苑藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區北安路546號1樓",
+      "phone": "02-2532-3296",
+      "owner": "彭顯善",
+      "nhiCode": "5901101929",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=樂活苑藥局+臺北市中山區北安路546號1樓",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "正傑健保藥局",
+      "name": "正傑健保藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區長安東路二段181號",
+      "phone": "02-2731-0181、0958-056-616",
+      "owner": "蔡正彥",
+      "nhiCode": "5901102837",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=正傑健保藥局+臺北市中山區長安東路二段181號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "民生興安藥局",
+      "name": "民生興安藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區民生東路3段90之1號",
+      "phone": "02-2501-8310",
+      "owner": "蔡嘉宏",
+      "nhiCode": "5901102417",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=民生興安藥局+臺北市中山區民生東路3段90之1號",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週六",
+          "hours": "上午、下午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "永直藥局",
+      "name": "永直藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區北安路595巷2弄6號1樓",
+      "phone": "02-8509-8059",
+      "owner": "古芳綺",
+      "nhiCode": "5901101509",
+      "nhiContracted": true,
+      "nhiTerminatedOn": "20240513",
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=永直藥局+臺北市中山區北安路595巷2弄6號1樓",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "永育康暉藥局",
+      "name": "永育康暉藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區樂群二路210之2號1樓",
+      "phone": "02-8501-2268",
+      "owner": "張紹暉",
+      "nhiCode": "5901103754",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=永育康暉藥局+臺北市中山區樂群二路210之2號1樓",
+      "hours": [
+        {
+          "label": "週一",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週二–週四",
+          "hours": "上午、晚上"
+        },
+        {
+          "label": "週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週六",
+          "hours": "上午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "沛久藥局",
+      "name": "沛久藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區林森北路291號(1樓)",
+      "phone": "",
+      "owner": "胡廷岳",
+      "nhiCode": "5901103950",
+      "nhiContracted": true,
+      "nhiTerminatedOn": "20260402",
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=沛久藥局+臺北市中山區林森北路291號(1樓)",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "泰興藥局",
+      "name": "泰興藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區新生北路二段６２巷３２號",
+      "phone": "02-2537-1586",
+      "owner": "黃守賢",
+      "nhiCode": null,
+      "nhiContracted": false,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=泰興藥局+臺北市中山區新生北路二段６２巷３２號",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [],
+      "status": "listed"
+    },
+    {
+      "slug": "淮濟藥師藥局",
+      "name": "淮濟藥師藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區北安路570號(實際營業地址:1樓及地下1樓)",
+      "phone": "02-8509-8636",
+      "owner": "郭惟華",
+      "nhiCode": "5901102748",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=淮濟藥師藥局+臺北市中山區北安路570號(實際營業地址:1樓及地下1樓)",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "滿順藥局",
+      "name": "滿順藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區伊通街54號(1樓)",
+      "phone": "02-2507-5283",
+      "owner": "郭晉良",
+      "nhiCode": "5901100422",
+      "nhiContracted": true,
+      "nhiTerminatedOn": "20240331",
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=滿順藥局+臺北市中山區伊通街54號(1樓)",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "王中興藥局",
+      "name": "王中興藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區龍江路273號",
+      "phone": "02-2503-4281",
+      "owner": "姜巧玲",
+      "nhiCode": "5901103343",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=王中興藥局+臺北市中山區龍江路273號",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "百源堂大藥局",
+      "name": "百源堂大藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區長安東路二段四十七之五號一樓",
+      "phone": "02-2563-0711",
+      "owner": "彭祖樞",
+      "nhiCode": "5901100057",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=百源堂大藥局+臺北市中山區長安東路二段四十七之五號一樓",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "祥泰藥局",
+      "name": "祥泰藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區林森北路136號",
+      "phone": "02-2561-4200",
+      "owner": "洪榮宏",
+      "nhiCode": "5901101652",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=祥泰藥局+臺北市中山區林森北路136號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "禾全藥局",
+      "name": "禾全藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區龍江路332號",
+      "phone": "02-2516-5721",
+      "owner": "周裕翔",
+      "nhiCode": "5901103585",
+      "nhiContracted": false,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=禾全藥局+臺北市中山區龍江路332號",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [],
+      "status": "listed"
+    },
+    {
+      "slug": "禾康藥局",
+      "name": "禾康藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區植福路296號(實際營業地址:1層)",
+      "phone": "",
+      "owner": "朱美恩",
+      "nhiCode": "5901103647",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=禾康藥局+臺北市中山區植福路296號(實際營業地址:1層)",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午"
+        },
+        {
+          "label": "週六",
+          "hours": "上午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "立大藥局",
+      "name": "立大藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區吉林路144巷14號",
+      "phone": "02-2531-3844",
+      "owner": "毛碧君",
+      "nhiCode": "5901100799",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=立大藥局+臺北市中山區吉林路144巷14號",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "第一藥局",
+      "name": "第一藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區合江街１７巷６號",
+      "phone": "02-2503-0124",
+      "owner": "林天造",
+      "nhiCode": null,
+      "nhiContracted": false,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=第一藥局+臺北市中山區合江街１７巷６號",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [],
+      "status": "listed"
+    },
+    {
+      "slug": "美日藥局",
+      "name": "美日藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區天津街六十六號一樓",
+      "phone": "02-2563-1662",
+      "owner": "黃建嘉",
+      "nhiCode": "5901101250",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=美日藥局+臺北市中山區天津街六十六號一樓",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "聖晨藥局",
+      "name": "聖晨藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區農安街140號",
+      "phone": "",
+      "owner": "陳文仁",
+      "nhiCode": "5901103469",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=聖晨藥局+臺北市中山區農安街140號",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週六",
+          "hours": "上午、下午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "能康藥局",
+      "name": "能康藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區長春路４６號",
+      "phone": "02-2542-9426",
+      "owner": "蔡海清",
+      "nhiCode": "5901100495",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=能康藥局+臺北市中山區長春路４６號",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "興康源藥局",
+      "name": "興康源藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區中山北路1段140巷8號",
+      "phone": "02-2531-1248",
+      "owner": "呂　緞",
+      "nhiCode": "5901102677",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=興康源藥局+臺北市中山區中山北路1段140巷8號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "興耀生活藥局",
+      "name": "興耀生活藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區林森北路405號(1樓)",
+      "phone": "02-2581-8210",
+      "owner": "吳世英",
+      "nhiCode": "5901103772",
+      "nhiContracted": true,
+      "nhiTerminatedOn": "20230201",
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=興耀生活藥局+臺北市中山區林森北路405號(1樓)",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "良佑藥局",
+      "name": "良佑藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區撫順街６之２號１樓",
+      "phone": "02-2591-6402",
+      "owner": "張孝玲",
+      "nhiCode": "5901100771",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=良佑藥局+臺北市中山區撫順街６之２號１樓",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週六",
+          "hours": "上午、下午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "艾禾藥局",
+      "name": "艾禾藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區大直街63號1樓",
+      "phone": "",
+      "owner": "林盛元",
+      "nhiCode": "5901103996",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=艾禾藥局+臺北市中山區大直街63號1樓",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "華友藥局",
+      "name": "華友藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區龍江路３５６巷２７號１樓",
+      "phone": "02-2500-7159",
+      "owner": "余月華",
+      "nhiCode": "5901100735",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=華友藥局+臺北市中山區龍江路３５６巷２７號１樓",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "蓁榛健康生活藥局",
+      "name": "蓁榛健康生活藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區合江街100之2號1樓",
+      "phone": "02-2509-7780",
+      "owner": "鍾俊仁",
+      "nhiCode": "5901101607",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=蓁榛健康生活藥局+臺北市中山區合江街100之2號1樓",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週日",
+          "hours": "上午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "視美藥局",
+      "name": "視美藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區民權東路三段６０巷８號１樓",
+      "phone": "02-2501-9597",
+      "owner": "莊振昇",
+      "nhiCode": null,
+      "nhiContracted": false,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=視美藥局+臺北市中山區民權東路三段６０巷８號１樓",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [],
+      "status": "listed"
+    },
+    {
+      "slug": "誠意中西藥局",
+      "name": "誠意中西藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區林森北路613號",
+      "phone": "02-2595-0951",
+      "owner": "游志凱",
+      "nhiCode": "5901103236",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=誠意中西藥局+臺北市中山區林森北路613號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "誠果中西藥局",
+      "name": "誠果中西藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區吉林路101號1樓",
+      "phone": "02-2523-8563",
+      "owner": "沈一穎",
+      "nhiCode": "5901103692",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=誠果中西藥局+臺北市中山區吉林路101號1樓",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "貢玄藥局",
+      "name": "貢玄藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區錦州街２0７號",
+      "phone": "02-2563-7847",
+      "owner": "蔡嫦娥",
+      "nhiCode": "5901100628",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=貢玄藥局+臺北市中山區錦州街２0７號",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "起點藥局",
+      "name": "起點藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區雙城街3巷18號1樓",
+      "phone": "",
+      "owner": "何博州",
+      "nhiCode": "5901104206",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=起點藥局+臺北市中山區雙城街3巷18號1樓",
+      "hours": [
+        {
+          "label": "週一",
+          "hours": "上午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "農安藥局",
+      "name": "農安藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區農安街18之1號1樓",
+      "phone": "02-2595-9293",
+      "owner": "陳美伶",
+      "nhiCode": "5901103423",
+      "nhiContracted": true,
+      "nhiTerminatedOn": "20231106",
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=農安藥局+臺北市中山區農安街18之1號1樓",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "逸帆藥局",
+      "name": "逸帆藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區錦州街189號",
+      "phone": "",
+      "owner": "謝麗君",
+      "nhiCode": "5901102828",
+      "nhiContracted": true,
+      "nhiTerminatedOn": "20260423",
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=逸帆藥局+臺北市中山區錦州街189號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "金生藥局",
+      "name": "金生藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區長安東路2段167之1號",
+      "phone": "02-8772-9808、02-2731-2302",
+      "owner": "蘇輝鴻",
+      "nhiCode": "5901102631",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=金生藥局+臺北市中山區長安東路2段167之1號",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "錦州藥局",
+      "name": "錦州藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區錦州街244號1樓",
+      "phone": "02-2502-6650",
+      "owner": "李旭明",
+      "nhiCode": "5901104028",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=錦州藥局+臺北市中山區錦州街244號1樓",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "長安藥局",
+      "name": "長安藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區長安東路2段171之2號(1樓)",
+      "phone": "02-2777-2740",
+      "owner": "楊閔淑",
+      "nhiCode": "5901103272",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=長安藥局+臺北市中山區長安東路2段171之2號(1樓)",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "長生藥局",
+      "name": "長生藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區松江路３６２巷５５號１樓",
+      "phone": "02-2581-6210",
+      "owner": "陳碧娥",
+      "nhiCode": "5901100431",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=長生藥局+臺北市中山區松江路３６２巷５５號１樓",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "長青藥局",
+      "name": "長青藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區興安街５５號１樓",
+      "phone": "02-2505-3160",
+      "owner": "程寓熙",
+      "nhiCode": "5901101072",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=長青藥局+臺北市中山區興安街５５號１樓",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "阿里藥局",
+      "name": "阿里藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區錦州街251號1樓",
+      "phone": "02-2502-0638",
+      "owner": "劉美惠",
+      "nhiCode": "5901100664",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=阿里藥局+臺北市中山區錦州街251號1樓",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "順泰藥局",
+      "name": "順泰藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區錦州街266號1樓",
+      "phone": "02-2503-8916",
+      "owner": "陳文福",
+      "nhiCode": "5901100342",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=順泰藥局+臺北市中山區錦州街266號1樓",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週六",
+          "hours": "上午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "麗亞藥局",
+      "name": "麗亞藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區雙城街32號",
+      "phone": "02-2598-1065",
+      "owner": "蔡美娟",
+      "nhiCode": null,
+      "nhiContracted": false,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=麗亞藥局+臺北市中山區雙城街32號",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [],
+      "status": "listed"
+    },
+    {
+      "slug": "麗恩藥局",
+      "name": "麗恩藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區林森北路575之5號",
+      "phone": "02-2598-1982",
+      "owner": "施冠州",
+      "nhiCode": "5901103209",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=麗恩藥局+臺北市中山區林森北路575之5號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "龍江藥局",
+      "name": "龍江藥局",
+      "area": "zhongshan",
+      "district": "中山區",
+      "address": "臺北市中山區龍江路356巷14號",
+      "phone": "02-2502-3724",
+      "owner": "黃雅玲",
+      "nhiCode": "5901102560",
+      "nhiContracted": false,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=龍江藥局+臺北市中山區龍江路356巷14號",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [],
+      "status": "listed"
+    },
+    {
+      "slug": "上好松山藥局",
+      "name": "上好松山藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區松山路144號1樓",
+      "phone": "02-2756-8012",
+      "owner": "陳凱威",
+      "nhiCode": "5901174253",
+      "nhiContracted": true,
+      "nhiTerminatedOn": "20240311",
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=上好松山藥局+臺北市信義區松山路144號1樓",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "上好藥師藥局",
+      "name": "上好藥師藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區永吉路30巷101弄48號",
+      "phone": "02-2767-7088",
+      "owner": "張鐸耀",
+      "nhiCode": "5901173952",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=上好藥師藥局+臺北市信義區永吉路30巷101弄48號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "上禾藥師藥局",
+      "name": "上禾藥師藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區林口街24巷4號",
+      "phone": "02-2761-1133",
+      "owner": "黃威堯",
+      "nhiCode": "5901174324",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=上禾藥師藥局+臺北市信義區林口街24巷4號",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "九州藥局",
+      "name": "九州藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區和平東路三段239號",
+      "phone": "02-8732-3331",
+      "owner": "邵瓊慧",
+      "nhiCode": "5901172839",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=九州藥局+臺北市信義區和平東路三段239號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "仁聖藥局",
+      "name": "仁聖藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區信安街151號",
+      "phone": "02-8732-4166",
+      "owner": "黃政賢",
+      "nhiCode": "5901173729",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=仁聖藥局+臺北市信義區信安街151號",
+      "hours": [
+        {
+          "label": "週一",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週二",
+          "hours": "上午、下午"
+        },
+        {
+          "label": "週三",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週四–週五",
+          "hours": "上午、下午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "佑華藥局",
+      "name": "佑華藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區忠孝東路五段五0八之四號一樓",
+      "phone": "02-2759-5719",
+      "owner": "黃永立",
+      "nhiCode": "5901172160",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=佑華藥局+臺北市信義區忠孝東路五段五0八之四號一樓",
+      "hours": [
+        {
+          "label": "週一",
+          "hours": "下午、晚上"
+        },
+        {
+          "label": "週二–週四",
+          "hours": "上午、下午"
+        },
+        {
+          "label": "週五",
+          "hours": "下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "信桉藥局",
+      "name": "信桉藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區莊敬路236號",
+      "phone": "02-8786-0005",
+      "owner": "楊宗勳",
+      "nhiCode": "5901172740",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=信桉藥局+臺北市信義區莊敬路236號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "信義盛康藥局",
+      "name": "信義盛康藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區永吉路286號（1樓）",
+      "phone": "02-2346-0521",
+      "owner": "鄭秀瓊",
+      "nhiCode": "5901174075",
+      "nhiContracted": true,
+      "nhiTerminatedOn": "20260708",
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=信義盛康藥局+臺北市信義區永吉路286號（1樓）",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "信隆藥局",
+      "name": "信隆藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區仁愛路四段496巷5號",
+      "phone": "02-2729-6953",
+      "owner": "黃啟信",
+      "nhiCode": null,
+      "nhiContracted": false,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=信隆藥局+臺北市信義區仁愛路四段496巷5號",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [],
+      "status": "listed"
+    },
+    {
+      "slug": "光成藥局",
+      "name": "光成藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區光復南路４５７號之３",
+      "phone": "02-2758-7069",
+      "owner": "陳榮輝",
+      "nhiCode": "5901170282",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=光成藥局+臺北市信義區光復南路４５７號之３",
+      "hours": [
+        {
+          "label": "週一",
+          "hours": "上午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "光點信義松仁藥局",
+      "name": "光點信義松仁藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區松仁路160號1樓",
+      "phone": "02-2758-1850",
+      "owner": "郭志宏",
+      "nhiCode": "5901174137",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=光點信義松仁藥局+臺北市信義區松仁路160號1樓",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "力康藥局",
+      "name": "力康藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區吳興街１６６－１號１樓",
+      "phone": "02-2737-5368",
+      "owner": "黃麗玉",
+      "nhiCode": null,
+      "nhiContracted": false,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=力康藥局+臺北市信義區吳興街１６６－１號１樓",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [],
+      "status": "listed"
+    },
+    {
+      "slug": "博亞藥局",
+      "name": "博亞藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區莊敬路462號",
+      "phone": "02-2758-0506",
+      "owner": "張文凱",
+      "nhiCode": "5901173818",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=博亞藥局+臺北市信義區莊敬路462號",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週六",
+          "hours": "上午"
+        },
+        {
+          "label": "週日",
+          "hours": "上午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "合生光復藥局",
+      "name": "合生光復藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區光復南路447號1樓",
+      "phone": "02-2758-2932",
+      "owner": "陳姵蓉",
+      "nhiCode": "5901174164",
+      "nhiContracted": true,
+      "nhiTerminatedOn": "20240222",
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=合生光復藥局+臺北市信義區光復南路447號1樓",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "吳興藥局",
+      "name": "吳興藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區吳興街二七九號一樓",
+      "phone": "02-2720-8328",
+      "owner": "陳厚吉",
+      "nhiCode": "5901170906",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=吳興藥局+臺北市信義區吳興街二七九號一樓",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "喜樂藥局",
+      "name": "喜樂藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區松德路125號",
+      "phone": "02-2727-5797、0918-383-566",
+      "owner": "王漢鵬",
+      "nhiCode": "5901172933",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=喜樂藥局+臺北市信義區松德路125號",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週六",
+          "hours": "上午、下午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "壹間藥師藥局",
+      "name": "壹間藥師藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區虎林街120巷148號",
+      "phone": "02-2767-2833",
+      "owner": "江郁萱",
+      "nhiCode": "5901173881",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=壹間藥師藥局+臺北市信義區虎林街120巷148號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週日",
+          "hours": "下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "大浲藥局",
+      "name": "大浲藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區忠孝東路5段372巷27弄18號",
+      "phone": "02-8789-6835",
+      "owner": "杜華鸞",
+      "nhiCode": null,
+      "nhiContracted": false,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=大浲藥局+臺北市信義區忠孝東路5段372巷27弄18號",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [],
+      "status": "listed"
+    },
+    {
+      "slug": "大順安藥局",
+      "name": "大順安藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區吳興街８４號",
+      "phone": "02-2736-0639",
+      "owner": "林宗德",
+      "nhiCode": "5901170442",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=大順安藥局+臺北市信義區吳興街８４號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週日",
+          "hours": "上午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "大鳥藥局",
+      "name": "大鳥藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區莊敬路354號",
+      "phone": "",
+      "owner": "鍾秀莉",
+      "nhiCode": "5901173201",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=大鳥藥局+臺北市信義區莊敬路354號",
+      "hours": [
+        {
+          "label": "週一",
+          "hours": "上午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "天康文豐藥局",
+      "name": "天康文豐藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區松山路543之1號(1樓)",
+      "phone": "02-2820-0106",
+      "owner": "廖學信",
+      "nhiCode": "5901174315",
+      "nhiContracted": true,
+      "nhiTerminatedOn": "20240307",
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=天康文豐藥局+臺北市信義區松山路543之1號(1樓)",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "好康藥局",
+      "name": "好康藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區莊敬路414號",
+      "phone": "02-2723-2979",
+      "owner": "陳芳如",
+      "nhiCode": "5901172508",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=好康藥局+臺北市信義區莊敬路414號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "安佑藥局",
+      "name": "安佑藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區吳興街247號1樓",
+      "phone": "02-2722-2236",
+      "owner": "陳怡如",
+      "nhiCode": "5901172786",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=安佑藥局+臺北市信義區吳興街247號1樓",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "富凱藥師藥局",
+      "name": "富凱藥師藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區林口街18號1樓",
+      "phone": "02-2728-2685",
+      "owner": "潘柏凱",
+      "nhiCode": "5901173989",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=富凱藥師藥局+臺北市信義區林口街18號1樓",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "富熙藥局",
+      "name": "富熙藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區松仁路260號1樓",
+      "phone": "02-2758-7608",
+      "owner": "馬語均",
+      "nhiCode": "5901173685",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=富熙藥局+臺北市信義區松仁路260號1樓",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "寶春藥局",
+      "name": "寶春藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區虎林街119之19號1樓",
+      "phone": "",
+      "owner": "陳郭俊廷",
+      "nhiCode": "5901174011",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=寶春藥局+臺北市信義區虎林街119之19號1樓",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "小熊藥局",
+      "name": "小熊藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區虎林街57之1號1樓",
+      "phone": "02-2749-5833",
+      "owner": "李明聰",
+      "nhiCode": "5901174208",
+      "nhiContracted": true,
+      "nhiTerminatedOn": "20230202",
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=小熊藥局+臺北市信義區虎林街57之1號1樓",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "尚頤中西藥局",
+      "name": "尚頤中西藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區虎林街145號",
+      "phone": "",
+      "owner": "蘇秀蓉",
+      "nhiCode": "5901173738",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=尚頤中西藥局+臺北市信義區虎林街145號",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週六",
+          "hours": "下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "市政藥局",
+      "name": "市政藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區忠孝東路5段169號1樓、171號1樓",
+      "phone": "02-2756-0050",
+      "owner": "林杰駖",
+      "nhiCode": "5901174084",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=市政藥局+臺北市信義區忠孝東路5段169號1樓、171號1樓",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "康怡健保藥局",
+      "name": "康怡健保藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區吳興街467巷2弄18號1樓",
+      "phone": "02-2720-6193",
+      "owner": "周本正",
+      "nhiCode": "5901173407",
+      "nhiContracted": true,
+      "nhiTerminatedOn": "20241202",
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=康怡健保藥局+臺北市信義區吳興街467巷2弄18號1樓",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "康杏藥局",
+      "name": "康杏藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區福德街306號1樓",
+      "phone": "02-2759-1510",
+      "owner": "周廷瑜",
+      "nhiCode": "5901172651",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=康杏藥局+臺北市信義區福德街306號1樓",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週六",
+          "hours": "上午、下午"
+        },
+        {
+          "label": "週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "康楊藥局",
+      "name": "康楊藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區忠孝東路5段412之1號(1樓)",
+      "phone": "",
+      "owner": "陳存洋",
+      "nhiCode": "5901174217",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=康楊藥局+臺北市信義區忠孝東路5段412之1號(1樓)",
+      "hours": [
+        {
+          "label": "週一",
+          "hours": "上午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "德康大藥局",
+      "name": "德康大藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區松山路五四一巷二十一號",
+      "phone": "02-2727-2502",
+      "owner": "陳文州",
+      "nhiCode": "5901172240",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=德康大藥局+臺北市信義區松山路五四一巷二十一號",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "必欣藥局",
+      "name": "必欣藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區松仁路２６４號",
+      "phone": "02-2722-5060",
+      "owner": "張維兆",
+      "nhiCode": "5901170059",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=必欣藥局+臺北市信義區松仁路２６４號",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "愛維喜藥局",
+      "name": "愛維喜藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區莊敬路278號",
+      "phone": "02-2758-6989",
+      "owner": "廖慧雪",
+      "nhiCode": "5901174066",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=愛維喜藥局+臺北市信義區莊敬路278號",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週六",
+          "hours": "上午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "慧生藥局",
+      "name": "慧生藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區松山路３１０號",
+      "phone": "02-2764-7138",
+      "owner": "許任雄",
+      "nhiCode": "5901170335",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=慧生藥局+臺北市信義區松山路３１０號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "文興藥局",
+      "name": "文興藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區福德街245號",
+      "phone": "02-2759-0989",
+      "owner": "郭家興",
+      "nhiCode": "5901172580",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=文興藥局+臺北市信義區福德街245號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週日",
+          "hours": "下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "新和平藥局",
+      "name": "新和平藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區虎林街一九八號一樓",
+      "phone": "02-2346-0951",
+      "owner": "林日秋",
+      "nhiCode": "5901172179",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=新和平藥局+臺北市信義區虎林街一九八號一樓",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "新永春藥局",
+      "name": "新永春藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區忠孝東路5段423巷1號",
+      "phone": "",
+      "owner": "賴正敏",
+      "nhiCode": "5901173372",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=新永春藥局+臺北市信義區忠孝東路5段423巷1號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週日",
+          "hours": "下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "新興健保藥局",
+      "name": "新興健保藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區永吉路30巷113號",
+      "phone": "02-2749-4892",
+      "owner": "陳卉方",
+      "nhiCode": "5901173587",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=新興健保藥局+臺北市信義區永吉路30巷113號",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "日安藥局",
+      "name": "日安藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區松仁路240巷13號1樓",
+      "phone": "02-2720-3775",
+      "owner": "郭琮傑",
+      "nhiCode": "5901174039",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=日安藥局+臺北市信義區松仁路240巷13號1樓",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "日新藥局",
+      "name": "日新藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區永吉路30巷148弄4號1樓",
+      "phone": "",
+      "owner": "鍾輝章",
+      "nhiCode": "5901174575",
+      "nhiContracted": true,
+      "nhiTerminatedOn": "20260107",
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=日新藥局+臺北市信義區永吉路30巷148弄4號1樓",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "昆陽藥局",
+      "name": "昆陽藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區林口街230號",
+      "phone": "02-2727-4814",
+      "owner": "吳念恭",
+      "nhiCode": "5901172688",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=昆陽藥局+臺北市信義區林口街230號",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週六",
+          "hours": "上午、下午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "昱芯中西藥局",
+      "name": "昱芯中西藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區中坡南路86號1樓",
+      "phone": "",
+      "owner": "許家瑋",
+      "nhiCode": "5901174539",
+      "nhiContracted": true,
+      "nhiTerminatedOn": "20260722",
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=昱芯中西藥局+臺北市信義區中坡南路86號1樓",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週六",
+          "hours": "上午、下午"
+        },
+        {
+          "label": "週日",
+          "hours": "上午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "杏仁藥局",
+      "name": "杏仁藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區大道路１３５號",
+      "phone": "02-2726-2541",
+      "owner": "簡志穎",
+      "nhiCode": "5901170915",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=杏仁藥局+臺北市信義區大道路１３５號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "杏康藥局",
+      "name": "杏康藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區忠孝東路五段３７２巷２７弄６８－２號１樓",
+      "phone": "02-2345-7422",
+      "owner": "陳淑娟",
+      "nhiCode": "5901170264",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=杏康藥局+臺北市信義區忠孝東路五段３７２巷２７弄６８－２號１樓",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "松山大藥局",
+      "name": "松山大藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區永吉路４３６號",
+      "phone": "02-2760-0097",
+      "owner": "張漢城",
+      "nhiCode": "5901170433",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=松山大藥局+臺北市信義區永吉路４３６號",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "松美藥局",
+      "name": "松美藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區市民大道6段320號(1樓)",
+      "phone": "02-2765-1099",
+      "owner": "江新平",
+      "nhiCode": "5901173827",
+      "nhiContracted": true,
+      "nhiTerminatedOn": "20241229",
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=松美藥局+臺北市信義區市民大道6段320號(1樓)",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "松隆藥局",
+      "name": "松隆藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區虎林街65號",
+      "phone": "02-2768-4033",
+      "owner": "施泰隆",
+      "nhiCode": "5901170255",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=松隆藥局+臺北市信義區虎林街65號",
+      "hours": [
+        {
+          "label": "週一",
+          "hours": "晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "柏愛藥局",
+      "name": "柏愛藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區基隆路2段131之20號1樓",
+      "phone": "02-2732-5472",
+      "owner": "林淵鐸",
+      "nhiCode": "5901173872",
+      "nhiContracted": true,
+      "nhiTerminatedOn": "20230115",
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=柏愛藥局+臺北市信義區基隆路2段131之20號1樓",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "榮泰藥局",
+      "name": "榮泰藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區光復南路419巷117號1樓",
+      "phone": "02-7729-6777",
+      "owner": "林幸穎",
+      "nhiCode": "5901172964",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=榮泰藥局+臺北市信義區光復南路419巷117號1樓",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "正和藥局",
+      "name": "正和藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區吳興街225巷6號",
+      "phone": "02-2345-5186",
+      "owner": "王書藝",
+      "nhiCode": null,
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=正和藥局+臺北市信義區吳興街225巷6號",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "永吉藥局",
+      "name": "永吉藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區永吉路213號",
+      "phone": "02-8787-4043",
+      "owner": "蔡芳曄",
+      "nhiCode": "5901172857",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=永吉藥局+臺北市信義區永吉路213號",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "永樂藥局",
+      "name": "永樂藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區忠孝東路5段372巷27弄64號1樓",
+      "phone": "02-2345-6772",
+      "owner": "蔡篤育",
+      "nhiCode": "5901174440",
+      "nhiContracted": false,
+      "nhiTerminatedOn": "20250924",
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=永樂藥局+臺北市信義區忠孝東路5段372巷27弄64號1樓",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [],
+      "status": "listed"
+    },
+    {
+      "slug": "洪暘藥局",
+      "name": "洪暘藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區富陽街86號",
+      "phone": "02-2733-7099",
+      "owner": "張之浩",
+      "nhiCode": "5901173694",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=洪暘藥局+臺北市信義區富陽街86號",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "濟生中西藥局",
+      "name": "濟生中西藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區崇德街41號",
+      "phone": "02-2735-8452",
+      "owner": "劉佳俞",
+      "nhiCode": "5901173210",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=濟生中西藥局+臺北市信義區崇德街41號",
+      "hours": [
+        {
+          "label": "週一–週二",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週三",
+          "hours": "上午、下午"
+        },
+        {
+          "label": "週四–週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週六",
+          "hours": "上午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "皇佳大藥局",
+      "name": "皇佳大藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區松山路541巷25號1樓、27號1樓",
+      "phone": "02-2726-2555",
+      "owner": "鍾文雅",
+      "nhiCode": "5901172268",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=皇佳大藥局+臺北市信義區松山路541巷25號1樓、27號1樓",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "皇昇大藥局",
+      "name": "皇昇大藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區松山路210號",
+      "phone": "02-2766-3886",
+      "owner": "洪榮隆",
+      "nhiCode": "5901173041",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=皇昇大藥局+臺北市信義區松山路210號",
+      "hours": [
+        {
+          "label": "週一",
+          "hours": "晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "福華藥局",
+      "name": "福華藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區吳興街２８１巷３號１樓",
+      "phone": "02-2720-8527",
+      "owner": "孫世億",
+      "nhiCode": "5901170139",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=福華藥局+臺北市信義區吳興街２８１巷３號１樓",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週六",
+          "hours": "上午、下午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "立信藥局",
+      "name": "立信藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區松山路４０３號１樓",
+      "phone": "02-2768-7754",
+      "owner": "陳武雄",
+      "nhiCode": "5901170648",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=立信藥局+臺北市信義區松山路４０３號１樓",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "立赫北醫藥局",
+      "name": "立赫北醫藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區吳興街118巷26弄17號",
+      "phone": "02-2732-0100",
+      "owner": "龍正軒",
+      "nhiCode": "5901173863",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=立赫北醫藥局+臺北市信義區吳興街118巷26弄17號",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週六",
+          "hours": "上午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "綠杏大藥局",
+      "name": "綠杏大藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區吳興街241號",
+      "phone": "02-2758-2378",
+      "owner": "曾光洵",
+      "nhiCode": "5901172697",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=綠杏大藥局+臺北市信義區吳興街241號",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週六",
+          "hours": "上午、下午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "老上德藥局",
+      "name": "老上德藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區信義路六段１１８號",
+      "phone": "02-2727-3864",
+      "owner": "陳義宗",
+      "nhiCode": null,
+      "nhiContracted": false,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=老上德藥局+臺北市信義區信義路六段１１８號",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [],
+      "status": "listed"
+    },
+    {
+      "slug": "臺陽藥局",
+      "name": "臺陽藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區大道路６１號",
+      "phone": "02-2728-3403",
+      "owner": "簡有寬",
+      "nhiCode": "5901170184",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=臺陽藥局+臺北市信義區大道路６１號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週日",
+          "hours": "上午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "良美藥局",
+      "name": "良美藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區福德街268巷37號",
+      "phone": "02-2759-3659",
+      "owner": "黃允美",
+      "nhiCode": "5901170022",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=良美藥局+臺北市信義區福德街268巷37號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "荐荃藥師藥局",
+      "name": "荐荃藥師藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區虎林街68之3號",
+      "phone": "02-2749-2866",
+      "owner": "洪鈴芳",
+      "nhiCode": "5901173292",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=荐荃藥師藥局+臺北市信義區虎林街68之3號",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "華泰藥局",
+      "name": "華泰藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區虎林街八十二巷五號",
+      "phone": "02-2760-1992",
+      "owner": "蘇清哲",
+      "nhiCode": "5901172213",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=華泰藥局+臺北市信義區虎林街八十二巷五號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週日",
+          "hours": "上午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "藥幸福藥局",
+      "name": "藥幸福藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區吳興街74號1樓",
+      "phone": "02-2377-8777",
+      "owner": "陳真慧",
+      "nhiCode": "5901174511",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=藥幸福藥局+臺北市信義區吳興街74號1樓",
+      "hours": [
+        {
+          "label": "週一",
+          "hours": "晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "詠晴中西藥局",
+      "name": "詠晴中西藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區松山路484之4號1樓(含夾層)",
+      "phone": "02-2726-6890",
+      "owner": "陳偉欽",
+      "nhiCode": "5901174155",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=詠晴中西藥局+臺北市信義區松山路484之4號1樓(含夾層)",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "誠恩藥局",
+      "name": "誠恩藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區永吉路30巷148弄4之1號(1樓)",
+      "phone": "02-2747-4992",
+      "owner": "林士文",
+      "nhiCode": "5901174584",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=誠恩藥局+臺北市信義區永吉路30巷148弄4之1號(1樓)",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "貴臨藥局",
+      "name": "貴臨藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區永吉路326巷19號",
+      "phone": "02-2749-3768",
+      "owner": "沈秀珠",
+      "nhiCode": "5901173050",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=貴臨藥局+臺北市信義區永吉路326巷19號",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "馨馨藥局",
+      "name": "馨馨藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區虎林街82巷19號",
+      "phone": "",
+      "owner": "李昭昌",
+      "nhiCode": "5901173390",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=馨馨藥局+臺北市信義區虎林街82巷19號",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "鴻濟藥局",
+      "name": "鴻濟藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區永吉路326巷2號1樓",
+      "phone": "02-2764-5331",
+      "owner": "陳佳慧",
+      "nhiCode": "5901172704",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=鴻濟藥局+臺北市信義區永吉路326巷2號1樓",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "麗中藥局",
+      "name": "麗中藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區福德街217號",
+      "phone": "02-2759-4416",
+      "owner": "易麗珍",
+      "nhiCode": "5901172544",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=麗中藥局+臺北市信義區福德街217號",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週六–週日",
+          "hours": "上午、下午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "鼎泰藥局",
+      "name": "鼎泰藥局",
+      "area": "xinyi",
+      "district": "信義區",
+      "address": "臺北市信義區基隆路一段１５５號１樓",
+      "phone": "02-2762-0617",
+      "owner": "沈采穎",
+      "nhiCode": "5901170406",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "placeMatchConfident": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=鼎泰藥局+臺北市信義區基隆路一段１５５號１樓",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    }
+  ]
+}

@@ -2,15 +2,19 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { NoInventoryYet } from "@/components/NoInventoryYet";
 import { PharmacyList } from "@/components/PharmacyList";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import {
   allDrugs,
+  DEFAULT_AREA,
   alternativesFor,
+  getArea,
   getCategory,
   getDrug,
   storesForDrug,
+  storesInArea,
 } from "@/lib/data";
 import { formatFromPrice } from "@/lib/format";
 
@@ -89,10 +93,14 @@ export default async function DrugPage({
               {drug.form} · {drug.spec}
             </span>
             {/* 許可證字號在行動端收起來 — 小螢幕先讓「規格 + 藥品分類」站穩 */}
-            <span className="hidden text-line-strong sm:inline" aria-hidden>
-              |
-            </span>
-            <span className="num hidden text-xs sm:inline">{drug.licenseNo}</span>
+            {drug.licenseNo && (
+              <>
+                <span className="hidden text-line-strong sm:inline" aria-hidden>
+                  |
+                </span>
+                <span className="num hidden text-xs sm:inline">{drug.licenseNo}</span>
+              </>
+            )}
             <span className="text-line-strong" aria-hidden>
               |
             </span>
@@ -106,10 +114,18 @@ export default async function DrugPage({
         </div>
       </div>
 
-      <PharmacyList
-        drug={{ slug: drug.slug, name: drug.name, spec: drug.spec }}
-        rows={rows}
-      />
+      {rows.length > 0 ? (
+        <PharmacyList
+          drug={{ slug: drug.slug, name: drug.name, spec: drug.spec }}
+          rows={rows}
+        />
+      ) : (
+        <NoInventoryYet
+          drugName={drug.name}
+          areaLabel={getArea(DEFAULT_AREA).shortName}
+          stores={storesInArea(DEFAULT_AREA)}
+        />
+      )}
 
       {alternatives.length > 0 && (
         <section className="px-4 pb-[26px] pt-5 sm:px-7">

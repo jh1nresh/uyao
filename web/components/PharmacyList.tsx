@@ -9,6 +9,7 @@ import { StoreMap } from "./StoreMap";
 import type { StoreRow } from "@/lib/data";
 import { getArea } from "@/lib/data";
 import { formatDistance, formatPrice } from "@/lib/format";
+import { hoursSummary } from "@/lib/hours";
 
 const COLS = "grid-cols-[1fr_88px_150px_96px_168px_92px]";
 
@@ -85,9 +86,7 @@ export function PharmacyList({
                 <div className="num text-right text-xs text-ink-2">
                   {formatDistance(r.store.distanceM)}
                 </div>
-                <div className={`text-xs ${r.store.isOpen ? "text-green" : "text-muted-2"}`}>
-                  {r.store.openLabel}
-                </div>
+                <div className="text-xs text-muted">{hoursSummary(r.store)}</div>
                 <div className="num text-right text-[13px] font-semibold">
                   {formatPrice(r.priceTwd)}
                 </div>
@@ -113,9 +112,7 @@ export function PharmacyList({
                     </span>
                   </div>
                   <div className="flex flex-wrap items-center gap-2 text-[11.5px]">
-                    <span className={r.store.isOpen ? "text-green" : "text-muted-2"}>
-                      {r.store.openShort}
-                    </span>
+                    <span className="text-muted">{hoursSummary(r.store)}</span>
                     <StockBadge badge={r.badge} />
                   </div>
                 </div>

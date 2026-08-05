@@ -5,6 +5,7 @@ import path from "node:path";
 import { NextResponse } from "next/server";
 
 import { getDrug, getStore, storesForDrug } from "@/lib/data";
+import { hoursSummary } from "@/lib/hours";
 
 export const runtime = "nodejs";
 
@@ -98,7 +99,7 @@ export async function POST(request: Request) {
       name: store.name,
       address: store.address,
       distanceM: store.distanceM,
-      openLabel: store.openLabel,
+      hours: hoursSummary(store),
       mapsUrl: store.mapsUrl,
     },
     drug: { slug: drug.slug, name: drug.name, spec: drug.spec },
