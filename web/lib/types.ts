@@ -27,6 +27,8 @@ export interface Drug {
   form: string;
   /** 規格，如「20 片/盒」 */
   spec: string;
+  /** 衛福部許可證字號。還沒接藥證開放資料，一律空字串 —— 空的就不顯示，
+   *  絕不填假號碼：那是可查證的政府識別碼。 */
   licenseNo: string;
   drugClass: DrugClass;
   category: CategorySlug;
@@ -40,29 +42,60 @@ export interface OpeningHours {
   hours: string;
 }
 
+/**
+ * `listed` = 在政府開放資料裡、頁面已建立，但還沒裝盒子，因此沒有任何
+ * 庫存或價格。`live` = 有掃描流。目前全部是 listed。
+ */
+export type StoreStatus = "live" | "listed";
+
+/**
+ * 營業時段的來源，決定標題要怎麼寫：
+ * - `google` → 真正的營業時間
+ * - `nhi`    → 健保「固定看診時段」。這是**健保調劑時段不是營業時間**，
+ *              門市通常開得更久，所以標題不能寫「營業時間」。
+ * - `none`   → 兩邊都沒有
+ */
+export type HoursSource = "google" | "nhi" | "none";
+
 export interface Store {
   slug: string;
   name: string;
   /** 所在服務區。使用者切換地區時，只有同區的藥局算「附近」。 */
   area: AreaSlug;
+  /** 行政區中文名，混區列表要標出來 */
+  district: string;
   address: string;
+  /** 已正規化成可直接撥的格式；開放資料沒填就是空字串 */
   phone: string;
+  owner: string;
+
+  /** 健保署醫事機構代碼 —— 唯一穩定的鍵，改店名也不會變 */
+  nhiCode: string | null;
+  nhiContracted: boolean;
   /**
-   * 與使用者的距離（公尺），以所在區的中心點計算 —— v1 沒有真的定位。
-   * 因此跨區的距離不可互相比較，凡是會同時出現兩區藥局的地方都要標行政區。
+   * 健保合約終止日（已過）。可能只是退出健保、也可能整間收掉 ——
+   * 開放資料分不出來，要靠 `businessStatus` 定奪，所以絕不寫成「已歇業」。
    */
-  distanceM: number;
-  isOpen: boolean;
-  /** 營業中 → 打烊時間；已打烊 → 下次開門 */
-  openLabel: string;
-  openShort: string;
-  hours: OpeningHours[];
-  notes: string[];
-  /** 庫存最後與盒子同步的時間，藥局頁顯示 */
-  lastSyncLabel: string;
+  nhiTerminatedOn: string | null;
+
+  lat: number | null;
+  lng: number | null;
+  /**
+   * 距所在區中心的公尺數 —— v1 沒有真的定位。跨區不可互相比較。
+   * 還沒跑 Google Places 補座標前是 null。
+   */
+  distanceM: number | null;
+
+  placeId: string | null;
+  /** Google 的 businessStatus，`OPERATIONAL` 以外都要在頁面上標示 */
+  businessStatus: string | null;
+  placeMatchConfident: boolean | null;
+
   mapsUrl: string;
-  /** 示意地圖上的相對位置（%），正式版接圖資後由經緯度換算 */
-  mapPos: { x: number; y: number };
+  hours: OpeningHours[];
+  hoursSource: HoursSource;
+  notes: string[];
+  status: StoreStatus;
 }
 
 export interface Offer {

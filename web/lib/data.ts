@@ -1,3 +1,4 @@
+import generated from "./stores.generated.json";
 import { compareByFreshness, stockBadge } from "./stock";
 import type {
   Area,
@@ -11,9 +12,14 @@ import type {
 } from "./types";
 
 /**
- * v1 資料層：固定 fixture + 純函式查詢。
- * 正式版把這裡換成 API（庫存/效期來自盒子掃描流，價格由藥局自報），
- * 上層 component 的介面不用動。
+ * 資料層：藥局是真的，庫存還不是。
+ *
+ * 藥局來自 `stores.generated.json` —— 食藥署 + 健保署開放資料，跑
+ * `python3 -m pharmabox.seed` 重新產生，不要手改。
+ *
+ * 庫存與價格來自盒子的掃描流。目前**沒有任何一家裝盒子**，所以 OFFERS
+ * 是空的，每家藥局的徽章都是「？ 請預留確認」。這不是待辦事項，是這個
+ * 產品現在真實的狀態 —— 徽章系統本來就是為這個狀態設計的。
  */
 
 /**
@@ -52,7 +58,7 @@ const DRUGS: Drug[] = [
     nameEn: "SALONPAS-AE",
     form: "貼布",
     spec: "20 片/盒",
-    licenseNo: "衛署藥製字第012345號",
+    licenseNo: "",
     drugClass: "指示藥",
     category: "patch",
     ingredients: ["水楊酸甲酯", "l-薄荷腦"],
@@ -63,7 +69,7 @@ const DRUGS: Drug[] = [
     name: "金十字酸痛貼布",
     form: "貼布",
     spec: "20 片/盒",
-    licenseNo: "衛署藥製字第024680號",
+    licenseNo: "",
     drugClass: "成藥",
     category: "patch",
     ingredients: ["水楊酸甲酯", "l-薄荷腦"],
@@ -74,7 +80,7 @@ const DRUGS: Drug[] = [
     name: "痠痛必貼 涼感貼布",
     form: "貼布",
     spec: "10 片/盒",
-    licenseNo: "衛署藥製字第031415號",
+    licenseNo: "",
     drugClass: "成藥",
     category: "patch",
     ingredients: ["水楊酸甲酯", "l-薄荷腦"],
@@ -86,7 +92,7 @@ const DRUGS: Drug[] = [
     nameEn: "MENTHOLATUM AD",
     form: "軟膏",
     spec: "90g",
-    licenseNo: "衛署藥製字第017253號",
+    licenseNo: "",
     drugClass: "乙類成藥",
     category: "ointment",
     ingredients: ["尿囊素", "dl-樟腦"],
@@ -97,7 +103,7 @@ const DRUGS: Drug[] = [
     name: "肌樂 涼感噴劑",
     form: "噴劑",
     spec: "130ml",
-    licenseNo: "衛署藥製字第008642號",
+    licenseNo: "",
     drugClass: "指示藥",
     category: "patch",
     ingredients: ["水楊酸甲酯", "薄荷腦"],
@@ -108,7 +114,7 @@ const DRUGS: Drug[] = [
     name: "綠油精",
     form: "液劑",
     spec: "10ml",
-    licenseNo: "衛署成製字第000123號",
+    licenseNo: "",
     drugClass: "乙類成藥",
     category: "otc-staple",
     ingredients: ["薄荷腦", "樟腦", "尤加利油"],
@@ -119,7 +125,7 @@ const DRUGS: Drug[] = [
     name: "白花油 5 號",
     form: "液劑",
     spec: "20ml",
-    licenseNo: "衛署成製字第000456號",
+    licenseNo: "",
     drugClass: "乙類成藥",
     category: "otc-staple",
     ingredients: ["薄荷腦", "水楊酸甲酯", "尤加利油"],
@@ -130,7 +136,7 @@ const DRUGS: Drug[] = [
     name: "優碘軟膏",
     form: "軟膏",
     spec: "10g",
-    licenseNo: "衛署藥製字第005566號",
+    licenseNo: "",
     drugClass: "指示藥",
     category: "ointment",
     ingredients: ["聚維酮碘"],
@@ -141,7 +147,7 @@ const DRUGS: Drug[] = [
     name: "護立康 人工淚液",
     form: "點眼液",
     spec: "15ml",
-    licenseNo: "—",
+    licenseNo: "",
     drugClass: "非藥品",
     category: "otc-staple",
     ingredients: ["玻尿酸鈉"],
@@ -149,176 +155,55 @@ const DRUGS: Drug[] = [
   },
 ];
 
-const STORES: Store[] = [
-  // ── 中山區 ──────────────────────────────────────────────────────
-  {
-    slug: "huimin",
-    name: "惠民藥局",
-    area: "zhongshan",
-    address: "台北市中山區南京東路二段 96 號",
-    phone: "02-2507-1234",
-    distanceM: 350,
-    isOpen: true,
-    openLabel: "營業中 · 至 21:30",
-    openShort: "營業中",
-    hours: [
-      { label: "週一–週六", hours: "09:00–21:30" },
-      { label: "週日", hours: "公休" },
-    ],
-    notes: ["藥師駐店", "健保特約"],
-    lastSyncLabel: "今日 14:20",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=惠民藥局+台北市中山區南京東路二段96號",
-    mapPos: { x: 44, y: 46 },
-  },
-  {
-    slug: "anxintang",
-    name: "安心堂藥局",
-    area: "zhongshan",
-    address: "台北市中山區林森北路 320 號",
-    phone: "02-2531-5566",
-    distanceM: 750,
-    isOpen: true,
-    openLabel: "營業中 · 至 22:00",
-    openShort: "營業中",
-    hours: [
-      { label: "週一–週日", hours: "09:00–22:00" },
-    ],
-    notes: ["藥師駐店"],
-    lastSyncLabel: "今日 13:05",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=安心堂藥局+台北市中山區林森北路320號",
-    mapPos: { x: 62, y: 30 },
-  },
-  {
-    slug: "changchun",
-    name: "長春大藥局",
-    area: "zhongshan",
-    address: "台北市中山區長春路 145 號",
-    phone: "02-2542-3344",
-    distanceM: 1200,
-    isOpen: true,
-    openLabel: "營業中 · 至 21:00",
-    openShort: "營業中",
-    hours: [
-      { label: "週一–週六", hours: "10:00–21:00" },
-      { label: "週日", hours: "10:00–18:00" },
-    ],
-    notes: ["藥師駐店", "健保特約"],
-    lastSyncLabel: "3 天前 11:15",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=長春大藥局+台北市中山區長春路145號",
-    mapPos: { x: 24, y: 62 },
-  },
+const STORES: Store[] = generated.stores as Store[];
 
-  // ── 信義區 ──────────────────────────────────────────────────────
-  {
-    slug: "jiancheng",
-    name: "建成藥局",
-    area: "xinyi",
-    address: "台北市信義區松高路 30 號",
-    phone: "02-2723-8899",
-    distanceM: 480,
-    isOpen: false,
-    openLabel: "已打烊 · 明 09:00",
-    openShort: "已打烊",
-    hours: [
-      { label: "週一–週五", hours: "09:00–20:00" },
-      { label: "週六", hours: "09:00–17:00" },
-      { label: "週日", hours: "公休" },
-    ],
-    notes: ["健保特約"],
-    lastSyncLabel: "2 天前 19:40",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=建成藥局+台北市信義區松高路30號",
-    mapPos: { x: 70, y: 58 },
-  },
-  {
-    slug: "songde",
-    name: "松德藥局",
-    area: "xinyi",
-    address: "台北市信義區信義路五段 15 號",
-    phone: "02-2758-4321",
-    distanceM: 620,
-    isOpen: true,
-    openLabel: "營業中 · 至 22:00",
-    openShort: "營業中",
-    hours: [
-      { label: "週一–週六", hours: "09:00–22:00" },
-      { label: "週日", hours: "10:00–18:00" },
-    ],
-    notes: ["藥師駐店", "健保特約"],
-    lastSyncLabel: "今日 15:10",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=松德藥局+台北市信義區信義路五段15號",
-    mapPos: { x: 38, y: 34 },
-  },
-  {
-    slug: "fuxing",
-    name: "福星藥局",
-    area: "xinyi",
-    address: "台北市信義區基隆路一段 178 號",
-    phone: "02-2765-7788",
-    distanceM: 1600,
-    isOpen: true,
-    openLabel: "營業中 · 至 20:30",
-    openShort: "營業中",
-    hours: [
-      { label: "週一–週六", hours: "09:30–20:30" },
-      { label: "週日", hours: "公休" },
-    ],
-    notes: ["健保特約"],
-    lastSyncLabel: "尚無掃描紀錄",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=福星藥局+台北市信義區基隆路一段178號",
-    mapPos: { x: 16, y: 26 },
-  },
-];
+/**
+ * 目前沒有任何一家藥局裝盒子，所以沒有任何 offer。
+ * 有掃描流之後這裡改成從 API 讀，上層查詢函式不用動。
+ */
+const OFFERS: Offer[] = [];
 
-const OFFERS: Offer[] = [
-  // 撒隆巴斯®-愛涼 貼布
-  { drugSlug: "salonpas-ae", storeSlug: "huimin", priceTwd: 129, daysSinceScan: 0 },
-  { drugSlug: "salonpas-ae", storeSlug: "anxintang", priceTwd: 135, daysSinceScan: 0 },
-  { drugSlug: "salonpas-ae", storeSlug: "jiancheng", priceTwd: 139, daysSinceScan: 2 },
-  { drugSlug: "salonpas-ae", storeSlug: "changchun", priceTwd: 125, daysSinceScan: 3 },
-  { drugSlug: "salonpas-ae", storeSlug: "fuxing", priceTwd: 120, daysSinceScan: null },
-  { drugSlug: "salonpas-ae", storeSlug: "songde", priceTwd: 132, daysSinceScan: 0 },
+// ── 示範模式（業務用） ──────────────────────────────────────────────
+//
+// 拿去跟藥局老闆談的時候，要讓他看到「裝上盒子之後**你這家店**長什麼樣」。
+// 所以 `?preview=1` 會用藥品目錄替該店生出一份示範庫存 —— 頁面上一定
+// 同時掛示範橫幅，而且永遠不會出現在正式頁面。
 
-  // 金十字酸痛貼布
-  { drugSlug: "golden-cross-patch", storeSlug: "huimin", priceTwd: 115, daysSinceScan: 3 },
-  { drugSlug: "golden-cross-patch", storeSlug: "anxintang", priceTwd: 118, daysSinceScan: 0 },
-  { drugSlug: "golden-cross-patch", storeSlug: "changchun", priceTwd: 122, daysSinceScan: 1 },
-  { drugSlug: "golden-cross-patch", storeSlug: "jiancheng", priceTwd: 120, daysSinceScan: 0 },
+/** FNV-1a。同一家店每次產出同一份示範資料，不依賴時鐘也不會每次重整就跳動。 */
+function hash(s: string): number {
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i += 1) {
+    h = Math.imul(h ^ s.charCodeAt(i), 16777619);
+  }
+  return h >>> 0;
+}
 
-  // 痠痛必貼 涼感貼布
-  { drugSlug: "cool-relief-patch", storeSlug: "jiancheng", priceTwd: 99, daysSinceScan: 2 },
-  { drugSlug: "cool-relief-patch", storeSlug: "anxintang", priceTwd: 105, daysSinceScan: 0 },
-  { drugSlug: "cool-relief-patch", storeSlug: "songde", priceTwd: 102, daysSinceScan: 0 },
+const PREVIEW_BASE_PRICE: Record<string, number> = {
+  "salonpas-ae": 129,
+  "golden-cross-patch": 115,
+  "cool-relief-patch": 99,
+  "mentholatum-ad": 180,
+  "jimu-spray": 210,
+  "green-oil": 75,
+  "white-flower-oil": 90,
+  "povidone-iodine": 65,
+  "artificial-tears": 120,
+};
 
-  // 曼秀雷敦 AD 軟膏
-  { drugSlug: "mentholatum-ad", storeSlug: "anxintang", priceTwd: 180, daysSinceScan: 0 },
-  { drugSlug: "mentholatum-ad", storeSlug: "huimin", priceTwd: 185, daysSinceScan: 0 },
-  { drugSlug: "mentholatum-ad", storeSlug: "changchun", priceTwd: 176, daysSinceScan: 4 },
-  { drugSlug: "mentholatum-ad", storeSlug: "songde", priceTwd: 178, daysSinceScan: 0 },
-
-  // 肌樂 涼感噴劑
-  { drugSlug: "jimu-spray", storeSlug: "jiancheng", priceTwd: 210, daysSinceScan: 0 },
-  { drugSlug: "jimu-spray", storeSlug: "huimin", priceTwd: 215, daysSinceScan: null },
-
-  // 綠油精
-  { drugSlug: "green-oil", storeSlug: "huimin", priceTwd: 75, daysSinceScan: 0 },
-  { drugSlug: "green-oil", storeSlug: "fuxing", priceTwd: 72, daysSinceScan: null },
-  { drugSlug: "green-oil", storeSlug: "songde", priceTwd: 73, daysSinceScan: 0 },
-
-  // 白花油 5 號
-  { drugSlug: "white-flower-oil", storeSlug: "huimin", priceTwd: 90, daysSinceScan: 2 },
-  { drugSlug: "white-flower-oil", storeSlug: "changchun", priceTwd: 88, daysSinceScan: 5 },
-  { drugSlug: "white-flower-oil", storeSlug: "songde", priceTwd: 92, daysSinceScan: 1 },
-
-  // 優碘軟膏
-  { drugSlug: "povidone-iodine", storeSlug: "changchun", priceTwd: 65, daysSinceScan: 0 },
-  { drugSlug: "povidone-iodine", storeSlug: "huimin", priceTwd: 68, daysSinceScan: 0 },
-  { drugSlug: "povidone-iodine", storeSlug: "songde", priceTwd: 66, daysSinceScan: 0 },
-
-  // 護立康 人工淚液
-  { drugSlug: "artificial-tears", storeSlug: "huimin", priceTwd: 120, daysSinceScan: 0 },
-  { drugSlug: "artificial-tears", storeSlug: "anxintang", priceTwd: 115, daysSinceScan: 1 },
-  { drugSlug: "artificial-tears", storeSlug: "songde", priceTwd: 118, daysSinceScan: 0 },
-];
+export function previewOffers(storeSlug: string): Offer[] {
+  return DRUGS.flatMap((d) => {
+    const h = hash(`${storeSlug}:${d.slug}`);
+    if (h % 10 < 2) return []; // 兩成品項這家店沒進貨
+    const base = PREVIEW_BASE_PRICE[d.slug] ?? 100;
+    const freshness = h % 100;
+    return [{
+      drugSlug: d.slug,
+      storeSlug,
+      priceTwd: base + ((h >> 8) % 5) * 2 - 4,
+      daysSinceScan: freshness < 60 ? 0 : freshness < 90 ? (h >> 4) % 6 + 1 : null,
+    }];
+  });
+}
 
 // ── 查詢 ────────────────────────────────────────────────────────────
 
@@ -341,8 +226,22 @@ export function getDrug(slug: string): Drug | undefined {
   return DRUGS.find((d) => d.slug === slug);
 }
 
+/**
+ * slug 是中文（在地搜尋用中文網址對 SEO 有利），而 Next 給的 params.slug
+ * 有時是 percent-encoded、有時已解碼 —— 靜態產生跟實際請求走的路徑不同。
+ * 兩種都要能查到，不然會出現「metadata 找得到但頁面 404」。
+ */
+function decodeSlug(slug: string): string {
+  try {
+    return decodeURIComponent(slug);
+  } catch {
+    return slug; // 壞掉的 % 序列會 throw，原樣退回讓它自然查不到
+  }
+}
+
 export function getStore(slug: string): Store | undefined {
-  return STORES.find((s) => s.slug === slug);
+  const decoded = decodeSlug(slug);
+  return STORES.find((s) => s.slug === slug || s.slug === decoded);
 }
 
 export function allDrugs(): Drug[] {
@@ -373,11 +272,26 @@ export function storesForDrug(drugSlug: string): StoreRow[] {
     .sort(compareByFreshness);
 }
 
-/** 藥局頁：本店有貨商品，同樣依新鮮度排序。 */
-export function drugsForStore(storeSlug: string): DrugRow[] {
+/** 這一區的藥局，近的排前面（還沒補座標的排後面）。 */
+export function storesInArea(area: AreaSlug): Store[] {
+  return STORES.filter((s) => s.area === area).sort(
+    (a, b) => (a.distanceM ?? Infinity) - (b.distanceM ?? Infinity),
+  );
+}
+
+export function storeCount(): number {
+  return STORES.length;
+}
+
+/**
+ * 藥局頁：本店有貨商品，同樣依新鮮度排序。
+ * `preview` 只給業務示範用，正式頁面永遠是 false。
+ */
+export function drugsForStore(storeSlug: string, preview = false): DrugRow[] {
   const store = getStore(storeSlug);
   if (!store) return [];
-  return OFFERS.filter((o) => o.storeSlug === storeSlug)
+  const source = preview ? previewOffers(storeSlug) : OFFERS;
+  return source.filter((o) => o.storeSlug === storeSlug)
     .flatMap((o) => {
       const drug = getDrug(o.drugSlug);
       if (!drug) return [];
@@ -487,6 +401,7 @@ export function drugSummary(drugSlug: string): DrugSummary | undefined {
 }
 
 /** 藥局頁 header 的「N 項」。 */
-export function storeItemCount(storeSlug: string): number {
-  return OFFERS.filter((o) => o.storeSlug === storeSlug).length;
+export function storeItemCount(storeSlug: string, preview = false): number {
+  const source = preview ? previewOffers(storeSlug) : OFFERS;
+  return source.filter((o) => o.storeSlug === storeSlug).length;
 }
