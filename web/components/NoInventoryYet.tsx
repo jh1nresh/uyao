@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { NotifyMe } from "./NotifyMe";
 import { formatDistance } from "@/lib/format";
 import { hoursSummary } from "@/lib/hours";
 import type { Store } from "@/lib/types";
@@ -13,10 +14,12 @@ import type { Store } from "@/lib/types";
  */
 export function NoInventoryYet({
   drugName,
+  drugSlug,
   areaLabel,
   stores,
 }: {
   drugName: string;
+  drugSlug: string;
   areaLabel: string;
   stores: Store[];
 }) {
@@ -29,6 +32,8 @@ export function NoInventoryYet({
           下面是這一區的藥局，可以直接打電話問有沒有「{drugName}」。
         </p>
       </div>
+
+      <NotifyMe kind="inventory_miss" query={drugName} drugSlug={drugSlug} drugName={drugName} />
 
       <div className="mt-2.5 flex flex-wrap items-baseline gap-2.5">
         <h2 className="text-sm font-black">{areaLabel}的藥局</h2>

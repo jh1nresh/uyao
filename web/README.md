@@ -58,9 +58,20 @@ v1 沒有資料庫，落地成 `web/.data/reservations.jsonl`（已 gitignore）
 `name` 與 `contact` 必填，落地成 `web/.data/pilot.jsonl`。跟消費端預留完全分開 ——
 藥局端沒有帳號系統，這只是聯絡意圖。
 
+## 需求捕捉 API
+
+`POST /api/demand` `{kind, query, drugSlug?, area, contact?}` → `{ok: true}`
+
+`kind` 是 `catalog_miss`（查詢對不到目錄）或 `inventory_miss`（有藥但沒庫存）。
+兩個空狀態掛載時各送一筆被動紀錄（**不帶任何個資**），使用者留聯絡方式再送一筆。
+落地成 `web/.data/demand.jsonl`。規格見 `specs/demand-capture.md`。
+
+**`query` 存原話不做正規化** —— 同義詞／錯字／症狀對應是之後的事（那是這條鏈上
+唯一適合 LLM 的地方），把原始輸入丟掉就永遠補不回來。
+
 ## 字型
 
-中文走**自架的 Noto Sans TC subset**（`app/fonts/noto-sans-tc-var.woff2`，160KB，
+中文走**自架的 Noto Sans TC subset**（`app/fonts/noto-sans-tc-var.woff2`，253KB，
 wght 100–900 可變），不是 Google Fonts `<link>`。
 
 繁中字型在 Google Fonts 是按 unicode-range 切成上百塊的：原本那個 `<link>` 會拉進
@@ -73,8 +84,10 @@ pip install "fonttools[woff]" brotli
 python3 scripts/subset-fonts.py
 ```
 
-⚠️ **字符集是從 `app/` `components/` `lib/` 的原始碼掃出來的**（`lib/data.ts` 的藥名、
-藥局名都算）。加藥品資料或改文案就要重跑，否則新字會掉回系統中文字型。
+⚠️ **字符集是從 `app/` `components/` `lib/` 掃出來的，`.ts` `.tsx` `.json` 都掃**
+—— 166 家藥局的店名與地址在 `lib/stores.generated.json`，漏掉那個副檔名整批藥局名
+就會掉回系統字型。**加藥品資料、重跑 seed、或改文案都要重跑這支 script。**
+
 使用者在搜尋框自己打的字本來就不在 subset 內 —— 那一格用系統字型，是刻意的取捨。
 
 ## 法規邊界（不要改掉）

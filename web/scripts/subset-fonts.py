@@ -34,7 +34,9 @@ VAR_FONT_URL = (
 )
 OUT_FONT = "noto-sans-tc-var.woff2"
 SOURCE_DIRS = ("app", "components", "lib")
-SOURCE_SUFFIXES = {".ts", ".tsx"}
+# .json 一定要包含：166 家藥局的店名、地址、巷弄都在 lib/stores.generated.json，
+# 只掃 .ts/.tsx 會讓整批藥局名掉回系統字型（804f344 導入真資料時漏掉這件事）。
+SOURCE_SUFFIXES = {".ts", ".tsx", ".json"}
 
 # 介面上會出現、但不一定寫死在原始碼字串裡的符號
 EXTRA_CHARS = (
@@ -52,7 +54,12 @@ def collect_chars() -> set[str]:
     for d in SOURCE_DIRS:
         for path in (WEB_ROOT / d).rglob("*"):
             if path.is_file() and path.suffix in SOURCE_SUFFIXES:
-                chars.update(COMMENT_RE.sub(" ", path.read_text(encoding="utf-8")))
+                text = path.read_text(encoding="utf-8")
+                # JSON 沒有註解，而且值裡面有 "https://" —— 拿註解規則去掃會把
+                # 整行後面吃掉，所以只對原始碼做這件事。
+                if path.suffix != ".json":
+                    text = COMMENT_RE.sub(" ", text)
+                chars.update(text)
     return {c for c in chars if c.isprintable() or c == " "}
 
 
