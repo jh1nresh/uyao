@@ -89,7 +89,6 @@ export interface Store {
   placeId: string | null;
   /** Google 的 businessStatus，`OPERATIONAL` 以外都要在頁面上標示 */
   businessStatus: string | null;
-  placeMatchConfident: boolean | null;
 
   mapsUrl: string;
   hours: OpeningHours[];

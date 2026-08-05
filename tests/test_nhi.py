@@ -78,3 +78,17 @@ class TestIndex:
     def test_returns_none_for_unknown_pharmacy(self):
         """配錯機構代碼會讓 slug 指到別家藥局 —— 寧可留空也不要模糊比對。"""
         assert self.idx.lookup("不存在藥局", "臺北市中山區某路1號", "中山區") is None
+
+
+class TestArabicNumeralsPreserved:
+    def test_does_not_corrupt_plain_arabic_house_numbers(self):
+        """曾經為了處理「五0八」而全域把 0 換成〇，結果「308號」變成
+        「3〇8號」對不上任何東西。純阿拉伯數字必須原樣通過。"""
+        assert cn_number_to_arabic("南京東路308號") == "南京東路308號"
+        assert cn_number_to_arabic("八德路2段307號") == "八德路2段307號"
+
+    def test_handles_mixed_chinese_and_arabic_zero(self):
+        assert cn_number_to_arabic("忠孝東路五段五0八之四號") == "忠孝東路5段508之4號"
+
+    def test_postal_code_survives_normalization(self):
+        assert "10453" in normalize_address("10453臺北市中山區雙城街17之3號1樓")

@@ -1,5 +1,11 @@
 from pharmabox.places import PlacesAccessDenied, _confident
-from pharmabox.seed import haversine_m, sessions_to_hours, slugify
+from pharmabox.seed import (
+    haversine_m,
+    match_score,
+    resolve_contested,
+    sessions_to_hours,
+    slugify,
+)
 
 
 class TestSlug:
@@ -80,3 +86,55 @@ class TestPlacesAccessDenied:
     def test_survives_non_json_payload(self):
         advice = PlacesAccessDenied(403, "<html>502 Bad Gateway</html>").advice()
         assert "502 Bad Gateway" in advice
+
+
+def place(name, addr):
+    return {"display_name": name, "formatted_address": addr, "place_id": "X"}
+
+
+class TestMatchScore:
+    """案例全部來自 166 家實跑結果 —— 這些是 Google 真的回過的東西。"""
+
+    def test_name_and_address_both_match_is_strongest(self):
+        p = place("中山伊通藥局", "104094臺北市中山區中央里伊通街97-2號1樓")
+        assert match_score(p, "中山伊通藥局", "臺北市中山區伊通街97之2號") == 3
+
+    def test_name_variant_accepted_on_address_evidence(self):
+        """政府登記「榮昌藥局」，Google 叫「榮昌健保藥局」——名字互不包含，
+        但門牌一致且對方看起來是藥局，所以採用（分數 1 已足夠）。"""
+        p = place("榮昌健保藥局", "10453臺北市中山區恆安里雙城街17之3號1樓")
+        assert match_score(p, "榮昌藥局", "臺北市中山區雙城街十七之三號") == 1
+
+    def test_chinese_numeral_address_still_matches(self):
+        """「虎林街八十二巷五號」要對得上 Google 的「虎林街82巷5號」。"""
+        p = place("華泰藥師健保藥局", "110臺北市信義區四維里虎林街82巷5號")
+        assert match_score(p, "華泰藥局", "臺北市信義區虎林街八十二巷五號") == 1
+
+    def test_clinic_at_same_address_is_rejected(self):
+        """同門牌但不是藥局 —— 佑華藥局被配到新佑泉診所。"""
+        p = place("新佑泉診所", "110臺北市信義區松光里忠孝東路五段508之4號")
+        assert match_score(p, "佑華藥局", "臺北市信義區忠孝東路五段五0八之四號一樓") == 0
+
+    def test_different_pharmacy_nearby_is_rejected(self):
+        """星安藥局在龍江路278號，Google 回隔壁280號的榮星診所。"""
+        p = place("榮星診所", "104臺北市中山區江寧里龍江路280號")
+        assert match_score(p, "星安藥局", "臺北市中山區龍江路278號1樓") == 0
+
+    def test_same_name_different_district_is_rejected(self):
+        p = place("逸帆中西藥局", "100臺北市中正區頂東里金門街6之5號")
+        assert match_score(p, "逸帆藥局", "臺北市中山區錦州街189號") == 0
+
+
+class TestResolveContested:
+    def test_higher_score_keeps_the_place(self):
+        """保德明水藥局(3) vs 明水藥局(2) 搶同一筆 —— 分高的留著。"""
+        losers = resolve_contested({"P": [("保德明水藥局 A", 3), ("明水藥局 B", 2)]})
+        assert losers == {"明水藥局 B"}
+
+    def test_tie_drops_everyone(self):
+        """分不出來就都不要 —— 大浲藥局與市政藥局雙雙配到大樹信義市政店。"""
+        losers = resolve_contested({"P": [("大浲藥局 A", 1), ("市政藥局 B", 1)]})
+        assert losers == {"大浲藥局 A", "市政藥局 B"}
+
+    def test_uncontested_place_is_untouched(self):
+        assert resolve_contested({"P": [("只有一家 A", 1)]}) == set()

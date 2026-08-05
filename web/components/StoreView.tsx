@@ -92,12 +92,19 @@ export function StoreView({ store, preview }: { store: Store; preview: boolean }
 
         <div className="w-full flex-none border border-line px-3.5 py-3 text-xs text-ink-2 lg:w-60">
           <div className="mb-1.5 font-bold text-ink">{hoursTitle(store.hoursSource)}</div>
+          {/* 標籤欄用 auto 且不換行 —— Google 的多時段字串
+              （09:00–12:00、14:00–17:00、18:00–21:00）會把 1fr 的標籤欄
+              壓到「星期一」直接斷成三行。 */}
           {store.hours.length > 0 ? (
-            <dl className="grid grid-cols-[1fr_auto] gap-x-3 gap-y-[3px]">
+            <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-[3px]">
               {store.hours.map((h) => (
                 <div key={h.label} className="contents">
-                  <dt>{h.label}</dt>
-                  <dd className={`text-[11.5px] ${h.hours === "公休" ? "text-muted-2" : ""}`}>
+                  <dt className="whitespace-nowrap">{h.label}</dt>
+                  <dd
+                    className={`text-[11.5px] ${
+                      h.hours === "公休" || h.hours === "休息" ? "text-muted-2" : ""
+                    }`}
+                  >
                     {h.hours}
                   </dd>
                 </div>
