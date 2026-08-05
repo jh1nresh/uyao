@@ -1,11 +1,8 @@
-import { appendFile, mkdir } from "node:fs/promises";
-import path from "node:path";
-
 import { NextResponse } from "next/server";
 
-export const runtime = "nodejs";
+import { appendRecord } from "@/lib/record";
 
-const LOG_PATH = path.join(process.cwd(), ".data", "pilot.jsonl");
+export const runtime = "nodejs";
 
 interface Body {
   name?: unknown;
@@ -16,16 +13,6 @@ interface Body {
 /** 只取字串、去頭尾空白、限長 — 藥局名/區域是自由輸入，不做格式假設。 */
 function field(raw: unknown, max: number): string {
   return typeof raw === "string" ? raw.trim().slice(0, max) : "";
-}
-
-async function append(record: object) {
-  // 跟 /api/reservations 一樣：v1 沒有資料庫，先落地成 jsonl。
-  try {
-    await mkdir(path.dirname(LOG_PATH), { recursive: true });
-    await appendFile(LOG_PATH, `${JSON.stringify(record)}\n`, "utf8");
-  } catch (err) {
-    console.error("[pilot] 寫入失敗", err);
-  }
 }
 
 /** 藥局試點申請 — 供給側入口，跟消費端預留完全分開。 */
@@ -48,7 +35,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "請留 LINE ID 或電話，我們才能跟你聯繫" }, { status: 422 });
   }
 
-  await append({
+  await appendRecord("pilot", {
     name,
     area,
     contact,
