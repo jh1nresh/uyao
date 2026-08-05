@@ -3,7 +3,7 @@
 `specs/web-marketplace.md` 的 v1 實作 — 從 Claude Design 的 `消費端 Web.dc.html`
 （藥品頁 1a / 搜尋首頁 1b / 藥局頁 1c / 行動端流程 1d / 庫存徽章 1e）落地。
 
-Next.js 14 App Router + Tailwind，沒有 UI 元件庫、沒有資料庫。
+Next.js 16 App Router + Tailwind，沒有 UI 元件庫、沒有資料庫。
 
 ```bash
 npm install

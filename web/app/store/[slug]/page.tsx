@@ -12,8 +12,13 @@ export function generateStaticParams() {
   return allStores().map((s) => ({ slug: s.slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const store = getStore(params.slug);
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const store = getStore(slug);
   if (!store) return { title: "找不到這家藥局" };
   const items = drugsForStore(store.slug);
   return {
@@ -22,8 +27,13 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   };
 }
 
-export default function StorePage({ params }: { params: { slug: string } }) {
-  const store = getStore(params.slug);
+export default async function StorePage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const store = getStore(slug);
   if (!store) notFound();
 
   const items = drugsForStore(store.slug);

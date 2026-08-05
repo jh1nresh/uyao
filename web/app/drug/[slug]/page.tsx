@@ -18,8 +18,13 @@ export function generateStaticParams() {
   return allDrugs().map((d) => ({ slug: d.slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const drug = getDrug(params.slug);
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const drug = getDrug(slug);
   if (!drug) return { title: "找不到這個藥品" };
   const rows = storesForDrug(drug.slug);
   const inStock = rows.filter((r) => r.badge.tier === "fresh").length;
@@ -29,8 +34,13 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   };
 }
 
-export default function DrugPage({ params }: { params: { slug: string } }) {
-  const drug = getDrug(params.slug);
+export default async function DrugPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const drug = getDrug(slug);
   if (!drug) notFound();
 
   const rows = storesForDrug(drug.slug);

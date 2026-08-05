@@ -11,8 +11,13 @@ export function generateStaticParams() {
   return CATEGORIES.map((c) => ({ slug: c.slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const category = getCategory(params.slug);
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const category = getCategory(slug);
   if (!category) return { title: "找不到這個品類" };
   return {
     title: `${category.name} — 附近藥局現貨與價格`,
@@ -20,8 +25,13 @@ export function generateMetadata({ params }: { params: { slug: string } }): Meta
   };
 }
 
-export default function CategoryPage({ params }: { params: { slug: string } }) {
-  const category = getCategory(params.slug);
+export default async function CategoryPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
+  const category = getCategory(slug);
   if (!category) notFound();
 
   const results = drugsInCategory(category.slug as CategorySlug)
