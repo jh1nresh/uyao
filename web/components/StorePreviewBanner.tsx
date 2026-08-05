@@ -16,11 +16,11 @@ export function StorePreviewBanner({ storeName, storeSlug }: { storeName: string
         <span className="text-muted">店名、地址、電話與營業時段是政府開放資料的真實內容。</span>
       </p>
       <p className="mt-1 text-[11.5px] text-muted">
-        <Link href="/pharmacy" className="font-medium text-green">
+        <Link href="/pharmacy" className="-my-2 inline-block py-2 font-medium text-green">
           申請免費試裝 →
         </Link>
         <span className="mx-2 text-line-strong">|</span>
-        <Link href={`/store/${storeSlug}`} className="text-muted">
+        <Link href={`/store/${storeSlug}`} className="-my-2 inline-block py-2 text-muted">
           關閉預覽
         </Link>
       </p>

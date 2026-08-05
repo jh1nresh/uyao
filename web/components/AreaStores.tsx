@@ -55,7 +55,10 @@ export function AreaStores({
               key={s.slug}
               className="flex items-center gap-3 border-b border-line-soft px-3.5 py-2.5 last:border-b-0 hover:bg-surface-hover"
             >
-              <Link href={`/store/${s.slug}`} className="min-w-0 flex-1 no-underline">
+              <Link
+                href={`/store/${s.slug}`}
+                className="-my-2.5 flex min-h-11 min-w-0 flex-1 flex-col justify-center py-2.5 no-underline"
+              >
                 <span className="block text-[13.5px] font-medium text-ink">{s.name}</span>
                 <span className="block text-[11.5px] text-muted">{s.address}</span>
               </Link>
@@ -69,7 +72,7 @@ export function AreaStores({
                 (s.phone ? (
                   <a
                     href={`tel:${s.phone.split("、")[0].replace(/-/g, "")}`}
-                    className="num flex-none border border-green px-3 py-1.5 text-[12px] font-bold text-green no-underline"
+                    className="num inline-flex min-h-11 flex-none items-center border border-green px-3 text-[12px] font-bold text-green no-underline sm:min-h-0 sm:py-1.5"
                   >
                     {s.phone.split("、")[0]}
                   </a>
@@ -90,7 +93,7 @@ export function AreaStores({
           <button
             type="button"
             onClick={() => setExpanded(true)}
-            className="text-green underline"
+            className="-my-3 inline-flex min-h-11 items-center text-green underline"
           >
             顯示其餘 {sorted.length - limit} 家
           </button>
