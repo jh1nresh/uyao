@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { DrugResults } from "@/components/DrugResults";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { USER_AREA, drugSummary, searchDrugs } from "@/lib/data";
+import { SERVICE_AREA_LABEL, drugSummary, searchDrugs } from "@/lib/data";
 
 export const metadata: Metadata = {
   title: "搜尋結果",
@@ -32,7 +32,7 @@ export default async function SearchPage({
             {q ? `「${q}」的結果` : "搜尋藥品"}
           </h1>
           <p className="text-[11px] text-muted-2">
-            {q ? `${results.length} 項 · ${USER_AREA}` : "輸入藥品名、主成分或症狀"}
+            {q ? `${results.length} 項 · ${SERVICE_AREA_LABEL}` : "輸入藥品名、主成分或症狀"}
           </p>
           <div className="flex-1" />
           <p className="text-[11px] text-muted-2">排序：庫存新鮮度 → 距離 → 價格</p>

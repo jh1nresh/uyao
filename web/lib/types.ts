@@ -8,6 +8,17 @@ export interface Category {
   name: string;
 }
 
+/** 目前開放的服務區 —— 跟藥局獲客名單（`data/prospects-*.csv`）的範圍一致。 */
+export type AreaSlug = "zhongshan" | "xinyi";
+
+export interface Area {
+  slug: AreaSlug;
+  /** 完整名稱，如「台北市中山區」 */
+  name: string;
+  /** 短名，chip 與列表用，如「中山區」 */
+  shortName: string;
+}
+
 export interface Drug {
   slug: string;
   name: string;
@@ -32,9 +43,14 @@ export interface OpeningHours {
 export interface Store {
   slug: string;
   name: string;
+  /** 所在服務區。使用者切換地區時，只有同區的藥局算「附近」。 */
+  area: AreaSlug;
   address: string;
   phone: string;
-  /** 與使用者的距離（公尺）。v1 定位固定在台北市大安區。 */
+  /**
+   * 與使用者的距離（公尺），以所在區的中心點計算 —— v1 沒有真的定位。
+   * 因此跨區的距離不可互相比較，凡是會同時出現兩區藥局的地方都要標行政區。
+   */
   distanceM: number;
   isOpen: boolean;
   /** 營業中 → 打烊時間；已打烊 → 下次開門 */

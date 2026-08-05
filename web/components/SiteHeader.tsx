@@ -1,17 +1,22 @@
 import Link from "next/link";
 
+import { AreaSwitch } from "./AreaSwitch";
 import { CrossMark } from "./CrossMark";
 import { SearchInput } from "./SearchInput";
-import { USER_AREA } from "@/lib/data";
+import { DEFAULT_AREA } from "@/lib/data";
+import type { AreaSlug } from "@/lib/types";
 
 export function SiteHeader({
   query,
   showSearch = true,
   showTagline = false,
+  area = DEFAULT_AREA,
 }: {
   query?: string;
   showSearch?: boolean;
   showTagline?: boolean;
+  /** 目前服務區。只有會依地區過濾的頁面（首頁／搜尋）需要傳。 */
+  area?: AreaSlug;
 }) {
   return (
     <header className="flex h-14 items-center gap-3 border-b border-line px-4 sm:px-7">
@@ -31,10 +36,8 @@ export function SiteHeader({
 
       <div className="flex-1" />
 
-      <div className="hidden items-center gap-1.5 border border-line px-2.5 py-[5px] text-xs text-muted md:flex">
-        <span aria-hidden>◎</span>
-        {USER_AREA}
-        <span className="font-medium text-green">已定位</span>
+      <div className="hidden md:block">
+        <AreaSwitch area={area} />
       </div>
       {/* 供給側入口。藥局端不需要後台帳號（預留確認走 LINE bot），
           所以連的是合作說明頁而不是登入頁。 */}

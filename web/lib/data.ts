@@ -1,5 +1,7 @@
 import { compareByFreshness, stockBadge } from "./stock";
 import type {
+  Area,
+  AreaSlug,
   Category,
   CategorySlug,
   Drug,
@@ -14,7 +16,28 @@ import type {
  * 上層 component 的介面不用動。
  */
 
-export const USER_AREA = "台北市大安區";
+/**
+ * 開放中的服務區。範圍跟藥局獲客名單一致（`data/prospects-taipei-zhongshan-xinyi.csv`）
+ * —— 盒子先鋪這兩區，消費端就只開這兩區。
+ */
+export const AREAS: Area[] = [
+  { slug: "zhongshan", name: "台北市中山區", shortName: "中山區" },
+  { slug: "xinyi", name: "台北市信義區", shortName: "信義區" },
+];
+
+export const DEFAULT_AREA: AreaSlug = "zhongshan";
+
+/** 跨區的頁面（搜尋、品類）用這個標範圍，不能只寫其中一區。 */
+export const SERVICE_AREA_LABEL = AREAS.map((a) => a.shortName).join("、");
+
+export function getArea(slug: AreaSlug): Area {
+  return AREAS.find((a) => a.slug === slug) ?? AREAS[0];
+}
+
+/** 把網址上的 ?area= 收斂成合法值，亂填就退回預設區。 */
+export function toAreaSlug(raw: string | undefined): AreaSlug {
+  return AREAS.some((a) => a.slug === raw) ? (raw as AreaSlug) : DEFAULT_AREA;
+}
 
 export const CATEGORIES: Category[] = [
   { slug: "patch", name: "痠痛貼布" },
@@ -127,11 +150,13 @@ const DRUGS: Drug[] = [
 ];
 
 const STORES: Store[] = [
+  // ── 中山區 ──────────────────────────────────────────────────────
   {
     slug: "huimin",
     name: "惠民藥局",
-    address: "台北市大安區和平東路二段 96 號",
-    phone: "02-2735-1234",
+    area: "zhongshan",
+    address: "台北市中山區南京東路二段 96 號",
+    phone: "02-2507-1234",
     distanceM: 350,
     isOpen: true,
     openLabel: "營業中 · 至 21:30",
@@ -142,14 +167,15 @@ const STORES: Store[] = [
     ],
     notes: ["藥師駐店", "健保特約"],
     lastSyncLabel: "今日 14:20",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=惠民藥局+台北市大安區和平東路二段96號",
+    mapsUrl: "https://www.google.com/maps/search/?api=1&query=惠民藥局+台北市中山區南京東路二段96號",
     mapPos: { x: 44, y: 46 },
   },
   {
     slug: "anxintang",
     name: "安心堂藥局",
-    address: "台北市大安區復興南路二段 148 號",
-    phone: "02-2708-5566",
+    area: "zhongshan",
+    address: "台北市中山區林森北路 320 號",
+    phone: "02-2531-5566",
     distanceM: 750,
     isOpen: true,
     openLabel: "營業中 · 至 22:00",
@@ -159,14 +185,36 @@ const STORES: Store[] = [
     ],
     notes: ["藥師駐店"],
     lastSyncLabel: "今日 13:05",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=安心堂藥局+台北市大安區復興南路二段148號",
+    mapsUrl: "https://www.google.com/maps/search/?api=1&query=安心堂藥局+台北市中山區林森北路320號",
     mapPos: { x: 62, y: 30 },
   },
   {
+    slug: "changchun",
+    name: "長春大藥局",
+    area: "zhongshan",
+    address: "台北市中山區長春路 145 號",
+    phone: "02-2542-3344",
+    distanceM: 1200,
+    isOpen: true,
+    openLabel: "營業中 · 至 21:00",
+    openShort: "營業中",
+    hours: [
+      { label: "週一–週六", hours: "10:00–21:00" },
+      { label: "週日", hours: "10:00–18:00" },
+    ],
+    notes: ["藥師駐店", "健保特約"],
+    lastSyncLabel: "3 天前 11:15",
+    mapsUrl: "https://www.google.com/maps/search/?api=1&query=長春大藥局+台北市中山區長春路145號",
+    mapPos: { x: 24, y: 62 },
+  },
+
+  // ── 信義區 ──────────────────────────────────────────────────────
+  {
     slug: "jiancheng",
     name: "建成藥局",
-    address: "台北市大安區信義路四段 30 號",
-    phone: "02-2703-8899",
+    area: "xinyi",
+    address: "台北市信義區松高路 30 號",
+    phone: "02-2723-8899",
     distanceM: 480,
     isOpen: false,
     openLabel: "已打烊 · 明 09:00",
@@ -178,32 +226,34 @@ const STORES: Store[] = [
     ],
     notes: ["健保特約"],
     lastSyncLabel: "2 天前 19:40",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=建成藥局+台北市大安區信義路四段30號",
+    mapsUrl: "https://www.google.com/maps/search/?api=1&query=建成藥局+台北市信義區松高路30號",
     mapPos: { x: 70, y: 58 },
   },
   {
-    slug: "changchun",
-    name: "長春大藥局",
-    address: "台北市大安區敦化南路一段 205 號",
-    phone: "02-2771-3344",
-    distanceM: 1200,
+    slug: "songde",
+    name: "松德藥局",
+    area: "xinyi",
+    address: "台北市信義區信義路五段 15 號",
+    phone: "02-2758-4321",
+    distanceM: 620,
     isOpen: true,
-    openLabel: "營業中 · 至 21:00",
+    openLabel: "營業中 · 至 22:00",
     openShort: "營業中",
     hours: [
-      { label: "週一–週六", hours: "10:00–21:00" },
+      { label: "週一–週六", hours: "09:00–22:00" },
       { label: "週日", hours: "10:00–18:00" },
     ],
     notes: ["藥師駐店", "健保特約"],
-    lastSyncLabel: "3 天前 11:15",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=長春大藥局+台北市大安區敦化南路一段205號",
-    mapPos: { x: 24, y: 62 },
+    lastSyncLabel: "今日 15:10",
+    mapsUrl: "https://www.google.com/maps/search/?api=1&query=松德藥局+台北市信義區信義路五段15號",
+    mapPos: { x: 38, y: 34 },
   },
   {
     slug: "fuxing",
     name: "福星藥局",
-    address: "台北市大安區羅斯福路三段 283 號",
-    phone: "02-2368-7788",
+    area: "xinyi",
+    address: "台北市信義區基隆路一段 178 號",
+    phone: "02-2765-7788",
     distanceM: 1600,
     isOpen: true,
     openLabel: "營業中 · 至 20:30",
@@ -214,7 +264,7 @@ const STORES: Store[] = [
     ],
     notes: ["健保特約"],
     lastSyncLabel: "尚無掃描紀錄",
-    mapsUrl: "https://www.google.com/maps/search/?api=1&query=福星藥局+台北市大安區羅斯福路三段283號",
+    mapsUrl: "https://www.google.com/maps/search/?api=1&query=福星藥局+台北市信義區基隆路一段178號",
     mapPos: { x: 16, y: 26 },
   },
 ];
@@ -226,20 +276,24 @@ const OFFERS: Offer[] = [
   { drugSlug: "salonpas-ae", storeSlug: "jiancheng", priceTwd: 139, daysSinceScan: 2 },
   { drugSlug: "salonpas-ae", storeSlug: "changchun", priceTwd: 125, daysSinceScan: 3 },
   { drugSlug: "salonpas-ae", storeSlug: "fuxing", priceTwd: 120, daysSinceScan: null },
+  { drugSlug: "salonpas-ae", storeSlug: "songde", priceTwd: 132, daysSinceScan: 0 },
 
   // 金十字酸痛貼布
   { drugSlug: "golden-cross-patch", storeSlug: "huimin", priceTwd: 115, daysSinceScan: 3 },
   { drugSlug: "golden-cross-patch", storeSlug: "anxintang", priceTwd: 118, daysSinceScan: 0 },
   { drugSlug: "golden-cross-patch", storeSlug: "changchun", priceTwd: 122, daysSinceScan: 1 },
+  { drugSlug: "golden-cross-patch", storeSlug: "jiancheng", priceTwd: 120, daysSinceScan: 0 },
 
   // 痠痛必貼 涼感貼布
   { drugSlug: "cool-relief-patch", storeSlug: "jiancheng", priceTwd: 99, daysSinceScan: 2 },
   { drugSlug: "cool-relief-patch", storeSlug: "anxintang", priceTwd: 105, daysSinceScan: 0 },
+  { drugSlug: "cool-relief-patch", storeSlug: "songde", priceTwd: 102, daysSinceScan: 0 },
 
   // 曼秀雷敦 AD 軟膏
   { drugSlug: "mentholatum-ad", storeSlug: "anxintang", priceTwd: 180, daysSinceScan: 0 },
   { drugSlug: "mentholatum-ad", storeSlug: "huimin", priceTwd: 185, daysSinceScan: 0 },
   { drugSlug: "mentholatum-ad", storeSlug: "changchun", priceTwd: 176, daysSinceScan: 4 },
+  { drugSlug: "mentholatum-ad", storeSlug: "songde", priceTwd: 178, daysSinceScan: 0 },
 
   // 肌樂 涼感噴劑
   { drugSlug: "jimu-spray", storeSlug: "jiancheng", priceTwd: 210, daysSinceScan: 0 },
@@ -248,18 +302,22 @@ const OFFERS: Offer[] = [
   // 綠油精
   { drugSlug: "green-oil", storeSlug: "huimin", priceTwd: 75, daysSinceScan: 0 },
   { drugSlug: "green-oil", storeSlug: "fuxing", priceTwd: 72, daysSinceScan: null },
+  { drugSlug: "green-oil", storeSlug: "songde", priceTwd: 73, daysSinceScan: 0 },
 
   // 白花油 5 號
   { drugSlug: "white-flower-oil", storeSlug: "huimin", priceTwd: 90, daysSinceScan: 2 },
   { drugSlug: "white-flower-oil", storeSlug: "changchun", priceTwd: 88, daysSinceScan: 5 },
+  { drugSlug: "white-flower-oil", storeSlug: "songde", priceTwd: 92, daysSinceScan: 1 },
 
   // 優碘軟膏
   { drugSlug: "povidone-iodine", storeSlug: "changchun", priceTwd: 65, daysSinceScan: 0 },
   { drugSlug: "povidone-iodine", storeSlug: "huimin", priceTwd: 68, daysSinceScan: 0 },
+  { drugSlug: "povidone-iodine", storeSlug: "songde", priceTwd: 66, daysSinceScan: 0 },
 
   // 護立康 人工淚液
   { drugSlug: "artificial-tears", storeSlug: "huimin", priceTwd: 120, daysSinceScan: 0 },
   { drugSlug: "artificial-tears", storeSlug: "anxintang", priceTwd: 115, daysSinceScan: 1 },
+  { drugSlug: "artificial-tears", storeSlug: "songde", priceTwd: 118, daysSinceScan: 0 },
 ];
 
 // ── 查詢 ────────────────────────────────────────────────────────────
@@ -364,13 +422,14 @@ export function alternativesFor(drugSlug: string): Alternative[] {
 }
 
 /** 首頁「附近現在有貨」：只收今日掃描確認的品項，一個藥只出現一次（取最近的店）。 */
-export function nearbyInStock(limit = 6): DrugRow[] {
+/** 「附近現在有貨」——只看使用者所在區，跨區的距離不可比。 */
+export function nearbyInStock(area: AreaSlug = DEFAULT_AREA, limit = 6): DrugRow[] {
   const seen = new Set<string>();
   return OFFERS.filter((o) => o.daysSinceScan !== null && o.daysSinceScan < 1)
     .flatMap((o) => {
       const drug = getDrug(o.drugSlug);
       const store = getStore(o.storeSlug);
-      if (!drug || !store) return [];
+      if (!drug || !store || store.area !== area) return [];
       return [{
         drug,
         store,
