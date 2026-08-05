@@ -1,4 +1,4 @@
-from pharmabox.places import _confident
+from pharmabox.places import PlacesAccessDenied, _confident
 from pharmabox.seed import haversine_m, sessions_to_hours, slugify
 
 
@@ -56,3 +56,27 @@ class TestPlaceMatchConfidence:
         """Google 回的第一筆常常是附近另一家店 —— 名稱地址都對不上就不能採用。"""
         c = {"displayName": {"text": "全家便利商店"}, "formattedAddress": "台北市信義區松高路11號"}
         assert _confident(c, "惠民藥局", "南京東路96號") is False
+
+
+class TestPlacesAccessDenied:
+    DISABLED = (
+        '{"error":{"code":403,"message":"Places API (New) has not been used in '
+        'project 686920181618 before or it is disabled. Enable it by visiting '
+        "https://console.developers.google.com/apis/api/places.googleapis.com/overview"
+        '?project=686920181618 then retry.","status":"PERMISSION_DENIED"}}'
+    )
+
+    def test_extracts_enable_url_from_google_message(self):
+        """403 是設定問題不是程式問題 —— 錯誤訊息要能直接照著做。"""
+        advice = PlacesAccessDenied(403, self.DISABLED).advice()
+        assert "console.developers.google.com" in advice
+        assert "686920181618" in advice
+        assert "不是金鑰壞掉" in advice
+
+    def test_invalid_key_gets_different_advice(self):
+        advice = PlacesAccessDenied(401, '{"error":{"message":"API key not valid"}}').advice()
+        assert "金鑰無效" in advice
+
+    def test_survives_non_json_payload(self):
+        advice = PlacesAccessDenied(403, "<html>502 Bad Gateway</html>").advice()
+        assert "502 Bad Gateway" in advice

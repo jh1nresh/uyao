@@ -56,6 +56,52 @@ class MissingApiKey(RuntimeError):
     pass
 
 
+class PlacesAccessDenied(RuntimeError):
+    """401/403 —— 金鑰無效、API 沒啟用、或帳單沒綁。
+
+    這種錯不會因為多打幾次就好，所以第一筆就停，不要把 166 家全打完。
+    Google 的訊息裡通常帶一條可直接點的啟用連結，原樣轉給使用者。
+    """
+
+    def __init__(self, status: int, payload: str):
+        self.status = status
+        self.payload = payload
+        super().__init__(f"HTTP {status}")
+
+    @property
+    def google_message(self) -> str:
+        try:
+            return json.loads(self.payload)["error"]["message"]
+        except (ValueError, KeyError, TypeError):
+            return self.payload.strip()
+
+    def advice(self) -> str:
+        msg = self.google_message
+        url = ""
+        for token in msg.replace("\n", " ").split():
+            if token.startswith("https://console"):
+                url = token.rstrip(".,")
+                break
+
+        lines = [f"Google 拒絕了這次請求（HTTP {self.status}）：", f"  {msg}", ""]
+        if "has not been used in project" in msg or "is disabled" in msg:
+            lines += [
+                "這是專案還沒啟用 Places API (New)，不是金鑰壞掉。要做的事：",
+                f"  1. 開 {url or 'https://console.cloud.google.com/apis/library/places.googleapis.com'}",
+                "  2. 按 Enable（注意是 Places API (New)，不是舊版 Places API）",
+                "  3. 確認該專案已綁定帳單帳戶",
+                "  4. 等一兩分鐘讓設定生效，再重跑",
+            ]
+        elif self.status == 401:
+            lines += ["金鑰無效或已撤銷。重新產一把再 export GOOGLE_MAPS_API_KEY。"]
+        else:
+            lines += [
+                "常見原因：金鑰設了 HTTP referer/IP 限制（命令列打不通），",
+                "或是金鑰的 API 限制清單裡沒有勾 Places API (New)。",
+            ]
+        return "\n".join(lines)
+
+
 @dataclass
 class PlaceResult:
     place_id: str
@@ -174,10 +220,10 @@ def enrich(
         try:
             res = lookup(p.name, p.full_address, p.address, key)
         except urllib.error.HTTPError as err:
-            detail = err.read().decode("utf-8", "replace")[:300]
-            print(f"  [{i}/{len(todo)}] {p.name} HTTP {err.code}: {detail}", file=sys.stderr)
+            payload = err.read().decode("utf-8", "replace")
             if err.code in (401, 403):  # 金鑰或授權問題，繼續打只是浪費
-                raise
+                raise PlacesAccessDenied(err.code, payload) from None
+            print(f"  [{i}/{len(todo)}] {p.name} HTTP {err.code}: {payload[:200]}", file=sys.stderr)
             continue
         except urllib.error.URLError as err:
             print(f"  [{i}/{len(todo)}] {p.name} 連線失敗: {err}", file=sys.stderr)
@@ -217,6 +263,10 @@ def main(argv: list[str] | None = None) -> int:
     except MissingApiKey as err:
         print(err, file=sys.stderr)
         return 2
+    except PlacesAccessDenied as err:
+        # 設定問題不是程式問題 —— 給可執行的下一步，不要吐 traceback。
+        print(err.advice(), file=sys.stderr)
+        return 3
 
     unsure = [k for k, v in got.items() if not v.confident]
     closed = [k for k, v in got.items() if v.business_status not in ("OPERATIONAL", "")]
