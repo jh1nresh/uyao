@@ -20,12 +20,13 @@ const STEPS = [
   { title: "到店取", body: "到店付款，由藥師當面交付 — 不做線上交易。" },
 ];
 
-export default function HomePage({
+export default async function HomePage({
   searchParams,
 }: {
-  searchParams: { area?: string };
+  searchParams: Promise<{ area?: string }>;
 }) {
-  const area = toAreaSlug(searchParams.area);
+  const { area: rawArea } = await searchParams;
+  const area = toAreaSlug(rawArea);
   const nearby = nearbyInStock(area);
 
   return (
