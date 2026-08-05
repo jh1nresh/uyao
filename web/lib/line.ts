@@ -48,39 +48,6 @@ export function verifySignature(rawBody: string, signature: string | null): bool
   return timingSafeEqual(got, expected);
 }
 
-// ── 綁定 ────────────────────────────────────────────────────────────
-//
-// userId → storeSlug。試點階段只有個位數藥局，用環境變數就夠，不值得為此
-// 生一套資料庫；Vercel 的檔案系統是唯讀的，寫檔也存不住。
-//
-//   LINE_STORE_BINDINGS={"Uxxxxxxxx":"惠民藥局"}
-//
-// 藥局在 LINE 傳店名 → 我們比對出唯一一家 → 把 userId 與店名記進 record
-// sink（會跳到你的通知）→ 你把它加進這個環境變數。半自動是刻意的：
-// 綁錯等於把某家藥局的預留單推給別人看。
-
-export function bindings(): Record<string, string> {
-  const raw = process.env.LINE_STORE_BINDINGS;
-  if (!raw) return {};
-  try {
-    const parsed = JSON.parse(raw) as unknown;
-    if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
-      return parsed as Record<string, string>;
-    }
-  } catch {
-    console.error("[line] LINE_STORE_BINDINGS 不是合法 JSON，當成沒有綁定");
-  }
-  return {};
-}
-
-export function storeForUser(userId: string): string | undefined {
-  return bindings()[userId];
-}
-
-export function userForStore(storeSlug: string): string | undefined {
-  return Object.entries(bindings()).find(([, slug]) => slug === storeSlug)?.[0];
-}
-
 // ── 送訊息 ──────────────────────────────────────────────────────────
 
 async function post(path: string, body: object): Promise<void> {
@@ -119,7 +86,7 @@ export interface ReservationNotice {
   drugSpec: string;
   priceTwd: number;
   storeName: string;
-  contactKind: "phone" | "line";
+  contactKind: "phone";
   contact: string;
   holdHours: number;
   /** 業務示範產生的預留 —— 訊息上必須標示，不能讓藥局以為是真單。 */
@@ -171,15 +138,13 @@ export function reservationFlex(n: ReservationNotice): object {
           { type: "text", text: n.drugSpec, size: "xs", color: MUTED },
           { type: "separator", margin: "md" },
           row("售價", `NT$${n.priceTwd}`),
-          row("聯絡", n.contactKind === "phone" ? n.contact : `LINE ${n.contact}`),
+          row("聯絡", n.contact),
           row("保留", `確認後 ${n.holdHours} 小時`),
           { type: "separator", margin: "md" },
           // 到店辨識靠這兩樣：消費者報取貨碼，藥師對尾號。
           {
             type: "text",
-            text: `到店核對：取貨碼 ${n.code} · 尾號 ${
-              n.contactKind === "phone" ? n.contact.slice(-3) : n.contact.slice(0, 4)
-            }`,
+            text: `到店核對：取貨碼 ${n.code} · 尾號 ${n.contact.slice(-3)}`,
             size: "xs",
             color: MUTED,
             wrap: true,

@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-import path from "node:path";
+
+import * as kv from "./kv";
 
 /**
  * 預留的可讀取儲存。
@@ -38,7 +38,7 @@ export interface StoredReservation {
   storeMapsUrl: string;
   storeHours: string;
   priceTwd: number;
-  contactKind: "phone" | "line";
+  contactKind: "phone";
   contact: string;
   status: ReservationStatus;
   createdAt: string;
@@ -54,80 +54,19 @@ export function newToken(): string {
 }
 
 /** 到店辨識用：只給尾三碼，不要在頁面上重印完整號碼。 */
-export function contactTail(r: Pick<StoredReservation, "contactKind" | "contact">): string {
-  return r.contactKind === "phone" ? r.contact.slice(-3) : r.contact.slice(0, 4);
-}
-
-// ── driver: Vercel KV / Upstash REST ────────────────────────────────
-
-function kvConfig(): { url: string; token: string } | null {
-  const url = process.env.KV_REST_API_URL;
-  const token = process.env.KV_REST_API_TOKEN;
-  return url && token ? { url, token } : null;
-}
-
-async function kvCommand(args: (string | number)[]): Promise<unknown> {
-  const cfg = kvConfig();
-  if (!cfg) throw new Error("KV 未設定");
-  const res = await fetch(cfg.url, {
-    method: "POST",
-    headers: {
-      authorization: `Bearer ${cfg.token}`,
-      "content-type": "application/json",
-    },
-    body: JSON.stringify(args),
-    cache: "no-store",
-    signal: AbortSignal.timeout(4000),
-  });
-  if (!res.ok) throw new Error(`KV ${res.status}`);
-  return ((await res.json()) as { result?: unknown }).result;
-}
-
-// ── driver: 本機檔案 ────────────────────────────────────────────────
-
-function filePath(key: string): string {
-  // key 裡只有 base64url 與 A-347 這種字元，但還是擋一下路徑穿越
-  const safe = key.replace(/[^A-Za-z0-9_-]/g, "_");
-  return path.join(process.cwd(), ".data", "reservations", `${safe}.json`);
-}
-
-async function fileSet(key: string, value: string): Promise<void> {
-  const p = filePath(key);
-  await mkdir(path.dirname(p), { recursive: true });
-  await writeFile(p, value, "utf8");
-}
-
-async function fileGet(key: string): Promise<string | null> {
-  try {
-    return await readFile(filePath(key), "utf8");
-  } catch {
-    return null;
-  }
+export function contactTail(r: Pick<StoredReservation, "contact">): string {
+  return r.contact.slice(-3);
 }
 
 // ── 對外 ────────────────────────────────────────────────────────────
 
-async function set(key: string, value: string): Promise<void> {
-  if (kvConfig()) {
-    // 保留 7 天就夠 —— 預留只有 4 小時效期，多留幾天是給人回頭查
-    await kvCommand(["SET", key, value, "EX", 7 * 24 * 3600]);
-    return;
-  }
-  await fileSet(key, value);
-}
+// 保留 7 天就夠 —— 預留只有 4 小時效期，多留幾天是給人回頭查
+const TTL = 7 * 24 * 3600;
 
-async function get(key: string): Promise<string | null> {
-  if (kvConfig()) {
-    const r = await kvCommand(["GET", key]);
-    return typeof r === "string" ? r : null;
-  }
-  return fileGet(key);
-}
+const set = (key: string, value: string) => kv.set(key, value, TTL);
+const get = (key: string) => kv.get(key);
 
-export function isStoreAvailable(): boolean {
-  // 線上沒有 KV 就等於沒有儲存（Vercel 檔案系統唯讀）
-  return Boolean(kvConfig()) || process.env.NODE_ENV !== "production";
-}
+export const isStoreAvailable = kv.isAvailable;
 
 export async function saveReservation(r: StoredReservation): Promise<void> {
   await set(`r:${r.token}`, JSON.stringify(r));

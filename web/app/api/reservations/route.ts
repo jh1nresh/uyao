@@ -5,7 +5,8 @@ import { NextResponse } from "next/server";
 import { getDrug, getStore, previewOffers, storesForDrug } from "@/lib/data";
 import { hoursSummary } from "@/lib/hours";
 import { stockBadge } from "@/lib/stock";
-import { isConfigured, push, reservationFlex, userForStore } from "@/lib/line";
+import { userForStore } from "@/lib/bindings";
+import { isConfigured, push, reservationFlex } from "@/lib/line";
 import { appendRecord } from "@/lib/record";
 import {
   newToken,
@@ -26,13 +27,17 @@ interface Body {
   demo?: unknown;
 }
 
-/** 手機 09xxxxxxxx（可含 - 或空白）或 LINE ID（4–20 碼英數底線句點）。 */
-function normalizeContact(raw: string): { kind: "phone" | "line"; value: string } | null {
-  const trimmed = raw.trim();
-  const digits = trimmed.replace(/[\s-]/g, "");
-  if (/^09\d{8}$/.test(digits)) return { kind: "phone", value: digits };
-  if (/^[A-Za-z0-9._]{4,20}$/.test(trimmed)) return { kind: "line", value: trimmed };
-  return null;
+/**
+ * 手機 09xxxxxxxx（可含 - 或空白）。
+ *
+ * 只收手機、不收 LINE ID，因為它同時扛兩件事：
+ * 1. 到店核對的尾號 —— LINE ID 沒有「尾號」可對，問「前四碼是什麼」
+ *    在櫃檯很怪，而且對方通常記不精確
+ * 2. 藥局要聯絡時的唯一管道（消費者端還沒接 LINE 推播）
+ */
+function normalizeContact(raw: string): { kind: "phone"; value: string } | null {
+  const digits = raw.trim().replace(/[\s-]/g, "");
+  return /^09\d{8}$/.test(digits) ? { kind: "phone", value: digits } : null;
 }
 
 function pickupCode(): string {
@@ -74,7 +79,7 @@ export async function POST(request: Request) {
   const contact = normalizeContact(rawContact);
   if (!contact) {
     return NextResponse.json(
-      { error: "請填手機（09 開頭 10 碼）或 LINE ID" },
+      { error: "請填手機號碼（09 開頭 10 碼）" },
       { status: 422 },
     );
   }
@@ -115,7 +120,7 @@ export async function POST(request: Request) {
 
   // 推給藥局。推不出去不能讓消費者的預留失敗 —— 那筆已經進 record sink，
   // 你還是看得到，只是要人工通知藥局。
-  const lineUser = userForStore(storeSlug);
+  const lineUser = await userForStore(storeSlug);
   if (lineUser && isConfigured()) {
     try {
       await push(lineUser, [

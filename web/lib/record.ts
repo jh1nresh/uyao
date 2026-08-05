@@ -1,6 +1,8 @@
 import { appendFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 
+import * as kv from "./kv";
+
 /**
  * 表單與需求訊號的唯一出口。
  *
@@ -13,14 +15,15 @@ import path from "node:path";
  * `vercel logs <url> --json | python3 -m pharmabox.demand --stdin` 撈回來。
  *
  * 目前實作的 sink：
+ *   kv        設了 KV_REST_API_* 就用。這是線上唯一存得住的地方。
  *   fs        本機 dev 寫 `.data/<kind>.jsonl`。線上必定失敗，這是預期的。
  *   webhook   設了 `RECORD_WEBHOOK_URL` 就送。任何吃 JSON POST 的端點都行
  *             （Slack / Discord / Zapier / n8n / 自架）。
  *             `PILOT_WEBHOOK_URL` 可單獨覆蓋藥局試點申請 —— 那是掉單代價
  *             最高的一種，通常要送到會跳通知的地方。
  *
- * 要加 KV / Postgres 就在 SINKS 多一個函式，其餘不用動。這裡沒有先寫
- * KV driver 是因為帳號上還沒有實例，寫了也驗不了。
+ * 要加 Postgres 就在 SINKS 多一個函式，其餘不用動。掃描流真的開始之後
+ * 就是加它的時機 —— 那份資料要 join 要 group by，不該塞進 KV。
  */
 export type RecordKind = "demand" | "pilot" | "reservations" | "line_bind";
 
@@ -78,7 +81,18 @@ async function toWebhook(kind: RecordKind, record: object): Promise<void> {
   if (!res.ok) throw new Error(`webhook ${res.status}`);
 }
 
+/**
+ * KV sink —— 線上唯一真正存得住的那個。
+ * fs 在 Vercel 必定失敗（唯讀），webhook 要另外設，所以在有 KV 之前
+ * 所有資料其實只活在會過期的 log 裡。
+ */
+async function toKv(kind: RecordKind, record: object): Promise<void> {
+  if (!kv.isAvailable()) throw new Error("KV 未設定");
+  await kv.append(`rec:${kind}`, JSON.stringify({ ...record, _at: new Date().toISOString() }));
+}
+
 const SINKS: Array<[string, (k: RecordKind, r: object) => Promise<void>]> = [
+  ["kv", toKv],
   ["fs", toFile],
   ["webhook", toWebhook],
 ];
