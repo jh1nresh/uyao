@@ -69,19 +69,44 @@ v1 沒有資料庫，落地成 `web/.data/reservations.jsonl`（已 gitignore）
 **`query` 存原話不做正規化** —— 同義詞／錯字／症狀對應是之後的事（那是這條鏈上
 唯一適合 LLM 的地方），把原始輸入丟掉就永遠補不回來。
 
-## ⚠️ 線上寫不進檔案
+## 資料落地（`lib/record.ts`）
 
-三個 endpoint 都走 `lib/record.ts` 落地成 jsonl，**但 Vercel 的 `/var/task` 是唯讀的** ——
-`mkdir` 直接 ENOENT，API 照樣回 200、畫面照樣顯示成功，**資料靜默遺失**。
+三個 endpoint 的資料都走這一個出口，送到**所有設定好的 sink**，全部失敗才退回 log。
 
-止血：寫檔失敗時把整筆印成單行 `UYAO_RECORD <kind> {...}`，可以撈回來：
+| sink | 何時作用 | 設定 |
+|---|---|---|
+| `fs` | 本機 dev 寫 `.data/<kind>.jsonl` | 無 |
+| `webhook` | 設了就送。任何吃 JSON POST 的端點 | `RECORD_WEBHOOK_URL` |
+| `log`（退路） | **前面全滅才觸發** | 無 |
+
+`PILOT_WEBHOOK_URL` 可以單獨覆蓋藥局試點申請 —— 那是掉單代價最高的一種，
+通常要送到會跳通知的地方。
+
+payload 一份三邊通吃：`text`（Slack）、`content`（Discord）、`record`（程式讀）。
+
+```bash
+# Vercel 上設好就會生效，不用改任何程式
+vercel env add RECORD_WEBHOOK_URL production
+vercel env add PILOT_WEBHOOK_URL production
+```
+
+### 為什麼要這樣
+
+**Vercel 的 `/var/task` 是唯讀的** —— 原本單純寫檔的版本在線上 `mkdir` 直接
+ENOENT，API 照樣回 200、畫面照樣顯示成功，**每一筆都靜默遺失**（生產環境
+runtime log 實測）。
+
+不變條件：**任何一筆都不會無聲消失。** sink 全滅時一定印出單行
+`UYAO_RECORD <kind> {...}`，可以撈回來：
 
 ```bash
 vercel logs https://uyao.vercel.app --json | python3 -m pharmabox.demand --stdin
 ```
 
-**log 保留期有限，這不是持久化。** 正式解是接上真正的儲存（KV / Postgres），
-或讓 `/api/pilot` 直接送 webhook 到看得到的地方 —— 藥局試點申請掉單的代價最高。
+⚠️ **log 保留期有限，那是最後防線不是儲存。** 沒設 webhook 就等於只有這道防線。
+
+要加 KV / Postgres：在 `SINKS` 多一個函式，其餘不用動。目前沒先寫是因為
+帳號上還沒有實例，寫了也驗不了。
 
 ## 字型
 
