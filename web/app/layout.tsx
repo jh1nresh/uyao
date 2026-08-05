@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { DemoBanner } from "@/components/DemoBanner";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,6 +16,10 @@ export const metadata: Metadata = {
     locale: "zh_TW",
     type: "website",
   },
+  // 全站 noindex — 目前是示範資料，藥局名稱/地址/電話都是虛構的，
+  // 帶著 Pharmacy JSON-LD 被 Google 索引會變成假的門市資訊。
+  // 接上真實藥局資料後移除這段（藥品頁本來就是 SEO 入口）。
+  robots: { index: false, follow: false },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -30,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         <div className="mx-auto min-h-screen max-w-[1200px] bg-white sm:border-x sm:border-line">
+          <DemoBanner />
           {children}
         </div>
       </body>
