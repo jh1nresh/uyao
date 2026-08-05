@@ -18,7 +18,7 @@ export function SearchInput({
       action="/search"
       role="search"
       className={`flex items-center gap-2 bg-white ${
-        lg ? "h-[50px] border-[1.5px] border-ink px-4" : "h-9 border border-line-strong px-3"
+        lg ? "h-[52px] border-[1.5px] border-ink px-4" : "h-11 border border-line-strong px-3 sm:h-9"
       } ${className}`}
     >
       <span aria-hidden className={lg ? "text-[17px] text-ink" : "text-sm text-muted-2"}>
@@ -36,14 +36,15 @@ export function SearchInput({
         placeholder={
           lg ? "輸入藥品名或症狀，如：痠痛貼布、曼秀雷敦" : "搜尋藥品"
         }
-        className={`min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-muted-2 ${
+        // h-full：讓整個框都是點擊區，不是只有文字那 20px
+        className={`h-full min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-muted-2 ${
           lg ? "text-[15px]" : "text-[13px]"
         }`}
       />
       {lg && (
         <button
           type="submit"
-          className="flex-none bg-green px-[18px] py-[7px] text-[13px] font-bold text-white hover:bg-green-hover"
+          className="h-11 flex-none bg-green px-[18px] text-[13px] font-bold text-white hover:bg-green-hover"
         >
           搜尋
         </button>

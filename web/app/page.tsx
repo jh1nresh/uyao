@@ -50,7 +50,7 @@ export default async function HomePage({
             <Link
               key={c.slug}
               href={`/category/${c.slug}`}
-              className="flex items-baseline justify-center gap-2 border border-line-strong px-2 py-2.5 text-xs font-medium text-ink no-underline hover:border-green hover:text-green sm:px-5 sm:text-[13px]"
+              className="flex min-h-11 items-center justify-center gap-2 border border-line-strong px-2 text-xs font-medium text-ink no-underline hover:border-green hover:text-green sm:px-5 sm:text-[13px]"
             >
               {c.name}
               <span className="num text-[11px] text-muted-2">

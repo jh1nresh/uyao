@@ -8,7 +8,7 @@ import type { AreaSlug } from "@/lib/types";
 type Kind = "catalog_miss" | "inventory_miss";
 
 const INPUT =
-  "h-9 min-w-0 border border-line-strong bg-white px-3 text-[13px] text-ink outline-none placeholder:text-muted-2 focus:border-green";
+  "h-11 min-w-0 border border-line-strong bg-white px-3 text-[13px] text-ink outline-none placeholder:text-muted-2 focus:border-green sm:h-9";
 
 /** 從網址帶目前的服務區；沒有就用預設。 */
 function areaFromUrl(): AreaSlug {
@@ -135,7 +135,7 @@ export function NotifyMe({
         <button
           type="submit"
           disabled={pending}
-          className="h-9 flex-none bg-green px-[18px] text-[13px] font-bold text-white hover:bg-green-hover disabled:opacity-60"
+          className="h-11 flex-none bg-green px-[18px] text-[13px] font-bold text-white hover:bg-green-hover disabled:opacity-60 sm:h-9"
         >
           {pending ? "送出中…" : "通知我"}
         </button>
