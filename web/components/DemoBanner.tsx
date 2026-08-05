@@ -10,7 +10,7 @@
  */
 export function DemoBanner() {
   return (
-    <div className="border-b border-line bg-surface px-4 py-1.5 text-[11px] leading-[1.6] text-muted sm:px-7">
+    <div className="border-b border-line bg-surface px-4 py-1.5 text-[13px] leading-[1.6] text-muted sm:px-7 xl:px-12 2xl:px-16">
       <b className="font-bold text-ink">試營運</b> · 藥局基本資料來自食藥署與健保署開放資料；
       即時庫存與價格尚未開始 — 前往門市前請先電話確認。
     </div>

@@ -111,18 +111,18 @@ export function ReserveSheet({
           <>
             <div className="mx-auto -mt-1.5 h-1 w-9 bg-line-strong sm:hidden" />
             <div className="flex flex-wrap items-baseline gap-2">
-              <h2 className="text-[17px] font-black">預留 · {target.store.name}</h2>
-              <p className="text-[11px] text-muted">
+              <h2 className="text-[18px] font-black">預留 · {target.store.name}</h2>
+              <p className="text-[13px] text-muted">
                 {target.store.district} · {hoursSummary(target.store)}
               </p>
             </div>
 
-            <div className="flex items-center gap-2.5 border border-line px-3.5 py-2.5 text-[13px]">
+            <div className="flex items-center gap-2.5 border border-line px-3.5 py-2.5 text-[15px]">
               <div className="min-w-0 flex-1">
                 <div className="font-medium">
                   {target.drug.name} {target.drug.spec}
                 </div>
-                <StockBadge badge={target.badge} className="mt-0.5 text-[11px]" />
+                <StockBadge badge={target.badge} className="mt-0.5 text-[13px]" />
               </div>
               <div className="num font-semibold">{formatPrice(target.priceTwd)}</div>
             </div>
@@ -142,18 +142,18 @@ export function ReserveSheet({
                 className="h-[46px] border-[1.5px] border-ink px-3.5 text-sm outline-none placeholder:text-muted-2"
               />
               {error && (
-                <p role="alert" className="text-[11.5px] font-medium text-ink">
+                <p role="alert" className="text-[13px] font-medium text-ink">
                   {error}
                 </p>
               )}
-              <p className="mt-1 text-[11.5px] leading-[1.6] text-muted">
+              <p className="mt-1 text-[13px] leading-[1.6] text-muted">
                 藥局按下確認後為你保留 <b className="text-ink">4 小時</b>
                 ，到店付款取貨。兩次未取將暫停預留權限。
               </p>
               <button
                 type="submit"
                 disabled={pending || contact.trim() === ""}
-                className="mt-1.5 h-12 bg-green text-[15px] font-bold tracking-[.1em] text-white hover:bg-green-hover disabled:bg-line-strong disabled:text-white"
+                className="mt-1.5 h-12 bg-green text-[16px] font-bold tracking-[.1em] text-white hover:bg-green-hover disabled:bg-line-strong disabled:text-white"
               >
                 {pending ? "送出中…" : "送出預留"}
               </button>
@@ -183,22 +183,22 @@ function SuccessBody({
         >
           ✓
         </div>
-        <h2 className="text-[17px] font-black">預留已送出</h2>
+        <h2 className="text-[18px] font-black">預留已送出</h2>
       </div>
-      <p className="-mt-1.5 text-[12.5px] leading-[1.6] text-muted">
+      <p className="-mt-1.5 text-[14px] leading-[1.6] text-muted">
         等{target.store.name}確認（通常 10 分鐘內）— 確認後保留 {success.holdHours}{" "}
         小時，會用 LINE 通知你。
       </p>
 
       <div className="flex flex-col items-center gap-1 border border-line bg-surface p-4">
-        <div className="text-[11px] font-medium text-muted-2">取貨碼</div>
+        <div className="text-[13px] font-medium text-muted-2">取貨碼</div>
         <div className="num text-[34px] font-semibold tracking-[.12em]">{success.code}</div>
         <div className="text-center text-xs text-ink-2">
           {target.drug.name} · <span className="num">{formatPrice(target.priceTwd)}</span> 到店付款
         </div>
       </div>
 
-      <div className="border border-line px-3.5 py-3 text-[12.5px] leading-[1.6]">
+      <div className="border border-line px-3.5 py-3 text-[14px] leading-[1.6]">
         <div className="font-bold">{target.store.name}</div>
         <div className="text-muted">
           {target.store.address}
@@ -212,7 +212,7 @@ function SuccessBody({
         // 藥局確認後回來看狀態就會變。
         <a
           href={`/r/${success.token}`}
-          className="border border-line-strong px-3.5 py-2.5 text-center text-[12.5px] font-medium text-ink no-underline hover:border-green hover:text-green"
+          className="border border-line-strong px-3.5 py-2.5 text-center text-[14px] font-medium text-ink no-underline hover:border-green hover:text-green"
         >
           開啟取貨憑證（可截圖保存）→
         </a>

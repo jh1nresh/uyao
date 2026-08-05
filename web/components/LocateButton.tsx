@@ -34,7 +34,7 @@ export function LocateButton({ area }: { area: AreaSlug }) {
       .sort((a, b) => a.away - b.away)[0];
 
     return (
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11.5px]">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px]">
         <span className="font-medium text-green">
           <span aria-hidden>◉</span> 已定位
         </span>
@@ -58,7 +58,7 @@ export function LocateButton({ area }: { area: AreaSlug }) {
   }
 
   return (
-    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11.5px]">
+    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[13px]">
       <button
         type="button"
         onClick={request}

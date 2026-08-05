@@ -8,7 +8,7 @@ import type { AreaSlug } from "@/lib/types";
 type Kind = "catalog_miss" | "inventory_miss";
 
 const INPUT =
-  "h-11 min-w-0 border border-line-strong bg-white px-3 text-[13px] text-ink outline-none placeholder:text-muted-2 focus:border-green sm:h-9";
+  "h-11 min-w-0 border border-line-strong bg-white px-3 text-[15px] text-ink outline-none placeholder:text-muted-2 focus:border-green sm:h-9";
 
 /** 從網址帶目前的服務區；沒有就用預設。 */
 function areaFromUrl(): AreaSlug {
@@ -88,7 +88,7 @@ export function NotifyMe({
 
   if (done) {
     return (
-      <div className="mt-2.5 border border-green-tint-line bg-green-tint px-4 py-3 text-[12.5px] leading-[1.7] text-ink-2">
+      <div className="mt-2.5 border border-green-tint-line bg-green-tint px-4 py-3 text-[14px] leading-[1.7] text-ink-2">
         <b className="font-bold text-ink">記下來了</b> —— 這一區有藥局裝上盒子、
         而且{what}有貨的時候，我們會通知你。
       </div>
@@ -97,10 +97,10 @@ export function NotifyMe({
 
   return (
     <form onSubmit={submit} className="mt-2.5 border border-line px-4 py-3.5">
-      <p className="text-[12.5px] font-bold text-ink">有貨的時候通知我</p>
+      <p className="text-[14px] font-bold text-ink">有貨的時候通知我</p>
       {/* 沒有庫存流可以觸發通知，所以不能寫「有貨就通知」——
           只能承諾「有藥局裝上盒子而且有貨時」。 */}
-      <p className="mt-0.5 text-[11.5px] leading-[1.6] text-muted">
+      <p className="mt-0.5 text-[13px] leading-[1.6] text-muted">
         留個聯絡方式。這一區有藥局裝上盒子、而且{what}有貨時第一時間通知你。
       </p>
 
@@ -135,14 +135,14 @@ export function NotifyMe({
         <button
           type="submit"
           disabled={pending}
-          className="h-11 flex-none bg-green px-[18px] text-[13px] font-bold text-white hover:bg-green-hover disabled:opacity-60 sm:h-9"
+          className="h-11 flex-none bg-green px-[18px] text-[15px] font-bold text-white hover:bg-green-hover disabled:opacity-60 sm:h-9"
         >
           {pending ? "送出中…" : "通知我"}
         </button>
       </div>
 
       {error && (
-        <p role="alert" className="mt-2 text-[11.5px] text-ink">
+        <p role="alert" className="mt-2 text-[13px] text-ink">
           {error}
         </p>
       )}
