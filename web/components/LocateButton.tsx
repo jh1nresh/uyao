@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 import { useLocation } from "./LocationProvider";
 import { AREAS } from "@/lib/data";
 import { distanceToArea } from "@/lib/geo";
@@ -24,16 +26,30 @@ export function LocateButton({ area }: { area: AreaSlug }) {
   if (position) {
     const away = distanceToArea(area, position);
     const areaName = AREAS.find((a) => a.slug === area)?.shortName ?? "";
-    const farAway = away > 3000;
+
+    // 離另一區比較近就直接給一鍵切換 —— 比警告有用。
+    const nearer = AREAS.filter((a) => a.slug !== area)
+      .map((a) => ({ area: a, away: distanceToArea(a.slug, position) }))
+      .filter((c) => c.away < away)
+      .sort((a, b) => a.away - b.away)[0];
+
     return (
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-[11.5px]">
         <span className="font-medium text-green">
           <span aria-hidden>◉</span> 已定位
         </span>
-        <span className={farAway ? "text-ink" : "text-muted"}>
+        {/* 距離就是精確的 —— 不加「僅供參考」這種會讓人不信任正確資料的字眼。
+            真正的限制是涵蓋範圍只有兩區，該講的是那個。 */}
+        <span className="text-muted">
           距{areaName}中心 <span className="num">{formatDistance(away)}</span>
-          {farAway && "　（這一區可能不是你的生活圈，距離僅供參考）"}
         </span>
+        {nearer && (
+          <Link href={`/?area=${nearer.area.slug}`} className="font-medium text-green">
+            {nearer.area.shortName}離你更近（<span className="num">
+              {formatDistance(nearer.away)}
+            </span>）→
+          </Link>
+        )}
         <button type="button" onClick={clear} className="text-muted-2 underline">
           關閉定位
         </button>
