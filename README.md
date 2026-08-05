@@ -15,9 +15,15 @@ SQLite spool → 斷網不掉單的批次上傳。
 
 掃描器插筆電就是鍵盤，直接對 CLI 掃（或用 echo 模擬；`|` 代表 GS 分隔符）：
 
+一次性把套件裝成可匯入（之後所有指令都不用 `PYTHONPATH=src` 前綴）：
+
 ```bash
-PYTHONPATH=src python3 -m pharmabox.dev_cli
-echo '(01)04712345678901(17)271031(10)B7' | PYTHONPATH=src python3 -m pharmabox.dev_cli
+python3 -m pip install -e .
+```
+
+```bash
+python3 -m pharmabox.dev_cli
+echo '(01)04712345678901(17)271031(10)B7' | python3 -m pharmabox.dev_cli
 python3 -m pytest
 ```
 
@@ -50,17 +56,17 @@ python3 -m pytest
 [藥局基本資料](https://data.gov.tw/dataset/6134) 開放資料集 —— 不爬網頁。
 
 ```bash
-PYTHONPATH=src python3 -m pharmabox.prospects -o data/prospects.csv
-PYTHONPATH=src python3 -m pharmabox.prospects --districts 大安區,松山區 --refresh
+python3 -m pharmabox.prospects -o data/prospects.csv
+python3 -m pharmabox.prospects --districts 大安區,松山區 --refresh
 ```
 
 ### 匯入消費端
 
 ```bash
-PYTHONPATH=src python3 -m pharmabox.seed          # → web/lib/stores.generated.json
+python3 -m pharmabox.seed          # → web/lib/stores.generated.json
 export GOOGLE_MAPS_API_KEY=...                    # 選配：補座標與營業時間
-PYTHONPATH=src python3 -m pharmabox.places
-PYTHONPATH=src python3 -m pharmabox.seed          # 再跑一次就吃得到座標
+python3 -m pharmabox.places
+python3 -m pharmabox.seed          # 再跑一次就吃得到座標
 ```
 
 沒有金鑰也產得出 seed，只是沒有座標（距離與地圖不顯示），營業時段退回
