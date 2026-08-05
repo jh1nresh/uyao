@@ -11,12 +11,13 @@ export const metadata: Metadata = {
   robots: { index: false, follow: true },
 };
 
-export default function SearchPage({
+export default async function SearchPage({
   searchParams,
 }: {
-  searchParams: { q?: string };
+  searchParams: Promise<{ q?: string }>;
 }) {
-  const q = (searchParams.q ?? "").trim();
+  const { q: rawQ } = await searchParams;
+  const q = (rawQ ?? "").trim();
   const results = searchDrugs(q)
     .map((d) => drugSummary(d.slug))
     .filter((s): s is NonNullable<typeof s> => s !== undefined);
