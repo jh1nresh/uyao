@@ -8,7 +8,7 @@ Next.js 16 App Router + Tailwind，沒有 UI 元件庫、沒有資料庫。
 ```bash
 npm install
 npm run dev        # http://localhost:3100
-npm run build      # 25 頁，其中 drug/store/category 是 SSG
+npm run build      # drug/store/category 是 SSG；首頁與搜尋依 ?area= 走 dynamic
 npm run typecheck
 ```
 
@@ -16,7 +16,7 @@ npm run typecheck
 
 | 路由 | 對應設計 | 說明 |
 |---|---|---|
-| `/` | 1b / M1 | 搜尋框 + 品類入口 + 附近現在有貨 |
+| `/` | 1b / M1 | 搜尋框 + 品類入口 + 附近現在有貨（依 `?area=` 過濾，預設中山區）|
 | `/drug/[slug]` | 1a / M2 | 核心單位、SEO 入口。附近藥局 rows（列表 ⇄ 地圖）+ 同成分替代品 |
 | `/store/[slug]` | 1c / M5 | 藥局頁（NAP + 有貨商品 grid），帶 `Pharmacy` JSON-LD — 對藥局的贈品 |
 | `/search?q=` | — | 搜尋結果，`noindex`（SEO 入口是藥品頁，不做內容農場） |
@@ -85,7 +85,9 @@ python3 scripts/subset-fonts.py
 
 ## 已知限制
 
-- 資料是 fixture，`USER_AREA` 寫死台北市大安區，沒有真的定位
+- 資料是 fixture，沒有真的定位：服務區固定中山區／信義區兩選一（`?area=`），
+  距離以各區中心點估算，所以**跨區的距離不可互相比較** —— 會同時出現兩區藥局的
+  地方（藥品頁、搜尋結果）都標了行政區
 - 地圖是示意圖（CSS 網格 + `Store.mapPos` 百分比），正式版接圖資
 - 沒有會員系統；預留只留手機或 LINE ID
 - 字型 subset 的字符集綁在原始碼上，改文案要重跑 `scripts/subset-fonts.py`
