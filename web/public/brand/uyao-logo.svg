@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 192" role="img" aria-labelledby="title desc">
+  <title id="title">Uyao</title>
+  <desc id="desc">The Uyao green U and Y mark with a friendly custom wordmark.</desc>
+
+  <path fill="#0B7A3E" d="M24 24h40v64q0 8 7 15l25 25v40H24V24Z"/>
+  <path fill="#0B7A3E" d="m112 128 32-32h24v72h-56v-40Z"/>
+  <path fill="#0B7A3E" d="m100 100 48-48 16 16-48 48-16-16Z"/>
+
+  <g fill="none" stroke="#1A2420" stroke-width="18" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M226 52v48c0 25 13 38 34 38s34-13 34-38V52"/>
+    <path d="m326 78 24 48 24-48m-24 48c0 22-8 32-24 32"/>
+    <circle cx="422" cy="108" r="29"/>
+    <path d="M451 79v58"/>
+    <circle cx="519" cy="108" r="29"/>
+  </g>
+</svg>
