@@ -52,26 +52,43 @@ def to_halfwidth(s: str) -> str:
     return s
 
 
+# 門牌裡會接數字的單位。只在這些字前面轉換，才不會把「三重」「十分」
+# 這種地名裡的國字也一起改掉。
+_ADDRESS_UNITS = "號巷弄段樓之"
+
+
 def cn_number_to_arabic(s: str) -> str:
-    """「二六七號」→「267號」、「三十二號」→「32號」。
+    """「二六七號」→「267號」、「八十二巷五號」→「82巷5號」。
 
     地址門牌在兩份資料裡一份用國字一份用阿拉伯數字，不轉就對不起來。
+    單位不只「號」—— 巷、弄、段、樓、之 都會接數字，漏掉任何一個就會
+    讓「虎林街八十二巷五號」對不上「虎林街82巷5號」。
     """
 
-    def rep(m: re.Match[str]) -> str:
-        t = m.group(0)[:-1]
-        if "十" in t:
-            head, _, tail = t.partition("十")
-            value = (_CN_DIGITS.index(head) if head else 1) * 10
-            value += _CN_DIGITS.index(tail) if tail else 0
-        else:
-            try:
-                value = int("".join(str(_CN_DIGITS.index(c)) for c in t))
-            except ValueError:
-                return m.group(0)
-        return f"{value}號"
+    def digit(c: str) -> int:
+        return int(c) if c.isdigit() else _CN_DIGITS.index(c)
 
-    return re.sub(r"[〇一二三四五六七八九十]+號", rep, s)
+    def rep(m: re.Match[str]) -> str:
+        t = m.group(0).replace("零", "〇")
+        # 至少要有一個國字數字才動手。純阿拉伯的「308號」原樣放過 ——
+        # 一律轉換會把中間的 0 拆壞。
+        if not any(c in _CN_DIGITS for c in t):
+            return m.group(0)
+        try:
+            if "十" in t:
+                head, _, tail = t.partition("十")
+                value = (digit(head) if head else 1) * 10 + (digit(tail) if tail else 0)
+            else:
+                value = int("".join(str(digit(c)) for c in t))
+        except (ValueError, IndexError):
+            return m.group(0)
+        return str(value)
+
+    # 阿拉伯數字也納入同一串：「五0八」這種國字混阿拉伯零的寫法真的存在
+    # （忠孝東路五段五0八之四號）。但只有整串含國字時才會被轉換。
+    return re.sub(
+        rf"[〇零0-9一二三四五六七八九十]+(?=[{_ADDRESS_UNITS}])", rep, s
+    )
 
 
 def normalize_address(s: str) -> str:
@@ -79,8 +96,10 @@ def normalize_address(s: str) -> str:
 
     差異來源：全形數字、台/臺、樓層與括號補述、空白。
     """
-    s = to_halfwidth(cn_number_to_arabic(s.strip()))
-    s = s.replace("台", "臺")
+    # 先轉半形再處理國字：全形「０」也要能併進國字數字串裡。
+    s = cn_number_to_arabic(to_halfwidth(s.strip()))
+    # 「68之3號」與「68-3號」是同一個門牌，兩份資料各寫各的。
+    s = s.replace("台", "臺").replace("之", "-").replace("–", "-").replace("‑", "-")
     s = re.sub(r"[(（][^)）]*[)）]", "", s)
     # 樓層兩種寫法都要剝：「307號1樓」與「二六七號一樓」都出現在真實資料裡。
     # cn_number_to_arabic 只轉「N號」不轉「N樓」，所以這裡得吃國字。

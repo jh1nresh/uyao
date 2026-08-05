@@ -56,6 +56,51 @@ def haversine_m(a: tuple[float, float], b: tuple[float, float]) -> int:
     return round(2 * 6371000 * asin(sqrt(h)))
 
 
+def match_score(place: dict, name: str, full_address: str) -> int:
+    """這筆 Google 結果有多像同一家店。0 = 不採用。
+
+    分數用來解決「兩家藥局搶同一個 Google Place」：實測 Google 常把小店
+    配到附近較有名的那家，例如「沛久藥局」被配到「可康藥局」。這時分數高
+    的那家留著，另一家退回沒有座標 —— 全部丟掉的話會連對的那家一起犧牲。
+    """
+    got_name = place.get("display_name", "")
+    if not got_name:
+        return 0
+
+    got_addr = nhi_mod.normalize_address(place.get("formatted_address", ""))
+    want_addr = nhi_mod.normalize_address(full_address)
+    street = want_addr.split("區")[-1]
+    addr_ok = bool(street) and street in got_addr
+    name_ok = name in got_name or got_name in name
+
+    if name_ok and addr_ok:
+        return 3
+    if name_ok:
+        return 2
+    # 只有門牌對上時要再確認「是不是藥局」：同一個門牌可能有診所、醫美、
+    # 事務所。實測「佑華藥局」被配到同址的「新佑泉診所」。
+    if addr_ok and any(k in got_name for k in ("藥局", "藥房", "藥師", "藥妝")):
+        return 1
+    return 0
+
+
+def resolve_contested(claims: dict[str, list[tuple[str, int]]]) -> set[str]:
+    """回傳「該放棄這個 place」的店家識別碼集合。
+
+    每個 place_id 只留分數最高的那一家；同分代表分不出來，全部放棄。
+    """
+    losers: set[str] = set()
+    for holders in claims.values():
+        if len(holders) < 2:
+            continue
+        best = max(score for _, score in holders)
+        winners = [ident for ident, score in holders if score == best]
+        for ident, _ in holders:
+            if len(winners) > 1 or ident not in winners:
+                losers.add(ident)
+    return losers
+
+
 def slugify(name: str) -> str:
     """中文店名直接當 slug。
 
@@ -108,9 +153,24 @@ def build(
             data = json.loads(f.read_text(encoding="utf-8"))
             places[data.get("query", "")] = data
 
+    # 先算每家的比對分數，再解決「同一個 place_id 被多家搶」。
+    scores: dict[str, int] = {}
+    claims: dict[str, list[tuple[str, int]]] = {}
+    for p in picked:
+        ident = f"{p.name} {p.full_address}"
+        data = places.get(ident)
+        if not data:
+            continue
+        score = match_score(data, p.name, p.full_address)
+        scores[ident] = score
+        if score > 0 and data.get("place_id"):
+            claims.setdefault(data["place_id"], []).append((ident, score))
+    losers = resolve_contested(claims)
+
     stats = {
         "total": len(picked), "nhi_matched": 0, "with_coords": 0,
         "nhi_terminated": 0, "not_operational": 0, "slug_collisions": 0,
+        "place_rejected": 0,
     }
     seen: dict[str, int] = {}
     out: list[dict[str, Any]] = []
@@ -123,7 +183,14 @@ def build(
             if record.is_terminated:
                 stats["nhi_terminated"] += 1
 
-        place = places.get(f"{p.name} {p.full_address}")
+        ident = f"{p.name} {p.full_address}"
+        place = places.get(ident)
+        # 比對強度在這裡重算，不採用 cache 裡的旗標 —— 改進判斷準則不該
+        # 需要重打一次付費 API。
+        if place and (scores.get(ident, 0) == 0 or ident in losers):
+            stats["place_rejected"] += 1
+            place = None
+
         if place:
             if place.get("lat"):
                 stats["with_coords"] += 1
@@ -145,10 +212,15 @@ def build(
         hours: list[dict[str, str]] = []
         hours_source = "none"
         if place and place.get("weekday_descriptions"):
-            hours = [
-                {"label": d.split("：")[0].split(": ")[0], "hours": d.split("：", 1)[-1].split(": ", 1)[-1]}
-                for d in place["weekday_descriptions"]
-            ]
+            # Google 給「星期一: 09:00 – 12:00, ...」，標籤統一成「週一」
+            # 跟健保來源一致，時間裡多餘的空白也收掉免得版面撐開。
+            hours = []
+            for d in place["weekday_descriptions"]:
+                label, _, value = d.partition("：") if "：" in d else d.partition(": ")
+                hours.append({
+                    "label": label.replace("星期", "週").strip(),
+                    "hours": value.strip().replace(" – ", "–").replace(", ", "、"),
+                })
             hours_source = "google"
         elif record and record.sessions:
             hours = sessions_to_hours(record.sessions)
@@ -176,7 +248,6 @@ def build(
             "distanceM": distance,
             "placeId": place.get("place_id") if place else None,
             "businessStatus": place.get("business_status") if place else None,
-            "placeMatchConfident": place.get("confident") if place else None,
             "mapsUrl": (place or {}).get("maps_uri")
                 or f"https://www.google.com/maps/search/?api=1&query={p.name}+{p.full_address}",
             "hours": hours,
@@ -219,6 +290,8 @@ def main(argv: list[str] | None = None) -> int:
     print(f"藥局 {stats['total']} 家 → {out}")
     print(f"  健保資料命中　{stats['nhi_matched']}（拿到醫事機構代碼與看診時段）")
     print(f"  有座標　　　　{stats['with_coords']}" + ("" if stats["with_coords"] else "　← 跑 pharmabox.places 補"))
+    if stats["place_rejected"]:
+        print(f"  Google 比對不符　{stats['place_rejected']}　已丟棄該筆（座標會指到別家店）")
     print(f"  合約已終止　　{stats['nhi_terminated']}　需人工確認是否仍營業")
     if stats["not_operational"]:
         print(f"  Google 標非營業中　{stats['not_operational']}")
