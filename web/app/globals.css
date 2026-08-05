@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: "Noto Sans TC", -apple-system, BlinkMacSystemFont, "PingFang TC",
+    "Microsoft JhengHei", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+html {
+  background: #eef1ed;
+}
+
+body {
+  background: #fff;
+  color: #1a2420;
+  -webkit-font-smoothing: antialiased;
+  font-variant-numeric: tabular-nums;
+}
+
+/* 數據欄位（價格/距離/效期）一律等寬 */
+.num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Motion: 幾乎沒有 — 列表 cross-fade 120ms，僅此 */
+@keyframes dc-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.crossfade {
+  animation: dc-fade-in 120ms ease-out;
+}
+
+@keyframes dc-sheet-up {
+  from {
+    transform: translateY(16px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.sheet-in {
+  animation: dc-sheet-up 140ms ease-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crossfade,
+  .sheet-in {
+    animation: none;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid #0b7a3e;
+  outline-offset: 1px;
+}

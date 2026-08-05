@@ -40,6 +40,14 @@ python3 -m pytest
 | `daemon.py` | Pi 主程式（evdev grab → 全 pipeline） |
 | `dev_cli.py` | stdin 模擬掃描器，Mac 上開發整條 pipeline |
 
+## 消費端 Web
+
+盒子掃出來的庫存最後長成什麼樣子：`web/`（Next.js 14，`specs/web-marketplace.md` 的 v1 實作）。
+
+```bash
+cd web && npm install && npm run dev   # http://localhost:3100
+```
+
 ## 已知限制 / 待驗證
 
 - 掃描器需設定為 keyboard mode 且輸出 GS 分隔符（多數 2D 槍預設 Ctrl+]，各廠牌要驗）
