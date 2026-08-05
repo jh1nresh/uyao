@@ -122,6 +122,8 @@ export interface ReservationNotice {
   contactKind: "phone" | "line";
   contact: string;
   holdHours: number;
+  /** 業務示範產生的預留 —— 訊息上必須標示，不能讓藥局以為是真單。 */
+  demo?: boolean;
 }
 
 const INK = "#1A2420";
@@ -147,7 +149,7 @@ function row(label: string, value: string): object {
 export function reservationFlex(n: ReservationNotice): object {
   return {
     type: "flex",
-    altText: `預留 ${n.code}：${n.drugName}`,
+    altText: `${n.demo ? "【示範】" : ""}預留 ${n.code}：${n.drugName}`,
     contents: {
       type: "bubble",
       header: {
@@ -156,7 +158,7 @@ export function reservationFlex(n: ReservationNotice): object {
         paddingAll: "12px",
         backgroundColor: GREEN,
         contents: [
-          { type: "text", text: "新的預留", color: "#FFFFFF", weight: "bold", size: "sm" },
+          { type: "text", text: n.demo ? "新的預留（示範）" : "新的預留", color: "#FFFFFF", weight: "bold", size: "sm" },
           { type: "text", text: n.code, color: "#FFFFFF", weight: "bold", size: "xxl" },
         ],
       },
