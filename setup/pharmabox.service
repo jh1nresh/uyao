@@ -1,0 +1,15 @@
+[Unit]
+Description=PharmaBox scanner passthrough daemon
+After=network-online.target
+
+[Service]
+ExecStartPre=/opt/pharmabox/setup/gadget-setup.sh
+ExecStart=/usr/bin/python3 -m pharmabox.daemon
+Environment=PYTHONPATH=/opt/pharmabox/src
+Environment=PHARMABOX_HIDG=/dev/hidg0
+EnvironmentFile=-/etc/pharmabox.env
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
