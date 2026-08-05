@@ -4,3 +4,6 @@ next-env.d.ts
 tsconfig.tsbuildinfo
 .data
 .vercel
+
+# subset 用的 12MB 來源字型快取；產出的 app/fonts/ 要進版控
+.font-cache

@@ -1,7 +1,29 @@
 import type { Metadata } from "next";
+import { IBM_Plex_Mono } from "next/font/google";
+import localFont from "next/font/local";
 
 import { DemoBanner } from "@/components/DemoBanner";
 import "./globals.css";
+
+/**
+ * 自架的 Noto Sans TC subset（見 scripts/subset-fonts.py）。
+ * 走 Google Fonts <link> 的話，繁中字型按 unicode-range 切成上百塊，
+ * 會拉進 430 個 @font-face、約 134KB gzip 的 render-blocking CSS。
+ * 只包站上用到的字之後剩一個 @font-face —— 但改文案要重跑 subset。
+ */
+const notoSansTC = localFont({
+  src: "./fonts/noto-sans-tc-var.woff2",
+  weight: "100 900",
+  variable: "--font-noto-sans-tc",
+  display: "swap",
+});
+
+const plexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["500", "600"],
+  variable: "--font-plex-mono",
+  display: "swap",
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://uyao.tw"),
@@ -24,15 +46,10 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="zh-Hant-TW">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500;600&display=swap"
-          rel="stylesheet"
-        />
-      </head>
+    <html
+      lang="zh-Hant-TW"
+      className={`${notoSansTC.variable} ${plexMono.variable}`}
+    >
       <body>
         <div className="mx-auto min-h-screen max-w-[1200px] bg-white sm:border-x sm:border-line">
           <DemoBanner />
