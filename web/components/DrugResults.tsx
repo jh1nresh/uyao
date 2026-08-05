@@ -1,21 +1,32 @@
 import Link from "next/link";
 
+import { NotifyMe } from "./NotifyMe";
 import { StockBadge } from "./StockBadge";
 import type { DrugSummary } from "@/lib/data";
 import { getArea } from "@/lib/data";
 import { formatDistance, formatFromPrice } from "@/lib/format";
 
 /** 搜尋結果 / 品類列表共用的資料密表格。 */
-export function DrugResults({ results }: { results: DrugSummary[] }) {
+export function DrugResults({
+  results,
+  query = "",
+}: {
+  results: DrugSummary[];
+  /** 原始查詢字串。空結果時要送進需求捕捉，所以不能只傳結果。 */
+  query?: string;
+}) {
   if (results.length === 0) {
     return (
-      <div className="border border-line px-4 py-8 text-center text-[13px] text-muted">
-        附近沒有符合的品項。
-        <br />
-        <span className="text-[11.5px] text-muted-2">
-          試試主成分或症狀（如「痠痛」「止癢」），或換個品名寫法。
-        </span>
-      </div>
+      <>
+        <div className="border border-line px-4 py-8 text-center text-[13px] text-muted">
+          附近沒有符合的品項。
+          <br />
+          <span className="text-[11.5px] text-muted-2">
+            試試主成分或症狀（如「痠痛」「止癢」），或換個品名寫法。
+          </span>
+        </div>
+        {query ? <NotifyMe kind="catalog_miss" query={query} /> : null}
+      </>
     );
   }
 

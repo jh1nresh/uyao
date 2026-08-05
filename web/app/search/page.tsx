@@ -39,7 +39,7 @@ export default async function SearchPage({
         </div>
 
         {q ? (
-          <DrugResults results={results} />
+          <DrugResults results={results} query={q} />
         ) : (
           <div className="border border-line px-4 py-8 text-center text-[13px] text-muted">
             上面輸入藥品名或症狀開始搜尋。
