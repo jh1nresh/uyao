@@ -1,4 +1,9 @@
 node_modules
+
+# 憑證只放本機與 Vercel 的環境變數，永遠不進版控。
+# Next.js 會自動載入 .env.local，所以這裡一定要擋住。
+.env
+.env*.local
 .next
 next-env.d.ts
 tsconfig.tsbuildinfo
