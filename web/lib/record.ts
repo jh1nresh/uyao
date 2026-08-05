@@ -22,7 +22,7 @@ import path from "node:path";
  * 要加 KV / Postgres 就在 SINKS 多一個函式，其餘不用動。這裡沒有先寫
  * KV driver 是因為帳號上還沒有實例，寫了也驗不了。
  */
-export type RecordKind = "demand" | "pilot" | "reservations";
+export type RecordKind = "demand" | "pilot" | "reservations" | "line_bind";
 
 export const LOG_SENTINEL = "UYAO_RECORD";
 
@@ -45,6 +45,14 @@ function summarize(kind: RecordKind, record: Record<string, unknown>): string {
     const what = record.drugSlug ? `${record.query}（${record.drugSlug}）` : record.query;
     const who = record.contact ? ` · 留了 ${record.contact}` : "";
     return `🔍 落空搜尋 [${record.kind}] ${what} @ ${record.area}${who}`;
+  }
+  if (kind === "line_bind") {
+    // 綁定要人工確認，所以摘要要直接給出可貼進環境變數的那段
+    return (
+      `🔗 藥局要求綁定 LINE：${record.storeName}（${record.address}）\n` +
+      `確認無誤後把這段併進 LINE_STORE_BINDINGS：` +
+      `{"${record.userId}":"${record.storeSlug}"}`
+    );
   }
   return `📦 預留 ${record.code ?? ""} ${record.drugSlug ?? ""} @ ${record.storeSlug ?? ""}`;
 }

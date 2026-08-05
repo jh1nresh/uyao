@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 
 import { getDrug, getStore, storesForDrug } from "@/lib/data";
 import { hoursSummary } from "@/lib/hours";
+import { isConfigured, push, reservationFlex, userForStore } from "@/lib/line";
 import { appendRecord } from "@/lib/record";
 
 export const runtime = "nodejs";
@@ -76,6 +77,30 @@ export async function POST(request: Request) {
   };
 
   await appendRecord("reservations", record);
+
+  // 推給藥局。推不出去不能讓消費者的預留失敗 —— 那筆已經進 record sink，
+  // 你還是看得到，只是要人工通知藥局。
+  const lineUser = userForStore(storeSlug);
+  if (lineUser && isConfigured()) {
+    try {
+      await push(lineUser, [
+        reservationFlex({
+          code,
+          drugName: drug.name,
+          drugSpec: drug.spec,
+          priceTwd: offer.priceTwd,
+          storeName: store.name,
+          contactKind: contact.kind,
+          contact: contact.value,
+          holdHours: HOLD_HOURS,
+        }),
+      ]);
+    } catch (err) {
+      console.error("[reservations] 推播給藥局失敗", code, String(err).slice(0, 200));
+    }
+  } else if (!lineUser) {
+    console.log(`[reservations] ${storeSlug} 尚未綁定 LINE，${code} 需人工通知`);
+  }
 
   return NextResponse.json({
     code,
