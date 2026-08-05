@@ -7,6 +7,12 @@ import { StockBadge } from "@/components/StockBadge";
 import { CATEGORIES, USER_AREA, drugsInCategory, nearbyInStock } from "@/lib/data";
 import { formatDistance, formatFromPrice } from "@/lib/format";
 
+const STEPS = [
+  { title: "搜尋", body: "輸入藥名或症狀，看附近哪幾家藥局現在有貨。" },
+  { title: "預留", body: "一鍵預留，藥局確認後為你保留 4 小時。" },
+  { title: "到店取", body: "到店付款，由藥師當面交付 — 不做線上交易。" },
+];
+
 export default function HomePage() {
   const nearby = nearbyInStock();
 
@@ -93,6 +99,29 @@ export default function HomePage() {
 
         <p className="mt-3 text-[11px] leading-[1.6] text-muted-2">
           庫存狀態怎麼讀？<Link href="/stock-badges" className="text-green">看徽章分級說明 →</Link>
+        </p>
+      </section>
+
+      <section className="px-4 pb-7 sm:px-7">
+        <h2 className="mb-2.5 text-sm font-black">怎麼拿到藥</h2>
+        <ol className="m-0 grid list-none border border-line p-0 sm:grid-cols-3">
+          {STEPS.map((s, i) => (
+            <li
+              key={s.title}
+              className="flex gap-3 border-b border-line-soft px-4 py-3 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0"
+            >
+              <span className="num flex-none text-[13px] font-bold text-green">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <div>
+                <div className="text-[13px] font-bold text-ink">{s.title}</div>
+                <p className="mt-0.5 text-[11.5px] leading-[1.6] text-muted">{s.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <p className="mt-3 text-[11px] leading-[1.6] text-muted-2">
+          開藥局的？<Link href="/pharmacy" className="text-green">看盒子怎麼幫你顧效期 →</Link>
         </p>
       </section>
 

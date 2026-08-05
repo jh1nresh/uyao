@@ -36,8 +36,10 @@ export function SiteHeader({
         {USER_AREA}
         <span className="font-medium text-green">已定位</span>
       </div>
-      <Link href="/pharmacy-login" className="flex-none text-xs text-muted no-underline hover:text-ink">
-        藥局登入
+      {/* 供給側入口。藥局端不需要後台帳號（預留確認走 LINE bot），
+          所以連的是合作說明頁而不是登入頁。 */}
+      <Link href="/pharmacy" className="flex-none text-xs text-muted no-underline hover:text-ink">
+        我是藥局
       </Link>
     </header>
   );
