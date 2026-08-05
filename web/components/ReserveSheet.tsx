@@ -129,8 +129,8 @@ export function ReserveSheet({
 
             <form onSubmit={submit} className="flex flex-col gap-1.5">
               <label htmlFor="reserve-contact" className="text-xs font-bold">
-                手機或 LINE ID{" "}
-                <span className="font-normal text-muted-2">藥局確認後通知你</span>
+                手機號碼{" "}
+                <span className="font-normal text-muted-2">藥局確認後聯絡你，到店對尾號</span>
               </label>
               <input
                 id="reserve-contact"

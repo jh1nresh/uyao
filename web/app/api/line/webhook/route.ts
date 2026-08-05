@@ -2,12 +2,13 @@ import { NextResponse } from "next/server";
 
 import { allStores } from "@/lib/data";
 import {
-  isConfigured,
-  reply,
+  approve,
+  boundCount,
+  isAdmin,
+  requestBind,
   storeForUser,
-  text,
-  verifySignature,
-} from "@/lib/line";
+} from "@/lib/bindings";
+import { isConfigured, push, reply, text, verifySignature } from "@/lib/line";
 import { appendRecord } from "@/lib/record";
 import { updateStatus } from "@/lib/reservations-store";
 
@@ -45,7 +46,7 @@ function matchStores(query: string) {
 }
 
 async function onBindRequest(userId: string, replyToken: string, query: string) {
-  const already = storeForUser(userId);
+  const already = await storeForUser(userId);
   if (already) {
     await reply(replyToken, [text(`你已經綁定「${already}」。要改綁請直接聯絡我們。`)]);
     return;
@@ -69,22 +70,53 @@ async function onBindRequest(userId: string, replyToken: string, query: string) 
   }
 
   const store = found[0];
-  // 綁定是半自動的：這筆會跳到通知，由人確認後寫進 LINE_STORE_BINDINGS。
-  // 自動綁定的風險是有人冒用店名，把別家的預留單接走。
-  await appendRecord("line_bind", {
-    userId,
-    storeSlug: store.slug,
-    storeName: store.name,
-    address: store.address,
-    requestedAt: new Date().toISOString(),
-  });
+  // 仍然人工核可：任何人都能傳「惠民藥局」，自動綁定等於讓冒名者把
+  // 那家的預留單接走。差別是核可從「改環境變數 + 重新部署」變成
+  // 你在 LINE 回一句話。
+  const pending = await requestBind(userId, store);
+  await appendRecord("line_bind", { ...pending });
 
   await reply(replyToken, [
     text(
       `收到，${store.name}。\n${store.address}\n\n` +
-        "我們確認後會完成綁定（通常一個工作天內），完成後你會在這裡收到一則通知。",
+        "我們核對後會開通，開通時你會在這裡收到通知。",
     ),
   ]);
+
+  // 把核可指令直接送到你的 LINE，不用再開終端機
+  for (const admin of (process.env.LINE_ADMIN_USER_IDS ?? "").split(",").map((x) => x.trim())) {
+    if (!admin) continue;
+    await push(admin, [
+      text(
+        `🔗 綁定申請 ${pending.ref}\n${store.name}\n${store.address}\n\n` +
+          `確認是本人的話，回覆：核准 ${pending.ref}`,
+      ),
+    ]).catch(() => null);
+  }
+}
+
+/** 只有 LINE_ADMIN_USER_IDS 裡的人講「核准 B-42」才算數。 */
+async function onAdminCommand(replyToken: string, body: string): Promise<boolean> {
+  const m = /^(?:核准|核可|approve)\s+(B-\d{2})$/i.exec(body.trim());
+  if (!m) return false;
+
+  const done = await approve(m[1]);
+  if (!done) {
+    await reply(replyToken, [text(`找不到待核可的 ${m[1]}（可能已核可或已過期）。`)]);
+    return true;
+  }
+
+  await reply(replyToken, [
+    text(`✓ 已開通 ${done.storeName}。目前綁定 ${await boundCount()} 家。`),
+  ]);
+  // 通知藥局本人
+  await push(done.userId, [
+    text(
+      `${done.storeName} 已開通。\n\n` +
+        "之後有人預留你店裡的商品，會直接推到這個聊天室，按一下就能確認有貨或沒貨。",
+    ),
+  ]).catch(() => null);
+  return true;
 }
 
 async function onPostback(userId: string, replyToken: string, data: string) {
@@ -93,7 +125,7 @@ async function onPostback(userId: string, replyToken: string, data: string) {
   const code = params.get("code");
   if (!code || (action !== "confirm" && action !== "reject")) return;
 
-  const storeSlug = storeForUser(userId);
+  const storeSlug = await storeForUser(userId);
 
   // 更新可讀取的那份 —— 消費者的取貨頁讀的是這裡
   const updated = await updateStatus(
@@ -118,8 +150,7 @@ async function onPostback(userId: string, replyToken: string, data: string) {
     return;
   }
 
-  const tail =
-    updated.contactKind === "phone" ? updated.contact.slice(-3) : updated.contact.slice(0, 4);
+  const tail = updated.contact.slice(-3);
   await reply(replyToken, [
     text(
       action === "confirm"
@@ -154,7 +185,9 @@ export async function POST(request: Request) {
       if (e.type === "follow") {
         await reply(token, [text(HELP)]);
       } else if (e.type === "message" && e.message?.type === "text") {
-        await onBindRequest(userId, token, e.message.text ?? "");
+        const body = e.message.text ?? "";
+        if (isAdmin(userId) && (await onAdminCommand(token, body))) continue;
+        await onBindRequest(userId, token, body);
       } else if (e.type === "postback") {
         await onPostback(userId, token, e.postback?.data ?? "");
       }
@@ -171,14 +204,6 @@ export async function POST(request: Request) {
 export async function GET() {
   return NextResponse.json({
     configured: isConfigured(),
-    boundStores: Object.keys(
-      (() => {
-        try {
-          return JSON.parse(process.env.LINE_STORE_BINDINGS ?? "{}") as object;
-        } catch {
-          return {};
-        }
-      })(),
-    ).length,
+    boundStores: await boundCount(),
   });
 }
