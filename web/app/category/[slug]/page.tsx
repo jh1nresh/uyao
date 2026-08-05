@@ -4,7 +4,13 @@ import { notFound } from "next/navigation";
 import { DrugResults } from "@/components/DrugResults";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { CATEGORIES, USER_AREA, drugSummary, drugsInCategory, getCategory } from "@/lib/data";
+import {
+  CATEGORIES,
+  SERVICE_AREA_LABEL,
+  drugSummary,
+  drugsInCategory,
+  getCategory,
+} from "@/lib/data";
 import type { CategorySlug } from "@/lib/types";
 
 export function generateStaticParams() {
@@ -46,7 +52,7 @@ export default async function CategoryPage({
         <div className="mb-2.5 flex flex-wrap items-baseline gap-2.5">
           <h1 className="text-sm font-black">{category.name}</h1>
           <p className="text-[11px] text-muted-2">
-            {results.length} 項在附近有登錄 · {USER_AREA}
+            {results.length} 項在附近有登錄 · {SERVICE_AREA_LABEL}
           </p>
           <div className="flex-1" />
           <p className="text-[11px] text-muted-2">排序：庫存新鮮度 → 距離 → 價格</p>

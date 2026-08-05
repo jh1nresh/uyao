@@ -1,10 +1,17 @@
 import Link from "next/link";
 
+import { AreaSwitch } from "@/components/AreaSwitch";
 import { SearchInput } from "@/components/SearchInput";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { StockBadge } from "@/components/StockBadge";
-import { CATEGORIES, USER_AREA, drugsInCategory, nearbyInStock } from "@/lib/data";
+import {
+  CATEGORIES,
+  drugsInCategory,
+  getArea,
+  nearbyInStock,
+  toAreaSlug,
+} from "@/lib/data";
 import { formatDistance, formatFromPrice } from "@/lib/format";
 
 const STEPS = [
@@ -13,12 +20,17 @@ const STEPS = [
   { title: "到店取", body: "到店付款，由藥師當面交付 — 不做線上交易。" },
 ];
 
-export default function HomePage() {
-  const nearby = nearbyInStock();
+export default function HomePage({
+  searchParams,
+}: {
+  searchParams: { area?: string };
+}) {
+  const area = toAreaSlug(searchParams.area);
+  const nearby = nearbyInStock(area);
 
   return (
     <>
-      <SiteHeader showSearch={false} />
+      <SiteHeader showSearch={false} area={area} />
 
       <section className="flex flex-col items-center gap-5 border-b border-line px-4 pb-8 pt-8 text-center sm:px-7 sm:pb-10 sm:pt-16">
         <h1 className="m-0 text-2xl font-black tracking-[.02em] sm:text-[30px]">
@@ -48,9 +60,15 @@ export default function HomePage() {
       </section>
 
       <section className="px-4 pb-6 pt-5 sm:px-7">
-        <div className="mb-2.5 flex flex-wrap items-baseline gap-2.5">
+        <div className="mb-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-2">
           <h2 className="text-sm font-black">附近現在有貨</h2>
-          <p className="text-[11px] text-muted-2">依今日掃描紀錄 · {USER_AREA}</p>
+          <p className="text-[11px] text-muted-2">
+            依今日掃描紀錄 · {getArea(area).name}
+          </p>
+          {/* header 的切換器在手機上會收起來，這裡補一個 */}
+          <div className="md:hidden">
+            <AreaSwitch area={area} />
+          </div>
         </div>
 
         <div className="border border-line">

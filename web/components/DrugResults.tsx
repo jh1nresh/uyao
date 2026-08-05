@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { StockBadge } from "./StockBadge";
 import type { DrugSummary } from "@/lib/data";
+import { getArea } from "@/lib/data";
 import { formatDistance, formatFromPrice } from "@/lib/format";
 
 /** 搜尋結果 / 品類列表共用的資料密表格。 */
@@ -32,7 +33,7 @@ export function DrugResults({ results }: { results: DrugSummary[] }) {
             </span>
             <span className="text-xs text-muted">
               {r.nearestStore
-                ? `最近：${r.nearestStore.name} · `
+                ? `最近：${r.nearestStore.name}（${getArea(r.nearestStore.area).shortName}）· `
                 : ""}
               {r.nearestStore && (
                 <span className="num">{formatDistance(r.nearestStore.distanceM)}</span>

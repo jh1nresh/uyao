@@ -7,6 +7,7 @@ import { ReserveSheet, type ReserveTarget } from "./ReserveSheet";
 import { StockBadge } from "./StockBadge";
 import { StoreMap } from "./StoreMap";
 import type { StoreRow } from "@/lib/data";
+import { getArea } from "@/lib/data";
 import { formatDistance, formatPrice } from "@/lib/format";
 
 const COLS = "grid-cols-[1fr_88px_150px_96px_168px_92px]";
@@ -77,6 +78,9 @@ export function PharmacyList({
               >
                 <Link href={`/store/${r.store.slug}`} className="font-medium text-ink no-underline hover:text-green">
                   {r.store.name}
+                  <span className="ml-1.5 text-[11px] font-normal text-muted-2">
+                    {getArea(r.store.area).shortName}
+                  </span>
                 </Link>
                 <div className="num text-right text-xs text-ink-2">
                   {formatDistance(r.store.distanceM)}
@@ -101,6 +105,9 @@ export function PharmacyList({
                     >
                       {r.store.name}
                     </Link>
+                    <span className="text-[11px] text-muted-2">
+                      {getArea(r.store.area).shortName}
+                    </span>
                     <span className="num text-[11px] text-ink-2">
                       {formatDistance(r.store.distanceM)}
                     </span>
