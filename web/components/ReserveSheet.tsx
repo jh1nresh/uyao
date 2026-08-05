@@ -15,6 +15,9 @@ export interface ReserveTarget {
   badge: StockBadgeSpec;
 }
 
+/** 記住上次填的號碼，不要每次預留都重打一次。 */
+const PHONE_KEY = "uyao.phone";
+
 interface Success {
   /** 取貨頁的不可猜網址 key */
   token?: string;
@@ -37,6 +40,7 @@ export function ReserveSheet({
   demo?: boolean;
 }) {
   const [contact, setContact] = useState("");
+  const [remembered, setRemembered] = useState(false);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<Success | null>(null);
@@ -55,8 +59,25 @@ export function ReserveSheet({
     };
   }, [onClose]);
 
+  /**
+   * 不要每次預留都重打一次號碼。
+   *
+   * 存在 localStorage 而不是後端：這樣不需要登入，而號碼本來就是這台
+   * 裝置的主人自己填的。帶回來之後送出鈕直接可按，等於一鍵預留。
+   */
   useEffect(() => {
-    if (!success) inputRef.current?.focus();
+    if (success) return;
+    try {
+      const saved = localStorage.getItem(PHONE_KEY);
+      if (saved) {
+        setContact(saved);
+        setRemembered(true);
+        return; // 已經有值就不要搶焦點，讓他直接按送出
+      }
+    } catch {
+      /* 隱私模式讀不到就當沒存過 */
+    }
+    inputRef.current?.focus();
   }, [success]);
 
   async function submit(e: React.FormEvent) {
@@ -78,6 +99,11 @@ export function ReserveSheet({
       if (!res.ok || !data.code) {
         setError(data.error ?? "送出失敗，請再試一次");
         return;
+      }
+      try {
+        localStorage.setItem(PHONE_KEY, contact.trim());
+      } catch {
+        /* 存不起來不影響這次預留 */
       }
       setSuccess({ code: data.code, token: data.token, holdHours: data.holdHours ?? 4 });
     } catch {
@@ -138,9 +164,27 @@ export function ReserveSheet({
                 value={contact}
                 onChange={(e) => setContact(e.target.value)}
                 placeholder="09xx-xxx-xxx"
+                // type + inputMode 決定手機會不會跳數字鍵盤；
+                // name/autoComplete 決定作業系統的自動填入認不認得這一欄
+                type="tel"
+                name="tel"
+                inputMode="tel"
                 autoComplete="tel"
                 className="h-[46px] border-[1.5px] border-ink px-3.5 text-sm outline-none placeholder:text-muted-2"
               />
+              {remembered && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setContact("");
+                    setRemembered(false);
+                    inputRef.current?.focus();
+                  }}
+                  className="self-start text-[11px] text-muted-2 underline"
+                >
+                  這是你上次用的號碼 · 換一個
+                </button>
+              )}
               {error && (
                 <p role="alert" className="text-[11.5px] font-medium text-ink">
                   {error}
