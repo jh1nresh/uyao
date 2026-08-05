@@ -12,8 +12,8 @@
 帳單）。每家藥局查一次、結果落地成 JSON cache，重跑不會重複計費。
 
     export GOOGLE_MAPS_API_KEY=...
-    PYTHONPATH=src python3 -m pharmabox.places --limit 5   # 先試跑 5 家
-    PYTHONPATH=src python3 -m pharmabox.places             # 全跑
+    python3 -m pharmabox.places --limit 5   # 先試跑 5 家
+    python3 -m pharmabox.places             # 全跑
 """
 
 from __future__ import annotations
@@ -27,6 +27,8 @@ import urllib.error
 import urllib.request
 from dataclasses import asdict, dataclass
 from pathlib import Path
+
+from pharmabox.paths import data_path
 
 SEARCH_URL = "https://places.googleapis.com/v1/places:searchText"
 
@@ -250,8 +252,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--districts", default="中山區,信義區")
     ap.add_argument("--limit", type=int, default=None, help="只跑前 N 家，試打用")
     ap.add_argument("--refresh", action="store_true", help="忽略 cache 重查")
-    ap.add_argument("--cache", default="data/.cache/fda-pharmacies.csv")
-    ap.add_argument("--places-cache", default="data/.cache/places")
+    ap.add_argument("--cache", default=str(data_path(".cache", "fda-pharmacies.csv")))
+    ap.add_argument("--places-cache", default=str(data_path(".cache", "places")))
     args = ap.parse_args(argv)
 
     districts = [d.strip() for d in args.districts.split(",") if d.strip()]
