@@ -2,8 +2,9 @@ import { randomInt } from "node:crypto";
 
 import { NextResponse } from "next/server";
 
-import { getDrug, getStore, storesForDrug } from "@/lib/data";
+import { getDrug, getStore, previewOffers, storesForDrug } from "@/lib/data";
 import { hoursSummary } from "@/lib/hours";
+import { stockBadge } from "@/lib/stock";
 import { isConfigured, push, reservationFlex, userForStore } from "@/lib/line";
 import { appendRecord } from "@/lib/record";
 
@@ -16,6 +17,7 @@ interface Body {
   drugSlug?: unknown;
   storeSlug?: unknown;
   contact?: unknown;
+  demo?: unknown;
 }
 
 /** 手機 09xxxxxxxx（可含 - 或空白）或 LINE ID（4–20 碼英數底線句點）。 */
@@ -50,7 +52,15 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "找不到這個藥品或藥局" }, { status: 404 });
   }
 
-  const offer = storesForDrug(drugSlug).find((r) => r.store.slug === storeSlug);
+  // 業務示範（/store/[slug]/preview）：庫存是模擬的，改對 previewOffers 驗證。
+  // 整筆 record 與 LINE 推播都會標示 demo —— 示範單絕不能混進真單。
+  const demo = body.demo === true;
+  const offer = demo
+    ? (() => {
+        const o = previewOffers(storeSlug).find((x) => x.drugSlug === drugSlug);
+        return o ? { priceTwd: o.priceTwd, badge: stockBadge(o.daysSinceScan) } : undefined;
+      })()
+    : storesForDrug(drugSlug).find((r) => r.store.slug === storeSlug);
   if (!offer) {
     return NextResponse.json({ error: "這家藥局沒有這個品項" }, { status: 404 });
   }
@@ -74,6 +84,7 @@ export async function POST(request: Request) {
     stockTier: offer.badge.tier,
     createdAt: new Date().toISOString(),
     status: "pending_store_confirm" as const,
+    ...(demo ? { demo: true as const } : {}),
   };
 
   await appendRecord("reservations", record);
@@ -93,6 +104,7 @@ export async function POST(request: Request) {
           contactKind: contact.kind,
           contact: contact.value,
           holdHours: HOLD_HOURS,
+          demo,
         }),
       ]);
     } catch (err) {

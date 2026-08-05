@@ -3,6 +3,7 @@ import Link from "next/link";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { StockBadge } from "@/components/StockBadge";
+import { PreviewShelf } from "@/components/PreviewShelf";
 import { StorePreviewBanner } from "@/components/StorePreviewBanner";
 import { drugsForStore } from "@/lib/data";
 import type { Store } from "@/lib/types";
@@ -129,27 +130,32 @@ export function StoreView({ store, preview }: { store: Store; preview: boolean }
               {items.length} 項 · 全部可預留，到店付款
             </p>
           </div>
-          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
-            {items.map((it) => (
-              <Link
-                key={it.drug.slug}
-                href={`/drug/${it.drug.slug}`}
-                className="flex flex-col gap-[5px] border border-line px-3.5 py-3 no-underline hover:border-green"
-              >
-                <span className="text-[13px] font-medium text-ink">{it.drug.name}</span>
-                <span className="text-[11px] text-muted-2">
-                  {it.drug.spec} · {it.drug.drugClass}
-                </span>
-                <span className="mt-0.5 flex items-center gap-2">
-                  <span className="num text-[13px] font-semibold text-ink">
-                    {formatPrice(it.priceTwd)}
+          {preview ? (
+            /* 示範是封閉世界：卡片不連到讀真庫存的 /drug/[slug]，預留直接在卡上 */
+            <PreviewShelf store={store} items={items} />
+          ) : (
+            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
+              {items.map((it) => (
+                <Link
+                  key={it.drug.slug}
+                  href={`/drug/${it.drug.slug}`}
+                  className="flex flex-col gap-[5px] border border-line px-3.5 py-3 no-underline hover:border-green"
+                >
+                  <span className="text-[13px] font-medium text-ink">{it.drug.name}</span>
+                  <span className="text-[11px] text-muted-2">
+                    {it.drug.spec} · {it.drug.drugClass}
                   </span>
-                  <span className="flex-1" />
-                  <StockBadge badge={it.badge} short className="text-[11px]" />
-                </span>
-              </Link>
-            ))}
-          </div>
+                  <span className="mt-0.5 flex items-center gap-2">
+                    <span className="num text-[13px] font-semibold text-ink">
+                      {formatPrice(it.priceTwd)}
+                    </span>
+                    <span className="flex-1" />
+                    <StockBadge badge={it.badge} short className="text-[11px]" />
+                  </span>
+                </Link>
+              ))}
+            </div>
+          )}
         </section>
       ) : (
         <section className="px-4 pb-[26px] pt-5 sm:px-7">

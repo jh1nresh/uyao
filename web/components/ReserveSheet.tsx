@@ -27,9 +27,12 @@ interface Success {
 export function ReserveSheet({
   target,
   onClose,
+  demo = false,
 }: {
   target: ReserveTarget;
   onClose: () => void;
+  /** 業務示範：庫存是模擬的，後端走 previewOffers 驗證並整筆標示 demo。 */
+  demo?: boolean;
 }) {
   const [contact, setContact] = useState("");
   const [pending, setPending] = useState(false);
@@ -66,6 +69,7 @@ export function ReserveSheet({
           drugSlug: target.drug.slug,
           storeSlug: target.store.slug,
           contact,
+          ...(demo ? { demo: true } : {}),
         }),
       });
       const data = (await res.json()) as { code?: string; holdHours?: number; error?: string };
