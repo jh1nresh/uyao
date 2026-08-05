@@ -1,7 +1,8 @@
 # Spec: 消費端 Web — 藥品 價格/庫存/店家（SLL-R + Pointy）
 
-> Status: direction locked, build 待 10+ 藥局在線 · 2026-08-05
+> Status: direction locked · v1 前端已實作（fixture 資料）於 `web/`，接真資料待 10+ 藥局在線 · 2026-08-05
 > 先讀 `specs/box-p1.md`。資料來源 = 盒子掃描流（庫存/效期）+ 藥局自報（價格）。
+> 實作說明見 `web/README.md`；資料層是 `web/lib/data.ts`（純 fixture，換 API 時上層不用動）。
 
 ## 定位一句話
 「搜一個藥，看到附近哪家有貨、多少錢，按預留、到店取。」不做線上交易、不碰金流。
