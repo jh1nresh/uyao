@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="有藥">
+  <!-- 綠底白十。直角不圓角，跟 tailwind.config 的 borderRadius:none 一致。
+       十字畫成幾何而不是「十」這個字：16px favicon 下才銳利，也不依賴
+       webfont 有沒有載到。橫畫刻意偏上（中心 42%）保留「十」的字形，
+       同時讀得出藥局十字。 -->
+  <rect width="32" height="32" fill="#0B7A3E"/>
+  <rect x="13.6" y="4" width="4.8" height="24" fill="#fff"/>
+  <rect x="4" y="11.2" width="24" height="4.8" fill="#fff"/>
+</svg>
