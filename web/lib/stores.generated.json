@@ -12,20 +12,44 @@
       "nhiCode": "5901103183",
       "nhiContracted": true,
       "nhiTerminatedOn": null,
-      "lat": null,
-      "lng": null,
-      "distanceM": null,
-      "placeId": null,
-      "businessStatus": null,
-      "placeMatchConfident": null,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=OK藥師藥局+臺北市中山區興安街95號",
+      "lat": 25.056202300000002,
+      "lng": 121.5433508,
+      "distanceM": 1891,
+      "placeId": "ChIJhQi2yOarQjQRFK5MM9k3-IE",
+      "businessStatus": "OPERATIONAL",
+      "placeMatchConfident": true,
+      "mapsUrl": "https://maps.google.com/?cid=9365296831125040660&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
       "hours": [
         {
-          "label": "週一–週日",
-          "hours": "上午、下午、晚上"
+          "label": "星期一",
+          "hours": "08:30 – 22:00"
+        },
+        {
+          "label": "星期二",
+          "hours": "08:30 – 22:00"
+        },
+        {
+          "label": "星期三",
+          "hours": "08:30 – 22:00"
+        },
+        {
+          "label": "星期四",
+          "hours": "08:30 – 22:00"
+        },
+        {
+          "label": "星期五",
+          "hours": "08:30 – 22:00"
+        },
+        {
+          "label": "星期六",
+          "hours": "08:30 – 22:00"
+        },
+        {
+          "label": "星期日",
+          "hours": "08:30 – 22:00"
         }
       ],
-      "hoursSource": "nhi",
+      "hoursSource": "google",
       "notes": [
         "健保特約"
       ],
@@ -42,20 +66,44 @@
       "nhiCode": "5901104144",
       "nhiContracted": true,
       "nhiTerminatedOn": null,
-      "lat": null,
-      "lng": null,
-      "distanceM": null,
-      "placeId": null,
-      "businessStatus": null,
-      "placeMatchConfident": null,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=中山伊通藥局+臺北市中山區伊通街97之2號",
+      "lat": 25.053177299999998,
+      "lng": 121.53498479999999,
+      "distanceM": 1449,
+      "placeId": "ChIJ8b9FTF-pQjQRGiCia9uVEL8",
+      "businessStatus": "OPERATIONAL",
+      "placeMatchConfident": true,
+      "mapsUrl": "https://maps.google.com/?cid=13767668830507769882&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
       "hours": [
         {
-          "label": "週一",
-          "hours": "晚上"
+          "label": "星期一",
+          "hours": "09:00 – 21:00"
+        },
+        {
+          "label": "星期二",
+          "hours": "09:00 – 21:00"
+        },
+        {
+          "label": "星期三",
+          "hours": "09:00 – 21:00"
+        },
+        {
+          "label": "星期四",
+          "hours": "09:00 – 21:00"
+        },
+        {
+          "label": "星期五",
+          "hours": "09:00 – 21:00"
+        },
+        {
+          "label": "星期六",
+          "hours": "12:00 – 20:30"
+        },
+        {
+          "label": "星期日",
+          "hours": "休息"
         }
       ],
-      "hoursSource": "nhi",
+      "hoursSource": "google",
       "notes": [
         "健保特約"
       ],
@@ -72,24 +120,44 @@
       "nhiCode": "5901102891",
       "nhiContracted": true,
       "nhiTerminatedOn": null,
-      "lat": null,
-      "lng": null,
-      "distanceM": null,
-      "placeId": null,
-      "businessStatus": null,
-      "placeMatchConfident": null,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=中山藥局+臺北市中山區林森北路128號",
+      "lat": 25.0512752,
+      "lng": 121.52503180000001,
+      "distanceM": 1389,
+      "placeId": "ChIJE0U0Um-pQjQReemJqXovlsw",
+      "businessStatus": "OPERATIONAL",
+      "placeMatchConfident": true,
+      "mapsUrl": "https://maps.google.com/?cid=14742022634120800633&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
       "hours": [
         {
-          "label": "週一–週六",
-          "hours": "上午、下午、晚上"
+          "label": "星期一",
+          "hours": "10:00 – 23:00"
         },
         {
-          "label": "週日",
-          "hours": "下午、晚上"
+          "label": "星期二",
+          "hours": "10:00 – 23:00"
+        },
+        {
+          "label": "星期三",
+          "hours": "10:00 – 23:00"
+        },
+        {
+          "label": "星期四",
+          "hours": "10:00 – 23:00"
+        },
+        {
+          "label": "星期五",
+          "hours": "10:00 – 23:00"
+        },
+        {
+          "label": "星期六",
+          "hours": "10:00 – 23:00"
+        },
+        {
+          "label": "星期日",
+          "hours": "休息"
         }
       ],
-      "hoursSource": "nhi",
+      "hoursSource": "google",
       "notes": [
         "健保特約"
       ],
@@ -106,15 +174,44 @@
       "nhiCode": "5901101625",
       "nhiContracted": true,
       "nhiTerminatedOn": "20230831",
-      "lat": null,
-      "lng": null,
-      "distanceM": null,
-      "placeId": null,
-      "businessStatus": null,
-      "placeMatchConfident": null,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=中崙藥局+臺北市中山區八德路2段307號(1樓)",
-      "hours": [],
-      "hoursSource": "none",
+      "lat": 25.0474019,
+      "lng": 121.54265499999998,
+      "distanceM": 2436,
+      "placeId": "ChIJ91Gyqt6rQjQRwrkW64Z3Grc",
+      "businessStatus": "OPERATIONAL",
+      "placeMatchConfident": true,
+      "mapsUrl": "https://maps.google.com/?cid=13193989479688747458&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+      "hours": [
+        {
+          "label": "星期一",
+          "hours": "09:00 – 12:00, 14:00 – 17:00, 18:00 – 21:00"
+        },
+        {
+          "label": "星期二",
+          "hours": "09:00 – 12:00, 14:00 – 17:00, 18:00 – 21:00"
+        },
+        {
+          "label": "星期三",
+          "hours": "09:00 – 12:00, 14:00 – 17:00, 18:00 – 21:00"
+        },
+        {
+          "label": "星期四",
+          "hours": "09:00 – 12:00, 14:00 – 17:00, 18:00 – 21:00"
+        },
+        {
+          "label": "星期五",
+          "hours": "09:00 – 12:00, 14:00 – 17:00, 18:00 – 21:00"
+        },
+        {
+          "label": "星期六",
+          "hours": "09:00 – 12:00, 14:00 – 17:00"
+        },
+        {
+          "label": "星期日",
+          "hours": "休息"
+        }
+      ],
+      "hoursSource": "google",
       "notes": [
         "健保特約"
       ],
@@ -131,20 +228,44 @@
       "nhiCode": "5901102962",
       "nhiContracted": true,
       "nhiTerminatedOn": null,
-      "lat": null,
-      "lng": null,
-      "distanceM": null,
-      "placeId": null,
-      "businessStatus": null,
-      "placeMatchConfident": null,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=中興藥局+臺北市中山區長安東路2段226號",
+      "lat": 25.0481832,
+      "lng": 121.54272019999999,
+      "distanceM": 2376,
+      "placeId": "ChIJYThYHdyrQjQR7ICvHXNTXN4",
+      "businessStatus": "OPERATIONAL",
+      "placeMatchConfident": true,
+      "mapsUrl": "https://maps.google.com/?cid=16022773328161767660&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
       "hours": [
         {
-          "label": "週一",
-          "hours": "晚上"
+          "label": "星期一",
+          "hours": "09:00 – 21:00"
+        },
+        {
+          "label": "星期二",
+          "hours": "09:00 – 21:00"
+        },
+        {
+          "label": "星期三",
+          "hours": "09:00 – 21:00"
+        },
+        {
+          "label": "星期四",
+          "hours": "09:00 – 21:00"
+        },
+        {
+          "label": "星期五",
+          "hours": "09:00 – 21:00"
+        },
+        {
+          "label": "星期六",
+          "hours": "休息"
+        },
+        {
+          "label": "星期日",
+          "hours": "休息"
         }
       ],
-      "hoursSource": "nhi",
+      "hoursSource": "google",
       "notes": [
         "健保特約"
       ],

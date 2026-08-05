@@ -24,6 +24,8 @@ import urllib.request
 from dataclasses import dataclass, field
 from pathlib import Path
 
+from pharmabox.paths import data_path
+
 FDA_CSV_URL = "https://data.fda.gov.tw/data/opendata/export/35/csv"
 
 # 補市話區碼用。資料裡不少店家只填 8 碼本地號碼。
@@ -236,8 +238,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--city", default="臺北市")
     ap.add_argument("--districts", default="中山區,信義區", help="逗號分隔")
     ap.add_argument("--include-chains", action="store_true", help="連鎖也一起輸出")
-    ap.add_argument("-o", "--out", default="data/prospects.csv")
-    ap.add_argument("--cache", default="data/.cache/fda-pharmacies.csv")
+    ap.add_argument("-o", "--out", default=str(data_path("prospects.csv")))
+    ap.add_argument("--cache", default=str(data_path(".cache", "fda-pharmacies.csv")))
     ap.add_argument("--refresh", action="store_true", help="忽略 cache 重抓")
     args = ap.parse_args(argv)
 

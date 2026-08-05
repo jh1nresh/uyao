@@ -9,7 +9,7 @@
 Places 那層是選配：沒有金鑰照樣產得出 seed，只是沒有座標、營業時間退回
 健保署的粗粒度時段。有金鑰再跑一次 `pharmabox.places` 就會自動變好。
 
-    PYTHONPATH=src python3 -m pharmabox.seed
+    python3 -m pharmabox.seed
 
 **每家藥局的 offers 一律是空的。** 站上目前沒有任何一家裝了盒子，沒有
 掃描流就沒有庫存與價格 —— 這不是待辦，是這個產品現在真實的狀態，庫存
@@ -27,6 +27,7 @@ from typing import Any
 
 from pharmabox import nhi as nhi_mod
 from pharmabox import prospects as prospects_mod
+from pharmabox.paths import data_path, repo_root
 
 # 服務區 slug 對照。要開新區就加這裡，順序即消費端的預設順序。
 AREA_BY_DISTRICT = {
@@ -193,10 +194,10 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="產生消費端藥局 seed")
     ap.add_argument("--city", default="臺北市")
     ap.add_argument("--districts", default="中山區,信義區")
-    ap.add_argument("--fda-cache", default="data/.cache/fda-pharmacies.csv")
-    ap.add_argument("--nhi-cache", default="data/.cache/nhi-pharmacies.csv")
-    ap.add_argument("--places-cache", default="data/.cache/places")
-    ap.add_argument("-o", "--out", default="web/lib/stores.generated.json")
+    ap.add_argument("--fda-cache", default=str(data_path(".cache", "fda-pharmacies.csv")))
+    ap.add_argument("--nhi-cache", default=str(data_path(".cache", "nhi-pharmacies.csv")))
+    ap.add_argument("--places-cache", default=str(data_path(".cache", "places")))
+    ap.add_argument("-o", "--out", default=str(repo_root() / "web" / "lib" / "stores.generated.json"))
     ap.add_argument("--today", default=date.today().strftime("%Y%m%d"))
     args = ap.parse_args(argv)
 
