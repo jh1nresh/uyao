@@ -123,6 +123,7 @@ export default async function DrugPage({
         <NoInventoryYet
           drugName={drug.name}
           drugSlug={drug.slug}
+          area={DEFAULT_AREA}
           areaLabel={getArea(DEFAULT_AREA).shortName}
           stores={storesInArea(DEFAULT_AREA)}
         />

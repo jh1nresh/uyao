@@ -1,9 +1,10 @@
 import Link from "next/link";
 
+import { AreaStores } from "./AreaStores";
 import { NotifyMe } from "./NotifyMe";
 import { formatDistance } from "@/lib/format";
 import { hoursSummary } from "@/lib/hours";
-import type { Store } from "@/lib/types";
+import type { AreaSlug, Store } from "@/lib/types";
 
 /**
  * 藥品頁的空狀態。
@@ -15,11 +16,13 @@ import type { Store } from "@/lib/types";
 export function NoInventoryYet({
   drugName,
   drugSlug,
+  area,
   areaLabel,
   stores,
 }: {
   drugName: string;
   drugSlug: string;
+  area: AreaSlug;
   areaLabel: string;
   stores: Store[];
 }) {
@@ -40,35 +43,14 @@ export function NoInventoryYet({
         <p className="text-[11px] text-muted-2">{stores.length} 家 · 打電話前先看營業時段</p>
       </div>
 
-      <div className="mt-2 border border-line">
-        {stores.slice(0, 10).map((s) => (
-          <div
-            key={s.slug}
-            className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line-soft px-3.5 py-2.5 last:border-b-0 hover:bg-surface-hover"
-          >
-            <Link
-              href={`/store/${s.slug}`}
-              className="text-[13.5px] font-medium text-ink no-underline hover:text-green"
-            >
-              {s.name}
-            </Link>
-            {s.distanceM !== null && (
-              <span className="num text-[11.5px] text-ink-2">{formatDistance(s.distanceM)}</span>
-            )}
-            <span className="text-[11.5px] text-muted">{hoursSummary(s)}</span>
-            <div className="flex-1" />
-            {s.phone ? (
-              <a
-                href={`tel:${s.phone.split("、")[0].replace(/-/g, "")}`}
-                className="num flex-none border border-green px-3 py-1.5 text-[12px] font-bold text-green no-underline"
-              >
-                {s.phone.split("、")[0]}
-              </a>
-            ) : (
-              <span className="text-[11px] text-muted-2">未提供電話</span>
-            )}
-          </div>
-        ))}
+      <div className="mt-2">
+        <AreaStores
+          stores={stores}
+          area={area}
+          areaLabel={areaLabel}
+          limit={10}
+          showPhone
+        />
       </div>
 
       <p className="mt-3 text-[11px] leading-[1.6] text-muted-2">

@@ -6,6 +6,7 @@ import { useState } from "react";
 import { ReserveSheet, type ReserveTarget } from "./ReserveSheet";
 import { StockBadge } from "./StockBadge";
 import { StoreMap } from "./StoreMap";
+import { useLocation } from "./LocationProvider";
 import type { StoreRow } from "@/lib/data";
 import { getArea } from "@/lib/data";
 import { formatDistance, formatPrice } from "@/lib/format";
@@ -25,6 +26,7 @@ export function PharmacyList({
   rows: StoreRow[];
 }) {
   const [view, setView] = useState<"list" | "map">("list");
+  const { position } = useLocation();
   const [target, setTarget] = useState<ReserveTarget | null>(null);
 
   return (
@@ -56,7 +58,13 @@ export function PharmacyList({
 
       {view === "map" ? (
         <div className="mx-4 mb-1.5 sm:mx-7">
-          <StoreMap rows={rows} />
+          <StoreMap
+            stores={rows.map((r) => r.store)}
+            annotations={Object.fromEntries(
+              rows.map((r) => [r.store.slug, { priceTwd: r.priceTwd, badge: r.badge }]),
+            )}
+            userPosition={position}
+          />
         </div>
       ) : (
         <div className="crossfade mx-4 mb-1.5 border border-line sm:mx-7">
