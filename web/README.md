@@ -22,7 +22,7 @@ npm run typecheck
 | `/search?q=` | — | 搜尋結果，`noindex`（SEO 入口是藥品頁，不做內容農場） |
 | `/category/[slug]` | — | 品類列表，首頁品類入口的落點 |
 | `/stock-badges` | 1e | 庫存徽章分級說明 |
-| `/pharmacy-login` | — | header 連結落點；預留確認實際走藥局端 LINE bot |
+| `/pharmacy` | — | 供給側：效期雷達說明 + 試點申請。`/pharmacy-login` 308 導到這裡 |
 
 預留流程（M3 → M4）是 `components/ReserveSheet.tsx` 的 bottom sheet，
 桌機同一個 panel 置中。
@@ -51,6 +51,32 @@ npm run typecheck
 v1 沒有資料庫，落地成 `web/.data/reservations.jsonl`（已 gitignore），
 之後換成藥局端 LINE bot 的 queue。
 
+## 試點申請 API（供給側）
+
+`POST /api/pilot` `{name, area, contact}` → `{ok: true}`
+
+`name` 與 `contact` 必填，落地成 `web/.data/pilot.jsonl`。跟消費端預留完全分開 ——
+藥局端沒有帳號系統，這只是聯絡意圖。
+
+## 字型
+
+中文走**自架的 Noto Sans TC subset**（`app/fonts/noto-sans-tc-var.woff2`，160KB，
+wght 100–900 可變），不是 Google Fonts `<link>`。
+
+繁中字型在 Google Fonts 是按 unicode-range 切成上百塊的：原本那個 `<link>` 會拉進
+**430 個 `@font-face`、134KB gzip 的 render-blocking CSS**，Lighthouse mobile
+performance 只有 89（FCP/LCP 3.0s）。換成 subset 後 CSS 剩 5KB gzip，
+**performance 99（FCP/LCP 1.7s）**。
+
+```bash
+pip install "fonttools[woff]" brotli
+python3 scripts/subset-fonts.py
+```
+
+⚠️ **字符集是從 `app/` `components/` `lib/` 的原始碼掃出來的**（`lib/data.ts` 的藥名、
+藥局名都算）。加藥品資料或改文案就要重跑，否則新字會掉回系統中文字型。
+使用者在搜尋框自己打的字本來就不在 subset 內 —— 那一格用系統字型，是刻意的取捨。
+
 ## 法規邊界（不要改掉）
 
 - 全站只有「預留取貨」，沒有購物車 / 結帳 / 金流
@@ -62,4 +88,6 @@ v1 沒有資料庫，落地成 `web/.data/reservations.jsonl`（已 gitignore）
 - 資料是 fixture，`USER_AREA` 寫死台北市大安區，沒有真的定位
 - 地圖是示意圖（CSS 網格 + `Store.mapPos` 百分比），正式版接圖資
 - 沒有會員系統；預留只留手機或 LINE ID
-- 字型走 Google Fonts `<link>`（跟設計稿一致），要離線 build 的話改 `next/font`
+- 字型 subset 的字符集綁在原始碼上，改文案要重跑 `scripts/subset-fonts.py`
+- `/pharmacy` 的 CLS 0.043（字型 swap 造成，仍在 Lighthouse「良好」的 0.1 以內）：
+  fallback 的 metrics 是 next/font 依 Arial 算的，對中文字型不準
