@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { IBM_Plex_Mono } from "next/font/google";
 import localFont from "next/font/local";
 
-import { DemoBanner } from "@/components/DemoBanner";
 import "./globals.css";
 
 /**
@@ -52,7 +51,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     >
       <body>
         <div className="mx-auto min-h-screen max-w-[1200px] bg-white sm:border-x sm:border-line">
-          <DemoBanner />
           {children}
         </div>
       </body>
