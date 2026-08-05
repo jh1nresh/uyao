@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { AreaStores } from "@/components/AreaStores";
 import { AreaSwitch } from "@/components/AreaSwitch";
 import { SearchInput } from "@/components/SearchInput";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -85,32 +86,7 @@ export default async function HomePage({
           </Link>
         </p>
 
-        <div className="border border-line">
-          {stores.slice(0, 12).map((s) => (
-            <Link
-              key={s.slug}
-              href={`/store/${s.slug}`}
-              className="flex items-center gap-3 border-b border-line-soft px-3.5 py-2.5 no-underline last:border-b-0 hover:bg-surface-hover"
-            >
-              <span className="min-w-0 flex-1">
-                <span className="block text-[13.5px] font-medium text-ink">{s.name}</span>
-                <span className="block text-[11.5px] text-muted">{s.address}</span>
-              </span>
-              {s.distanceM !== null && (
-                <span className="num flex-none text-[11.5px] text-ink-2">
-                  {formatDistance(s.distanceM)}
-                </span>
-              )}
-              <span className="flex-none text-[11px] text-muted-2">{hoursSummary(s)}</span>
-            </Link>
-          ))}
-        </div>
-
-        {stores.length > 12 && (
-          <p className="mt-2 text-[11px] text-muted-2">
-            另有 {stores.length - 12} 家 · 用上面的搜尋找特定藥品
-          </p>
-        )}
+        <AreaStores stores={stores} area={area} areaLabel={getArea(area).shortName} />
 
         <p className="mt-3 text-[11px] leading-[1.6] text-muted-2">
           庫存狀態怎麼讀？<Link href="/stock-badges" className="text-green">看徽章分級說明 →</Link>
