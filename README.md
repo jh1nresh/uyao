@@ -39,6 +39,21 @@ python3 -m pytest
 | `spool.py` | SQLite queue + 指數退避上傳（fire-and-forget with retry） |
 | `daemon.py` | Pi 主程式（evdev grab → 全 pipeline） |
 | `dev_cli.py` | stdin 模擬掃描器，Mac 上開發整條 pipeline |
+| `prospects.py` | 藥局獲客名單：FDA 開放資料 → 過濾區域 → 排除連鎖 → 電訪 CSV |
+
+## 藥局獲客名單
+
+盒子要插進去的是「自己能決定的店」，所以名單預設排除連鎖。資料來自食藥署
+[藥局基本資料](https://data.gov.tw/dataset/6134) 開放資料集 —— 不爬網頁。
+
+```bash
+PYTHONPATH=src python3 -m pharmabox.prospects -o data/prospects.csv
+PYTHONPATH=src python3 -m pharmabox.prospects --districts 大安區,松山區 --refresh
+```
+
+連鎖名單（`NATIONAL_CHAINS` / `REGIONAL_CHAINS`）是**人工策展**不是自動推導：
+純用名稱出現頻率會把「健康／安康／永安／長青」這類吉祥字撞名的獨立藥局誤判成
+連鎖，`tests/test_prospects.py` 有回歸測試擋這件事。
 
 ## 消費端 Web
 
