@@ -16,6 +16,8 @@ export interface ReserveTarget {
 }
 
 interface Success {
+  /** 取貨頁的不可猜網址 key */
+  token?: string;
   code: string;
   holdHours: number;
 }
@@ -72,12 +74,12 @@ export function ReserveSheet({
           ...(demo ? { demo: true } : {}),
         }),
       });
-      const data = (await res.json()) as { code?: string; holdHours?: number; error?: string };
+      const data = (await res.json()) as { code?: string; token?: string; holdHours?: number; error?: string };
       if (!res.ok || !data.code) {
         setError(data.error ?? "送出失敗，請再試一次");
         return;
       }
-      setSuccess({ code: data.code, holdHours: data.holdHours ?? 4 });
+      setSuccess({ code: data.code, token: data.token, holdHours: data.holdHours ?? 4 });
     } catch {
       setError("連線失敗，請確認網路後再試");
     } finally {
@@ -204,6 +206,17 @@ function SuccessBody({
           {hoursSummary(target.store)}
         </div>
       </div>
+
+      {success.token && (
+        // 這張 sheet 關掉就沒了 —— 給一個可截圖、可加書籤的永久網址，
+        // 藥局確認後回來看狀態就會變。
+        <a
+          href={`/r/${success.token}`}
+          className="border border-line-strong px-3.5 py-2.5 text-center text-[12.5px] font-medium text-ink no-underline hover:border-green hover:text-green"
+        >
+          開啟取貨憑證（可截圖保存）→
+        </a>
+      )}
 
       <div className="flex gap-2.5">
         <a

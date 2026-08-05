@@ -173,6 +173,18 @@ export function reservationFlex(n: ReservationNotice): object {
           row("售價", `NT$${n.priceTwd}`),
           row("聯絡", n.contactKind === "phone" ? n.contact : `LINE ${n.contact}`),
           row("保留", `確認後 ${n.holdHours} 小時`),
+          { type: "separator", margin: "md" },
+          // 到店辨識靠這兩樣：消費者報取貨碼，藥師對尾號。
+          {
+            type: "text",
+            text: `到店核對：取貨碼 ${n.code} · 尾號 ${
+              n.contactKind === "phone" ? n.contact.slice(-3) : n.contact.slice(0, 4)
+            }`,
+            size: "xs",
+            color: MUTED,
+            wrap: true,
+            margin: "md",
+          },
         ],
       },
       footer: {

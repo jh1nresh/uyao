@@ -9,6 +9,7 @@ import {
   verifySignature,
 } from "@/lib/line";
 import { appendRecord } from "@/lib/record";
+import { updateStatus } from "@/lib/reservations-store";
 
 export const runtime = "nodejs";
 
@@ -93,6 +94,13 @@ async function onPostback(userId: string, replyToken: string, data: string) {
   if (!code || (action !== "confirm" && action !== "reject")) return;
 
   const storeSlug = storeForUser(userId);
+
+  // 更新可讀取的那份 —— 消費者的取貨頁讀的是這裡
+  const updated = await updateStatus(
+    code,
+    action === "confirm" ? "confirmed" : "rejected_no_stock",
+  ).catch(() => null);
+
   await appendRecord("reservations", {
     code,
     storeSlug: storeSlug ?? null,
@@ -101,11 +109,22 @@ async function onPostback(userId: string, replyToken: string, data: string) {
     at: new Date().toISOString(),
   });
 
+  if (!updated) {
+    // 查不到那筆 —— 大多是儲存沒設好，或已經過期。要講實話，
+    // 不能讓藥局以為系統記下了。
+    await reply(replyToken, [
+      text(`收到，但系統查不到 ${code} 這筆預留（可能已過期）。我們會人工確認，請先不要處理。`),
+    ]);
+    return;
+  }
+
+  const tail =
+    updated.contactKind === "phone" ? updated.contact.slice(-3) : updated.contact.slice(0, 4);
   await reply(replyToken, [
     text(
       action === "confirm"
-        ? `${code} 已確認保留，我們會通知消費者。請把商品先留在櫃檯。`
-        : `${code} 已回報沒貨，我們會通知消費者去別家。`,
+        ? `${code} 已確認保留。\n\n請把商品留在櫃檯，消費者會報「${code}」來取，尾號 ${tail}。\n保留 ${updated.holdHours} 小時。`
+        : `${code} 已回報沒貨。\n\n我們會通知消費者改找別家，這筆不用再處理。`,
     ),
   ]);
 }

@@ -7,6 +7,12 @@ import { hoursSummary } from "@/lib/hours";
 import { stockBadge } from "@/lib/stock";
 import { isConfigured, push, reservationFlex, userForStore } from "@/lib/line";
 import { appendRecord } from "@/lib/record";
+import {
+  newToken,
+  saveReservation,
+  updateStatus,
+  type StoredReservation,
+} from "@/lib/reservations-store";
 
 export const runtime = "nodejs";
 
@@ -74,20 +80,38 @@ export async function POST(request: Request) {
   }
 
   const code = pickupCode();
-  const record = {
+  const token = newToken();
+  const record: StoredReservation = {
+    token,
     code,
     drugSlug,
+    drugName: drug.name,
+    drugSpec: drug.spec,
     storeSlug,
+    storeName: store.name,
+    storeAddress: store.address,
+    storeMapsUrl: store.mapsUrl,
+    storeHours: hoursSummary(store),
+    priceTwd: offer.priceTwd,
     contactKind: contact.kind,
     contact: contact.value,
-    priceTwd: offer.priceTwd,
-    stockTier: offer.badge.tier,
+    status: "pending_store_confirm",
     createdAt: new Date().toISOString(),
-    status: "pending_store_confirm" as const,
+    confirmedAt: null,
+    holdHours: HOLD_HOURS,
+    // 示範單不能混進真單 —— 取貨頁也要看得出來
     ...(demo ? { demo: true as const } : {}),
   };
 
-  await appendRecord("reservations", record);
+  // 兩個去處各有職責：record sink 是給你看的通知，store 是取貨頁要讀的。
+  await appendRecord("reservations", { ...record, stockTier: offer.badge.tier });
+  try {
+    await saveReservation(record);
+  } catch (err) {
+    // 存不起來 = 取貨頁會查不到。不擋下預留（藥局那端還是會收到），
+    // 但一定要吵，因為消費者拿到的連結會是死的。
+    console.error("[reservations] 寫入 store 失敗，取貨頁將查不到", code, String(err).slice(0, 200));
+  }
 
   // 推給藥局。推不出去不能讓消費者的預留失敗 —— 那筆已經進 record sink，
   // 你還是看得到，只是要人工通知藥局。
@@ -116,6 +140,7 @@ export async function POST(request: Request) {
 
   return NextResponse.json({
     code,
+    token,
     holdHours: HOLD_HOURS,
     priceTwd: offer.priceTwd,
     store: {
@@ -145,5 +170,6 @@ export async function DELETE(request: Request) {
   }
 
   await appendRecord("reservations", { code, status: "cancelled_by_user", cancelledAt: new Date().toISOString() });
+  await updateStatus(code, "cancelled_by_user").catch(() => null);
   return NextResponse.json({ code, status: "cancelled" });
 }
