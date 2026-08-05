@@ -1,12 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useState } from "react";
 
 import { ReserveSheet, type ReserveTarget } from "./ReserveSheet";
 import { StockBadge } from "./StockBadge";
-import { StoreMap } from "./StoreMap";
-import { useLocation } from "./LocationProvider";
 import type { StoreRow } from "@/lib/data";
 import { getArea } from "@/lib/data";
 import { formatDistance, formatPrice } from "@/lib/format";
@@ -25,55 +23,17 @@ export function PharmacyList({
   drug: { slug: string; name: string; spec: string };
   rows: StoreRow[];
 }) {
-  const [view, setView] = useState<"list" | "map">("list");
-  const { position } = useLocation();
-  const mapStores = useMemo(() => rows.map((r) => r.store), [rows]);
-  const annotations = useMemo(
-    () =>
-      Object.fromEntries(
-        rows.map((r) => [r.store.slug, { priceTwd: r.priceTwd, badge: r.badge }]),
-      ),
-    [rows],
-  );
   const [target, setTarget] = useState<ReserveTarget | null>(null);
 
   return (
     <>
       <div className="flex flex-wrap items-center gap-3 px-4 py-3.5 sm:px-7">
         <h2 className="text-[13px] font-bold">附近 {rows.length} 家藥局</h2>
-        <div
-          role="tablist"
-          aria-label="檢視方式"
-          className="flex border border-line-strong text-xs font-medium"
-        >
-          {(["list", "map"] as const).map((v, i) => (
-            <button
-              key={v}
-              role="tab"
-              aria-selected={view === v}
-              onClick={() => setView(v)}
-              className={`px-3.5 py-[5px] ${i > 0 ? "border-l border-line-strong" : ""} ${
-                view === v ? "bg-ink text-white" : "bg-white text-muted"
-              }`}
-            >
-              {v === "list" ? "列表" : "地圖"}
-            </button>
-          ))}
-        </div>
         <div className="flex-1" />
         <p className="text-[11px] text-muted-2">排序：庫存新鮮度 → 距離 → 價格</p>
       </div>
 
-      {view === "map" ? (
-        <div className="mx-4 mb-1.5 sm:mx-7">
-          <StoreMap
-            stores={mapStores}
-            annotations={annotations}
-            userPosition={position}
-          />
-        </div>
-      ) : (
-        <div className="crossfade mx-4 mb-1.5 border border-line sm:mx-7">
+      <div className="mx-4 mb-1.5 border border-line sm:mx-7">
           {/* Desktop: 資料密表格 */}
           <div
             className={`hidden ${COLS} items-center gap-x-3 border-b border-line bg-surface px-3.5 py-2 text-[11px] font-bold text-muted lg:grid`}
@@ -135,8 +95,7 @@ export function PharmacyList({
               </div>
             </div>
           ))}
-        </div>
-      )}
+      </div>
 
       <p className="px-4 pt-2 text-[11px] leading-[1.6] text-muted-2 sm:px-7">
         ？＝該店尚無近期掃描紀錄，按「預留」由藥局確認 · 價格為藥局自報，以門市為準 ·
