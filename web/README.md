@@ -69,6 +69,20 @@ v1 沒有資料庫，落地成 `web/.data/reservations.jsonl`（已 gitignore）
 **`query` 存原話不做正規化** —— 同義詞／錯字／症狀對應是之後的事（那是這條鏈上
 唯一適合 LLM 的地方），把原始輸入丟掉就永遠補不回來。
 
+## ⚠️ 線上寫不進檔案
+
+三個 endpoint 都走 `lib/record.ts` 落地成 jsonl，**但 Vercel 的 `/var/task` 是唯讀的** ——
+`mkdir` 直接 ENOENT，API 照樣回 200、畫面照樣顯示成功，**資料靜默遺失**。
+
+止血：寫檔失敗時把整筆印成單行 `UYAO_RECORD <kind> {...}`，可以撈回來：
+
+```bash
+vercel logs https://uyao.vercel.app --json | python3 -m pharmabox.demand --stdin
+```
+
+**log 保留期有限，這不是持久化。** 正式解是接上真正的儲存（KV / Postgres），
+或讓 `/api/pilot` 直接送 webhook 到看得到的地方 —— 藥局試點申請掉單的代價最高。
+
 ## 字型
 
 中文走**自架的 Noto Sans TC subset**（`app/fonts/noto-sans-tc-var.woff2`，253KB，

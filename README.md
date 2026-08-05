@@ -49,6 +49,7 @@ python3 -m pytest
 | `nhi.py` | 健保特約資料：醫事機構代碼（穩定 ID）、調劑時段、合約終止偵測 |
 | `places.py` | Google Places 補座標／營業時間／歇業狀態（需 API 金鑰） |
 | `seed.py` | 三份資料合成消費端的 `web/lib/stores.generated.json` |
+| `demand.py` | 落空搜尋彙總：讀本機 jsonl 或 `vercel logs --json`，打電話前看一眼 |
 
 ## 藥局獲客名單
 

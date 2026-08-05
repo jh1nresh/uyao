@@ -1,14 +1,10 @@
-import { appendFile, mkdir } from "node:fs/promises";
-import path from "node:path";
-
 import { NextResponse } from "next/server";
 
 import { AREAS, DEFAULT_AREA, getDrug } from "@/lib/data";
+import { appendRecord } from "@/lib/record";
 import type { AreaSlug } from "@/lib/types";
 
 export const runtime = "nodejs";
-
-const LOG_PATH = path.join(process.cwd(), ".data", "demand.jsonl");
 
 /**
  * 落空的搜尋 —— 這個產品最值錢的訊號：一筆帶地點與時間、已經證明存在的需求。
@@ -34,15 +30,6 @@ function str(raw: unknown, max: number): string {
 
 function toArea(raw: unknown): AreaSlug {
   return AREAS.some((a) => a.slug === raw) ? (raw as AreaSlug) : DEFAULT_AREA;
-}
-
-async function append(record: object) {
-  try {
-    await mkdir(path.dirname(LOG_PATH), { recursive: true });
-    await appendFile(LOG_PATH, `${JSON.stringify(record)}\n`, "utf8");
-  } catch (err) {
-    console.error("[demand] 寫入失敗", err);
-  }
 }
 
 export async function POST(request: Request) {
@@ -72,7 +59,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "找不到這個藥品" }, { status: 404 });
   }
 
-  await append({
+  await appendRecord("demand", {
     at: new Date().toISOString(),
     kind,
     query,

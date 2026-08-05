@@ -1,18 +1,15 @@
 import { randomInt } from "node:crypto";
-import { appendFile, mkdir } from "node:fs/promises";
-import path from "node:path";
 
 import { NextResponse } from "next/server";
 
 import { getDrug, getStore, storesForDrug } from "@/lib/data";
 import { hoursSummary } from "@/lib/hours";
+import { appendRecord } from "@/lib/record";
 
 export const runtime = "nodejs";
 
 /** 藥局按下確認後保留的時數（SLL-R pickup-first）。 */
 const HOLD_HOURS = 4;
-
-const LOG_PATH = path.join(process.cwd(), ".data", "reservations.jsonl");
 
 interface Body {
   drugSlug?: unknown;
@@ -32,16 +29,6 @@ function normalizeContact(raw: string): { kind: "phone" | "line"; value: string 
 function pickupCode(): string {
   const letter = String.fromCharCode(65 + randomInt(26));
   return `${letter}-${String(randomInt(1000)).padStart(3, "0")}`;
-}
-
-async function append(record: object) {
-  // v1 沒有資料庫：落地成 jsonl，之後換成藥局端 LINE bot 的 queue。
-  try {
-    await mkdir(path.dirname(LOG_PATH), { recursive: true });
-    await appendFile(LOG_PATH, `${JSON.stringify(record)}\n`, "utf8");
-  } catch (err) {
-    console.error("[reservations] 寫入失敗", err);
-  }
 }
 
 export async function POST(request: Request) {
@@ -88,7 +75,7 @@ export async function POST(request: Request) {
     status: "pending_store_confirm" as const,
   };
 
-  await append(record);
+  await appendRecord("reservations", record);
 
   return NextResponse.json({
     code,
@@ -120,6 +107,6 @@ export async function DELETE(request: Request) {
     return NextResponse.json({ error: "取貨碼格式錯誤" }, { status: 422 });
   }
 
-  await append({ code, status: "cancelled_by_user", cancelledAt: new Date().toISOString() });
+  await appendRecord("reservations", { code, status: "cancelled_by_user", cancelledAt: new Date().toISOString() });
   return NextResponse.json({ code, status: "cancelled" });
 }
