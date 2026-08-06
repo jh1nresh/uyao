@@ -202,6 +202,37 @@ class TestKv:
         monkeypatch.delenv("KV_REST_API_TOKEN", raising=False)
         assert demand_mod.from_kv() == []
 
+    def test_prefers_the_read_only_token(self, monkeypatch):
+        """報表只做 LRANGE。能寫能刪的金鑰不該被貼進 shell 或 cron。"""
+        seen = {}
+
+        class FakeResp:
+            def read(self):
+                return b'{"result": []}'
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                return False
+
+        def fake_urlopen(req, **kw):
+            seen["auth"] = req.headers["Authorization"]
+            return FakeResp()
+
+        monkeypatch.setenv("KV_REST_API_URL", "https://kv.example")
+        monkeypatch.setenv("KV_REST_API_TOKEN", "可寫的")
+        monkeypatch.setenv("KV_REST_API_READ_ONLY_TOKEN", "唯讀的")
+        monkeypatch.setattr(demand_mod.urllib.request, "urlopen", fake_urlopen)
+
+        demand_mod.from_kv()
+        assert seen["auth"] == "Bearer 唯讀的"
+
+        # 沒發唯讀 token 的舊設定要照樣能跑
+        monkeypatch.delenv("KV_REST_API_READ_ONLY_TOKEN")
+        demand_mod.from_kv()
+        assert seen["auth"] == "Bearer 可寫的"
+
     def test_parses_lrange_payload(self, monkeypatch):
         payload = {"result": [json.dumps(rec(drugSlug="green-oil")), "壞掉的不是 json"]}
 
