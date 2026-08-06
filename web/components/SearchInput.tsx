@@ -34,7 +34,9 @@ export function SearchInput({
         autoFocus={autoFocus}
         defaultValue={defaultValue}
         placeholder={
-          lg ? "輸入藥品名或症狀，如：痠痛貼布、曼秀雷敦" : "搜尋藥品"
+          // 例子刻意一個商品名、一個口語症狀 —— 症狀查詢現在真的走得通
+          // （`lib/symptoms.ts`），不給例子沒人會知道可以這樣打。
+          lg ? "輸入藥品名或症狀，如：曼秀雷敦、被蚊子咬" : "搜尋藥品"
         }
         // h-full：讓整個框都是點擊區，不是只有文字那 20px
         className={`h-full min-w-0 flex-1 bg-transparent text-ink outline-none placeholder:text-muted-2 ${
