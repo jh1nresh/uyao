@@ -9,8 +9,10 @@ import { userForStore } from "@/lib/bindings";
 import { isConfigured, push, reservationFlex, text } from "@/lib/line";
 import { appendRecord } from "@/lib/record";
 import {
+  NO_SHOW_LIMIT,
   getByToken,
   newToken,
+  noShowCount,
   save,
   saveReservation,
   type StoredReservation,
@@ -83,6 +85,20 @@ export async function POST(request: Request) {
     return NextResponse.json(
       { error: "請填手機號碼（09 開頭 10 碼）" },
       { status: 422 },
+    );
+  }
+
+  // 畫面上寫「兩次預留未取將暫停預留權限」，這裡就要真的擋 ——
+  // 不能讓看得見的規則是空話。只算藥局已確認卻沒去拿的那種。
+  const strikes = await noShowCount(contact.value).catch(() => 0);
+  if (strikes >= NO_SHOW_LIMIT) {
+    return NextResponse.json(
+      {
+        error:
+          `這個號碼有 ${strikes} 次預留未取，暫時無法預留。` +
+          "如果是誤判，請來信 hello@uyao.tw。",
+      },
+      { status: 403 },
     );
   }
 
