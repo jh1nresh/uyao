@@ -110,6 +110,75 @@ function row(label: string, value: string): object {
 }
 
 /**
+ * 藥局確認之後給的回執，帶一顆「已交付」。
+ *
+ * 少了這顆按鈕，藥局把貨交出去之後沒有任何方式告訴系統 —— 結果是每一筆
+ * **成功**的取貨最後都會收到假的「逾期未取」，而且真的來拿貨的消費者
+ * 會被記一次放鳥。純文字回覆做不到這件事，所以這裡要用 Flex。
+ */
+export function confirmedFlex(n: {
+  demo?: boolean;
+  code: string;
+  drugName: string;
+  contactTail: string;
+  holdHours: number;
+}): object {
+  return {
+    type: "flex",
+    altText: `${n.demo ? "【示範】" : ""}${n.code} 已確認保留`,
+    contents: {
+      type: "bubble",
+      body: {
+        type: "box",
+        layout: "vertical",
+        spacing: "sm",
+        contents: [
+          { type: "text", text: `${n.code} 已確認保留`, weight: "bold", size: "lg", color: INK },
+          { type: "text", text: n.drugName, size: "sm", color: MUTED, wrap: true },
+          { type: "separator", margin: "md" },
+          {
+            type: "text",
+            text:
+              `請把商品留在櫃檯。消費者會報「${n.code}」來取，` +
+              `核對手機尾號 ${n.contactTail}。保留 ${n.holdHours} 小時。`,
+            size: "sm",
+            color: INK,
+            wrap: true,
+            margin: "md",
+          },
+        ],
+      },
+      footer: {
+        type: "box",
+        layout: "vertical",
+        contents: [
+          {
+            type: "button",
+            style: "primary",
+            color: GREEN,
+            action: {
+              type: "postback",
+              label: "客人已取走",
+              data: `action=pickup&code=${encodeURIComponent(n.code)}`,
+              displayText: `${n.code} 已交付`,
+            },
+          },
+          {
+            type: "text",
+            text: "交貨後按一下，就不會再收到這筆的催單與逾期通知",
+            size: "xxs",
+            color: MUTED,
+            wrap: true,
+            margin: "sm",
+            align: "center",
+          },
+        ],
+      },
+    },
+  };
+}
+
+/**
  * 藥局收到的預留單。兩顆按鈕就是整個迴路 ——
  * 按了才會產生消費者那端的通知。
  */

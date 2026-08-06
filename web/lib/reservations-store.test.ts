@@ -120,3 +120,22 @@ describe("狀態流轉", () => {
     expect(await updateStatus("X-000", "confirmed")).toBeNull();
   });
 });
+
+describe("已交付", () => {
+  it("成功取貨的單不會被判逾期 —— 少了這條，每一筆成功交易都會推假的逾期通知", () => {
+    const old = new Date(Date.now() - 99 * H).toISOString();
+    expect(
+      isExpired(make({ status: "picked_up", confirmedAt: old, createdAt: old })),
+    ).toBe(false);
+  });
+
+  it("記下交付時間，而且不動原本的確認時間", async () => {
+    const r = make({ code: "P-001" });
+    await saveReservation(r);
+    await updateStatus("P-001", "confirmed");
+    const done = await updateStatus("P-001", "picked_up");
+    expect(done?.pickedUpAt).toBeTruthy();
+    expect(done?.confirmedAt).toBeTruthy();
+    expect(done?.status).toBe("picked_up");
+  });
+});
