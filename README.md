@@ -76,18 +76,25 @@ python3 -m pharmabox.outreach --days 30 --write   # 另外寫出 data/outreach/
    要給 B 店看的紙上，一次就把供給側的信任燒光。指名道姓的版本只在 call sheet
 
 線上資料存在 upstash KV 的 `rec:demand`（`web/lib/record.ts` 的 kv sink）。
-本機要讀得到得自己設環境變數 —— **`vercel env pull` 拿不到**，那幾個變數在
-Vercel 上標記為 Sensitive，寫進去就讀不回來。到 Vercel → Storage → 那個 KV →
-`.env.local` 分頁複製：
+金鑰放 `web/.env.local` 就好 —— CLI 會跟著讀那個檔（Next.js 的慣例檔，
+Python 本來不讀，不跟著讀的話「我設好了」跟「報表印 0 筆」會同時成立）。
 
-```bash
-export KV_REST_API_URL='https://xxx.upstash.io'
-export KV_REST_API_READ_ONLY_TOKEN='...'   # 報表只做 LRANGE，別用可寫的那把
-python3 -m pharmabox.outreach --days 30 --write
+**`vercel env pull` 拿不到金鑰**：那幾個變數在 Vercel 上標記為 Sensitive，
+寫進去就讀不回來（拉下來是字面的 `[SENSITIVE]`）。到 Vercel → Storage →
+那個 KV → `.env.local` 分頁複製。報表只做 `LRANGE`，用唯讀的那把：
+
+```
+KV_REST_API_URL=https://xxx.upstash.io
+KV_REST_API_READ_ONLY_TOKEN=...
 ```
 
-沒設會**安靜**退回本機檔案（印出 0 筆而不是報錯），所以輸出開頭一定會標來源，
-看到 `來源 …/web/.data/…` 就是沒吃到線上資料。
+找檔案的順序是 `$PHARMABOX_ENV_FILE` → `./web/.env.local` → 套件所在
+checkout 的 `web/.env.local`。**cwd 排在套件位置前面**是因為 `pip install -e .`
+是從哪個 checkout 裝的就永遠指向哪個 —— 在 worktree 裝過、回主 repo 跑，
+不這樣排會翻到 worktree 那份空的。
+
+都找不到會**安靜**退回本機檔案（印 0 筆而不是報錯），所以輸出開頭一定會標
+來源：看到 `來源 KV rec:demand` 才是吃到線上資料。
 
 ## 藥局獲客名單
 

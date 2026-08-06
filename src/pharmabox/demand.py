@@ -40,6 +40,45 @@ DEFAULT_KV_FILE = REPO_ROOT / "web" / ".data" / "kv" / "rec:demand.json"
 SENTINEL = "UYAO_RECORD demand "
 KV_LIST_KEY = "rec:demand"
 
+def env_files() -> list[Path]:
+    """`web/.env.local` 是 Next.js 的慣例檔，Python 不會自己讀它。
+
+    順序有意義：**cwd 排在模組位置前面**。`pip install -e .` 是從哪個
+    checkout 裝的就永遠指向哪個 —— 在 worktree 裝過、之後回主 repo 跑，
+    錨在 `__file__` 會去翻 worktree 那份空的 `.env.local`，然後安靜印 0 筆。
+    `paths.py` 的 docstring 記過同一個坑的另一面。
+    """
+    override = os.environ.get("PHARMABOX_ENV_FILE")
+    if override:
+        return [Path(override).expanduser()]
+    return [Path.cwd() / "web" / ".env.local", REPO_ROOT / "web" / ".env.local"]
+
+
+def env_or_file(name: str, paths: list[Path] | None = None) -> str | None:
+    """先看真正的環境變數，沒有才翻 `.env.local`。
+
+    不跟著讀這個檔的話，「我把 KV 設好了」跟「報表印 0 筆」會同時成立 ——
+    那是最花時間的失敗模式，因為兩邊看起來都沒錯。環境變數優先，檔案只補位。
+    """
+    got = os.environ.get(name)
+    if got:
+        return got
+
+    for path in paths if paths is not None else env_files():
+        if not path.exists():
+            continue
+        for line in path.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            line = line.removeprefix("export ").strip()
+            key, sep, value = line.partition("=")
+            if sep and key.strip() == name:
+                value = value.strip().strip('"').strip("'")
+                if value:
+                    return value
+    return None
+
 AREA_NAMES = {"zhongshan": "中山區", "xinyi": "信義區"}
 KIND_NAMES = {
     "catalog_miss": "目錄沒有這支藥",
@@ -79,11 +118,11 @@ def from_kv(
     產報表的 CLI 握著能寫能刪的金鑰 —— 它會被貼進 shell、cron、筆記本。
     Vercel 的 KV 整合本來就一起發 `KV_REST_API_READ_ONLY_TOKEN`。
     """
-    url = url or os.environ.get("KV_REST_API_URL")
+    url = url or env_or_file("KV_REST_API_URL")
     token = (
         token
-        or os.environ.get("KV_REST_API_READ_ONLY_TOKEN")
-        or os.environ.get("KV_REST_API_TOKEN")
+        or env_or_file("KV_REST_API_READ_ONLY_TOKEN")
+        or env_or_file("KV_REST_API_TOKEN")
     )
     if not (url and token):
         return []
