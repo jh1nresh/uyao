@@ -123,7 +123,9 @@ export function reservationFlex(n: ReservationNotice): object {
         type: "box",
         layout: "vertical",
         paddingAll: "12px",
-        backgroundColor: GREEN,
+        // 示範單用墨色而不是綠色 —— 示範頁是公開的，任何人都能對已綁定的
+        // 藥局產生示範單，長得跟真單一樣會讓藥師分不出該不該備貨。
+        backgroundColor: n.demo ? INK : GREEN,
         contents: [
           { type: "text", text: n.demo ? "新的預留（示範）" : "新的預留", color: "#FFFFFF", weight: "bold", size: "sm" },
           { type: "text", text: n.code, color: "#FFFFFF", weight: "bold", size: "xxl" },

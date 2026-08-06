@@ -77,17 +77,18 @@ export async function GET(request: Request) {
       if (n > 0) noShow += 1;
     }
 
-    if (r.demo) continue;
+    // 示範單也通知 —— 理由同取消：卡片進得去就要出得來
     const lineUser = await userForStore(r.storeSlug).catch(() => undefined);
     if (!lineUser || !isConfigured()) continue;
     try {
       await push(lineUser, [
         text(
-          wasConfirmed
-            ? `⏰ ${r.code} 已逾期未取\n\n${r.drugName}\n` +
-              `保留 ${r.holdHours} 小時已過，可以放回架上了。`
-            : `⏰ ${r.code} 已自動關閉\n\n${r.drugName}\n` +
-              "這筆一直沒有回覆，已經幫你關掉，不用處理。",
+          (r.demo ? "［示範］" : "") +
+            (wasConfirmed
+              ? `⏰ ${r.code} 已逾期未取\n\n${r.drugName}\n` +
+                `保留 ${r.holdHours} 小時已過，可以放回架上了。`
+              : `⏰ ${r.code} 已自動關閉\n\n${r.drugName}\n` +
+                "這筆一直沒有回覆，已經幫你關掉，不用處理。"),
         ),
       ]);
     } catch (err) {
