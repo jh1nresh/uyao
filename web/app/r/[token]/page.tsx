@@ -5,7 +5,7 @@ import { CancelReservation } from "@/components/CancelReservation";
 import { PickupAutoRefresh } from "@/components/PickupAutoRefresh";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { formatPrice } from "@/lib/format";
+import { PRICE_NOTICE } from "@/lib/pricing";
 import {
   TELL_CONSUMER_AFTER_MIN,
   contactTail,
@@ -169,9 +169,8 @@ export default async function PickupPage({
           <div className="border-b border-line-soft px-3.5 py-3">
             <div className="text-[15px] font-medium text-ink">{r.drugName}</div>
             <div className="text-[13px] text-muted">{r.drugSpec}</div>
-            <div className="num mt-1 text-[15px] font-semibold text-ink">
-              {formatPrice(r.priceTwd)}
-              <span className="ml-1 font-sans text-[13px] font-normal text-muted">到店付款</span>
+            <div className="mt-1 text-[13px] text-muted">
+              {PRICE_NOTICE}，到店付款
             </div>
           </div>
 

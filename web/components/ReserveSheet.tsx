@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
 import { StockBadge } from "./StockBadge";
-import { formatPrice } from "@/lib/format";
+import { PRICE_NOTICE } from "@/lib/pricing";
 import { hoursSummary } from "@/lib/hours";
 import type { NotifyResult, StockBadgeSpec, Store } from "@/lib/types";
 
@@ -163,7 +163,7 @@ export function ReserveSheet({
                 </div>
                 <StockBadge badge={target.badge} className="mt-0.5 text-[13px]" />
               </div>
-              <div className="num font-semibold">{formatPrice(target.priceTwd)}</div>
+              <div className="text-[13px] text-muted-2">{PRICE_NOTICE}</div>
             </div>
 
             <form onSubmit={submit} className="flex flex-col gap-1.5">
@@ -308,7 +308,7 @@ function SuccessBody({
         <div className="text-[13px] font-medium text-muted-2">取貨碼</div>
         <div className="num text-[34px] font-semibold tracking-[.12em]">{success.code}</div>
         <div className="text-center text-xs text-ink-2">
-          {target.drug.name} · <span className="num">{formatPrice(target.priceTwd)}</span> 到店付款
+          {target.drug.name} · 到店由藥師確認並付款
         </div>
       </div>
 

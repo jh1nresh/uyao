@@ -7,7 +7,7 @@ import { PreviewShelf } from "@/components/PreviewShelf";
 import { StorePreviewBanner } from "@/components/StorePreviewBanner";
 import { drugsForStore } from "@/lib/data";
 import type { Store } from "@/lib/types";
-import { formatDistance, formatPrice } from "@/lib/format";
+import { formatDistance } from "@/lib/format";
 import {
   businessStatusWarning,
   hoursNote,
@@ -130,32 +130,8 @@ export function StoreView({ store, preview }: { store: Store; preview: boolean }
               {items.length} 項 · 全部可預留，到店付款
             </p>
           </div>
-          {preview ? (
-            /* 示範是封閉世界：卡片不連到讀真庫存的 /drug/[slug]，預留直接在卡上 */
-            <PreviewShelf store={store} items={items} />
-          ) : (
-            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
-              {items.map((it) => (
-                <Link
-                  key={it.drug.slug}
-                  href={`/drug/${it.drug.slug}`}
-                  className="flex flex-col gap-[5px] border border-line px-3.5 py-3 no-underline hover:border-green"
-                >
-                  <span className="text-[15px] font-medium text-ink">{it.drug.name}</span>
-                  <span className="text-[13px] text-muted-2">
-                    {it.drug.spec} · {it.drug.drugClass}
-                  </span>
-                  <span className="mt-0.5 flex items-center gap-2">
-                    <span className="num text-[15px] font-semibold text-ink">
-                      {formatPrice(it.priceTwd)}
-                    </span>
-                    <span className="flex-1" />
-                    <StockBadge badge={it.badge} short className="text-[13px]" />
-                  </span>
-                </Link>
-              ))}
-            </div>
-          )}
+          {/* 示範是封閉世界：卡片不連到讀真庫存的 /drug/[slug]，預留直接在卡上 */}
+          <PreviewShelf store={store} items={items} />
         </section>
       ) : (
         <section className="px-4 pb-[26px] pt-5 sm:px-7 xl:px-12 2xl:px-16">
@@ -165,7 +141,7 @@ export function StoreView({ store, preview }: { store: Store; preview: boolean }
               這家藥局還沒有即時庫存。
               <br />
               <span className="text-muted">
-                庫存來自店內掃描器 —— 裝上盒子之後，這裡會自動列出有貨商品與價格，
+                庫存來自店內掃描器 —— 裝上盒子之後，這裡會自動列出有貨商品，
                 消費者可以直接預留。藥局端不用改任何流程。
               </span>
             </p>
@@ -190,7 +166,7 @@ export function StoreView({ store, preview }: { store: Store; preview: boolean }
       <SiteFooter
         note={
           preview
-            ? "以上為示範資料。實際價格與庫存由藥局提供與盒子掃描更新，以門市為準。"
+            ? "以上為示範資料。實際庫存由盒子掃描更新；售價僅在此示範頁呈現，消費端不顯示價格。"
             : "藥局基本資料來自食藥署與健保署開放資料，如有錯誤請來信更正。處方藥請至門市洽詢藥師。"
         }
       />
