@@ -7,10 +7,11 @@ import { ReserveSheet, type ReserveTarget } from "./ReserveSheet";
 import { StockBadge } from "./StockBadge";
 import type { StoreRow } from "@/lib/data";
 import { getArea } from "@/lib/data";
-import { formatDistance, formatPrice } from "@/lib/format";
+import { formatDistance } from "@/lib/format";
 import { hoursSummary } from "@/lib/hours";
 
-const COLS = "grid-cols-[1fr_88px_150px_96px_168px_92px]";
+// 拿掉價格欄之後重新配比例
+const COLS = "grid-cols-[1fr_88px_1fr_180px_92px]";
 
 /**
  * 藥品頁的核心單位：附近藥局 rows（列表 ⇄ 地圖）＋ 預留。
@@ -30,7 +31,7 @@ export function PharmacyList({
       <div className="flex flex-wrap items-center gap-3 px-4 py-3.5 sm:px-7 xl:px-12 2xl:px-16">
         <h2 className="text-[15px] font-bold">附近 {rows.length} 家藥局</h2>
         <div className="flex-1" />
-        <p className="text-[13px] text-muted-2">排序：庫存新鮮度 → 距離 → 價格</p>
+        <p className="text-[13px] text-muted-2">排序：庫存新鮮度 → 距離</p>
       </div>
 
       <div className="mx-4 mb-1.5 border border-line sm:mx-7">
@@ -41,7 +42,6 @@ export function PharmacyList({
             <div>店家</div>
             <div className="text-right">距離</div>
             <div>營業狀態</div>
-            <div className="text-right">價格</div>
             <div>庫存狀態</div>
             <div />
           </div>
@@ -61,9 +61,6 @@ export function PharmacyList({
                   {formatDistance(r.store.distanceM)}
                 </div>
                 <div className="text-xs text-muted">{hoursSummary(r.store)}</div>
-                <div className="num text-right text-[15px] font-semibold">
-                  {formatPrice(r.priceTwd)}
-                </div>
                 <StockBadge badge={r.badge} className="text-xs" />
                 <ReserveButton row={r} onClick={() => setTarget({ ...r, drug })} />
               </div>
@@ -90,7 +87,6 @@ export function PharmacyList({
                     <StockBadge badge={r.badge} />
                   </div>
                 </div>
-                <span className="num text-[15px] font-semibold">{formatPrice(r.priceTwd)}</span>
                 <ReserveButton row={r} mobile onClick={() => setTarget({ ...r, drug })} />
               </div>
             </div>
@@ -98,8 +94,8 @@ export function PharmacyList({
       </div>
 
       <p className="px-4 pt-2 text-[13px] leading-[1.6] text-muted-2 sm:px-7 xl:px-12 2xl:px-16">
-        ？＝該店尚無近期掃描紀錄，按「預留」由藥局確認 · 價格為藥局自報，以門市為準 ·
-        本服務僅提供預留取貨，不提供線上交易
+        ？＝該店尚無近期掃描紀錄，按「預留」由藥局確認 · 價格與用藥說明由藥師於門市提供 ·
+        本服務僅供預留，不提供線上交易
       </p>
 
       {target && <ReserveSheet target={target} onClose={() => setTarget(null)} />}

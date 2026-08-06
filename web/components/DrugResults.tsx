@@ -4,7 +4,7 @@ import { NotifyMe } from "./NotifyMe";
 import { StockBadge } from "./StockBadge";
 import type { DrugSummary } from "@/lib/data";
 import { getArea } from "@/lib/data";
-import { formatDistance, formatFromPrice } from "@/lib/format";
+import { formatDistance } from "@/lib/format";
 
 /** 搜尋結果 / 品類列表共用的資料密表格。 */
 export function DrugResults({
@@ -50,8 +50,8 @@ export function DrugResults({
                 <span className="num">{formatDistance(r.nearestStore.distanceM)}</span>
               )}
             </span>
-            <span className="num text-right text-xs text-ink-2">
-              {r.fromPriceTwd === null ? "—" : formatFromPrice(r.fromPriceTwd)}
+            <span className="text-right text-xs text-muted-2">
+              {r.drug.drugClass === "待確認" ? "" : r.drug.drugClass}
             </span>
             <StockBadge badge={r.bestBadge} className="justify-end text-xs" />
           </div>
@@ -62,8 +62,8 @@ export function DrugResults({
                 {r.drug.name} {r.drug.spec}
               </span>
               <div className="flex-1" />
-              <span className="num text-xs font-semibold text-ink">
-                {r.fromPriceTwd === null ? "—" : formatFromPrice(r.fromPriceTwd)}
+              <span className="text-xs text-muted-2">
+                {r.drug.drugClass === "待確認" ? "" : r.drug.drugClass}
               </span>
             </div>
             <div className="flex items-center gap-2 text-[13px] text-muted">

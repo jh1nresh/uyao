@@ -26,8 +26,8 @@ export async function generateMetadata({
   const category = getCategory(slug);
   if (!category) return { title: "找不到這個品類" };
   return {
-    title: `${category.name} — 附近藥局現貨與價格`,
-    description: `${category.name}在附近藥局的價格與庫存狀態，依店內掃描新鮮度排序。可線上預留、到店付款取貨。`,
+    title: `${category.name} — 附近藥局現貨查詢`,
+    description: `${category.name}在附近藥局的庫存狀態，依店內掃描新鮮度排序。可線上預留，到店由藥師確認交付。`,
   };
 }
 

@@ -16,7 +16,6 @@ import {
   storesForDrug,
   storesInArea,
 } from "@/lib/data";
-import { formatFromPrice } from "@/lib/format";
 
 export function generateStaticParams() {
   return allDrugs().map((d) => ({ slug: d.slug }));
@@ -34,7 +33,7 @@ export async function generateMetadata({
   const inStock = rows.filter((r) => r.badge.tier === "fresh").length;
   return {
     title: `${drug.name} ${drug.spec} — 附近哪家藥局有貨`,
-    description: `${drug.name}（${drug.form} · ${drug.spec}）附近 ${rows.length} 家藥局的價格與庫存，其中 ${inStock} 家今日掃描確認有貨。可線上預留、到店付款取貨。`,
+    description: `${drug.name}（${drug.form} · ${drug.spec}）附近 ${rows.length} 家藥局的庫存狀態，其中 ${inStock} 家今日掃描確認有貨。可線上預留，到店由藥師確認交付。`,
   };
 }
 
@@ -154,7 +153,6 @@ export default async function DrugPage({
                   </span>{" "}
                   附近 {a.storesWithStock} 家有貨
                 </span>
-                <span className="num text-xs text-ink-2">{formatFromPrice(a.fromPriceTwd)}</span>
               </div>
             ))}
           </div>

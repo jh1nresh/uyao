@@ -6,7 +6,7 @@ export function SiteFooter({ note }: { note?: string }) {
     <footer className="border-t border-line px-4 py-4 text-[13px] leading-[1.7] text-muted-2 sm:px-7 xl:px-12 2xl:px-16">
       {note ?? (
         <>
-          本站僅呈現成藥、指示藥及非藥品資訊；處方藥請洽藥局，不於本站呈現價格。藥品廣告依藥事法第
+          本站僅呈現庫存與門市資訊，不呈現藥品價格、不提供線上交易；商品一律由藥師於門市確認後交付。處方藥請洽藥局。藥品廣告依藥事法第
           66 條事前審查。
         </>
       )}
