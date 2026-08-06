@@ -23,6 +23,7 @@ export type ReservationStatus =
   | "confirmed"
   | "rejected_no_stock"
   | "cancelled_by_user"
+  | "picked_up"
   | "expired";
 
 export interface StoredReservation {
@@ -47,6 +48,8 @@ export interface StoredReservation {
   createdAt: string;
   /** 藥局確認的時間；未確認是 null */
   confirmedAt: string | null;
+  /** 藥局回報已交付的時間。有值代表這筆圓滿結束，不該再催也不算放鳥。 */
+  pickedUpAt?: string;
   /** 已經催過藥局的時間。有值就不再重複催。 */
   remindedAt?: string;
   holdHours: number;
@@ -163,6 +166,7 @@ export async function allActive(): Promise<StoredReservation[]> {
     try {
       const r = JSON.parse(raw) as StoredReservation;
       if (r.status === "pending_store_confirm" || r.status === "confirmed") out.push(r);
+      // picked_up 是終態，不進 cron 的掃描範圍
     } catch {
       /* 壞掉的那筆跳過，不要讓整個 cron 掛掉 */
     }
@@ -170,7 +174,13 @@ export async function allActive(): Promise<StoredReservation[]> {
   return out;
 }
 
-/** 這筆該逾期了嗎？已確認的算保留時數，沒回覆的給比較寬鬆的窗口。 */
+/**
+ * 這筆該逾期了嗎？已確認的算保留時數，沒回覆的給比較寬鬆的窗口。
+ *
+ * 已交付（picked_up）與所有終態都不會逾期 —— 少了這一條，每一筆**成功**
+ * 的取貨最後都會推一則假的「逾期未取」給藥局，而且在真的來拿貨的消費者
+ * 身上記一次放鳥。
+ */
 export function isExpired(r: StoredReservation): boolean {
   if (r.status === "confirmed" && r.confirmedAt) {
     return minutesSince(r.confirmedAt) > r.holdHours * 60;
@@ -205,10 +215,12 @@ export async function updateStatus(
 ): Promise<StoredReservation | null> {
   const r = await getByCode(code);
   if (!r) return null;
+  const now = new Date().toISOString();
   const next: StoredReservation = {
     ...r,
     status,
-    confirmedAt: status === "confirmed" ? new Date().toISOString() : r.confirmedAt,
+    confirmedAt: status === "confirmed" ? now : r.confirmedAt,
+    pickedUpAt: status === "picked_up" ? now : r.pickedUpAt,
   };
   await set(`r:${next.token}`, JSON.stringify(next));
   return next;
