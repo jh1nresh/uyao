@@ -92,7 +92,7 @@ export async function POST(request: Request) {
 
   // 節流：每一筆成功預留都會推一則 LINE 到藥局老闆手機。沒有節流的話
   // 一個迴圈就能把他的聊天室洗版洗到封鎖我們。
-  const rl = await checkReservation(request, contact.value);
+  const rl = await checkReservation(request, contact.value, demo);
   if (!rl.ok) {
     return NextResponse.json(
       { error: "預留太頻繁了，請稍後再試。" },
