@@ -119,6 +119,22 @@ export interface StockBadgeSpec {
   shortText: string;
 }
 
+/**
+ * 預留成立後，「藥局到底有沒有被通知」的結果。
+ *
+ * 只在示範模式回傳給前端 —— 正式路徑吐這個等於公開哪些藥局已經上線。
+ * 存在的理由是示範現場沒有時間翻 log：閉環有沒有合上要當場看得見。
+ */
+export type NotifyResult =
+  /** 已推給藥局的 LINE */
+  | "sent"
+  /** 這家藥局還沒綁 LINE，不會有人收到 */
+  | "unbound"
+  /** LINE_CHANNEL_ACCESS_TOKEN / SECRET 沒設 */
+  | "not_configured"
+  /** 綁了也設了，但 LINE API 擋下來（配額、好友關係、訊息格式）*/
+  | "failed";
+
 /** 一筆「某藥在某店」的完整可顯示資料 */
 export interface Listing {
   drug: Drug;

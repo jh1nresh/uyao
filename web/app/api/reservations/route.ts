@@ -14,6 +14,7 @@ import {
   updateStatus,
   type StoredReservation,
 } from "@/lib/reservations-store";
+import type { NotifyResult } from "@/lib/types";
 
 export const runtime = "nodejs";
 
@@ -121,8 +122,21 @@ export async function POST(request: Request) {
 
   // 推給藥局。推不出去不能讓消費者的預留失敗 —— 那筆已經進 record sink，
   // 你還是看得到，只是要人工通知藥局。
+  //
+  // 但**示範現場沒有時間翻 log**：你跟老闆說「你的 LINE 會響」，沒響的時候
+  // 畫面卻一切正常，你當場沒有任何線索。所以把結果帶回前端（只在 demo 模式
+  // 回傳，正式路徑不吐 —— 那會洩漏哪些藥局已經上線）。
   const lineUser = await userForStore(storeSlug);
-  if (lineUser && isConfigured()) {
+  let notify: NotifyResult;
+  if (!lineUser) {
+    notify = "unbound";
+    console.log(`[reservations] ${storeSlug} 尚未綁定 LINE，${code} 需人工通知`);
+  } else if (!isConfigured()) {
+    // 原本這條分支什麼都不印 —— 綁好了卻因為少一個環境變數而全靜音，
+    // 是最難查的一種。
+    notify = "not_configured";
+    console.error(`[reservations] LINE 未設定（少 token 或 secret），${code} 推不出去`);
+  } else {
     try {
       await push(lineUser, [
         reservationFlex({
@@ -137,17 +151,19 @@ export async function POST(request: Request) {
           demo,
         }),
       ]);
+      notify = "sent";
     } catch (err) {
+      notify = "failed";
       console.error("[reservations] 推播給藥局失敗", code, String(err).slice(0, 200));
     }
-  } else if (!lineUser) {
-    console.log(`[reservations] ${storeSlug} 尚未綁定 LINE，${code} 需人工通知`);
   }
 
   return NextResponse.json({
     code,
     token,
     holdHours: HOLD_HOURS,
+    // 示範專用診斷。真單不帶這個欄位。
+    ...(demo ? { notify } : {}),
     priceTwd: offer.priceTwd,
     store: {
       slug: store.slug,
