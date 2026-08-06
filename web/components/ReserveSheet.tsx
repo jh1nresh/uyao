@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { StockBadge } from "./StockBadge";
 import { formatPrice } from "@/lib/format";
 import { hoursSummary } from "@/lib/hours";
-import type { StockBadgeSpec, Store } from "@/lib/types";
+import type { NotifyResult, StockBadgeSpec, Store } from "@/lib/types";
 
 export interface ReserveTarget {
   drug: { slug: string; name: string; spec: string };
@@ -23,6 +23,8 @@ interface Success {
   token?: string;
   code: string;
   holdHours: number;
+  /** 只有示範模式會拿到 —— 藥局到底有沒有被通知 */
+  notify?: NotifyResult;
 }
 
 /**
@@ -95,7 +97,13 @@ export function ReserveSheet({
           ...(demo ? { demo: true } : {}),
         }),
       });
-      const data = (await res.json()) as { code?: string; token?: string; holdHours?: number; error?: string };
+      const data = (await res.json()) as {
+        code?: string;
+        token?: string;
+        holdHours?: number;
+        notify?: NotifyResult;
+        error?: string;
+      };
       if (!res.ok || !data.code) {
         setError(data.error ?? "送出失敗，請再試一次");
         return;
@@ -105,7 +113,12 @@ export function ReserveSheet({
       } catch {
         /* 存不起來不影響這次預留 */
       }
-      setSuccess({ code: data.code, token: data.token, holdHours: data.holdHours ?? 4 });
+      setSuccess({
+        code: data.code,
+        token: data.token,
+        holdHours: data.holdHours ?? 4,
+        notify: data.notify,
+      });
     } catch {
       setError("連線失敗，請確認網路後再試");
     } finally {
@@ -209,6 +222,58 @@ export function ReserveSheet({
   );
 }
 
+const NOTIFY_UI: Record<NotifyResult, { ok: boolean; label: string; body: string }> = {
+  sent: {
+    ok: true,
+    label: "已推播給藥局的 LINE",
+    body: "老闆按下「有貨，確認保留」之後，取貨憑證頁會變成「已確認保留」。閉環到那裡才算合上。",
+  },
+  unbound: {
+    ok: false,
+    label: "這家藥局還沒綁定 LINE",
+    body: "沒有人會收到這筆。用要收通知的帳號傳店名給官方帳號、核可之後再按一次。",
+  },
+  not_configured: {
+    ok: false,
+    label: "LINE 未設定",
+    body: "少了 LINE_CHANNEL_ACCESS_TOKEN 或 LINE_CHANNEL_SECRET，這個環境推不出任何訊息。",
+  },
+  failed: {
+    ok: false,
+    label: "推播被 LINE 擋下",
+    body: "綁定與設定都在，是 LINE API 回了錯誤。log 裡有狀態碼：配額、好友關係、或訊息格式。",
+  },
+};
+
+/**
+ * 示範專用的閉環診斷。
+ *
+ * 在藥局老闆面前沒有時間翻 log —— 你說「你的 LINE 會響」，沒響的時候
+ * 畫面卻一切正常，當場沒有任何線索。這一條把後端的推播結果直接講出來。
+ * 只有 demo 模式的回應帶 `notify`，所以真單不會看到它。
+ */
+function NotifyStrip({ notify }: { notify: NotifyResult }) {
+  const ui = NOTIFY_UI[notify];
+  return (
+    <div
+      className={`border px-3.5 py-2.5 text-[12.5px] leading-[1.6] ${
+        ui.ok ? "border-green-tint-line bg-green-tint" : "border-line-strong bg-surface"
+      }`}
+    >
+      <div className="flex items-baseline gap-1.5 font-bold">
+        <span aria-hidden className={ui.ok ? "text-green" : "text-ink"}>
+          {ui.ok ? "✓" : "⚠"}
+        </span>
+        <span className={ui.ok ? "text-green" : "text-ink"}>{ui.label}</span>
+        <span className="ml-auto text-[10.5px] font-medium tracking-[.08em] text-muted-2">
+          示範診斷
+        </span>
+      </div>
+      <p className="mt-1 text-muted">{ui.body}</p>
+    </div>
+  );
+}
+
 function SuccessBody({
   target,
   success,
@@ -233,6 +298,8 @@ function SuccessBody({
         等{target.store.name}確認（通常 10 分鐘內）— 確認後保留 {success.holdHours}{" "}
         小時，會用 LINE 通知你。
       </p>
+
+      {success.notify && <NotifyStrip notify={success.notify} />}
 
       <div className="flex flex-col items-center gap-1 border border-line bg-surface p-4">
         <div className="text-[13px] font-medium text-muted-2">取貨碼</div>
