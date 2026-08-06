@@ -93,6 +93,23 @@ export async function append(key: string, value: string, keepLast = 2000): Promi
 }
 
 /**
+ * 原子遞增，回傳遞增後的值。第一次遞增時才設 TTL —— 每次都設會讓
+ * 一直有請求的人永遠不過期，等於沒有限制。
+ */
+export async function incr(key: string, ttlSeconds: number): Promise<number> {
+  if (config()) {
+    const n = Number(await command(["INCR", key]));
+    if (n === 1) await command(["EXPIRE", key, ttlSeconds]);
+    return n;
+  }
+  // 本機退回讀改寫。不是原子的，但 dev 沒有併發問題。
+  const cur = Number((await get(key)) ?? 0);
+  const next = cur + 1;
+  await set(key, String(next));
+  return next;
+}
+
+/**
  * 掃出符合 prefix 的 key。**只給後台／低頻使用** —— Redis 的 SCAN 在
  * key 多的時候很貴，不要放進使用者請求的路徑上。
  */

@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+import { checkForm } from "@/lib/rate-limit";
+
 import { appendRecord } from "@/lib/record";
 
 export const runtime = "nodejs";
@@ -17,6 +19,14 @@ function field(raw: unknown, max: number): string {
 
 /** 藥局試點申請 — 供給側入口，跟消費端預留完全分開。 */
 export async function POST(request: Request) {
+  const rl = await checkForm(request, "pilot");
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "送出太頻繁了，請稍後再試。" },
+      { status: 429, headers: { "retry-after": String(rl.retryAfterSec) } },
+    );
+  }
+
   let body: Body;
   try {
     body = (await request.json()) as Body;

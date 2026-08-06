@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 
+import { checkForm } from "@/lib/rate-limit";
+
 import { AREAS, DEFAULT_AREA, getDrug } from "@/lib/data";
 import { appendRecord } from "@/lib/record";
 import type { AreaSlug } from "@/lib/types";
@@ -33,6 +35,14 @@ function toArea(raw: unknown): AreaSlug {
 }
 
 export async function POST(request: Request) {
+  const rl = await checkForm(request, "demand");
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "送出太頻繁了，請稍後再試。" },
+      { status: 429, headers: { "retry-after": String(rl.retryAfterSec) } },
+    );
+  }
+
   let body: Body;
   try {
     body = (await request.json()) as Body;
