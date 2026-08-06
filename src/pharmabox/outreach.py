@@ -47,6 +47,11 @@ DATA_TS = repo_root() / "web" / "lib" / "data.ts"
 # 一個區至少要有這麼多筆落空，才值得拿去跟藥局講。
 MIN_RECORDS = 5
 
+# 印在 brief 上的站台網址。**必須是真的打得開的那一個** —— 這張紙會被拿到
+# 藥局櫃台，上面印一個不解析的網域，第一印象就沒了。自訂網域接好之後改這裡
+# （或用 --site 覆寫），別讓它繼續指著一個還沒生效的 DNS。
+SITE = "uyao.vercel.app"
+
 AREA_LABEL = {"zhongshan": "中山區", "xinyi": "信義區"}
 
 
@@ -191,7 +196,7 @@ def call_rows(stores: list[dict], by_area: dict[str, AreaDemand],
 
 
 def brief_markdown(ad: AreaDemand, labels: dict[str, str], days: int | None,
-                   today: date) -> str:
+                   today: date, site: str = SITE) -> str:
     """**這份會被轉發出去**，所以有三件事跟 call sheet 不一樣：
 
     - 不出現任何店名。指名缺貨是那家店的私事，拿去給隔壁看是背刺
@@ -202,7 +207,7 @@ def brief_markdown(ad: AreaDemand, labels: dict[str, str], days: int | None,
     lines = [
         f"# {ad.label}：{window}有 {ad.total} 次搜尋沒有結果",
         "",
-        f"> uyao.tw 站內搜尋紀錄 · 統計期間 {window} · 產生於 {today.isoformat()}",
+        f"> {site} 站內搜尋紀錄 · 統計期間 {window} · 產生於 {today.isoformat()}",
         "",
     ]
 
@@ -301,6 +306,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--stdin", action="store_true", help="從 stdin 讀 vercel logs --json")
     ap.add_argument("--file", type=Path, default=None, help="指定 demand jsonl")
     ap.add_argument("--stores", type=Path, default=STORES_JSON)
+    ap.add_argument("--site", default=SITE,
+                    help=f"印在 brief 上的站台網址（預設 {SITE}）")
     ap.add_argument("--write", action="store_true", help="另外寫出 brief 與 call sheet CSV")
     ap.add_argument("-o", "--out", type=Path, default=None,
                     help="輸出目錄（預設 data/outreach）")
@@ -345,7 +352,8 @@ def main(argv: list[str] | None = None) -> int:
             continue
         path = out_dir / f"{today.isoformat()}-{ad.area}.md"
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(brief_markdown(ad, labels, days, today), encoding="utf-8")
+        path.write_text(brief_markdown(ad, labels, days, today, args.site),
+                        encoding="utf-8")
         print(f"brief → {path}")
     return 0
 
