@@ -109,6 +109,27 @@ export async function saveReservation(r: StoredReservation): Promise<void> {
   await set(`c:${r.code}`, r.token);
 }
 
+/**
+ * 取一個目前沒被佔用的取貨碼。
+ *
+ * `A-347` 只有 26,000 種組合，而 code → token 的索引是直接覆寫的。撞到的話
+ * 藥局按「確認 A-347」會確認到**別人的那筆** —— 靜默的資料錯亂，不會報錯，
+ * 只會讓某個人的藥被別人領走。100 筆同時活躍就有 17% 機率撞到。
+ *
+ * 撞了就重抽。抽不到就讓呼叫端知道，不要硬塞一個會蓋掉別人的碼。
+ */
+export async function reserveUniqueCode(
+  generate: () => string,
+  attempts = 8,
+): Promise<string | null> {
+  for (let i = 0; i < attempts; i += 1) {
+    const code = generate();
+    const taken = await get(`c:${code}`).catch(() => null);
+    if (!taken) return code;
+  }
+  return null;
+}
+
 export async function getByToken(token: string): Promise<StoredReservation | null> {
   const raw = await get(`r:${token}`);
   if (!raw) return null;

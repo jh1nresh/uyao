@@ -7,11 +7,13 @@ import { hoursSummary } from "@/lib/hours";
 import { stockBadge } from "@/lib/stock";
 import { userForStore } from "@/lib/bindings";
 import { isConfigured, push, reservationFlex, text } from "@/lib/line";
+import { checkReservation } from "@/lib/rate-limit";
 import { appendRecord } from "@/lib/record";
 import {
   NO_SHOW_LIMIT,
   getByToken,
   newToken,
+  reserveUniqueCode,
   noShowCount,
   save,
   saveReservation,
@@ -88,6 +90,16 @@ export async function POST(request: Request) {
     );
   }
 
+  // 節流：每一筆成功預留都會推一則 LINE 到藥局老闆手機。沒有節流的話
+  // 一個迴圈就能把他的聊天室洗版洗到封鎖我們。
+  const rl = await checkReservation(request, contact.value);
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: "預留太頻繁了，請稍後再試。" },
+      { status: 429, headers: { "retry-after": String(rl.retryAfterSec) } },
+    );
+  }
+
   // 畫面上寫「兩次預留未取將暫停預留權限」，這裡就要真的擋 ——
   // 不能讓看得見的規則是空話。只算藥局已確認卻沒去拿的那種。
   const strikes = await noShowCount(contact.value).catch(() => 0);
@@ -102,7 +114,12 @@ export async function POST(request: Request) {
     );
   }
 
-  const code = pickupCode();
+  const code = await reserveUniqueCode(pickupCode);
+  if (!code) {
+    // 8 次都撞到代表活躍量已經接近碼空間上限，該加長取貨碼了
+    console.error("[reservations] 取不到未使用的取貨碼，碼空間可能太小");
+    return NextResponse.json({ error: "系統忙碌中，請稍後再試" }, { status: 503 });
+  }
   const token = newToken();
   const record: StoredReservation = {
     token,
