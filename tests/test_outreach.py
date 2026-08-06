@@ -1,9 +1,11 @@
 import json
 from datetime import date, datetime, timedelta, timezone
+from pathlib import Path
 
 from pharmabox import demand as demand_mod
 from pharmabox.outreach import (
     DATA_TS,
+    SITE,
     AreaDemand,
     aggregate,
     brief_markdown,
@@ -249,6 +251,98 @@ class TestKv:
         monkeypatch.setattr(demand_mod.urllib.request, "urlopen", lambda *a, **k: FakeResp())
         rows = demand_mod.from_kv(url="https://kv.example", token="t")
         assert len(rows) == 1 and rows[0]["drugSlug"] == "green-oil"
+
+
+class TestEnvFile:
+    """把金鑰貼進 web/.env.local 是完全合理的直覺（Next.js 就讀那個檔）。
+    Python 不跟著讀的話，「我設好了」跟「報表印 0 筆」會同時成立。"""
+
+    def _write(self, tmp_path, body):
+        p = tmp_path / ".env.local"
+        p.write_text(body, encoding="utf-8")
+        return [p]
+
+    def test_real_env_wins(self, tmp_path, monkeypatch):
+        monkeypatch.setenv("KV_REST_API_URL", "來自環境變數")
+        paths = self._write(tmp_path, 'KV_REST_API_URL="來自檔案"\n')
+        assert demand_mod.env_or_file("KV_REST_API_URL", paths) == "來自環境變數"
+
+    def test_falls_back_to_file(self, tmp_path, monkeypatch):
+        monkeypatch.delenv("KV_REST_API_URL", raising=False)
+        paths = self._write(tmp_path, 'KV_REST_API_URL="https://kv.example"\n')
+        assert demand_mod.env_or_file("KV_REST_API_URL", paths) == "https://kv.example"
+
+    def test_tolerates_real_world_formatting(self, tmp_path, monkeypatch):
+        monkeypatch.delenv("A", raising=False)
+        monkeypatch.delenv("B", raising=False)
+        monkeypatch.delenv("C", raising=False)
+        paths = self._write(
+            tmp_path,
+            "# 註解\n\nexport A='單引號'\nB=沒有引號\nC=\n",
+        )
+        assert demand_mod.env_or_file("A", paths) == "單引號"
+        assert demand_mod.env_or_file("B", paths) == "沒有引號"
+        assert demand_mod.env_or_file("C", paths) is None  # 空值等於沒設
+
+    def test_missing_file_is_not_fatal(self, tmp_path, monkeypatch):
+        monkeypatch.delenv("KV_REST_API_URL", raising=False)
+        assert demand_mod.env_or_file("KV_REST_API_URL", [tmp_path / "nope"]) is None
+
+    def test_cwd_is_searched_before_module_root(self, monkeypatch):
+        """`pip install -e .` 是從哪個 checkout 裝的就永遠指向哪個。在
+        worktree 裝過、回主 repo 跑，錨在 __file__ 會翻到錯的 .env.local。"""
+        monkeypatch.delenv("PHARMABOX_ENV_FILE", raising=False)
+        files = demand_mod.env_files()
+        assert files[0] == Path.cwd() / "web" / ".env.local"
+        assert files[-1] == demand_mod.REPO_ROOT / "web" / ".env.local"
+
+    def test_explicit_override_wins(self, tmp_path, monkeypatch):
+        monkeypatch.setenv("PHARMABOX_ENV_FILE", str(tmp_path / "x.env"))
+        assert demand_mod.env_files() == [tmp_path / "x.env"]
+
+    def test_from_kv_uses_the_file(self, tmp_path, monkeypatch):
+        for v in ("KV_REST_API_URL", "KV_REST_API_TOKEN",
+                  "KV_REST_API_READ_ONLY_TOKEN"):
+            monkeypatch.delenv(v, raising=False)
+        monkeypatch.setenv("PHARMABOX_ENV_FILE", str(tmp_path / ".env.local"))
+        (tmp_path / ".env.local").write_text(
+            'KV_REST_API_URL="https://kv.example"\n'
+            'KV_REST_API_READ_ONLY_TOKEN="唯讀的"\n', encoding="utf-8")
+
+        seen = {}
+
+        class FakeResp:
+            def read(self):
+                return b'{"result": []}'
+
+            def __enter__(self):
+                return self
+
+            def __exit__(self, *a):
+                return False
+
+        def fake_urlopen(req, **kw):
+            seen["url"] = req.full_url
+            seen["auth"] = req.headers["Authorization"]
+            return FakeResp()
+
+        monkeypatch.setattr(demand_mod.urllib.request, "urlopen", fake_urlopen)
+        demand_mod.from_kv()
+        assert seen == {"url": "https://kv.example", "auth": "Bearer 唯讀的"}
+
+
+class TestSiteUrl:
+    def test_brief_uses_a_reachable_default(self):
+        """這張紙會被拿到藥局櫃台。印一個不解析的網域，第一印象就沒了。"""
+        ad = aggregate([rec(drugSlug="green-oil")])["zhongshan"]
+        md = brief_markdown(ad, {}, 30, date(2026, 8, 6))
+        assert "uyao.tw" not in md
+        assert SITE in md
+
+    def test_site_is_overridable(self):
+        ad = aggregate([rec(drugSlug="green-oil")])["zhongshan"]
+        md = brief_markdown(ad, {}, 30, date(2026, 8, 6), site="uyao.tw")
+        assert "uyao.tw" in md
 
 
 class TestCli:
