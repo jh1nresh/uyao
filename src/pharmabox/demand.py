@@ -1,34 +1,44 @@
 """落空搜尋彙總 —— 打電話給藥局之前看一眼。
 
-資料來源兩種，因為線上目前寫不進檔案：
+資料來源三種，優先序就是「存得住的程度」：
 
+    KV          upstash 的 `rec:demand` list（線上唯一真的存得住的地方）
     本機 jsonl   web/.data/demand.jsonl（dev 跑出來的）
     線上 log     vercel logs <url> --json 裡的 UYAO_RECORD 行
 
-Vercel 的 `/var/task` 是唯讀的，`POST /api/demand` 會回 200 但寫檔失敗，
-所以 `web/lib/record.ts` 在失敗時把整筆印成 `UYAO_RECORD demand {...}`。
-**log 保留期有限，這是止血不是持久化** —— 接上真正的儲存之後這條路就該拿掉。
+`web/lib/record.ts` 會同時送三個 sink，全滅才退回印 log。Vercel 的
+`/var/task` 是唯讀的，所以線上 fs 必定失敗 —— 沒設 KV 的話資料其實只
+活在會過期的 log 裡。**log 是止血不是持久化**，設了 KV 就該用 KV。
 
 用法：
 
-    python3 -m pharmabox.demand                      # 讀本機 jsonl
+    python3 -m pharmabox.demand                      # KV（沒設就退回本機 jsonl）
+    python3 -m pharmabox.demand --file some.jsonl    # 指定檔案
     vercel logs https://uyao.vercel.app --json \\
         | python3 -m pharmabox.demand --stdin        # 讀線上 log
     python3 -m pharmabox.demand --days 7             # 只看近 7 天
+
+要把這些數字變成打給藥局的那通電話，見 `pharmabox.outreach`。
 """
 
 from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
+import urllib.request
 from collections import Counter, defaultdict
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
 DEFAULT_JSONL = REPO_ROOT / "web" / ".data" / "demand.jsonl"
+# 本機沒設 upstash 時 kv.ts 的 file driver 落腳處。key 裡的 `:` 是合法字元
+# （它只換掉 [^A-Za-z0-9_:.-]），所以檔名真的帶冒號。
+DEFAULT_KV_FILE = REPO_ROOT / "web" / ".data" / "kv" / "rec:demand.json"
 SENTINEL = "UYAO_RECORD demand "
+KV_LIST_KEY = "rec:demand"
 
 AREA_NAMES = {"zhongshan": "中山區", "xinyi": "信義區"}
 KIND_NAMES = {
@@ -51,6 +61,43 @@ def from_jsonl(path: Path) -> list[dict]:
                 out.append(json.loads(line))
             except json.JSONDecodeError:
                 continue
+    return out
+
+
+def from_kv(
+    url: str | None = None,
+    token: str | None = None,
+    key: str = KV_LIST_KEY,
+    timeout: int = 15,
+) -> list[dict]:
+    """讀 upstash 的 `rec:demand`。這是 `record.ts` 的 kv sink 的對應讀取端。
+
+    沒設金鑰就回空 list 而不是丟例外 —— 呼叫端要能安靜退回本機檔案。
+    kv.ts 用 `RPUSH` 寫入，所以這裡是 `LRANGE 0 -1`（附加順序 = 時間順序）。
+    """
+    url = url or os.environ.get("KV_REST_API_URL")
+    token = token or os.environ.get("KV_REST_API_TOKEN")
+    if not (url and token):
+        return []
+
+    req = urllib.request.Request(
+        url,
+        data=json.dumps(["LRANGE", key, 0, -1]).encode("utf-8"),
+        headers={
+            "authorization": f"Bearer {token}",
+            "content-type": "application/json",
+        },
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        payload = json.loads(resp.read().decode("utf-8"))
+
+    out = []
+    for item in payload.get("result") or []:
+        try:
+            out.append(json.loads(item))
+        except (TypeError, json.JSONDecodeError):
+            continue  # 手動塞進去的髒資料不該讓整份報表掛掉
     return out
 
 
@@ -105,11 +152,37 @@ def within(records: list[dict], days: int | None) -> list[dict]:
     return out
 
 
+def load(file: Path | None = None, stdin=None) -> tuple[list[dict], str]:
+    """取得紀錄 + 它從哪來。**來源一定要跟著數字走** —— 報表上寫「37 筆」
+    卻沒說是哪來的，下一個看到的人（包括三週後的自己）沒辦法判斷可不可信。
+
+    優先序：明確指定的 stdin/file > KV > 本機 kv file driver > 本機 jsonl。
+    """
+    if stdin is not None:
+        return dedupe(from_vercel_logs(stdin)), "vercel logs"
+    if file is not None:
+        return dedupe(from_jsonl(file)), str(file)
+
+    kv = from_kv()
+    if kv:
+        return dedupe(kv), f"KV {KV_LIST_KEY}"
+    for path in (DEFAULT_KV_FILE, DEFAULT_JSONL):
+        rows = from_jsonl(path)
+        if rows:
+            return dedupe(rows), str(path)
+    return [], "（找不到任何來源）"
+
+
+def no_records_hint() -> None:
+    print("沒有任何紀錄。")
+    print("  線上：設 KV_REST_API_URL / KV_REST_API_TOKEN 後直接跑")
+    print("  本機：先在 dev 上跑幾次搜尋（會寫 web/.data/demand.jsonl）")
+    print("  救援：vercel logs <url> --json | python3 -m pharmabox.demand --stdin")
+
+
 def report(records: list[dict], days: int | None) -> None:
     if not records:
-        print("沒有任何紀錄。")
-        print("  本機：先在 dev 上跑幾次搜尋，或確認 web/.data/demand.jsonl 存在")
-        print("  線上：vercel logs <url> --json | python3 -m pharmabox.demand --stdin")
+        no_records_hint()
         return
 
     window = f"近 {days} 天" if days else "全部"
@@ -164,13 +237,15 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--stdin", action="store_true",
                     help="從 stdin 讀 vercel logs --json")
-    ap.add_argument("--file", type=Path, default=DEFAULT_JSONL,
-                    help=f"jsonl 路徑（預設 {DEFAULT_JSONL}）")
+    ap.add_argument("--file", type=Path, default=None,
+                    help="指定 jsonl 路徑（預設自動找 KV → 本機檔案）")
     ap.add_argument("--days", type=int, default=None, help="只看近 N 天")
     args = ap.parse_args()
 
-    records = from_vercel_logs(sys.stdin) if args.stdin else from_jsonl(args.file)
-    report(within(dedupe(records), args.days), args.days)
+    records, source = load(file=args.file, stdin=sys.stdin if args.stdin else None)
+    if records:
+        print(f"（來源：{source}）")
+    report(within(records, args.days), args.days)
     return 0
 
 

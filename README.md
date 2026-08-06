@@ -49,7 +49,34 @@ python3 -m pytest
 | `nhi.py` | 健保特約資料：醫事機構代碼（穩定 ID）、調劑時段、合約終止偵測 |
 | `places.py` | Google Places 補座標／營業時間／歇業狀態（需 API 金鑰） |
 | `seed.py` | 三份資料合成消費端的 `web/lib/stores.generated.json` |
-| `demand.py` | 落空搜尋彙總：讀本機 jsonl 或 `vercel logs --json`，打電話前看一眼 |
+| `demand.py` | 落空搜尋彙總：讀 KV / 本機 jsonl / `vercel logs --json`，打電話前看一眼 |
+| `outreach.py` | 把落空搜尋變成電訪 call sheet + 一區一頁的 brief |
+
+## 招商報表
+
+`demand.py` 是給自己看的總覽，`outreach.py` 是**給藥局看的**：進店第一句不是
+「上我們平台」，是「這條街這個月有多少人在找你沒有的東西」。兩份輸出都不需要
+任何一台盒子上線 —— 這是裝機前唯一能累積的資產。
+
+```bash
+python3 -m pharmabox.outreach                     # 印 call sheet（★ = 有人指名這家店卻沒貨）
+python3 -m pharmabox.outreach --days 30 --write   # 另外寫出 data/outreach/
+```
+
+| 輸出 | 給誰 | 內容 |
+|---|---|---|
+| `YYYY-MM-DD-call-sheet.csv` | **只給自己** | 一家一行：電話、指名沒貨次數、開場白 |
+| `YYYY-MM-DD-<area>.md` | 會轉發給藥局 | 一區一頁：熱門缺貨品項、目錄缺口、留了聯絡方式的人數 |
+
+三條規則寫在 `outreach.py` 的 docstring，測試逐條擋著：
+
+1. **少於 `--min`（預設 5）筆的區不產 brief** —— 「你這區有 2 個人搜過」比不說更傷
+2. **只講「次」不講「人」** —— 沒有去重，把 43 次搜尋說成 43 個人就是說謊
+3. **brief 不出現任何店名、不出現來源路徑** —— 那份會被轉發，把 A 店的缺貨印在
+   要給 B 店看的紙上，一次就把供給側的信任燒光。指名道姓的版本只在 call sheet
+
+線上資料存在 upstash KV 的 `rec:demand`（`web/lib/record.ts` 的 kv sink），
+設好 `KV_REST_API_URL` / `KV_REST_API_TOKEN` 就自動讀得到；沒設會安靜退回本機檔案。
 
 ## 藥局獲客名單
 
