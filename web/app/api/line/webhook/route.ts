@@ -162,12 +162,31 @@ async function onPostback(userId: string, replyToken: string, data: string) {
     return;
   }
 
+  // 「沒貨」是這條鏈上最強的一筆需求訊號 —— 不是有人搜過，是**有人已經
+  // 願意出門去買**，而且我們知道是哪家店缺哪一支。招募話術從「這區有 37 個
+  // 人在找」升級成「有人指名要來你店裡買，你沒貨」。
+  //
+  // 不帶消費者的聯絡方式：需求訊號只需要方向性，跟 catalog_miss /
+  // inventory_miss 的被動紀錄同一個規矩（見 specs/demand-capture.md）。
+  if (action === "reject" && !updated.demo) {
+    await appendRecord("demand", {
+      at: new Date().toISOString(),
+      kind: "rejected_no_stock",
+      query: "",
+      drugSlug: updated.drugSlug,
+      storeSlug: updated.storeSlug,
+      area: allStores().find((s) => s.slug === updated.storeSlug)?.area ?? null,
+    });
+  }
+
   const tail = updated.contact.slice(-3);
   await reply(replyToken, [
     text(
       action === "confirm"
         ? `${code} 已確認保留。\n\n請把商品留在櫃檯，消費者會報「${code}」來取，尾號 ${tail}。\n保留 ${updated.holdHours} 小時。`
-        : `${code} 已回報沒貨。\n\n我們會通知消費者改找別家，這筆不用再處理。`,
+        // 不能寫「我們會通知消費者」—— 消費者端沒有任何推播管道。
+        // 他看到的是取貨憑證頁自己變成「這家沒貨」。
+        : `${code} 已回報沒貨。\n\n消費者的取貨頁已經更新，這筆不用再處理。我們會把缺貨記下來。`,
     ),
   ]);
 }

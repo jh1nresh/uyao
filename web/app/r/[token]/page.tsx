@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { PickupAutoRefresh } from "@/components/PickupAutoRefresh";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { formatPrice } from "@/lib/format";
@@ -38,7 +39,9 @@ const STATUS_UI: Record<
   pending_store_confirm: {
     label: "等藥局確認",
     tone: "wait",
-    body: "藥局確認有貨後才開始計算保留時間。通常 10 分鐘內，確認後我們會通知你。",
+    // 不能寫「確認後我們會通知你」—— 消費者只留了手機，我們沒有簡訊管道
+    // 也還沒接消費者端 LINE，那句是承諾一件做不到的事。
+    body: "藥局確認有貨後才開始計算保留時間，通常 10 分鐘內。這一頁會自己更新，先別關掉。",
   },
   confirmed: {
     label: "已確認保留",
@@ -48,7 +51,7 @@ const STATUS_UI: Record<
   rejected_no_stock: {
     label: "這家沒貨",
     tone: "bad",
-    body: "藥局回報目前沒有這個品項，先別過去。可以回搜尋看看附近其他家。",
+    body: "藥局回報目前沒有這個品項，先別過去。這筆已經記下來了 —— 可以回搜尋看看附近其他家。",
   },
   cancelled_by_user: {
     label: "已取消",
@@ -109,6 +112,8 @@ export default async function PickupPage({
   return (
     <>
       <SiteHeader showSearch={false} />
+      {/* 終態沒有東西可等，只有 pending 才輪詢 */}
+      {r.status === "pending_store_confirm" && <PickupAutoRefresh />}
 
       <section className="mx-auto max-w-[520px] px-4 py-6 sm:px-7 xl:px-12 2xl:px-16">
         {r.demo && (

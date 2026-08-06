@@ -294,9 +294,12 @@ function SuccessBody({
         </div>
         <h2 className="text-[18px] font-black">預留已送出</h2>
       </div>
+      {/* 不能寫「會用 LINE 通知你」—— 消費者端還沒有任何推播管道（只留手機、
+          沒有簡訊、沒接 LINE）。他唯一會知道結果的方式是取貨憑證頁自己更新，
+          所以這裡要把人推到那一頁去，而不是叫他等一則不會來的訊息。 */}
       <p className="-mt-1.5 text-[14px] leading-[1.6] text-muted">
         等{target.store.name}確認（通常 10 分鐘內）— 確認後保留 {success.holdHours}{" "}
-        小時，會用 LINE 通知你。
+        小時。我們不會另外傳訊息給你，請開啟下面的取貨憑證頁留著，狀態會在那裡自己更新。
       </p>
 
       {success.notify && <NotifyStrip notify={success.notify} />}

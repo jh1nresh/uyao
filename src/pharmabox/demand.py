@@ -34,6 +34,9 @@ AREA_NAMES = {"zhongshan": "中山區", "xinyi": "信義區"}
 KIND_NAMES = {
     "catalog_miss": "目錄沒有這支藥",
     "inventory_miss": "有這支藥但沒庫存",
+    # 藥局在 LINE 上按「沒貨」時寫進來的。這是這條鏈上最強的一筆需求：
+    # 不是有人搜過，是**有人已經願意出門去買**，而且指名到某一家店。
+    "rejected_no_stock": "預留了才被回報沒貨",
 }
 
 
@@ -121,11 +124,15 @@ def report(records: list[dict], days: int | None) -> None:
         print(f"── {AREA_NAMES.get(area, area)}　{len(rows)} 筆"
               f"（留了聯絡方式 {len(contacts)}）")
 
-        for kind in ("inventory_miss", "catalog_miss"):
+        for kind in ("inventory_miss", "catalog_miss", "rejected_no_stock"):
             sub = [r for r in rows if r.get("kind") == kind]
             if not sub:
                 continue
-            top = Counter(r.get("query", "") for r in sub).most_common(8)
+            # rejected_no_stock 沒有原始查詢字串（是從預留單反推的），
+            # 退回 drugSlug —— 不然整批會印成空行。
+            top = Counter(
+                r.get("query") or r.get("drugSlug", "") for r in sub
+            ).most_common(8)
             print(f"   {KIND_NAMES[kind]}　{len(sub)}")
             for q, n in top:
                 print(f"     {n:>3}　{q}")
@@ -138,6 +145,19 @@ def report(records: list[dict], days: int | None) -> None:
         print("目錄該補的品項（catalog_miss，不用等任何人裝盒子就能自己補）：")
         for q, n in gaps.most_common(10):
             print(f"  {n:>3}　{q}")
+
+    # 這一段跟上面分開，因為行動對象不同：miss 的對象是「這一區」，
+    # 沒貨的對象是**那一家店**。打電話時這句最有力 ——
+    # 「有人已經在我們站上預留你的貨，你回沒有。」
+    rejected = Counter(
+        (r.get("storeSlug", "?"), r.get("drugSlug", "?"))
+        for r in records
+        if r.get("kind") == "rejected_no_stock"
+    )
+    if rejected:
+        print("\n有人指名要買、藥局回報沒貨（這通電話最好打）：")
+        for (store, drug), n in rejected.most_common(10):
+            print(f"  {n:>3}　{store}　{drug}")
 
 
 def main() -> int:
