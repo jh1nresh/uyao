@@ -45,10 +45,22 @@ export function clientIp(request: Request): string {
 export async function checkReservation(
   request: Request,
   phone: string,
+  demo = false,
 ): Promise<RateLimit> {
+  const ip = clientIp(request);
+
+  // 示範單另外從嚴。`demo` 是從 request body 來的，任何人送 {"demo":true}
+  // 就能跳過「這家有沒有這個品項」的檢查，對**任何已綁定的真實藥局**產生
+  // 預留並推卡片。手機號只驗格式不驗真偽，換號碼就重置，所以真正的閘門
+  // 是 IP。示範現場一次只按幾下，3 次/小時綽綽有餘，卻把濫用空間砍掉八成。
+  if (demo) {
+    const byDemo = await hit(`res:d:${ip}`, 3, 3600);
+    if (!byDemo.ok) return byDemo;
+  }
+
   const byPhone = await hit(`res:p:${phone}`, 5, 3600);
   if (!byPhone.ok) return byPhone;
-  return hit(`res:i:${clientIp(request)}`, 20, 3600);
+  return hit(`res:i:${ip}`, 20, 3600);
 }
 
 /** 表單類端點（需求訊號、試點申請）。這些不會觸發推播，門檻放寬。 */
