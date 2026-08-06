@@ -59,6 +59,11 @@ const STATUS_UI: Record<
     tone: "bad",
     body: "這筆預留已經取消了。",
   },
+  picked_up: {
+    label: "已完成",
+    tone: "ok",
+    body: "已經取貨完成，感謝。",
+  },
   expired: {
     label: "已逾期",
     tone: "bad",

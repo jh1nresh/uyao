@@ -9,7 +9,7 @@ import {
   requestBind,
   storeForUser,
 } from "@/lib/bindings";
-import { isConfigured, push, reply, text, verifySignature } from "@/lib/line";
+import { confirmedFlex, isConfigured, push, reply, text, verifySignature } from "@/lib/line";
 import { appendRecord } from "@/lib/record";
 import { updateStatus } from "@/lib/reservations-store";
 
@@ -131,11 +131,58 @@ async function onAdminCommand(replyToken: string, body: string): Promise<boolean
   return true;
 }
 
+/** 「已領 K-123」／「已交付 K-123」。回 true 代表這則已經處理掉了。 */
+async function onPickupCommand(
+  userId: string,
+  replyToken: string,
+  body: string,
+): Promise<boolean> {
+  const m = /^(?:已領|已取|已交付|取走)\s*([A-Z]-\d{3})$/i.exec(body.trim());
+  if (!m) return false;
+  const code = m[1].toUpperCase();
+
+  const store = await storeForUser(userId);
+  if (!store) {
+    await reply(replyToken, [text("你還沒綁定藥局，請先傳藥局全名。")]);
+    return true;
+  }
+
+  const done = await updateStatus(code, "picked_up").catch(() => null);
+  if (done && done.storeSlug !== store) {
+    // 不是你的單就不能改 —— 取貨碼是共用碼空間，別家的也長一樣
+    await reply(replyToken, [text(`${code} 不是${store}的預留單。`)]);
+    return true;
+  }
+  await appendRecord("reservations", {
+    code, storeSlug: store, lineUserId: userId,
+    status: "picked_up", at: new Date().toISOString(),
+  });
+  await reply(replyToken, [
+    text(done ? `✓ ${code} 已完成，感謝。` : `查不到 ${code}（可能已過期或碼有誤）。`),
+  ]);
+  return true;
+}
+
 async function onPostback(userId: string, replyToken: string, data: string) {
   const params = new URLSearchParams(data);
   const action = params.get("action");
   const code = params.get("code");
-  if (!code || (action !== "confirm" && action !== "reject")) return;
+  if (!code || !["confirm", "reject", "pickup"].includes(action ?? "")) return;
+
+  if (action === "pickup") {
+    const done = await updateStatus(code, "picked_up").catch(() => null);
+    await appendRecord("reservations", {
+      code, lineUserId: userId, status: "picked_up", at: new Date().toISOString(),
+    });
+    await reply(replyToken, [
+      text(
+        done
+          ? `✓ ${code} 已完成，感謝。這筆不會再有催單或逾期通知。`
+          : `收到，但系統查不到 ${code}（可能已過期）。`,
+      ),
+    ]);
+    return;
+  }
 
   const storeSlug = await storeForUser(userId);
 
@@ -180,10 +227,24 @@ async function onPostback(userId: string, replyToken: string, data: string) {
   }
 
   const tail = updated.contact.slice(-3);
+  if (action === "confirm") {
+    // 帶「客人已取走」按鈕 —— 沒有它，成功取貨的單最後都會被誤判成逾期
+    await reply(replyToken, [
+      confirmedFlex({
+        demo: updated.demo,
+        code,
+        drugName: updated.drugName,
+        contactTail: tail,
+        holdHours: updated.holdHours,
+      }),
+    ]);
+    return;
+  }
+
   await reply(replyToken, [
     text(
-      action === "confirm"
-        ? `${code} 已確認保留。\n\n請把商品留在櫃檯，消費者會報「${code}」來取，尾號 ${tail}。\n保留 ${updated.holdHours} 小時。`
+      false
+        ? ""
         // 不能寫「我們會通知消費者」—— 消費者端沒有任何推播管道。
         // 他看到的是取貨憑證頁自己變成「這家沒貨」。
         : `${code} 已回報沒貨。\n\n消費者的取貨頁已經更新，這筆不用再處理。我們會把缺貨記下來。`,
@@ -217,6 +278,8 @@ export async function POST(request: Request) {
         await reply(token, [text(HELP)]);
       } else if (e.type === "message" && e.message?.type === "text") {
         const body = e.message.text ?? "";
+        // 卡片捲掉了還能用文字回報 —— 藥局的聊天室一天可能有幾十則訊息
+        if (await onPickupCommand(userId, token, body)) continue;
         if (isAdmin(userId) && (await onAdminCommand(token, body))) continue;
         await onBindRequest(userId, token, body);
       } else if (e.type === "postback") {
