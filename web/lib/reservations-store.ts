@@ -37,6 +37,8 @@ export interface StoredReservation {
   storeAddress: string;
   storeMapsUrl: string;
   storeHours: string;
+  /** 藥局遲遲沒回覆時，消費者要打的號碼 */
+  storePhone: string;
   priceTwd: number;
   contactKind: "phone";
   contact: string;
@@ -44,9 +46,25 @@ export interface StoredReservation {
   createdAt: string;
   /** 藥局確認的時間；未確認是 null */
   confirmedAt: string | null;
+  /** 已經催過藥局的時間。有值就不再重複催。 */
+  remindedAt?: string;
   holdHours: number;
   /** 業務示範（/store/[slug]/preview）產生的單。真單不會有這個欄位。 */
   demo?: true;
+}
+
+/**
+ * 藥局遲遲不回覆是真實會發生的事 —— 老闆在忙，卡片沉下去了。
+ * LINE 不提供已讀回報，所以我們無從得知，只能靠時間推斷。
+ *
+ * 兩個門檻刻意錯開：先催藥局，再叫消費者打電話。倒過來的話，
+ * 消費者會在藥局根本還沒被提醒的時候就先被推去打電話。
+ */
+export const REMIND_STORE_AFTER_MIN = 15;
+export const TELL_CONSUMER_AFTER_MIN = 25;
+
+export function minutesSince(iso: string): number {
+  return (Date.now() - new Date(iso).getTime()) / 60000;
 }
 
 export function newToken(): string {
@@ -87,6 +105,28 @@ export async function getByToken(token: string): Promise<StoredReservation | nul
 export async function getByCode(code: string): Promise<StoredReservation | null> {
   const token = await get(`c:${code}`);
   return token ? getByToken(token) : null;
+}
+
+/** 覆寫整筆。給 cron 標記「已催過」用。 */
+export async function save(r: StoredReservation): Promise<void> {
+  await set(`r:${r.token}`, JSON.stringify(r));
+}
+
+/** 掃出所有預留。只給 cron 用 —— KEYS 在 key 多時很貴，別放進使用者路徑。 */
+export async function allPending(): Promise<StoredReservation[]> {
+  const ks = await kv.keys("r:").catch(() => []);
+  const out: StoredReservation[] = [];
+  for (const k of ks) {
+    const raw = await kv.get(k).catch(() => null);
+    if (!raw) continue;
+    try {
+      const r = JSON.parse(raw) as StoredReservation;
+      if (r.status === "pending_store_confirm") out.push(r);
+    } catch {
+      /* 壞掉的那筆跳過，不要讓整個 cron 掛掉 */
+    }
+  }
+  return out;
 }
 
 /** 藥局按下確認／沒貨時呼叫。查不到就回 null，呼叫端自己決定怎麼處理。 */

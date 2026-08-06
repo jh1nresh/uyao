@@ -97,6 +97,7 @@ export async function POST(request: Request) {
     storeAddress: store.address,
     storeMapsUrl: store.mapsUrl,
     storeHours: hoursSummary(store),
+    storePhone: store.phone,
     priceTwd: offer.priceTwd,
     contactKind: contact.kind,
     contact: contact.value,

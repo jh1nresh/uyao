@@ -5,9 +5,11 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { formatPrice } from "@/lib/format";
 import {
+  TELL_CONSUMER_AFTER_MIN,
   contactTail,
   getByToken,
   isStoreAvailable,
+  minutesSince,
   type StoredReservation,
 } from "@/lib/reservations-store";
 
@@ -84,7 +86,19 @@ export default async function PickupPage({
     );
   }
 
-  const ui = STATUS_UI[r.status];
+  // 藥局遲遲沒回覆時，不要再叫人乾等一個可能永遠不會來的確認。
+  // LINE 沒有已讀回報，我們唯一能依據的就是時間。
+  const overdue =
+    r.status === "pending_store_confirm" &&
+    minutesSince(r.createdAt) > TELL_CONSUMER_AFTER_MIN;
+
+  const ui = overdue
+    ? {
+        label: "藥局還沒回覆",
+        tone: "wait" as const,
+        body: "已經超過一般回覆時間了。想確定的話，直接打電話問這家藥局最快。",
+      }
+    : STATUS_UI[r.status];
   const toneClass =
     ui.tone === "ok"
       ? "border-green bg-green-tint text-green"
@@ -108,6 +122,15 @@ export default async function PickupPage({
           {ui.label}
         </div>
         <p className="mb-4 text-[14px] leading-[1.7] text-muted">{ui.body}</p>
+
+        {overdue && r.storePhone && (
+          <a
+            href={`tel:${r.storePhone.split("、")[0].replace(/-/g, "")}`}
+            className="mb-4 flex h-12 items-center justify-center border border-green bg-green text-[14px] font-bold text-white no-underline"
+          >
+            打電話問 {r.storeName} · {r.storePhone.split("、")[0]}
+          </a>
+        )}
 
         {/* 到店只需要唸這個 */}
         <div className="flex flex-col items-center gap-1 border border-line bg-surface px-4 py-6">

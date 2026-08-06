@@ -1,0 +1,92 @@
+import { NextResponse } from "next/server";
+
+import { userForStore } from "@/lib/bindings";
+import { isConfigured, push, text } from "@/lib/line";
+import {
+  REMIND_STORE_AFTER_MIN,
+  allPending,
+  minutesSince,
+  save,
+} from "@/lib/reservations-store";
+
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
+
+/**
+ * 催沒回覆的預留。
+ *
+ * 為什麼需要：LINE 不提供已讀回報，所以藥局漏看那張卡片我們完全無從得知。
+ * 卡片推出去了、老闆在忙、四小時過去消費者白等 —— 這是真實會發生的營運
+ * 問題，而不是理論上的邊界情況。
+ *
+ * 每筆只催一次（`remindedAt`），因為第二次、第三次提醒不會讓忙碌的藥師
+ * 更快看到，只會讓這個聊天室變成他想靜音的東西。催過還是沒回，就該由人
+ * 打電話，不是讓機器繼續敲。
+ *
+ * 排程：`vercel.json` 的 crons。**Vercel Hobby 方案的 cron 一天只跑一次**，
+ * 對 15 分鐘的提醒沒有意義 —— 那種情況下改用外部排程（cron-job.org、
+ * GitHub Actions）打這個網址，帶上 CRON_SECRET 即可。
+ */
+
+/**
+ * `x-vercel-cron` 標頭**可以被偽造** —— 任何人都能加這個 header 打進來。
+ * 所以線上一律要 CRON_SECRET，沒設就整個關閉（fail closed）而不是退回
+ * 只檢查標頭。這個端點會發推播，不該讓外面的人隨便觸發。
+ */
+function authorized(request: Request): boolean {
+  const secret = process.env.CRON_SECRET;
+  if (secret) {
+    return request.headers.get("authorization") === `Bearer ${secret}`;
+  }
+  if (process.env.NODE_ENV === "production") {
+    console.error("[cron] CRON_SECRET 未設定，拒絕執行。設好之後排程才會生效。");
+    return false;
+  }
+  // 本機開發方便用
+  return request.headers.get("x-vercel-cron") !== null;
+}
+
+export async function GET(request: Request) {
+  if (!authorized(request)) {
+    return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  }
+
+  const pending = await allPending().catch((err) => {
+    console.error("[cron] 讀不到預留", String(err).slice(0, 200));
+    return [];
+  });
+
+  let reminded = 0;
+  let unbound = 0;
+
+  for (const r of pending) {
+    if (r.remindedAt) continue;
+    if (minutesSince(r.createdAt) < REMIND_STORE_AFTER_MIN) continue;
+
+    const lineUser = await userForStore(r.storeSlug).catch(() => undefined);
+    if (!lineUser || !isConfigured()) {
+      // 沒綁 LINE 的藥局只能靠人工。記下來讓你看得到。
+      unbound += 1;
+      console.log(`[cron] ${r.code} @ ${r.storeSlug} 逾時但該店未綁定 LINE，需人工聯絡`);
+      continue;
+    }
+
+    try {
+      await push(lineUser, [
+        text(
+          `⚠️ ${r.code} 還沒回覆\n\n` +
+            `${r.drugName} ${r.drugSpec}\n` +
+            `${Math.round(minutesSince(r.createdAt))} 分鐘前送出，消費者還在等。\n\n` +
+            "回到上面那張卡片按「有貨，確認保留」或「沒貨」就好。",
+        ),
+      ]);
+      // 只催一次 —— 標記在推播成功之後，失敗的下一輪還會再試
+      await save({ ...r, remindedAt: new Date().toISOString() });
+      reminded += 1;
+    } catch (err) {
+      console.error(`[cron] 催單推播失敗 ${r.code}`, String(err).slice(0, 200));
+    }
+  }
+
+  return NextResponse.json({ pending: pending.length, reminded, unbound });
+}
