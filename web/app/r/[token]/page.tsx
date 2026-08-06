@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { CancelReservation } from "@/components/CancelReservation";
 import { PickupAutoRefresh } from "@/components/PickupAutoRefresh";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -177,6 +178,11 @@ export default async function PickupPage({
             <div className="mt-1 text-[13px] text-muted">{r.storeHours}</div>
           </div>
         </div>
+
+        {/* 已取消／已回報沒貨都沒什麼好取消的了 */}
+        {(r.status === "pending_store_confirm" || r.status === "confirmed") && (
+          <CancelReservation token={r.token} confirmed={r.status === "confirmed"} />
+        )}
 
         <p className="mt-3 text-[13px] leading-[1.7] text-muted-2">
           把這一頁截圖或加入書籤就好，不需要登入。

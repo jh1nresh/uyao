@@ -6,12 +6,13 @@ import { getDrug, getStore, previewOffers, storesForDrug } from "@/lib/data";
 import { hoursSummary } from "@/lib/hours";
 import { stockBadge } from "@/lib/stock";
 import { userForStore } from "@/lib/bindings";
-import { isConfigured, push, reservationFlex } from "@/lib/line";
+import { isConfigured, push, reservationFlex, text } from "@/lib/line";
 import { appendRecord } from "@/lib/record";
 import {
+  getByToken,
   newToken,
+  save,
   saveReservation,
-  updateStatus,
   type StoredReservation,
 } from "@/lib/reservations-store";
 import type { NotifyResult } from "@/lib/types";
@@ -177,21 +178,65 @@ export async function POST(request: Request) {
   });
 }
 
-/** 取消預留 — 消費者端只送出取消意圖，藥局端由 LINE bot 收到。 */
+/**
+ * 取消預留。
+ *
+ * 認 token 不認取貨碼：取貨碼只有 26,000 種組合，用它當憑證等於讓任何人
+ * 爆搜就能取消別人的預留。token 是 12 bytes 隨機值，而且只有拿到取貨頁
+ * 連結的人才有。
+ *
+ * 一定要通知藥局 —— 已確認的預留代表商品已經留在櫃檯，不講他會空等
+ * 四小時。這是取消流程裡唯一會實際造成他人損失的環節。
+ */
 export async function DELETE(request: Request) {
-  let code = "";
+  let token = "";
   try {
-    const body = (await request.json()) as { code?: unknown };
-    if (typeof body.code === "string") code = body.code;
+    const body = (await request.json()) as { token?: unknown };
+    if (typeof body.token === "string") token = body.token.trim();
   } catch {
     /* 空 body 也當成格式錯誤處理 */
   }
 
-  if (!/^[A-Z]-\d{3}$/.test(code)) {
-    return NextResponse.json({ error: "取貨碼格式錯誤" }, { status: 422 });
+  if (!/^[A-Za-z0-9_-]{16,32}$/.test(token)) {
+    return NextResponse.json({ error: "連結格式錯誤" }, { status: 422 });
   }
 
-  await appendRecord("reservations", { code, status: "cancelled_by_user", cancelledAt: new Date().toISOString() });
-  await updateStatus(code, "cancelled_by_user").catch(() => null);
-  return NextResponse.json({ code, status: "cancelled" });
+  const r = await getByToken(token).catch(() => null);
+  if (!r) {
+    return NextResponse.json({ error: "查不到這筆預留" }, { status: 404 });
+  }
+  if (r.status === "cancelled_by_user") {
+    return NextResponse.json({ code: r.code, status: "cancelled" });
+  }
+
+  const wasConfirmed = r.status === "confirmed";
+  await save({ ...r, status: "cancelled_by_user" });
+  await appendRecord("reservations", {
+    code: r.code,
+    storeSlug: r.storeSlug,
+    status: "cancelled_by_user",
+    wasConfirmed,
+    cancelledAt: new Date().toISOString(),
+  });
+
+  // 已經回報沒貨的就別再吵藥局了，那筆他早就處理完
+  if (r.status !== "rejected_no_stock" && !r.demo) {
+    const lineUser = await userForStore(r.storeSlug).catch(() => undefined);
+    if (lineUser && isConfigured()) {
+      try {
+        await push(lineUser, [
+          text(
+            wasConfirmed
+              ? `🚫 ${r.code} 已被消費者取消\n\n${r.drugName}\n` +
+                "已經留在櫃檯的話可以放回架上了，不用再等。"
+              : `🚫 ${r.code} 已被消費者取消\n\n${r.drugName}\n不用處理了。`,
+          ),
+        ]);
+      } catch (err) {
+        console.error("[reservations] 取消通知推播失敗", r.code, String(err).slice(0, 200));
+      }
+    }
+  }
+
+  return NextResponse.json({ code: r.code, status: "cancelled" });
 }
