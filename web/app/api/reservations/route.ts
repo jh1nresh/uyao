@@ -235,17 +235,23 @@ export async function DELETE(request: Request) {
     cancelledAt: new Date().toISOString(),
   });
 
-  // 已經回報沒貨的就別再吵藥局了，那筆他早就處理完
-  if (r.status !== "rejected_no_stock" && !r.demo) {
+  // 已經回報沒貨的就別再吵藥局了，那筆他早就處理完。
+  //
+  // 示範單**也要**通知：卡片是推給藥局的，取消卻不推的話，示範現場那張
+  // 卡就永遠掛在老闆的聊天室裡。規則是「凡是關於他已經收到的那張卡的
+  // 訊息，示範也要發」——不發的只有會污染真實資料的東西（需求訊號、
+  // 放鳥計數）。
+  if (r.status !== "rejected_no_stock") {
     const lineUser = await userForStore(r.storeSlug).catch(() => undefined);
     if (lineUser && isConfigured()) {
       try {
         await push(lineUser, [
           text(
-            wasConfirmed
-              ? `🚫 ${r.code} 已被消費者取消\n\n${r.drugName}\n` +
-                "已經留在櫃檯的話可以放回架上了，不用再等。"
-              : `🚫 ${r.code} 已被消費者取消\n\n${r.drugName}\n不用處理了。`,
+            (r.demo ? "［示範］" : "") +
+              (wasConfirmed
+                ? `🚫 ${r.code} 已被消費者取消\n\n${r.drugName}\n` +
+                  "已經留在櫃檯的話可以放回架上了，不用再等。"
+                : `🚫 ${r.code} 已被消費者取消\n\n${r.drugName}\n不用處理了。`),
           ),
         ]);
       } catch (err) {
