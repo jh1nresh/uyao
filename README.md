@@ -75,8 +75,19 @@ python3 -m pharmabox.outreach --days 30 --write   # 另外寫出 data/outreach/
 3. **brief 不出現任何店名、不出現來源路徑** —— 那份會被轉發，把 A 店的缺貨印在
    要給 B 店看的紙上，一次就把供給側的信任燒光。指名道姓的版本只在 call sheet
 
-線上資料存在 upstash KV 的 `rec:demand`（`web/lib/record.ts` 的 kv sink），
-設好 `KV_REST_API_URL` / `KV_REST_API_TOKEN` 就自動讀得到；沒設會安靜退回本機檔案。
+線上資料存在 upstash KV 的 `rec:demand`（`web/lib/record.ts` 的 kv sink）。
+本機要讀得到得自己設環境變數 —— **`vercel env pull` 拿不到**，那幾個變數在
+Vercel 上標記為 Sensitive，寫進去就讀不回來。到 Vercel → Storage → 那個 KV →
+`.env.local` 分頁複製：
+
+```bash
+export KV_REST_API_URL='https://xxx.upstash.io'
+export KV_REST_API_READ_ONLY_TOKEN='...'   # 報表只做 LRANGE，別用可寫的那把
+python3 -m pharmabox.outreach --days 30 --write
+```
+
+沒設會**安靜**退回本機檔案（印出 0 筆而不是報錯），所以輸出開頭一定會標來源，
+看到 `來源 …/web/.data/…` 就是沒吃到線上資料。
 
 ## 藥局獲客名單
 
