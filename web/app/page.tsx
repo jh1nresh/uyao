@@ -1,19 +1,17 @@
 import Link from "next/link";
 
-import { AreaStores } from "@/components/AreaStores";
 import { AreaSwitch } from "@/components/AreaSwitch";
 import { SearchInput } from "@/components/SearchInput";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import {
   CATEGORIES,
+  allDrugs,
   drugsInCategory,
   getArea,
   storesInArea,
   toAreaSlug,
 } from "@/lib/data";
-import { formatDistance } from "@/lib/format";
-import { hoursSummary } from "@/lib/hours";
 
 const STEPS = [
   { title: "搜尋", body: "輸入藥名或症狀，看附近哪幾家藥局現在有貨。" },
@@ -28,29 +26,39 @@ export default async function HomePage({
 }) {
   const { area: rawArea } = await searchParams;
   const area = toAreaSlug(rawArea);
-  const stores = storesInArea(area);
+  const storeCount = storesInArea(area).length;
+  const drugs = allDrugs();
 
   return (
     <>
       <SiteHeader showSearch={false} area={area} />
 
-      <section className="flex flex-col items-center gap-5 border-b border-line px-4 pb-8 pt-8 text-center sm:px-7 xl:px-12 2xl:px-16 sm:pb-10 sm:pt-16">
-        <h1 className="m-0 text-2xl font-black tracking-[.02em] sm:text-[30px]">
+      {/*
+        第一屏只有一件事：搜尋。
+        原本這裡列了該區 91 家藥局 —— 那是目錄不是產品，而且連電話鈕都沒有
+        （`showPhone` 預設 false），使用者看完什麼也做不了。更糟的是它定義了
+        第一印象「這是藥局名錄」，而名錄 Google Maps 做得更好。
+        藥局家數留下來當可信度證據，但收成一行字。
+      */}
+      <section className="flex min-h-[calc(100svh-3.5rem)] flex-col items-center justify-center px-4 py-12 text-center sm:px-7 sm:py-16">
+        <h1 className="m-0 text-[clamp(28px,6vw,52px)] font-black leading-[1.15] tracking-[.01em]">
           搜一個藥，看附近哪家有貨
         </h1>
-        <p className="-mt-2.5 text-[15px] text-muted">
+        <p className="mt-4 max-w-[520px] text-[15px] leading-[1.7] text-muted sm:text-base">
           不用先跑三家藥局 — 查到就預留，到店取貨付款
         </p>
-        <SearchInput size="lg" className="w-full max-w-[560px]" />
+
+        <SearchInput size="lg" className="mt-9 w-full max-w-[680px]" />
+
         <nav
           aria-label="品類"
-          className="grid w-full grid-cols-3 gap-2 sm:flex sm:w-auto sm:justify-center sm:gap-3"
+          className="mt-4 flex w-full max-w-[680px] flex-wrap justify-center gap-2"
         >
           {CATEGORIES.map((c) => (
             <Link
               key={c.slug}
               href={`/category/${c.slug}`}
-              className="flex min-h-11 items-center justify-center gap-2 border border-line-strong px-2 text-xs font-medium text-ink no-underline hover:border-green hover:text-green sm:px-5 sm:text-[15px]"
+              className="flex min-h-11 items-center gap-2 border border-line-strong px-4 text-xs font-medium text-ink no-underline hover:border-green hover:text-green"
             >
               {c.name}
               <span className="num text-[13px] text-muted-2">
@@ -59,47 +67,46 @@ export default async function HomePage({
             </Link>
           ))}
         </nav>
-      </section>
 
-      <section className="px-4 pb-6 pt-5 sm:px-7 xl:px-12 2xl:px-16">
-        <div className="mb-2.5 flex flex-wrap items-center gap-x-2.5 gap-y-2">
-          <h2 className="text-sm font-black">{getArea(area).shortName}的藥局</h2>
-          <p className="text-[13px] text-muted-2">
-            {stores.length} 家 · 資料來自食藥署與健保署開放資料
-          </p>
-          {/* header 的切換器在手機上會收起來，這裡補一個 */}
-          <div className="md:hidden">
-            <AreaSwitch area={area} />
-          </div>
+        <p className="mt-10 max-w-[560px] text-[13px] leading-[1.7] text-muted-2">
+          即時庫存還沒開始 —— 已收錄{getArea(area).shortName} {storeCount} 家藥局，
+          但還沒有藥局裝上盒子。先搜搜看，我們會記下你在找什麼。
+        </p>
+        <div className="mt-3 md:hidden">
+          <AreaSwitch area={area} />
         </div>
-
-        {/* 目前還沒有藥局裝盒子，所以這裡列的是「有哪些藥局」而不是「哪裡有貨」。
-            庫存徽章要等掃描流才有意義 —— 先不要假裝。 */}
-        <p className="mb-2.5 border border-line-strong bg-surface px-3.5 py-2.5 text-[13px] leading-[1.7] text-muted">
-          <b className="font-bold text-ink">即時庫存還沒開始</b> ——
-          庫存來自藥局店內的掃描器，目前這兩區還沒有藥局裝上盒子。
-          先把{getArea(area).shortName} {stores.length} 家藥局的基本資料整理在這裡，
-          有藥局加入之後就會顯示「現在有貨」。
-          <br />
-          <Link href="/pharmacy" className="font-medium text-green">
-            開藥局的？看盒子怎麼運作 →
-          </Link>
-        </p>
-
-        <AreaStores stores={stores} area={area} areaLabel={getArea(area).shortName} />
-
-        <p className="mt-3 text-[13px] leading-[1.6] text-muted-2">
-          庫存狀態怎麼讀？<Link href="/stock-badges" className="text-green">看徽章分級說明 →</Link>
-        </p>
       </section>
 
-      <section className="px-4 pb-7 sm:px-7 xl:px-12 2xl:px-16">
-        <h2 className="mb-2.5 text-sm font-black">怎麼拿到藥</h2>
+      {/* 陳列「藥品」而不是「藥局」：藥品才是產品的單位（搜一個藥 → 誰有貨），
+          而且點進去就是 SEO 入口頁。 */}
+      <section className="border-t border-line px-4 py-8 sm:px-7 xl:px-12 2xl:px-16">
+        <div className="mb-3 flex flex-wrap items-baseline gap-2.5">
+          <h2 className="text-sm font-black">常見品項</h2>
+          <p className="text-[13px] text-muted-2">點一支看附近哪家有貨</p>
+        </div>
+        <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
+          {drugs.map((d) => (
+            <Link
+              key={d.slug}
+              href={`/drug/${d.slug}`}
+              className="flex flex-col justify-center gap-1 border border-line px-3.5 py-3 no-underline hover:border-green"
+            >
+              <span className="text-[15px] font-medium text-ink">{d.name}</span>
+              <span className="text-[13px] text-muted-2">
+                {d.spec} · {d.drugClass}
+              </span>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="border-t border-line px-4 py-8 sm:px-7 xl:px-12 2xl:px-16">
+        <h2 className="mb-3 text-sm font-black">怎麼拿到藥</h2>
         <ol className="m-0 grid list-none border border-line p-0 sm:grid-cols-3">
           {STEPS.map((s, i) => (
             <li
               key={s.title}
-              className="flex gap-3 border-b border-line-soft px-4 py-3 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0"
+              className="flex gap-3 border-b border-line-soft px-4 py-3.5 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0"
             >
               <span className="num flex-none text-[15px] font-bold text-green">
                 {String(i + 1).padStart(2, "0")}
@@ -112,8 +119,27 @@ export default async function HomePage({
           ))}
         </ol>
         <p className="mt-3 text-[13px] leading-[1.6] text-muted-2">
-          開藥局的？<Link href="/pharmacy" className="text-green">看盒子怎麼幫你顧效期 →</Link>
+          庫存狀態怎麼讀？
+          <Link href="/stock-badges" className="ml-1 text-green">
+            看徽章分級說明 →
+          </Link>
         </p>
+      </section>
+
+      <section className="border-t border-line bg-surface px-4 py-8 sm:px-7 xl:px-12 2xl:px-16">
+        <div className="max-w-[620px]">
+          <h2 className="text-sm font-black">開藥局的？</h2>
+          <p className="mt-2 text-[15px] leading-[1.8] text-ink-2">
+            一個小盒子串在你現有的條碼掃描器上，自動記下每批藥的效期。
+            快過退貨期限就用 LINE 提醒你 —— 店內流程一個字都不用改。
+          </p>
+          <Link
+            href="/pharmacy"
+            className="mt-3.5 inline-flex min-h-11 items-center bg-green px-4 text-[13px] font-bold text-white no-underline hover:bg-green-hover"
+          >
+            看盒子怎麼運作 →
+          </Link>
+        </div>
       </section>
 
       <SiteFooter />
