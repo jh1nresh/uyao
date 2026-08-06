@@ -2,6 +2,8 @@ import json
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
+import pytest
+
 from pharmabox import demand as demand_mod
 from pharmabox.outreach import (
     DATA_TS,
@@ -15,6 +17,17 @@ from pharmabox.outreach import (
     main,
     opener,
 )
+
+
+@pytest.fixture(autouse=True)
+def hermetic_env(monkeypatch, tmp_path):
+    """測試不准吃到開發機上真的 `web/.env.local`。
+
+    `env_or_file()` 加進來之後，有沒有把 KV 金鑰放進那個檔會讓同一份測試在
+    不同機器上得到不同結果 —— 實際踩過：worktree 裡全綠，主 repo 兩個紅。
+    預設指向一個不存在的檔；要測檔案行為的自己覆寫。
+    """
+    monkeypatch.setenv("PHARMABOX_ENV_FILE", str(tmp_path / "absent.env"))
 
 
 def rec(kind="inventory_miss", area="zhongshan", ago_days=1, **kw):
