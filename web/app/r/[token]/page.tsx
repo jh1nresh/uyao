@@ -59,6 +59,12 @@ const STATUS_UI: Record<
     tone: "bad",
     body: "這筆預留已經取消了。",
   },
+  expired: {
+    label: "已逾期",
+    tone: "bad",
+    // 兩種逾期在頁面上長一樣，但下面會依 confirmedAt 補一句不同的說明
+    body: "保留時間已經過了，商品已放回架上。",
+  },
 };
 
 export default async function PickupPage({
@@ -127,7 +133,16 @@ export default async function PickupPage({
         <div className={`mb-3 border px-3.5 py-2 text-[14px] font-bold ${toneClass}`}>
           {ui.label}
         </div>
-        <p className="mb-4 text-[14px] leading-[1.7] text-muted">{ui.body}</p>
+        <p className="mb-4 text-[14px] leading-[1.7] text-muted">
+          {ui.body}
+          {r.status === "expired" && !r.confirmedAt && (
+            // 藥局從沒確認過 —— 不能讓人以為是自己放鳥
+            <> 這一筆藥局一直沒有回覆，不算你未取。</>
+          )}
+          {r.status === "expired" && r.confirmedAt && (
+            <> 還需要的話請重新預留。</>
+          )}
+        </p>
 
         {overdue && r.storePhone && (
           <a

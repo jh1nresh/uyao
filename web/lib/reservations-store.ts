@@ -22,7 +22,8 @@ export type ReservationStatus =
   | "pending_store_confirm"
   | "confirmed"
   | "rejected_no_stock"
-  | "cancelled_by_user";
+  | "cancelled_by_user"
+  | "expired";
 
 export interface StoredReservation {
   /** 網址用的不可猜 token。取貨碼只有 26,000 種組合，直接當網址會被爆搜出別人的電話。 */
@@ -49,6 +50,8 @@ export interface StoredReservation {
   /** 已經催過藥局的時間。有值就不再重複催。 */
   remindedAt?: string;
   holdHours: number;
+  /** 逾期的時間。有值代表已經被 cron 掃過，不會重複處理。 */
+  expiredAt?: string;
   /** 業務示範（/store/[slug]/preview）產生的單。真單不會有這個欄位。 */
   demo?: true;
 }
@@ -62,6 +65,20 @@ export interface StoredReservation {
  */
 export const REMIND_STORE_AFTER_MIN = 15;
 export const TELL_CONSUMER_AFTER_MIN = 25;
+
+/**
+ * 藥局一直不回覆的話，這筆也不能永遠掛著。給的時間比保留時數寬鬆 ——
+ * 藥局可能只是隔天早上才看到訊息。
+ */
+export const EXPIRE_UNANSWERED_AFTER_HOURS = 12;
+
+/**
+ * 放鳥幾次要停權。文案上寫「兩次」，這裡就是兩次 —— 不能讓畫面上的規則
+ * 是空話。只算「藥局已經確認、東西真的留在櫃檯」卻沒去拿的那種；藥局
+ * 從沒確認的不算消費者的錯。
+ */
+export const NO_SHOW_LIMIT = 2;
+const NO_SHOW_TTL = 90 * 24 * 3600;
 
 export function minutesSince(iso: string): number {
   return (Date.now() - new Date(iso).getTime()) / 60000;
@@ -112,8 +129,11 @@ export async function save(r: StoredReservation): Promise<void> {
   await set(`r:${r.token}`, JSON.stringify(r));
 }
 
-/** 掃出所有預留。只給 cron 用 —— KEYS 在 key 多時很貴，別放進使用者路徑。 */
-export async function allPending(): Promise<StoredReservation[]> {
+/**
+ * 掃出還在流程中的預留（待確認 + 已確認）。只給 cron 用 ——
+ * KEYS 在 key 多時很貴，別放進使用者請求的路徑上。
+ */
+export async function allActive(): Promise<StoredReservation[]> {
   const ks = await kv.keys("r:").catch(() => []);
   const out: StoredReservation[] = [];
   for (const k of ks) {
@@ -121,12 +141,40 @@ export async function allPending(): Promise<StoredReservation[]> {
     if (!raw) continue;
     try {
       const r = JSON.parse(raw) as StoredReservation;
-      if (r.status === "pending_store_confirm") out.push(r);
+      if (r.status === "pending_store_confirm" || r.status === "confirmed") out.push(r);
     } catch {
       /* 壞掉的那筆跳過，不要讓整個 cron 掛掉 */
     }
   }
   return out;
+}
+
+/** 這筆該逾期了嗎？已確認的算保留時數，沒回覆的給比較寬鬆的窗口。 */
+export function isExpired(r: StoredReservation): boolean {
+  if (r.status === "confirmed" && r.confirmedAt) {
+    return minutesSince(r.confirmedAt) > r.holdHours * 60;
+  }
+  if (r.status === "pending_store_confirm") {
+    return minutesSince(r.createdAt) > EXPIRE_UNANSWERED_AFTER_HOURS * 60;
+  }
+  return false;
+}
+
+// ── 放鳥計數 ────────────────────────────────────────────────────────
+//
+// 用手機號當鍵。沒有登入所以這是我們唯一穩定的識別，換號碼就能繞過 ——
+// 但這個機制的目的是讓「常態性放鳥」有成本，不是防堵刻意規避的人。
+
+export async function noShowCount(phone: string): Promise<number> {
+  const raw = await kv.get(`noshow:${phone}`).catch(() => null);
+  const n = raw ? Number.parseInt(raw, 10) : 0;
+  return Number.isFinite(n) ? n : 0;
+}
+
+export async function bumpNoShow(phone: string): Promise<number> {
+  const next = (await noShowCount(phone)) + 1;
+  await kv.set(`noshow:${phone}`, String(next), NO_SHOW_TTL);
+  return next;
 }
 
 /** 藥局按下確認／沒貨時呼叫。查不到就回 null，呼叫端自己決定怎麼處理。 */

@@ -4,7 +4,9 @@ import { userForStore } from "@/lib/bindings";
 import { isConfigured, push, text } from "@/lib/line";
 import {
   REMIND_STORE_AFTER_MIN,
-  allPending,
+  allActive,
+  bumpNoShow,
+  isExpired,
   minutesSince,
   save,
 } from "@/lib/reservations-store";
@@ -51,15 +53,51 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const pending = await allPending().catch((err) => {
+  const active = await allActive().catch((err) => {
     console.error("[cron] 讀不到預留", String(err).slice(0, 200));
     return [];
   });
 
   let reminded = 0;
   let unbound = 0;
+  let expired = 0;
+  let noShow = 0;
 
-  for (const r of pending) {
+  // ── 逾期 ──────────────────────────────────────────────────────
+  for (const r of active) {
+    if (!isExpired(r)) continue;
+
+    // 藥局已經確認 = 東西真的從架上拿下來了，這才算放鳥
+    const wasConfirmed = r.status === "confirmed";
+    await save({ ...r, status: "expired", expiredAt: new Date().toISOString() });
+    expired += 1;
+
+    if (wasConfirmed && !r.demo) {
+      const n = await bumpNoShow(r.contact).catch(() => 0);
+      if (n > 0) noShow += 1;
+    }
+
+    if (r.demo) continue;
+    const lineUser = await userForStore(r.storeSlug).catch(() => undefined);
+    if (!lineUser || !isConfigured()) continue;
+    try {
+      await push(lineUser, [
+        text(
+          wasConfirmed
+            ? `⏰ ${r.code} 已逾期未取\n\n${r.drugName}\n` +
+              `保留 ${r.holdHours} 小時已過，可以放回架上了。`
+            : `⏰ ${r.code} 已自動關閉\n\n${r.drugName}\n` +
+              "這筆一直沒有回覆，已經幫你關掉，不用處理。",
+        ),
+      ]);
+    } catch (err) {
+      console.error(`[cron] 逾期通知失敗 ${r.code}`, String(err).slice(0, 200));
+    }
+  }
+
+  // ── 催單 ──────────────────────────────────────────────────────
+  for (const r of active) {
+    if (r.status !== "pending_store_confirm" || isExpired(r)) continue;
     if (r.remindedAt) continue;
     if (minutesSince(r.createdAt) < REMIND_STORE_AFTER_MIN) continue;
 
@@ -88,5 +126,5 @@ export async function GET(request: Request) {
     }
   }
 
-  return NextResponse.json({ pending: pending.length, reminded, unbound });
+  return NextResponse.json({ active: active.length, reminded, unbound, expired, noShow });
 }
