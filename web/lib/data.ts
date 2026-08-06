@@ -1,5 +1,6 @@
 import generated from "./stores.generated.json";
 import { compareByFreshness, stockBadge } from "./stock";
+import { matchSymptom } from "./symptoms";
 import type {
   Area,
   AreaSlug,
@@ -362,15 +363,42 @@ export function nearbyInStock(area: AreaSlug = DEFAULT_AREA, limit = 6): DrugRow
 }
 
 /** 搜尋：品名 / 英文名 / 成分 / 適應症 都吃。 */
+function haystack(d: Drug): string {
+  return [d.name, d.nameEn ?? "", d.form, ...d.ingredients, ...d.indications]
+    .join(" ")
+    .toLowerCase();
+}
+
+/**
+ * 搜尋：品名 / 英文名 / 成分 / 適應症 都吃。
+ *
+ * 使用者打的常常是整句口語（「我今天被蚊子咬」），直接子字串比對一定落空 ——
+ * 目錄裡寫的是「蚊蟲叮咬」。所以先過一次症狀對照表（`lib/symptoms.ts`），
+ * 命中就改用它給的目錄詞去搜。
+ *
+ * `refer` 類（燙傷那種成藥自選不適當的）回空陣列 —— 由頁面顯示處置方向，
+ * 不給商品。這是刻意的：對應到一支藥反而是給錯誤建議。
+ */
 export function searchDrugs(query: string): Drug[] {
-  const q = query.trim().toLowerCase();
-  if (!q) return [];
-  return DRUGS.filter((d) =>
-    [d.name, d.nameEn ?? "", d.form, ...d.ingredients, ...d.indications]
-      .join(" ")
-      .toLowerCase()
-      .includes(q),
-  );
+  const raw = query.trim();
+  if (!raw) return [];
+
+  const hit = matchSymptom(raw);
+  if (hit?.kind === "refer") return [];
+
+  const terms = hit?.kind === "expand" ? hit.terms : [raw];
+  const seen = new Set<string>();
+  const out: Drug[] = [];
+  for (const t of terms) {
+    const q = t.toLowerCase();
+    for (const d of DRUGS) {
+      if (!seen.has(d.slug) && haystack(d).includes(q)) {
+        seen.add(d.slug);
+        out.push(d);
+      }
+    }
+  }
+  return out;
 }
 
 export function drugsInCategory(slug: CategorySlug): Drug[] {
