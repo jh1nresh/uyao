@@ -74,9 +74,17 @@ def from_kv(
 
     沒設金鑰就回空 list 而不是丟例外 —— 呼叫端要能安靜退回本機檔案。
     kv.ts 用 `RPUSH` 寫入，所以這裡是 `LRANGE 0 -1`（附加順序 = 時間順序）。
+
+    **優先吃唯讀 token。** 這條路上只會做 `LRANGE`，沒有任何理由讓一支
+    產報表的 CLI 握著能寫能刪的金鑰 —— 它會被貼進 shell、cron、筆記本。
+    Vercel 的 KV 整合本來就一起發 `KV_REST_API_READ_ONLY_TOKEN`。
     """
     url = url or os.environ.get("KV_REST_API_URL")
-    token = token or os.environ.get("KV_REST_API_TOKEN")
+    token = (
+        token
+        or os.environ.get("KV_REST_API_READ_ONLY_TOKEN")
+        or os.environ.get("KV_REST_API_TOKEN")
+    )
     if not (url and token):
         return []
 
