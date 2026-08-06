@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { allStores } from "@/lib/data";
 import {
+  adminUserIds,
   approve,
   boundCount,
   isAdmin,
@@ -84,14 +85,25 @@ async function onBindRequest(userId: string, replyToken: string, query: string) 
   ]);
 
   // 把核可指令直接送到你的 LINE，不用再開終端機
-  for (const admin of (process.env.LINE_ADMIN_USER_IDS ?? "").split(",").map((x) => x.trim())) {
-    if (!admin) continue;
-    await push(admin, [
-      text(
-        `🔗 綁定申請 ${pending.ref}\n${store.name}\n${store.address}\n\n` +
-          `確認是本人的話，回覆：核准 ${pending.ref}`,
-      ),
-    ]).catch(() => null);
+  const admins = adminUserIds();
+  if (admins.length === 0) {
+    console.error(
+      `[line] ${pending.ref} 沒有可通知的管理員 —— LINE_ADMIN_USER_IDS 沒設或格式不對。` +
+        "綁定申請只留在 record sink 裡。",
+    );
+  }
+  for (const admin of admins) {
+    try {
+      await push(admin, [
+        text(
+          `🔗 綁定申請 ${pending.ref}\n${store.name}\n${store.address}\n\n` +
+            `確認是本人的話，回覆：核准 ${pending.ref}`,
+        ),
+      ]);
+    } catch (err) {
+      // 送不到管理員 = 這筆申請沒人會核可。一定要留下痕跡。
+      console.error(`[line] 核可通知送不到管理員（${pending.ref}）`, String(err).slice(0, 200));
+    }
   }
 }
 
@@ -205,5 +217,7 @@ export async function GET() {
   return NextResponse.json({
     configured: isConfigured(),
     boundStores: await boundCount(),
+    // 不吐 id，只說有幾個合法的 —— 0 就代表核可通知會送不出去
+    admins: adminUserIds().length,
   });
 }

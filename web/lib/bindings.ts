@@ -42,13 +42,30 @@ function envBindings(): Record<string, string> {
   return {};
 }
 
-/** 你自己的 LINE userId，逗號分隔。只有這些人講的話會被當成核可指令。 */
+/** LINE userId 的形狀：U + 32 個小寫十六進位字元。 */
+const USER_ID = /^U[0-9a-f]{32}$/;
+
+/**
+ * 你自己的 LINE userId，逗號分隔。只有這些人講的話會被當成核可指令。
+ *
+ * 會過濾掉形狀不對的項目並且吵一聲 —— 實際踩過：值被貼成帶中括號的
+ * 說明文字，結果核可通知永遠送不到，而且完全沒有跡象。
+ */
+export function adminUserIds(): string[] {
+  const raw = (process.env.LINE_ADMIN_USER_IDS ?? "").trim().replace(/^["']|["']$/g, "");
+  const parts = raw.split(",").map((s) => s.trim()).filter(Boolean);
+  const valid = parts.filter((p) => USER_ID.test(p));
+  if (valid.length !== parts.length) {
+    console.error(
+      `[bindings] LINE_ADMIN_USER_IDS 有 ${parts.length - valid.length} 個項目不是合法的 LINE userId` +
+        "（應為 U 開頭 + 32 個小寫十六進位字元），已忽略",
+    );
+  }
+  return valid;
+}
+
 export function isAdmin(userId: string): boolean {
-  return (process.env.LINE_ADMIN_USER_IDS ?? "")
-    .split(",")
-    .map((s) => s.trim())
-    .filter(Boolean)
-    .includes(userId);
+  return adminUserIds().includes(userId);
 }
 
 export async function storeForUser(userId: string): Promise<string | undefined> {
