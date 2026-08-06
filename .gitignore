@@ -1,4 +1,6 @@
 data/.cache/
+# 每週重產的招商報表。call sheet 帶電話與開場白，沒有進版控的價值
+data/outreach/
 __pycache__/
 *.pyc
 .pytest_cache/
