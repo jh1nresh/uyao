@@ -11,6 +11,17 @@ import path from "node:path";
  * 關聯資料，要 join 要 group by，屆時該加 Postgres 而不是把它塞進 Redis。
  */
 
+/**
+ * 測試用的記憶體 driver。沒有它的話單元測試會去寫 `.data/`，測試之間
+ * 互相污染（實測踩過：節流測試被前一輪的計數影響，結果非單調）。
+ */
+const memory = new Map<string, string>();
+const useMemory = () => process.env.NODE_ENV === "test";
+
+export function __resetForTests(): void {
+  memory.clear();
+}
+
 function config(): { url: string; token: string } | null {
   const url = process.env.KV_REST_API_URL;
   const token = process.env.KV_REST_API_TOKEN;
@@ -45,6 +56,7 @@ function filePath(key: string): string {
 }
 
 export async function get(key: string): Promise<string | null> {
+  if (useMemory()) return memory.get(key) ?? null;
   if (config()) {
     const r = await command(["GET", key]);
     return typeof r === "string" ? r : null;
@@ -57,6 +69,10 @@ export async function get(key: string): Promise<string | null> {
 }
 
 export async function set(key: string, value: string, ttlSeconds?: number): Promise<void> {
+  if (useMemory()) {
+    memory.set(key, value);
+    return;
+  }
   if (config()) {
     await command(ttlSeconds ? ["SET", key, value, "EX", ttlSeconds] : ["SET", key, value]);
     return;
@@ -67,6 +83,10 @@ export async function set(key: string, value: string, ttlSeconds?: number): Prom
 }
 
 export async function del(key: string): Promise<void> {
+  if (useMemory()) {
+    memory.delete(key);
+    return;
+  }
   if (config()) {
     await command(["DEL", key]);
     return;
@@ -81,6 +101,10 @@ export async function del(key: string): Promise<void> {
 
 /** 附加到 list 尾端，並修剪長度上限 —— 需求訊號用，不需要無限成長。 */
 export async function append(key: string, value: string, keepLast = 2000): Promise<void> {
+  if (useMemory()) {
+    memory.set(key, (memory.get(key) ?? "") + value + "\n");
+    return;
+  }
   if (config()) {
     await command(["RPUSH", key, value]);
     await command(["LTRIM", key, -keepLast, -1]);
@@ -97,6 +121,11 @@ export async function append(key: string, value: string, keepLast = 2000): Promi
  * 一直有請求的人永遠不過期，等於沒有限制。
  */
 export async function incr(key: string, ttlSeconds: number): Promise<number> {
+  if (useMemory()) {
+    const next = Number(memory.get(key) ?? 0) + 1;
+    memory.set(key, String(next));
+    return next;
+  }
   if (config()) {
     const n = Number(await command(["INCR", key]));
     if (n === 1) await command(["EXPIRE", key, ttlSeconds]);
@@ -114,6 +143,7 @@ export async function incr(key: string, ttlSeconds: number): Promise<number> {
  * key 多的時候很貴，不要放進使用者請求的路徑上。
  */
 export async function keys(prefix: string): Promise<string[]> {
+  if (useMemory()) return [...memory.keys()].filter((k) => k.startsWith(prefix));
   if (config()) {
     const r = await command(["KEYS", `${prefix}*`]);
     return Array.isArray(r) ? (r as string[]) : [];
