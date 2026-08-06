@@ -354,7 +354,7 @@ function SuccessBody({
           void fetch("/api/reservations", {
             method: "DELETE",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({ code: success.code }),
+            body: JSON.stringify({ token: success.token }),
           }).catch(() => {
             /* 取消是 best-effort：藥局端沒收到確認也會自然過期 */
           });
