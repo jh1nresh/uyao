@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 
+import { logConsole } from "@/lib/box";
 import { allStores } from "@/lib/data";
 import {
   adminUserIds,
@@ -171,6 +172,12 @@ async function onPostback(userId: string, replyToken: string, data: string) {
 
   if (action === "pickup") {
     const done = await updateStatus(code, "picked_up").catch(() => null);
+    if (done) {
+      logConsole(
+        "✅",
+        `${done.demo ? "［示範］" : ""}${code} 藥局回報已交付 → 這筆圓滿結束，關閉催單與逾期`,
+      );
+    }
     await appendRecord("reservations", {
       code, lineUserId: userId, status: "picked_up", at: new Date().toISOString(),
     });
@@ -199,6 +206,16 @@ async function onPostback(userId: string, replyToken: string, data: string) {
     status: action === "confirm" ? "confirmed_by_store" : "rejected_no_stock",
     at: new Date().toISOString(),
   });
+
+  if (updated) {
+    const tag = updated.demo ? "［示範］" : "";
+    logConsole(
+      action === "confirm" ? "🟢" : "🔻",
+      action === "confirm"
+        ? `${tag}${code} 藥局確認有貨 → 開始保留 ${updated.holdHours} 小時，消費者取貨頁已翻牌`
+        : `${tag}${code} 藥局回報沒貨 → 取貨頁已更新，缺貨記入需求訊號`,
+    );
+  }
 
   if (!updated) {
     // 查不到那筆 —— 大多是儲存沒設好，或已經過期。要講實話，
