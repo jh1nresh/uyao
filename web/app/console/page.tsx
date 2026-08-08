@@ -40,7 +40,30 @@ function fmtDay(iso: string): string {
   });
 }
 
-export default async function ConsolePage() {
+export default async function ConsolePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ key?: string }>;
+}) {
+  // 流水裡有真單的取貨碼與店名 —— 設了 CONSOLE_KEY 就要帶 ?key= 才看得到。
+  // 沒設就開放（本機開發、純示範環境）。這不是高強度防護，是把「路人
+  // 順手看到營運資料」擋掉；正式營運要換成真登入。
+  const gate = process.env.CONSOLE_KEY;
+  if (gate && (await searchParams).key !== gate) {
+    return (
+      <>
+        <SiteHeader showSearch={false} />
+        <section className="px-4 py-10 sm:px-7 xl:px-12 2xl:px-16">
+          <h1 className="mb-2 text-lg font-black">這一頁需要鑰匙</h1>
+          <p className="text-[15px] leading-[1.7] text-muted">
+            Agent Console 含營運資料，請用帶 key 的網址開啟。
+          </p>
+        </section>
+        <SiteFooter />
+      </>
+    );
+  }
+
   const [events, scans] = await Promise.all([recentEvents(120), scanSummary()]);
   const storeName = (slug: string) =>
     allStores().find((s) => s.slug === slug)?.name ?? slug;
