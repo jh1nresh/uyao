@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
+  <title id="title">Uyao social avatar</title>
+  <desc id="desc">The white Chinese character You on a solid Uyao green field.</desc>
+  <rect width="1024" height="1024" fill="#0B7A3E"/>
+  <text
+    x="512"
+    y="706"
+    fill="#FFFFFF"
+    font-family="PingFang TC, Noto Sans TC, sans-serif"
+    font-size="600"
+    font-weight="700"
+    text-anchor="middle"
+  >有</text>
+</svg>

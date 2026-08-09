@@ -2,18 +2,70 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { CrossMark } from "@/components/CrossMark";
-import { HeroLoop } from "@/components/landing/HeroLoop";
-import { PilotCtaForm } from "@/components/landing/PilotCtaForm";
+import { HeroLoop, type HeroLoopCopy } from "@/components/landing/HeroLoop";
+import { PilotCtaForm, type PilotFormCopy } from "@/components/landing/PilotCtaForm";
 
 /**
- * 公司 landing（design: `uYao Landing.dc.html`，spec: company-landing-page.md）。
- * `/` 說清楚問題、閉環、證據與試點；消費者找藥產品在 /find。
- * 誠實原則：未驗證的一律標 prototype／示範資料，evidence 逐項標 ✓／○。
+ * 公司 landing（design: `uYao Landing.dc.html`，spec: company-landing-page.md
+ * + company-landing-page-yc-en-adjustment.md）。
+ * `/` 說清楚問題、閉環、證據與試點；消費者找藥在 /find，英文 YC 版在 /en。
+ * 誠實原則：未驗證的一律標 prototype／示範資料，evidence 逐項標 ✓／○；
+ * 尚無 active partner，status line 一律用 recruiting 版本。
  */
 export const metadata: Metadata = {
-  title: { absolute: "uYao 有藥 — 獨立藥局的供需庫存 Agent" },
+  title: { absolute: "uYao — 獨立藥局的 AI Operating System" },
   description:
-    "uYao 從店內掃描與附近搜尋取得供需訊號，在 LINE 提出退貨、減量、補貨與預留行動，由藥師批准並記錄實際結果。",
+    "uYao 主動處理獨立藥局的庫存、效期與附近需求，只把必要決策交給藥師批准。",
+  alternates: {
+    canonical: "/",
+    languages: { "zh-TW": "/", en: "/en", "x-default": "/" },
+  },
+  openGraph: {
+    title: "uYao — 獨立藥局的 AI Operating System",
+    description:
+      "uYao 主動處理獨立藥局的庫存、效期與附近需求，只把必要決策交給藥師批准。",
+    locale: "zh_TW",
+    url: "/",
+  },
+};
+
+const HERO_COPY: HeroLoopCopy = {
+  flowLabel: "SUPPLY → ACTION → OUTCOME",
+  badge: "PROTOTYPE · 示範資料",
+  scanTitle: "SCAN EVENT · box/connector",
+  lineHeader: "LINE 訊息 · prototype",
+  cardTitle: "這批藥的退貨窗口即將關閉",
+  cardMetaLines: ["批號 TW881 · EXP 2026-11", "退貨規則：待藥師／供應商確認"],
+  primaryBtn: "開始辦退貨",
+  secondaryBtns: ["這批賣得掉", "資料不正確"],
+  receiptTitle: "OUTCOME RECEIPT",
+  statusLabel: "狀態",
+  statusValue: "藥師已確認",
+  resultLabel: "結果",
+  resultValue: "等待真實金額回寫",
+};
+
+const FORM_COPY: PilotFormCopy = {
+  locale: "zh",
+  nameLabel: "藥局名稱 *",
+  areaLabel: "所在區域",
+  contactLabel: "聯絡方式（LINE ID 或電話）*",
+  problemsLegend: "目前最常遇到的問題（選填）",
+  problems: [
+    "過期／報廢",
+    "錯過退貨窗口",
+    "進貨過量",
+    "經常缺貨",
+    "不知道附近需求",
+    "其他",
+  ].map((v) => ({ value: v, label: v })),
+  submit: "申請試點",
+  submitting: "送出中…",
+  requiredError: "請填寫藥局名稱與聯絡方式。",
+  genericError: "連線失敗，請稍後再試",
+  successTitle: "已收到申請",
+  successBody:
+    "我們會透過你留下的聯絡方式跟你約時間，聊掃描流程與退貨窗口怎麼在你的店裡跑起來。",
 };
 
 /** Evidence ladder — ✓ 只給 repo／測試／實際證據支持的項目，更新時附日期。 */
@@ -38,7 +90,12 @@ const POS_ROWS = [
 const FLOW: { n: string; title: string; body: string; hot?: boolean }[] = [
   { n: "01", title: "Supply observer", body: "Box／connector 取得品項、批次、效期與移動訊號" },
   { n: "02", title: "Demand sensor", body: "Consumer Web 取得搜尋落空、通知、預留與取貨需求" },
-  { n: "03", title: "Action agent", body: "依 deterministic 規則產生建議", hot: true },
+  {
+    n: "03",
+    title: "Action agent",
+    body: "從可驗證規則開始，結合現有營運 context 準備下一步行動，交由藥師批准",
+    hot: true,
+  },
   { n: "04", title: "Pharmacist approval", body: "藥師在 LINE 批准、拒絕或修正" },
   { n: "05", title: "Outcome receipt", body: "記錄退貨、避免報廢、減少積壓或新增成交結果" },
 ];
@@ -84,6 +141,15 @@ export default function CompanyLandingPage() {
               >
                 申請試點
               </a>
+              <span className="num text-[13px] text-muted">
+                <span aria-current="true" className="font-semibold text-ink">
+                  中
+                </span>
+                {" / "}
+                <Link href="/en" className="text-muted no-underline hover:text-green">
+                  EN
+                </Link>
+              </span>
             </div>
           </div>
         </Container>
@@ -100,8 +166,8 @@ export default function CompanyLandingPage() {
                 讓每一盒庫存跟附近需求連起來。
               </h1>
               <p className="mb-0 mt-7 max-w-[34em] text-[17px] leading-[1.85] text-ink-2">
-                uYao 從店內掃描與附近搜尋取得供需訊號，在 LINE
-                提出退貨、減量、補貨與預留行動，由藥師批准。
+                uYao
+                連接店內庫存、效期與附近需求，主動準備並推進退貨、補貨與預留工作，只把必要決策交給藥師批准。
               </p>
               <div className="mt-9 flex flex-wrap gap-3.5">
                 <a
@@ -119,10 +185,10 @@ export default function CompanyLandingPage() {
               </div>
               <p className="mb-0 mt-11 flex items-center gap-2.5 border-t border-line pt-5 text-[14px] text-muted">
                 <span className="h-2 w-2 flex-none bg-green" aria-hidden />
-                目前正在與早期合作藥局驗證第一個現場閉環。
+                正在招募獨立藥局，一起驗證第一條現場閉環。
               </p>
             </div>
-            <HeroLoop />
+            <HeroLoop copy={HERO_COPY} />
           </div>
         </Container>
       </header>
@@ -437,7 +503,7 @@ export default function CompanyLandingPage() {
                 的獨立藥局。試點不要求更換 POS，也不碰病患或處方個資。
               </p>
             </div>
-            <PilotCtaForm />
+            <PilotCtaForm copy={FORM_COPY} />
           </div>
         </Container>
       </section>

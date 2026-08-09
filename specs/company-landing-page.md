@@ -5,6 +5,7 @@
 > Primary surface: `web-landing`
 > Audience: 獨立藥局決策者、YC／投資人、產業合作方；secondary: 找藥消費者
 > Supersedes positioning in: `specs/landing-page-prompt.md`
+> Adjusted by: `specs/company-landing-page-yc-en-adjustment.md`（AI OS 定位 + /en，2026-08-09）
 > Product truth: code and current pilot evidence win over this design spec
 
 ## 落地決策（founder review 四項）
@@ -55,7 +56,7 @@
 ## Design tokens
 
 沿用 `web/tailwind.config.ts` 既有 tokens（ink/surface/line/green 系）；品牌 mark 用
-`components/CrossMark.tsx`（U + 掃描訊號幾何，**不是**設計稿裡的舊綠十字）。深色 end-cap
+`components/CrossMark.tsx`（v2 stroke u/y 合體字形，kit：`public/brand/uyao-mark-v2-x-safe.svg`，**不是**設計稿裡的舊綠十字）。深色 end-cap
 用 `bg-ink`；僅深色區用到的 `#A9B5AA` `#3DD68C` `#F2B8B5` 與 amber 標籤 `#C9A227/#8A6A00`
 以 arbitrary value 存在，不進 tokens。Radius 一律 sharp；motion 只有 hero 一次性進場
 120–200ms。
