@@ -71,7 +71,7 @@ export default function PharmacyPage() {
           </p>
           <p className="text-[13px] leading-[1.7] text-muted-2">
             我們永遠不顯示確切數量，只顯示掃描新鮮度。
-            <Link href="/" className="ml-1 text-green underline underline-offset-2">
+            <Link href="/app" className="ml-1 text-green underline underline-offset-2">
               看消費端長什麼樣 →
             </Link>
           </p>

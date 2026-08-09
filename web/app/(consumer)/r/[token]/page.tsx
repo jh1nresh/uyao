@@ -91,7 +91,7 @@ export default async function PickupPage({
             {!isStoreAvailable() &&
               "（也可能是系統暫時讀不到資料，請直接聯絡藥局。）"}
             <br />
-            <Link href="/" className="text-green">
+            <Link href="/app" className="text-green">
               回到搜尋 →
             </Link>
           </p>

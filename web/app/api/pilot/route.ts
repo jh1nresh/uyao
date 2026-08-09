@@ -10,7 +10,18 @@ interface Body {
   name?: unknown;
   area?: unknown;
   contact?: unknown;
+  problems?: unknown;
 }
+
+/** 與 landing PilotCtaForm 的選項同步 — 只收白名單內的值。 */
+const PROBLEM_OPTIONS = [
+  "過期／報廢",
+  "錯過退貨窗口",
+  "進貨過量",
+  "經常缺貨",
+  "不知道附近需求",
+  "其他",
+];
 
 /** 只取字串、去頭尾空白、限長 — 藥局名/區域是自由輸入，不做格式假設。 */
 function field(raw: unknown, max: number): string {
@@ -37,6 +48,9 @@ export async function POST(request: Request) {
   const name = field(body.name, 60);
   const area = field(body.area, 40);
   const contact = field(body.contact, 60);
+  const problems = Array.isArray(body.problems)
+    ? [...new Set(body.problems.filter((p): p is string => PROBLEM_OPTIONS.includes(p as string)))]
+    : [];
 
   if (!name) {
     return NextResponse.json({ error: "請填藥局名稱" }, { status: 422 });
@@ -49,6 +63,7 @@ export async function POST(request: Request) {
     name,
     area,
     contact,
+    problems,
     createdAt: new Date().toISOString(),
     status: "pending_contact" as const,
   });

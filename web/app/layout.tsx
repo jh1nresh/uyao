@@ -2,8 +2,6 @@ import type { Metadata } from "next";
 import { IBM_Plex_Mono } from "next/font/google";
 import localFont from "next/font/local";
 
-import { DemoBanner } from "@/components/DemoBanner";
-import { LocationProvider } from "@/components/LocationProvider";
 import "./globals.css";
 
 /**
@@ -28,12 +26,13 @@ const plexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://uyao.tw"),
+  // 預設（= 公司 landing `/`）講公司定位；消費端各頁自帶標題與描述。
   title: {
-    default: "有藥 — 搜一個藥，看附近哪家藥局有貨",
+    default: "uYao 有藥 — 獨立藥局的供需庫存 Agent",
     template: "%s · 有藥",
   },
   description:
-    "搜藥品名或症狀，看附近藥局現在有沒有貨、多少錢，按預留到店取。庫存來自藥局店內掃描，不做線上交易。",
+    "uYao 從店內掃描與附近搜尋取得供需訊號，在 LINE 提出退貨、減量、補貨與預留行動，由藥師批准並記錄實際結果。",
   openGraph: {
     siteName: "有藥",
     locale: "zh_TW",
@@ -52,10 +51,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${notoSansTC.variable} ${plexMono.variable}`}
     >
       <body>
-        <div className="min-h-screen bg-white">
-          <DemoBanner />
-          <LocationProvider>{children}</LocationProvider>
-        </div>
+        <div className="min-h-screen bg-white">{children}</div>
       </body>
     </html>
   );
