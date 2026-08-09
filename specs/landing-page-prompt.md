@@ -20,7 +20,7 @@ Direction: 藥籤/處方標籤美學 — 白底、近黑墨色 (#1a1a1a 級,禁 
 Density:   spacious hero、comfortable 其餘
 Surface:   flat sections、細 1px 邊框、極少陰影 (卡片陰影 opacity ≤6%)
 Type mood: clinical、精準、可信賴 — 中文 Noto Sans TC (300/500/700 三個字重上限)，
-           數字/效期/價格一律 tabular-nums；可用一個 mono 字體標數據
+           數字/效期/距離一律 tabular-nums；可用一個 mono 字體標數據
 Motion:    克制 — hero 搜尋 demo 的打字動畫是全頁唯一的持續動畫；
            scroll-in 只用 opacity+translateY 一種，200ms，不要 stagger 超過 3 個元素
 Do:
@@ -42,7 +42,9 @@ Don't:
 - H1：`附近哪家藥局有貨，搜了就知道`
 - 副標：`小護士、酸痛貼布、皮膚藥膏 — 即時庫存來自藥局店內掃描，預留 4 小時，到店再付款。`
 - **互動 demo（本頁核心，用假資料寫死）**：一個大搜尋框，自動打字輪播「曼秀雷敦軟膏 → 撒隆巴斯 → 娥羅納英」，每次「搜尋」後下方浮出 3 行結果列：
-  `安心藥局 · 350m · 營業中 · $89 · ● 今日掃描確認 · [預留]`
+  `安心藥局 · 350m · 營業中 · ● 今日掃描確認 · [預留]`
+  **不出現價格** —— 見 `web-marketplace.md` 的法規邊界（刊登品名+價格+可下單可能被
+  認定為通訊交易通路販賣）。價格只在藥局到店時才有。
   行內元素全部做出來（徽章、tabular 數字、預留按鈕），按預留 → 跳等候名單表單。這個 demo 就是產品說明，不需要另外的 feature 圖。
 - 表單：Email 或 LINE ID，一欄一鈕 `開通時通知我`（POST 到 `/api/waitlist`，先寫進 local json/console 即可）
 - 下方小字 trust line：`藥品不網售 · 到店由藥師交付 · 資料來自店內真實掃描`
