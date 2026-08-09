@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 import { CrossMark } from "@/components/CrossMark";
+import { SHOP_URL } from "@/lib/shop";
 import { HeroLoop, type HeroLoopCopy } from "@/components/landing/HeroLoop";
 import { PilotCtaForm, type PilotFormCopy } from "@/components/landing/PilotCtaForm";
 
@@ -147,9 +149,9 @@ export default function EnglishLandingPage() {
               >
                 Evidence
               </a>
-              <Link href="/app" className="hidden text-ink no-underline hover:text-green md:inline">
+              <a href={SHOP_URL} className="hidden text-ink no-underline hover:text-green md:inline">
                 Consumer search
-              </Link>
+              </a>
               <a
                 href="#pilot"
                 className="whitespace-nowrap bg-green px-5 py-2.5 text-[15px] font-bold text-white no-underline hover:bg-green-hover"
@@ -195,12 +197,12 @@ export default function EnglishLandingPage() {
                   >
                     Join the pilot
                   </a>
-                  <Link
-                    href="/app"
+                  <a
+                    href={SHOP_URL}
                     className="box-border inline-flex min-h-11 items-center whitespace-nowrap border border-line-strong px-8 py-[15px] text-[16px] font-medium text-ink no-underline hover:border-green hover:text-green"
                   >
                     See the consumer product
-                  </Link>
+                  </a>
                 </div>
                 <p className="mb-0 mt-11 flex items-center gap-2.5 border-t border-line pt-5 text-[14px] text-muted">
                   <span className="h-2 w-2 flex-none bg-green" aria-hidden />
@@ -413,16 +415,17 @@ export default function EnglishLandingPage() {
               </div>
               <div className="flex flex-col border border-line-strong bg-white">
                 <div className="num border-b border-line px-[18px] py-2.5 text-[11px] font-medium tracking-[.06em] text-muted">
-                  CONSUMER DEMAND SIGNAL · PROTOTYPE
+                  CONSUMER DEMAND SIGNAL · LIVE PRODUCT
                 </div>
-                <div className="num flex flex-1 flex-col justify-center gap-1.5 px-[18px] py-4 text-[12px] font-medium text-muted">
-                  <span>Search a medicine</span>
-                  <span className="text-line-strong">↓</span>
-                  <span className="text-green">inventory_miss</span>
-                  <span className="text-line-strong">↓</span>
-                  <span>Leave a restock notification</span>
-                  <span className="text-line-strong">↓</span>
-                  <span>Aggregated into a pharmacy action signal</span>
+                {/* 真實 Consumer Web 截圖，object-bottom 露出 inventory-miss + 到貨通知表單 */}
+                <div className="relative h-[280px] overflow-hidden">
+                  <Image
+                    src="/landing/consumer-web.png"
+                    alt="Live consumer product: a search for a medicine shows no verified stock nearby and offers a restock notification form"
+                    width={1081}
+                    height={1930}
+                    className="absolute inset-0 h-full w-full object-cover object-bottom"
+                  />
                 </div>
               </div>
             </div>
@@ -492,9 +495,9 @@ export default function EnglishLandingPage() {
               <span className="text-[16px] font-black">uYao</span>
             </div>
             <div className="flex flex-wrap gap-7 text-[14.5px]">
-              <Link href="/app" className="text-green hover:text-green-hover">
+              <a href={SHOP_URL} className="text-green hover:text-green-hover">
                 Consumer search
-              </Link>
+              </a>
               <a href="#pilot" className="text-green hover:text-green-hover">
                 Join the pilot
               </a>

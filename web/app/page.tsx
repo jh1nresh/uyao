@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 
 import { CrossMark } from "@/components/CrossMark";
+import { SHOP_URL } from "@/lib/shop";
 import { HeroLoop, type HeroLoopCopy } from "@/components/landing/HeroLoop";
 import { PilotCtaForm, type PilotFormCopy } from "@/components/landing/PilotCtaForm";
 
@@ -132,9 +134,9 @@ export default function CompanyLandingPage() {
               <a href="#progress" className="hidden text-ink no-underline hover:text-green md:inline">
                 目前進度
               </a>
-              <Link href="/app" className="hidden text-ink no-underline hover:text-green md:inline">
+              <a href={SHOP_URL} className="hidden text-ink no-underline hover:text-green md:inline">
                 附近找藥
-              </Link>
+              </a>
               <a
                 href="#pilot"
                 className="bg-green px-5 py-2.5 text-[15px] font-bold text-white no-underline hover:bg-green-hover"
@@ -176,12 +178,12 @@ export default function CompanyLandingPage() {
                 >
                   申請試點
                 </a>
-                <Link
-                  href="/app"
+                <a
+                  href={SHOP_URL}
                   className="box-border inline-flex min-h-11 items-center whitespace-nowrap border border-line-strong px-8 py-[15px] text-[16px] font-medium text-ink no-underline hover:border-green hover:text-green"
                 >
                   附近找藥
-                </Link>
+                </a>
               </div>
               <p className="mb-0 mt-11 flex items-center gap-2.5 border-t border-line pt-5 text-[14px] text-muted">
                 <span className="h-2 w-2 flex-none bg-green" aria-hidden />
@@ -355,10 +357,18 @@ export default function CompanyLandingPage() {
             </div>
             <div className="min-w-0 lg:order-1">
               <div className="border border-line-strong bg-white p-3">
-                {/* 資產缺口誠實留白：等 Consumer Web 真實截圖，不用假 dashboard 充數 */}
-                <div className="num flex h-[240px] items-center justify-center border border-dashed border-line-strong bg-surface px-6 text-center text-[12.5px] font-medium leading-[1.8] text-muted sm:h-[340px]">
-                  缺：Consumer Web 真實搜尋／落空通知截圖
+                <div className="num mb-2 flex items-center justify-between gap-3 px-1 pt-1 text-[11px] font-medium tracking-[.06em] text-muted">
+                  <span>CONSUMER WEB · 實際畫面</span>
+                  <span>shop-uyao.vercel.app</span>
                 </div>
+                {/* 真實截圖：綠油精搜尋落空（查不到即時庫存）→ 到貨通知表單 */}
+                <Image
+                  src="/landing/consumer-web.png"
+                  alt="Consumer Web 實際畫面：搜尋綠油精，頁面顯示「目前查不到即時庫存」，並提供「有貨的時候通知我」的到貨通知表單"
+                  width={1081}
+                  height={1930}
+                  className="mx-auto h-[400px] w-auto sm:h-[480px]"
+                />
               </div>
               <div className="num mt-3.5 flex flex-wrap items-center gap-2 text-[12px] font-medium text-muted">
                 <span>搜尋一支藥</span>
@@ -516,9 +526,9 @@ export default function CompanyLandingPage() {
               <span className="text-[16px] font-black">uYao</span>
             </div>
             <div className="flex gap-7 text-[14.5px]">
-              <Link href="/app" className="text-green hover:text-green-hover">
+              <a href={SHOP_URL} className="text-green hover:text-green-hover">
                 附近找藥
-              </Link>
+              </a>
               <a href="#pilot" className="text-green hover:text-green-hover">
                 申請試點
               </a>
