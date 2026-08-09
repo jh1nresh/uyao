@@ -10,7 +10,7 @@
 
 ## 落地決策（founder review 四項）
 
-1. **Route**：`/` 作公司 landing；消費者產品搬 `/find`（route group `(consumer)`，URL 不變其餘不動）。
+1. **Route**：`/` 作公司 landing；消費者產品搬 `/app`（route group `(consumer)`，URL 不變其餘不動）。
 2. **Hero headline**：`少丟貨，少缺貨。讓每一盒庫存跟附近需求連起來。`
 3. **Primary proof**：return-window LINE action（hero 的 Supply → Action → Outcome 閉環）。
 4. **Evidence state**：只公開 repo／測試層級；共同創辦人現場經驗仍標 ○（整理中）。Evidence date: 2026-08-09。
@@ -25,16 +25,16 @@
 
 ```text
 /                  公司 landing：問題、閉環、證據與試點（app/page.tsx）
-/find              消費者找藥產品入口（原首頁整頁搬移，搜尋/地區行為不變）
+/app               消費者找藥 app 入口（原首頁整頁搬移，搜尋/地區行為不變）
 /drug /store /search /category  消費者下游路由，不動
-/pharmacy          藥局試點詳情與表單（保留，logo 與「看消費端」連結改指 /find）
+/pharmacy          藥局試點詳情與表單（保留，logo 與「看消費端」連結改指 /app）
 ```
 
 ## 頁面結構（實作對照）
 
 | Section | 內容 | 實作 |
 |---|---|---|
-| Nav | logo + 怎麼運作/#how · 目前進度/#progress · 附近找藥→/find · 申請試點/#pilot；mobile 只剩 logo+CTA | `app/page.tsx` |
+| Nav | logo + 怎麼運作/#how · 目前進度/#progress · 附近找藥→/app · 申請試點/#pilot；mobile 只剩 logo+CTA | `app/page.tsx` |
 | Hero | H1 + subtext + 雙 CTA + status line；visual = scan event → LINE return card → outcome receipt，一次性 3 段進場動畫（reduced-motion 直接靜態） | `components/landing/HeroLoop.tsx` |
 | POS gap | comparison strip 3 rows；mobile 改 paired rows | `app/page.tsx` |
 | 閉環 | 01–05 不對稱流程（03 Action agent 加重 + VERIFY/RETURN/REDUCE/REORDER/RESERVE chips） | `app/page.tsx` |

@@ -147,7 +147,7 @@ export default function EnglishLandingPage() {
               >
                 Evidence
               </a>
-              <Link href="/find" className="hidden text-ink no-underline hover:text-green md:inline">
+              <Link href="/app" className="hidden text-ink no-underline hover:text-green md:inline">
                 Consumer search
               </Link>
               <a
@@ -196,7 +196,7 @@ export default function EnglishLandingPage() {
                     Join the pilot
                   </a>
                   <Link
-                    href="/find"
+                    href="/app"
                     className="box-border inline-flex min-h-11 items-center whitespace-nowrap border border-line-strong px-8 py-[15px] text-[16px] font-medium text-ink no-underline hover:border-green hover:text-green"
                   >
                     See the consumer product
@@ -492,7 +492,7 @@ export default function EnglishLandingPage() {
               <span className="text-[16px] font-black">uYao</span>
             </div>
             <div className="flex flex-wrap gap-7 text-[14.5px]">
-              <Link href="/find" className="text-green hover:text-green-hover">
+              <Link href="/app" className="text-green hover:text-green-hover">
                 Consumer search
               </Link>
               <a href="#pilot" className="text-green hover:text-green-hover">

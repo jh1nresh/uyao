@@ -14,7 +14,7 @@ import {
   toAreaSlug,
 } from "@/lib/data";
 
-// 消費端產品入口從 `/` 搬到 `/find`：`/` 現在是公司 landing（specs/company-landing）。
+// 消費端 app 入口從 `/` 搬到 `/app`：`/` 現在是公司 landing（specs/company-landing）。
 // 搜尋、地區參數與所有下游路由行為不變。
 export const metadata: Metadata = {
   title: "搜一個藥，看附近哪家藥局有貨",

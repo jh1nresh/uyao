@@ -21,8 +21,8 @@ export function SiteHeader({
   return (
     <header className="flex h-14 items-center gap-3 border-b border-line px-4 sm:px-7 xl:px-12 2xl:px-16">
       {/* -my-3 py-3：把 26px 的 logo 撐成 50px 點擊區，版面高度不變。
-          消費端 chrome 的 logo 回產品首頁 /find，不是公司 landing。 */}
-      <Link href="/find" className="-my-3 flex flex-none items-center gap-2 py-3 no-underline">
+          消費端 chrome 的 logo 回 app 首頁 /app，不是公司 landing。 */}
+      <Link href="/app" className="-my-3 flex flex-none items-center gap-2 py-3 no-underline">
         <CrossMark />
         <span className="text-[18px] font-black tracking-[.06em] text-ink">有藥</span>
         {showTagline && (

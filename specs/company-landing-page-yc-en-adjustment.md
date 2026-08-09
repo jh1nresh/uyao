@@ -59,7 +59,7 @@ web-landing
 |---|---|---|
 | `/` | 台灣獨立藥局 | 理解試點價值並申請 |
 | `/en` | YC reviewer、投資人、國際合作方 | 在 5 秒內理解 category、customer、mechanism、wedge 與 proof |
-| `/find` | 台灣消費者 | 搜尋藥品、留下需求、預留／到店取貨 |
+| `/app` | 台灣消費者 | 搜尋藥品、留下需求、預留／到店取貨 |
 
 ### 5-second test for `/en`
 
@@ -129,7 +129,7 @@ VISUAL_DENSITY: 5
 ```text
 /       中文 company landing
 /en     English YC/company landing
-/find   中文 Consumer Web
+/app    中文 Consumer Web（app）
 ```
 
 ### Language switch
@@ -605,7 +605,7 @@ uYao turns inventory, expiry, and local demand into pharmacist-approved return, 
 - [ ] `npm run typecheck` passes。
 - [ ] `npm test` passes。
 - [ ] `npm run build` passes。
-- [ ] `/`、`/en`、`/find` 與既有 drug/store routes 可開啟。
+- [ ] `/`、`/en`、`/app` 與既有 drug/store routes 可開啟。
 - [ ] Keyboard focus、form states、WCAG AA contrast 驗證完成。
 - [ ] Metadata、canonical、hreflang、OG locale 驗證完成。
 - [ ] 未經使用者明確批准不 deploy。

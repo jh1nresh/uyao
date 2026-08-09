@@ -8,7 +8,7 @@ import { PilotCtaForm, type PilotFormCopy } from "@/components/landing/PilotCtaF
 /**
  * 公司 landing（design: `uYao Landing.dc.html`，spec: company-landing-page.md
  * + company-landing-page-yc-en-adjustment.md）。
- * `/` 說清楚問題、閉環、證據與試點；消費者找藥在 /find，英文 YC 版在 /en。
+ * `/` 說清楚問題、閉環、證據與試點；消費者 app 在 /app，英文 YC 版在 /en。
  * 誠實原則：未驗證的一律標 prototype／示範資料，evidence 逐項標 ✓／○；
  * 尚無 active partner，status line 一律用 recruiting 版本。
  */
@@ -132,7 +132,7 @@ export default function CompanyLandingPage() {
               <a href="#progress" className="hidden text-ink no-underline hover:text-green md:inline">
                 目前進度
               </a>
-              <Link href="/find" className="hidden text-ink no-underline hover:text-green md:inline">
+              <Link href="/app" className="hidden text-ink no-underline hover:text-green md:inline">
                 附近找藥
               </Link>
               <a
@@ -177,7 +177,7 @@ export default function CompanyLandingPage() {
                   申請試點
                 </a>
                 <Link
-                  href="/find"
+                  href="/app"
                   className="box-border inline-flex min-h-11 items-center whitespace-nowrap border border-line-strong px-8 py-[15px] text-[16px] font-medium text-ink no-underline hover:border-green hover:text-green"
                 >
                   附近找藥
@@ -516,7 +516,7 @@ export default function CompanyLandingPage() {
               <span className="text-[16px] font-black">uYao</span>
             </div>
             <div className="flex gap-7 text-[14.5px]">
-              <Link href="/find" className="text-green hover:text-green-hover">
+              <Link href="/app" className="text-green hover:text-green-hover">
                 附近找藥
               </Link>
               <a href="#pilot" className="text-green hover:text-green-hover">
