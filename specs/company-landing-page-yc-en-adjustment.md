@@ -374,6 +374,8 @@ Consumer demand signal · prototype
 
 不可用空白 placeholder 當成完成的產品證據。
 
+> 2026-08-09 落地：已用真實截圖（shop-uyao.vercel.app 綠油精落空＋到貨通知），第四個 proof tile 標 LIVE PRODUCT；landing 的消費端連結一律指 shop 網域（`lib/shop.ts`）。
+
 Evidence headline：
 
 ```text
