@@ -11,7 +11,7 @@ export default function NotFound() {
         <h1 className="mb-2 text-lg font-black">找不到這個頁面</h1>
         <p className="text-[15px] text-muted">
           品項或藥局可能已下架。
-          <Link href="/" className="ml-1 text-green">
+          <Link href="/find" className="ml-1 text-green">
             回到搜尋 →
           </Link>
         </p>

@@ -342,7 +342,7 @@ function SuccessBody({
           開啟導航
         </a>
         <Link
-          href="/"
+          href="/find"
           className="flex h-[46px] flex-1 items-center justify-center border border-line-strong text-sm font-medium text-ink no-underline"
         >
           回到搜尋
