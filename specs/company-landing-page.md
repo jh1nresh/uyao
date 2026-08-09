@@ -30,6 +30,19 @@
 /pharmacy          藥局試點詳情與表單（保留，logo 與「看消費端」連結改指 /app）
 ```
 
+### Domain 對應（web/middleware.ts host routing）
+
+```text
+uyao.vercel.app        `/` = 公司 landing（預設行為）
+shop-uyao.vercel.app   `/` rewrite 到 /app（消費者 app 直接當首頁）
+shop.*（自訂網域備用）  同 shop- 行為；SHOP_HOST env 可再加一組 host
+```
+
+注意：`shop.uyao.vercel.app` 兩層子網域掛不上 *.vercel.app 憑證，所以用
+`shop-uyao`。alias 用 `vercel alias set` 建立時只釘在當下 production
+deployment，正式上線後要在 Vercel dashboard → Domains 加成 project domain
+才會跟著之後的 deploy 走。
+
 ## 頁面結構（實作對照）
 
 | Section | 內容 | 實作 |
