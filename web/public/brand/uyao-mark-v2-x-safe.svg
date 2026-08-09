@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Uyao v2 X-safe mark</title>
+  <desc id="desc">The Uyao v2 mark centered with extra clear space for circular profile crops.</desc>
+  <g transform="translate(32 32)">
+    <path d="M44 28v78c0 34 16 52 48 52 24 0 36-16 36-42v-12L98 64m30 40 30-40" fill="none" stroke="#0B7A3E" stroke-width="32" stroke-linecap="square" stroke-linejoin="miter"/>
+  </g>
+</svg>

@@ -2,9 +2,7 @@
   <title id="title">Uyao reverse logo</title>
   <desc id="desc">The white Uyao logo for dark backgrounds.</desc>
 
-  <path fill="#FFFFFF" d="M24 24h40v64q0 8 7 15l25 25v40H24V24Z"/>
-  <path fill="#FFFFFF" d="m112 128 32-32h24v72h-56v-40Z"/>
-  <path fill="#FFFFFF" d="m100 100 48-48 16 16-48 48-16-16Z"/>
+  <path d="M44 28v78c0 34 16 52 48 52 24 0 36-16 36-42v-12L98 64m30 40 30-40" fill="none" stroke="#FFFFFF" stroke-width="32" stroke-linecap="square" stroke-linejoin="miter"/>
 
   <g fill="none" stroke="#FFFFFF" stroke-width="18" stroke-linecap="round" stroke-linejoin="round">
     <path d="M226 52v48c0 25 13 38 34 38s34-13 34-38V52"/>

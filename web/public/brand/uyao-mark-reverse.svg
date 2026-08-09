@@ -1,7 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" role="img" aria-labelledby="title desc">
   <title id="title">Uyao reverse mark</title>
-  <desc id="desc">A white Uyao U and Y monogram for dark backgrounds.</desc>
-  <path fill="#FFFFFF" d="M24 24h40v64q0 8 7 15l25 25v40H24V24Z"/>
-  <path fill="#FFFFFF" d="m112 128 32-32h24v72h-56v-40Z"/>
-  <path fill="#FFFFFF" d="m100 100 48-48 16 16-48 48-16-16Z"/>
+  <desc id="desc">A white connected U and Y monogram for dark backgrounds.</desc>
+  <path d="M44 28v78c0 34 16 52 48 52 24 0 36-16 36-42v-12L98 64m30 40 30-40" fill="none" stroke="#FFFFFF" stroke-width="32" stroke-linecap="square" stroke-linejoin="miter"/>
 </svg>
