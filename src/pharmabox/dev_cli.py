@@ -5,7 +5,7 @@ scanning straight into this CLI exercises parse -> classify -> spool,
 identical to the Pi daemon minus evdev/HID.
 
 Usage:
-  echo ']d20104712345678901231727103110A1B2' | python3 -m pharmabox.dev_cli
+  echo ']d201047123456789011727103110A1B2' | python3 -m pharmabox.dev_cli
   python3 -m pharmabox.dev_cli --db /tmp/spool.db     # then scan away, Ctrl-D to end
   python3 -m pharmabox.dev_cli --drain                # try uploading pending rows
 
@@ -30,6 +30,12 @@ def main() -> None:
     ap.add_argument("--db", default="/tmp/pharmabox-dev.db")
     ap.add_argument("--gap", type=float, default=10.0, help="session gap seconds")
     ap.add_argument("--drain", action="store_true", help="drain spool to PHARMABOX_API_URL and exit")
+    ap.add_argument(
+        "--device",
+        default=os.environ.get("PHARMABOX_DEVICE_ID", "dev-cli"),
+        help="device_id sent on upload; the cloud maps it to a store "
+        "(simulation: pass the store slug directly)",
+    )
     args = ap.parse_args()
 
     spool = EventSpool(args.db)
@@ -38,7 +44,7 @@ def main() -> None:
         api_url = os.environ.get("PHARMABOX_API_URL")
         if not api_url:
             sys.exit("set PHARMABOX_API_URL first")
-        up = Uploader(spool, api_url, device_id="dev-cli",
+        up = Uploader(spool, api_url, device_id=args.device,
                       api_key=os.environ.get("PHARMABOX_API_KEY"))
         total = 0
         while (n := up.drain_once()) > 0:

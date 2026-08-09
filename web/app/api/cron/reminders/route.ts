@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 
 import { userForStore } from "@/lib/bindings";
+import { logConsole } from "@/lib/box";
 import { isConfigured, push, text } from "@/lib/line";
 import {
+  EXPIRE_UNANSWERED_AFTER_HOURS,
   REMIND_STORE_AFTER_MIN,
   allActive,
   bumpNoShow,
@@ -71,6 +73,13 @@ export async function GET(request: Request) {
     const wasConfirmed = r.status === "confirmed";
     await save({ ...r, status: "expired", expiredAt: new Date().toISOString() });
     expired += 1;
+    logConsole(
+      "⏰",
+      `${r.demo ? "［示範］" : ""}${r.code} ` +
+        (wasConfirmed
+          ? `保留 ${r.holdHours} 小時已過 → 自動關單，通知藥局放回架上`
+          : `藥局 ${EXPIRE_UNANSWERED_AFTER_HOURS} 小時未回覆 → 自動關單，不算消費者未取`),
+    );
 
     if (wasConfirmed && !r.demo) {
       const n = await bumpNoShow(r.contact).catch(() => 0);
@@ -122,6 +131,10 @@ export async function GET(request: Request) {
       // 只催一次 —— 標記在推播成功之後，失敗的下一輪還會再試
       await save({ ...r, remindedAt: new Date().toISOString() });
       reminded += 1;
+      logConsole(
+        "⏳",
+        `${r.demo ? "［示範］" : ""}${r.code} 藥局 ${REMIND_STORE_AFTER_MIN} 分鐘未回 → 自動催單（只催這一次）`,
+      );
     } catch (err) {
       console.error(`[cron] 催單推播失敗 ${r.code}`, String(err).slice(0, 200));
     }

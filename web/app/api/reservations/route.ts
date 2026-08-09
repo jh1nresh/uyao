@@ -2,6 +2,7 @@ import { randomInt } from "node:crypto";
 
 import { NextResponse } from "next/server";
 
+import { logConsole } from "@/lib/box";
 import { getDrug, getStore, previewOffers, storesForDrug } from "@/lib/data";
 import { hoursSummary } from "@/lib/hours";
 import { stockBadge } from "@/lib/stock";
@@ -160,11 +161,15 @@ export async function POST(request: Request) {
   // 但**示範現場沒有時間翻 log**：你跟老闆說「你的 LINE 會響」，沒響的時候
   // 畫面卻一切正常，你當場沒有任何線索。所以把結果帶回前端（只在 demo 模式
   // 回傳，正式路徑不吐 —— 那會洩漏哪些藥局已經上線）。
+  const demoTag = demo ? "［示範］" : "";
+  logConsole("🛎", `${demoTag}收到預留 ${code}：${drug.name} → 路由到 ${store.name}`);
+
   const lineUser = await userForStore(storeSlug);
   let notify: NotifyResult;
   if (!lineUser) {
     notify = "unbound";
     console.log(`[reservations] ${storeSlug} 尚未綁定 LINE，${code} 需人工通知`);
+    logConsole("⚠️", `${demoTag}${store.name} 未綁定 LINE，${code} 轉人工通知`);
   } else if (!isConfigured()) {
     // 原本這條分支什麼都不印 —— 綁好了卻因為少一個環境變數而全靜音，
     // 是最難查的一種。
@@ -186,9 +191,11 @@ export async function POST(request: Request) {
         }),
       ]);
       notify = "sent";
+      logConsole("📲", `${demoTag}${code} 已推播到 ${store.name} 的 LINE，等藥師按確認`);
     } catch (err) {
       notify = "failed";
       console.error("[reservations] 推播給藥局失敗", code, String(err).slice(0, 200));
+      logConsole("🔴", `${demoTag}${code} 推播失敗，需人工聯絡 ${store.name}`);
     }
   }
 
@@ -244,6 +251,11 @@ export async function DELETE(request: Request) {
 
   const wasConfirmed = r.status === "confirmed";
   await save({ ...r, status: "cancelled_by_user" });
+  logConsole(
+    "🚫",
+    `${r.demo ? "［示範］" : ""}${r.code} 消費者取消` +
+      (wasConfirmed ? " → 通知藥局把貨放回架上" : " → 通知藥局不用處理"),
+  );
   await appendRecord("reservations", {
     code: r.code,
     storeSlug: r.storeSlug,

@@ -138,6 +138,23 @@ export async function incr(key: string, ttlSeconds: number): Promise<number> {
   return next;
 }
 
+/** 讀 list 尾端最新 n 筆（append 的讀取端）。舊到新排列。 */
+export async function lastN(key: string, n: number): Promise<string[]> {
+  if (useMemory()) {
+    return (memory.get(key) ?? "").split("\n").filter(Boolean).slice(-n);
+  }
+  if (config()) {
+    const r = await command(["LRANGE", key, -n, -1]);
+    return Array.isArray(r) ? (r as string[]) : [];
+  }
+  try {
+    const raw = await readFile(filePath(key), "utf8");
+    return raw.split("\n").filter(Boolean).slice(-n);
+  } catch {
+    return [];
+  }
+}
+
 /**
  * 掃出符合 prefix 的 key。**只給後台／低頻使用** —— Redis 的 SCAN 在
  * key 多的時候很貴，不要放進使用者請求的路徑上。
