@@ -140,7 +140,7 @@ export function ReserveSheet({
         className="absolute inset-0 bg-[rgba(26,36,32,.32)]"
       />
       <div
-        className={`sheet-in relative flex w-full max-w-[420px] flex-col gap-3.5 border-t-2 bg-white px-5 pb-6 pt-[18px] sm:border-x sm:border-b ${
+        className={`sheet-in relative flex w-full max-w-[420px] flex-col gap-3.5 border-t-2 bg-paper px-5 pb-6 pt-[18px] sm:border-x sm:border-b ${
           success ? "border-green" : "border-t-ink sm:border-x-line-strong sm:border-b-line-strong"
         }`}
       >
@@ -183,7 +183,7 @@ export function ReserveSheet({
                 name="tel"
                 inputMode="tel"
                 autoComplete="tel"
-                className="h-[46px] border-[1.5px] border-ink px-3.5 text-sm outline-none placeholder:text-muted-2"
+                className="h-[46px] border-[1.5px] border-ink bg-ivory px-3.5 text-sm outline-none placeholder:text-muted-2"
               />
               {remembered && (
                 <button

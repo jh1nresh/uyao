@@ -1,35 +1,35 @@
 import type { Config } from "tailwindcss";
 
 /**
- * Tokens are lifted verbatim from the design doc (`消費端 Web.dc.html`).
- * 白底墨字、單一綠 accent — 不新增第二個彩色。
+ * Warm editorial system shared by the company landing and consumer product.
+ * Forest owns primary actions; green stays the live/status accent.
  */
 const config: Config = {
   content: ["./app/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}"],
   theme: {
     extend: {
       colors: {
-        ink: "#1A2420",
-        forest: "#17372B",
-        "ink-2": "#3D4A43",
-        muted: "#5C6B62",
-        "muted-2": "#8A968D",
-        stale: "#6B7A70",
-        green: "#0B7A3E",
-        "green-hover": "#096632",
-        "green-tint": "#EAF4EE",
-        "green-tint-line": "#BFDCCB",
-        line: "#D8D7CF",
-        "line-strong": "#C4C4BA",
-        "line-soft": "#E9E7DE",
-        surface: "#F3F1E8",
-        "surface-hover": "#F8F6EF",
-        canvas: "#ECE9DE",
-        ivory: "#F3F1E8",
-        paper: "#FBFAF4",
-        sage: "#DCE8DC",
-        "map-bg": "#E9EDE8",
-        "map-grid": "#DFE5DE",
+        ink: "#1C2722",
+        forest: "#17392C",
+        "ink-2": "#3E4B44",
+        muted: "#59665F",
+        "muted-2": "#76837A",
+        stale: "#68766D",
+        green: "#087B43",
+        "green-hover": "#066737",
+        "green-tint": "#E2EEE5",
+        "green-tint-line": "#B8D2C0",
+        line: "#D2CDC1",
+        "line-strong": "#B8B1A4",
+        "line-soft": "#E2DCCF",
+        surface: "#ECE7DB",
+        "surface-hover": "#E5DFD2",
+        canvas: "#E7E1D4",
+        ivory: "#F2EFE6",
+        paper: "#F8F4E9",
+        sage: "#DCE7D9",
+        "map-bg": "#E5E9E2",
+        "map-grid": "#D9E0D7",
       },
       // 基準字級整體上調：原本全站最常用的是 11px，對「找藥的人」太小。
       // xs/sm 是 token（用了 48 次），在這裡改一次就全站生效。

@@ -121,7 +121,7 @@ function ReserveButton({
       aria-label={`向${row.store.name}預留${outline ? "（由藥局確認有無現貨）" : ""}`}
       className={`flex-none border border-green font-bold hover:opacity-85 ${
         mobile ? "h-11 px-3.5 text-[15px]" : "h-[30px] text-xs"
-      } ${outline ? "bg-white text-green" : "bg-green text-white"}`}
+      } ${outline ? "bg-paper text-green" : "bg-green text-white"}`}
     >
       預留
     </button>

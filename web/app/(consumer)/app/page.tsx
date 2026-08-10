@@ -172,7 +172,7 @@ export default async function HomePage({
           </p>
           <Link
             href="/pharmacy"
-            className="mt-5 inline-flex min-h-12 items-center bg-paper px-5 text-[13px] font-bold text-forest no-underline hover:bg-white"
+            className="mt-5 inline-flex min-h-12 items-center bg-paper px-5 text-[13px] font-bold text-forest no-underline hover:bg-surface-hover"
           >
             看盒子怎麼運作 →
           </Link>

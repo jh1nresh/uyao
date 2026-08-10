@@ -78,7 +78,7 @@ export function CancelReservation({
           type="button"
           onClick={cancel}
           disabled={pending}
-          className="h-11 flex-1 border border-line-strong bg-white text-[14px] font-medium text-ink disabled:text-muted-2"
+          className="h-11 flex-1 border border-line-strong bg-paper text-[14px] font-medium text-ink disabled:text-muted-2"
         >
           {pending ? "取消中…" : "確定取消"}
         </button>

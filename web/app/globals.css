@@ -13,7 +13,7 @@
 }
 
 html {
-  background: #eef1ed;
+  background: #f2efe6;
 }
 
 html.lenis,
@@ -34,8 +34,8 @@ html.lenis body {
 }
 
 body {
-  background: #f3f1e8;
-  color: #1a2420;
+  background: #f2efe6;
+  color: #1c2722;
   -webkit-font-smoothing: antialiased;
   font-variant-numeric: tabular-nums;
 }
@@ -112,6 +112,6 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid #0b7a3e;
+  outline: 2px solid #087b43;
   outline-offset: 1px;
 }

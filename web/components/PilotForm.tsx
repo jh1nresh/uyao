@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 const INPUT =
-  "h-11 min-w-0 border border-line-strong bg-white px-3 text-[15px] text-ink outline-none placeholder:text-muted-2 focus:border-green sm:h-9";
+  "h-11 min-w-0 border border-line-strong bg-paper px-3 text-[15px] text-ink outline-none placeholder:text-muted-2 focus:border-green";
 
 /**
  * 藥局試點申請 — 供給側的唯一表單。

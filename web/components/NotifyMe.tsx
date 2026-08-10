@@ -8,7 +8,7 @@ import type { AreaSlug } from "@/lib/types";
 type Kind = "catalog_miss" | "inventory_miss";
 
 const INPUT =
-  "h-11 min-w-0 border border-line-strong bg-white px-3 text-[15px] text-ink outline-none placeholder:text-muted-2 focus:border-green sm:h-9";
+  "h-11 min-w-0 border border-line-strong bg-paper px-3 text-[15px] text-ink outline-none placeholder:text-muted-2 focus:border-green";
 
 /**
  * 落空搜尋的收口。
