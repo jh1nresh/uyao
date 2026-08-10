@@ -8,3 +8,6 @@ __pycache__/
 .vercel
 .env*
 .tmp/
+
+# 品牌原稿、輸出包與社群素材只留本機；網站執行時素材在 web/public/brand/
+designs/uyao-logo/
