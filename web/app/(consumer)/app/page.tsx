@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import {
   CATEGORIES,
+  allStores,
   allDrugs,
   drugsInCategory,
   getArea,
@@ -36,6 +37,7 @@ export default async function HomePage({
   const { area: rawArea } = await searchParams;
   const area = toAreaSlug(rawArea);
   const storeCount = storesInArea(area).length;
+  const partnerStores = allStores();
   const drugs = allDrugs();
 
   return (
@@ -78,12 +80,35 @@ export default async function HomePage({
         </nav>
 
         <p className="mt-10 max-w-[560px] text-[13px] leading-[1.7] text-muted-2">
-          即時庫存還沒開始 —— 已收錄{getArea(area).shortName} {storeCount} 家藥局，
-          但還沒有藥局裝上盒子。先搜搜看，我們會記下你在找什麼。
+          即時庫存還沒開始 —— {getArea(area).shortName}目前收錄 {storeCount} 家店家，
+          但還沒有店家裝上盒子。先搜搜看，我們會記下你在找什麼。
         </p>
         <div className="mt-3 md:hidden">
           <AreaSwitch area={area} />
         </div>
+      </section>
+
+      <section className="border-t border-line bg-surface px-4 py-8 sm:px-7 xl:px-12 2xl:px-16">
+        <div className="mb-4 flex flex-wrap items-baseline gap-2.5">
+          <h2 className="text-sm font-black">首波收錄店家</h2>
+          <p className="text-[13px] text-muted-2">共 {partnerStores.length} 家；尚未啟用即時庫存</p>
+        </div>
+        <div className="grid border border-line bg-white sm:grid-cols-2 lg:grid-cols-3">
+          {partnerStores.map((store) => (
+            <Link
+              key={store.slug}
+              href={`/store/${store.slug}`}
+              className="flex min-h-20 flex-col justify-center border-b border-line-soft px-4 py-3 no-underline last:border-b-0 hover:bg-surface-hover sm:border-r sm:last:border-r-0 lg:[&:nth-child(3n)]:border-r-0"
+            >
+              <span className="text-[13px] text-green">{store.district}</span>
+              <span className="mt-0.5 text-[15px] font-bold text-ink">{store.name}</span>
+              <span className="mt-0.5 text-[13px] leading-[1.5] text-muted">{store.address}</span>
+            </Link>
+          ))}
+        </div>
+        <p className="mb-0 mt-3 text-[13px] leading-[1.6] text-muted-2">
+          收錄不代表已正式合作、已安裝設備或已有即時庫存；前往門市前請先電話確認。
+        </p>
       </section>
 
       {/* 陳列「藥品」而不是「藥局」：藥品才是產品的單位（搜一個藥 → 誰有貨），

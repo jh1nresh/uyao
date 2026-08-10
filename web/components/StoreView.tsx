@@ -17,7 +17,7 @@ import {
 
 /**
  * 藥局頁本體。`preview` 由路由決定而不是 query string —— 用 searchParams
- * 會讓整條 /store/[slug] 變成動態渲染，166 個 SEO 頁面就靜態不了了。
+ * 會讓整條 /store/[slug] 變成動態渲染，店家 SEO 頁面就靜態不了了。
  */
 export function StoreView({ store, preview }: { store: Store; preview: boolean }) {
   const items = drugsForStore(store.slug, preview);

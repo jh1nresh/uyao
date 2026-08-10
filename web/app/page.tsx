@@ -101,6 +101,8 @@ const TIMELINE = [
   { label: "outcome pending / verified", last: true },
 ] as const;
 
+const PILOT_AREAS = ["大同區", "林口區", "新莊區", "中山區"] as const;
+
 function Container({ children }: { children: React.ReactNode }) {
   return <div className="mx-auto max-w-[1160px] px-5 sm:px-8">{children}</div>;
 }
@@ -179,6 +181,33 @@ export default function CompanyLandingPage() {
           </div>
         </Container>
       </header>
+
+      <section className="border-b border-line bg-surface" aria-labelledby="pilot-areas-heading">
+        <Container>
+          <div className="py-8 sm:py-10">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h2 id="pilot-areas-heading" className="m-0 text-[17px] font-black">
+                首波試點聚焦雙北四區
+              </h2>
+              <p className="m-0 text-[13px] text-muted">正在進行現場流程與合作可行性訪談</p>
+            </div>
+            <div className="mt-5 grid border-l border-t border-line-strong bg-white sm:grid-cols-4">
+              {PILOT_AREAS.map((area) => (
+                <div
+                  key={area}
+                  className="flex min-h-[70px] items-center border-b border-r border-line-strong px-4 py-3 text-[15px] font-bold text-ink"
+                >
+                  <span className="mr-2 text-green" aria-hidden>＋</span>
+                  {area}
+                </div>
+              ))}
+            </div>
+            <p className="mb-0 mt-3 text-[12.5px] leading-[1.7] text-muted">
+              區域聚焦不代表已正式合作、已安裝設備或已有即時庫存。
+            </p>
+          </div>
+        </Container>
+      </section>
 
       {/* 為什麼 POS 還是不夠 — comparison strip */}
       <section className="border-b border-line bg-surface">

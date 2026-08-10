@@ -26,7 +26,7 @@ export const runtime = "nodejs";
 
 const HELP =
   "這裡是「有藥」的藥局通知。\n\n" +
-  "請直接傳你的藥局全名（例如：惠民藥局），我們比對後幫你綁定。\n" +
+  "請直接傳你的店家全名（例如：中山藥局），我們比對後幫你綁定。\n" +
   "綁定完成後，有人預留你店裡的商品就會推到這個聊天室，按一下就能確認。";
 
 interface LineEvent {
@@ -37,7 +37,7 @@ interface LineEvent {
   postback?: { data?: string };
 }
 
-/** 藥局傳店名 → 在 166 家裡找。刻意不做模糊比對：綁錯等於把預留單推給別人。 */
+/** 店家傳店名 → 在目前 5 家收錄店家裡找。綁錯等於把預留單推給別人。 */
 function matchStores(query: string) {
   const q = query.trim();
   if (q.length < 2) return [];
@@ -59,8 +59,8 @@ async function onBindRequest(userId: string, replyToken: string, query: string) 
     await reply(replyToken, [
       text(
         `找不到「${query}」。\n\n` +
-          "目前只開放台北市中山區與信義區的藥局，請傳衛福部登記的藥局全名。" +
-          "如果你的藥局不在這兩區，回覆「其他區」我們會記下來。",
+          "目前只開放大同、林口、新莊與中山區的首波收錄店家，請傳完整店名。" +
+          "如果你的店不在名單裡，回覆「其他區」我們會記下來。",
       ),
     ]);
     return;

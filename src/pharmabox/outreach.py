@@ -52,7 +52,13 @@ MIN_RECORDS = 5
 # （或用 --site 覆寫），別讓它繼續指著一個還沒生效的 DNS。
 SITE = "uyao.vercel.app"
 
-AREA_LABEL = {"zhongshan": "中山區", "xinyi": "信義區"}
+AREA_LABEL = {
+    "datong": "大同區",
+    "linkou": "林口區",
+    "xinzhuang": "新莊區",
+    "zhongshan": "中山區",
+    "xinyi": "信義區",
+}
 
 
 @dataclass

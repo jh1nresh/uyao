@@ -34,7 +34,7 @@ const STORAGE_KEY = "uyao.position";
  *
  * 關鍵限制：`position` 的初始值在伺服器與 client 首次 render 必須一致
  * （都是 null），sessionStorage 只在 mount 後才讀。否則會 hydration
- * mismatch，而且會讓 166 個藥局頁沒辦法靜態產生。
+ * mismatch，而且會讓藥局頁沒辦法靜態產生。
  */
 export function LocationProvider({ children }: { children: React.ReactNode }) {
   const [position, setPosition] = useState<LatLng | null>(null);

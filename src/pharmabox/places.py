@@ -46,11 +46,10 @@ FIELD_MASK = ",".join([
     "places.regularOpeningHours.periods",
 ])
 
-# 中山區與信義區的大致中心，用來把搜尋侷限在服務區內，
-# 避免撞到外縣市的同名藥局。
-TAIPEI_BIAS = {
-    "low": {"latitude": 25.020, "longitude": 121.520},
-    "high": {"latitude": 25.075, "longitude": 121.585},
+# 大同、林口、新莊、中山四區的外框，用來避免撞到外縣市同名藥局。
+SERVICE_BIAS = {
+    "low": {"latitude": 25.020, "longitude": 121.370},
+    "high": {"latitude": 25.100, "longitude": 121.550},
 }
 
 
@@ -139,7 +138,7 @@ def search_text(query: str, key: str | None = None) -> dict:
         "languageCode": "zh-TW",
         "regionCode": "TW",
         "maxResultCount": 3,
-        "locationBias": {"rectangle": TAIPEI_BIAS},
+        "locationBias": {"rectangle": SERVICE_BIAS},
     }).encode("utf-8")
 
     req = urllib.request.Request(

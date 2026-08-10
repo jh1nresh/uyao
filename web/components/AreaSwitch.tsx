@@ -19,7 +19,7 @@ export function AreaSwitch({ area }: { area: AreaSlug }) {
           return (
             <Link
               key={a.slug}
-              href={`/?area=${a.slug}`}
+              href={`/app?area=${a.slug}`}
               aria-current={active ? "true" : undefined}
               className={
                 active

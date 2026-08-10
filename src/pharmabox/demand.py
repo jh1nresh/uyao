@@ -79,7 +79,13 @@ def env_or_file(name: str, paths: list[Path] | None = None) -> str | None:
                     return value
     return None
 
-AREA_NAMES = {"zhongshan": "中山區", "xinyi": "信義區"}
+AREA_NAMES = {
+    "datong": "大同區",
+    "linkou": "林口區",
+    "xinzhuang": "新莊區",
+    "zhongshan": "中山區",
+    "xinyi": "信義區",
+}
 KIND_NAMES = {
     "catalog_miss": "目錄沒有這支藥",
     "inventory_miss": "有這支藥但沒庫存",
