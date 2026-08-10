@@ -21,8 +21,10 @@ export function SearchInput({
     <form
       action="/search"
       role="search"
-      className={`flex items-center gap-2 bg-white ${
-        lg ? "h-[52px] border-[1.5px] border-ink px-4" : "h-11 border border-line-strong px-3 sm:h-9"
+      className={`flex items-center gap-2 bg-paper ${
+        lg
+          ? "paper-elevation h-[60px] border border-line px-5"
+          : "h-11 border border-line-strong px-3 sm:h-9"
       } ${className}`}
     >
       {area && <input type="hidden" name="area" value={area} />}
@@ -51,7 +53,7 @@ export function SearchInput({
       {lg && (
         <button
           type="submit"
-          className="h-11 flex-none bg-green px-[18px] text-[15px] font-bold text-white hover:bg-green-hover"
+          className="h-12 flex-none bg-green px-6 text-[15px] font-bold text-white hover:bg-green-hover"
         >
           搜尋
         </button>

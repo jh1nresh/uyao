@@ -39,87 +39,67 @@ export function HeroLoop({ copy }: { copy: HeroLoopCopy }) {
   }, []);
 
   const fx = (n: number) =>
-    `transition-[opacity,transform] duration-[180ms] ease-out ${
+    `transition-[opacity,transform] duration-[320ms] ease-[cubic-bezier(0.23,1,0.32,1)] ${
       step >= n ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
     }`;
 
   return (
     <div className="min-w-0">
-      <div className="mb-3.5 flex items-center justify-between gap-3">
+      <div className="mb-3.5 flex items-center justify-between gap-3 px-1">
         <span className="num text-[12px] font-medium tracking-[.08em] text-muted">
           {copy.flowLabel}
         </span>
-        <span className="num border border-green px-2 py-[3px] text-[11px] font-medium text-green">
+        <span className="num rounded-full bg-sage px-3 py-1.5 text-[11px] font-semibold tracking-[.04em] text-forest">
           {copy.badge}
         </span>
       </div>
 
-      <div className={fx(1)}>
-        <div className="relative overflow-hidden border border-line-strong bg-surface px-[18px] py-4">
-          <div className="absolute bottom-0 left-0 top-0 w-[3px] bg-green" />
-          <div className="num mb-2 text-[12px] font-medium text-muted">{copy.scanTitle}</div>
-          <div className="num grid grid-cols-[auto,1fr] gap-x-[18px] text-[13.5px] font-medium leading-[1.9] text-ink">
-            <span className="text-muted">GTIN</span>
-            <span>04713243990117</span>
-            <span className="text-muted">LOT</span>
-            <span>TW881</span>
-            <span className="text-muted">EXP</span>
-            <span>2026-11</span>
-            <span className="text-muted">TS</span>
-            <span>2026-08-09 14:32:07</span>
+      <div className="paper-elevation relative overflow-hidden border border-line bg-paper px-5 py-5 sm:px-7 sm:py-6">
+        <div className="absolute inset-y-0 left-0 w-1 bg-green" />
+
+        <div className={`${fx(1)} border-b border-line pb-5`}>
+          <div className="num mb-3 text-[11.5px] font-semibold tracking-[.08em] text-muted">
+            {copy.scanTitle}
+          </div>
+          <div className="num grid grid-cols-[auto,1fr] gap-x-5 text-[13px] font-semibold leading-[1.9] text-ink">
+            <span className="text-muted">GTIN</span><span>04713243990117</span>
+            <span className="text-muted">LOT</span><span>TW881</span>
+            <span className="text-muted">EXP</span><span>2026-11</span>
+            <span className="text-muted">TS</span><span>2026-08-09 14:32:07</span>
           </div>
         </div>
-      </div>
 
-      <div className="num flex justify-center py-1.5 text-[13px] text-line-strong" aria-hidden>
-        ↓
-      </div>
-
-      <div className={fx(2)}>
-        <div className="border border-line-strong bg-white">
-          <div className="flex items-center gap-2 border-b border-line px-[18px] py-2.5">
+        <div className={`${fx(2)} py-5`}>
+          <div className="flex items-center gap-2">
             <BrandMark size={18} />
             <span className="text-[13px] font-bold">uYao</span>
             <span className="num ml-auto text-[11px] font-medium text-muted">
               {copy.lineHeader}
             </span>
           </div>
-          <div className="px-[18px] py-4">
-            <p className="m-0 text-[16px] font-bold leading-[1.6]">{copy.cardTitle}</p>
-            <div className="num my-2.5 mb-4 text-[12.5px] font-medium leading-[1.9] text-ink-2">
-              {copy.cardMetaLines.map((line) => (
-                <div key={line}>{line}</div>
-              ))}
-            </div>
-            <div className="grid gap-2">
-              <span className="bg-green px-3 py-[11px] text-center text-[14px] font-bold text-white">
-                {copy.primaryBtn}
-              </span>
+          <p className="mb-0 mt-5 text-[17px] font-bold leading-[1.6]">{copy.cardTitle}</p>
+          <div className="num mb-4 mt-2 text-[12.5px] font-medium leading-[1.9] text-muted">
+            {copy.cardMetaLines.map((line) => <div key={line}>{line}</div>)}
+          </div>
+          <div className="grid gap-2">
+            <span className="bg-green px-3 py-3 text-center text-[14px] font-bold text-white">
+              {copy.primaryBtn}
+            </span>
+            <div className="grid gap-2 sm:grid-cols-2">
               {copy.secondaryBtns.map((label) => (
-                <span
-                  key={label}
-                  className="border border-line-strong px-3 py-2.5 text-center text-[14px] text-ink"
-                >
+                <span key={label} className="border border-line px-3 py-2.5 text-center text-[13px] text-ink">
                   {label}
                 </span>
               ))}
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="num flex justify-center py-1.5 text-[13px] text-line-strong" aria-hidden>
-        ↓
-      </div>
-
-      <div className={fx(3)}>
-        <div className="num border border-dashed border-line-strong bg-surface px-[18px] py-3.5 text-[12.5px] font-medium leading-[2]">
+        <div className={`${fx(3)} num border-t border-dashed border-line pt-4 text-[12px] font-medium leading-[1.9]`}>
           <div className="tracking-[.08em] text-muted">{copy.receiptTitle}</div>
-          <div className="mt-1 grid grid-cols-[auto,1fr] gap-x-[18px]">
-            <span className="text-muted">{copy.statusLabel}</span>
-            <span className="font-semibold text-green">{copy.statusValue}</span>
-            <span className="text-muted">{copy.resultLabel}</span>
-            <span>{copy.resultValue}</span>
+          <div className="mt-1 flex flex-wrap gap-x-6 gap-y-1">
+            <span><span className="mr-2 text-muted">{copy.statusLabel}</span><strong className="text-green">{copy.statusValue}</strong></span>
+            <span><span className="mr-2 text-muted">{copy.resultLabel}</span>{copy.resultValue}</span>
           </div>
         </div>
       </div>

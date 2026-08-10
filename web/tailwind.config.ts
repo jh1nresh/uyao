@@ -10,6 +10,7 @@ const config: Config = {
     extend: {
       colors: {
         ink: "#1A2420",
+        forest: "#17372B",
         "ink-2": "#3D4A43",
         muted: "#5C6B62",
         "muted-2": "#8A968D",
@@ -18,12 +19,15 @@ const config: Config = {
         "green-hover": "#096632",
         "green-tint": "#EAF4EE",
         "green-tint-line": "#BFDCCB",
-        line: "#DCE3DE",
-        "line-strong": "#C2CCC5",
-        "line-soft": "#EDF1EC",
-        surface: "#F7F9F6",
-        "surface-hover": "#FAFCF9",
-        canvas: "#EEF1ED",
+        line: "#D8D7CF",
+        "line-strong": "#C4C4BA",
+        "line-soft": "#E9E7DE",
+        surface: "#F3F1E8",
+        "surface-hover": "#F8F6EF",
+        canvas: "#ECE9DE",
+        ivory: "#F3F1E8",
+        paper: "#FBFAF4",
+        sage: "#DCE8DC",
         "map-bg": "#E9EDE8",
         "map-grid": "#DFE5DE",
       },
@@ -35,6 +39,7 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-sans)", "sans-serif"],
+        serif: ["var(--font-serif)", "serif"],
         mono: ["var(--font-mono)", "monospace"],
       },
       borderRadius: {

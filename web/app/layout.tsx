@@ -17,6 +17,13 @@ const notoSansTC = localFont({
   display: "swap",
 });
 
+const notoSerifTC = localFont({
+  src: "./fonts/noto-serif-tc-var.woff2",
+  weight: "100 900",
+  variable: "--font-noto-serif-tc",
+  display: "swap",
+});
+
 const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
   weight: ["500", "600"],
@@ -48,10 +55,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="zh-Hant-TW"
-      className={`${notoSansTC.variable} ${plexMono.variable}`}
+      className={`${notoSansTC.variable} ${notoSerifTC.variable} ${plexMono.variable}`}
     >
       <body>
-        <div className="min-h-screen bg-white">{children}</div>
+        <div className="min-h-screen bg-ivory">{children}</div>
       </body>
     </html>
   );

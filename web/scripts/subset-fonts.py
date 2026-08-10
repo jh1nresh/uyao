@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-把 Noto Sans TC 依「站上實際用到的字」subset 成自架 woff2。
+把 Noto Sans TC／Noto Serif TC 依「站上實際用到的字」subset 成自架 woff2。
 
 為什麼要這個：設計稿要 Noto Sans TC 四個字重（400/500/700/900）。直接走
 Google Fonts <link>（web-v1 原本的做法）會拉進 430 個 @font-face、約 134KB
 gzip 的 render-blocking CSS —— 繁中字型是按 unicode-range 切成上百塊的。
 
-只包實際用到的字之後，每個字重剩一個 @font-face，CSS 從 134KB 掉到幾 KB。
+只包實際用到的字之後，sans／serif 各留一個可變字型檔；介面不必下載完整 CJK 字庫。
 
 用法：
     python3 scripts/subset-fonts.py
@@ -29,10 +29,18 @@ from pathlib import Path
 WEB_ROOT = Path(__file__).resolve().parent.parent
 OUT_DIR = WEB_ROOT / "app" / "fonts"
 CACHE = WEB_ROOT / ".font-cache"
-VAR_FONT_URL = (
-    "https://github.com/google/fonts/raw/main/ofl/notosanstc/NotoSansTC%5Bwght%5D.ttf"
+FONTS = (
+    (
+        "NotoSansTC-var.ttf",
+        "https://github.com/google/fonts/raw/main/ofl/notosanstc/NotoSansTC%5Bwght%5D.ttf",
+        "noto-sans-tc-var.woff2",
+    ),
+    (
+        "NotoSerifTC-var.ttf",
+        "https://github.com/google/fonts/raw/main/ofl/notoseriftc/NotoSerifTC%5Bwght%5D.ttf",
+        "noto-serif-tc-var.woff2",
+    ),
 )
-OUT_FONT = "noto-sans-tc-var.woff2"
 SOURCE_DIRS = ("app", "components", "lib")
 # .json 一定要包含：店名、地址、巷弄都在 lib/stores.generated.json，
 # 只掃 .ts/.tsx 會讓整批藥局名掉回系統字型（804f344 導入真資料時漏掉這件事）。
@@ -63,12 +71,12 @@ def collect_chars() -> set[str]:
     return {c for c in chars if c.isprintable() or c == " "}
 
 
-def fetch_variable_font() -> Path:
+def fetch_variable_font(cache_name: str, url: str) -> Path:
     CACHE.mkdir(exist_ok=True)
-    dest = CACHE / "NotoSansTC-var.ttf"
+    dest = CACHE / cache_name
     if not dest.exists():
-        print(f"下載 {VAR_FONT_URL} …")
-        urllib.request.urlretrieve(VAR_FONT_URL, dest)
+        print(f"下載 {url} …")
+        urllib.request.urlretrieve(url, dest)
     print(f"來源字型：{dest.name} ({dest.stat().st_size / 1_000_000:.1f} MB)")
     return dest
 
@@ -77,28 +85,30 @@ def main() -> int:
     chars = collect_chars()
     print(f"字符集：{len(chars)} 個字元")
 
-    var_font = fetch_variable_font()
     OUT_DIR.mkdir(parents=True, exist_ok=True)
+    CACHE.mkdir(exist_ok=True)
 
     text_file = CACHE / "glyphs.txt"
     text_file.write_text("".join(sorted(chars)), encoding="utf-8")
 
-    # 保留 wght 軸不切成靜態實例：站上要 400/500/700/900 四個字重，
-    # 切成四個檔是 352KB，一個可變字型只要 160KB，而且之後加字重不用重跑。
-    out = OUT_DIR / OUT_FONT
-    subprocess.run(
-        [
-            sys.executable, "-m", "fontTools.subset", str(var_font),
-            f"--text-file={text_file}",
-            "--flavor=woff2",
-            # 用預設 layout features：--layout-features=* 會多帶一堆
-            # 這站用不到的 GPOS/GSUB
-            f"--output-file={out}",
-        ],
-        check=True,
-        stdout=subprocess.DEVNULL,
-    )
-    print(f"完成 — {out.name} {out.stat().st_size / 1024:.0f} KB（wght 100–900 可變）")
+    # 保留 wght 軸不切成靜態實例：sans 用於介面，serif 只用於敘事標題；
+    # 兩者共用實際字符集，避免載入完整 CJK 字型。
+    for cache_name, url, output_name in FONTS:
+        var_font = fetch_variable_font(cache_name, url)
+        out = OUT_DIR / output_name
+        subprocess.run(
+            [
+                sys.executable, "-m", "fontTools.subset", str(var_font),
+                f"--text-file={text_file}",
+                "--flavor=woff2",
+                # 用預設 layout features：--layout-features=* 會多帶一堆
+                # 這站用不到的 GPOS/GSUB
+                f"--output-file={out}",
+            ],
+            check=True,
+            stdout=subprocess.DEVNULL,
+        )
+        print(f"完成 — {out.name} {out.stat().st_size / 1024:.0f} KB（可變字型）")
     return 0
 
 

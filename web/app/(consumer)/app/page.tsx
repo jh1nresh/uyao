@@ -51,15 +51,18 @@ export default async function HomePage({
         第一印象「這是藥局名錄」，而名錄 Google Maps 做得更好。
         藥局家數留下來當可信度證據，但收成一行字。
       */}
-      <section className="flex min-h-[calc(100svh-3.5rem)] flex-col items-center justify-center px-4 py-12 text-center sm:px-7 sm:py-16">
-        <h1 className="m-0 text-[clamp(28px,6vw,52px)] font-black leading-[1.15] tracking-[.01em]">
+      <section className="flex min-h-[calc(100svh-6rem)] flex-col items-center justify-center bg-ivory px-4 py-16 text-center sm:px-7 sm:py-20">
+        <p className="num mb-5 mt-0 text-[11.5px] font-semibold tracking-[.14em] text-green">
+          NEARBY SEARCH · RESERVE · PICK UP
+        </p>
+        <h1 className="editorial-display m-0 text-[clamp(38px,6vw,58px)] leading-[1.16]">
           搜一個藥，看附近哪家有貨
         </h1>
-        <p className="mt-4 max-w-[520px] text-[15px] leading-[1.7] text-muted sm:text-base">
+        <p className="mt-5 max-w-[520px] text-[15px] leading-[1.75] text-muted sm:text-base">
           不用先跑三家藥局 — 查到就預留，到店取貨付款
         </p>
 
-        <SearchInput size="lg" area={area} className="mt-9 w-full max-w-[680px]" />
+        <SearchInput size="lg" area={area} className="mt-10 w-full max-w-[700px]" />
 
         <nav
           aria-label="品類"
@@ -69,7 +72,7 @@ export default async function HomePage({
             <Link
               key={c.slug}
               href={`/category/${c.slug}?area=${area}`}
-              className="flex min-h-11 items-center gap-2 border border-line-strong px-4 text-xs font-medium text-ink no-underline hover:border-green hover:text-green"
+              className="flex min-h-11 items-center gap-2 border border-line bg-paper px-4 text-xs font-medium text-ink no-underline hover:border-green hover:text-green"
             >
               {c.name}
               <span className="num text-[13px] text-muted-2">
@@ -79,7 +82,7 @@ export default async function HomePage({
           ))}
         </nav>
 
-        <p className="mt-10 max-w-[560px] text-[13px] leading-[1.7] text-muted-2">
+        <p className="mt-11 max-w-[560px] text-[13px] leading-[1.75] text-muted-2">
           即時庫存還沒開始 —— {getArea(area).shortName}目前收錄 {storeCount} 家店家，
           但還沒有店家裝上盒子。先搜搜看，我們會記下你在找什麼。
         </p>
@@ -88,12 +91,12 @@ export default async function HomePage({
         </div>
       </section>
 
-      <section className="border-t border-line bg-surface px-4 py-8 sm:px-7 xl:px-12 2xl:px-16">
+      <section className="border-t border-line bg-paper px-4 py-12 sm:px-7 sm:py-16 xl:px-12 2xl:px-16">
         <div className="mb-4 flex flex-wrap items-baseline gap-2.5">
           <h2 className="text-sm font-black">首波收錄店家</h2>
           <p className="text-[13px] text-muted-2">共 {partnerStores.length} 家；尚未啟用即時庫存</p>
         </div>
-        <div className="grid border border-line bg-white sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid border border-line bg-ivory sm:grid-cols-2 lg:grid-cols-3">
           {partnerStores.map((store) => (
             <Link
               key={store.slug}
@@ -113,7 +116,7 @@ export default async function HomePage({
 
       {/* 陳列「藥品」而不是「藥局」：藥品才是產品的單位（搜一個藥 → 誰有貨），
           而且點進去就是 SEO 入口頁。 */}
-      <section className="border-t border-line px-4 py-8 sm:px-7 xl:px-12 2xl:px-16">
+      <section className="border-t border-line bg-ivory px-4 py-12 sm:px-7 sm:py-16 xl:px-12 2xl:px-16">
         <div className="mb-3 flex flex-wrap items-baseline gap-2.5">
           <h2 className="text-sm font-black">常見品項</h2>
           <p className="text-[13px] text-muted-2">點一支看附近哪家有貨</p>
@@ -123,7 +126,7 @@ export default async function HomePage({
             <Link
               key={d.slug}
               href={`/drug/${d.slug}?area=${area}`}
-              className="flex flex-col justify-center gap-1 border border-line px-3.5 py-3 no-underline hover:border-green"
+              className="flex flex-col justify-center gap-1 border border-line bg-paper px-3.5 py-3 no-underline hover:border-green"
             >
               <span className="text-[15px] font-medium text-ink">{d.name}</span>
               <span className="text-[13px] text-muted-2">
@@ -134,7 +137,7 @@ export default async function HomePage({
         </div>
       </section>
 
-      <section className="border-t border-line px-4 py-8 sm:px-7 xl:px-12 2xl:px-16">
+      <section className="border-t border-line bg-paper px-4 py-12 sm:px-7 sm:py-16 xl:px-12 2xl:px-16">
         <h2 className="mb-3 text-sm font-black">怎麼拿到藥</h2>
         <ol className="m-0 grid list-none border border-line p-0 sm:grid-cols-3">
           {STEPS.map((s, i) => (
@@ -160,16 +163,16 @@ export default async function HomePage({
         </p>
       </section>
 
-      <section className="border-t border-line bg-surface px-4 py-8 sm:px-7 xl:px-12 2xl:px-16">
+      <section className="border-t border-line bg-forest px-4 py-12 text-white sm:px-7 sm:py-16 xl:px-12 2xl:px-16">
         <div className="max-w-[620px]">
-          <h2 className="text-sm font-black">開藥局的？</h2>
-          <p className="mt-2 text-[15px] leading-[1.8] text-ink-2">
+          <h2 className="editorial-display text-[28px]">開藥局的？</h2>
+          <p className="mt-3 text-[15px] leading-[1.8] text-[#C4CEC7]">
             一個小盒子串在你現有的條碼掃描器上，自動記下每批藥的效期。
             快過退貨期限就用 LINE 提醒你 —— 店內流程一個字都不用改。
           </p>
           <Link
             href="/pharmacy"
-            className="mt-3.5 inline-flex min-h-11 items-center bg-green px-4 text-[13px] font-bold text-white no-underline hover:bg-green-hover"
+            className="mt-5 inline-flex min-h-12 items-center bg-paper px-5 text-[13px] font-bold text-forest no-underline hover:bg-white"
           >
             看盒子怎麼運作 →
           </Link>
