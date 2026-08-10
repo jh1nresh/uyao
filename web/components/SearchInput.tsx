@@ -24,7 +24,7 @@ export function SearchInput({
       role="search"
       className={`flex items-center bg-paper transition-[border-color,box-shadow,transform] duration-200 ${
         xl
-          ? "h-[76px] gap-3 border-2 border-paper px-2 focus-within:border-green focus-within:shadow-[0_16px_44px_rgba(0,0,0,0.18)] sm:h-[86px] sm:px-3"
+          ? "h-16 gap-3 border border-line-strong px-2 focus-within:border-green focus-within:shadow-[0_12px_34px_rgba(37,54,45,0.08)] sm:h-20 sm:px-3"
           : large
             ? "paper-elevation h-[60px] gap-2 border border-line px-5"
           : "h-12 border border-line-strong px-3"
@@ -56,7 +56,7 @@ export function SearchInput({
       {large && (
         <button
           type="submit"
-          className={`action-primary flex-none ${xl ? "h-[58px] px-5 text-[16px] sm:h-[66px] sm:px-10" : "h-12 px-6 text-[15px]"}`}
+          className={`action-primary flex-none ${xl ? "h-14 px-5 text-[16px] sm:px-9" : "h-12 px-6 text-[15px]"}`}
         >
           搜尋
         </button>

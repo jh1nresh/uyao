@@ -118,15 +118,6 @@ body {
   }
 }
 
-@keyframes search-hero-sweep {
-  from {
-    transform: scaleX(0.08);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
-
 @keyframes search-hero-field-in {
   from {
     opacity: 0.92;
@@ -151,10 +142,6 @@ body {
 
 .search-hero-panel {
   animation: search-hero-rise 620ms var(--ease-brand) both;
-}
-
-.search-hero-signal-fill {
-  animation: search-hero-sweep 900ms 100ms var(--ease-brand) both;
 }
 
 .search-hero-field {
@@ -196,7 +183,6 @@ body {
   .hero-loop-action,
   .hero-loop-result,
   .search-hero-panel,
-  .search-hero-signal-fill,
   .search-hero-field,
   .search-hero-option,
   .search-hero-steps,

@@ -63,26 +63,17 @@ export default async function HomePage({
             </p>
           </div>
 
-          <div className="search-hero-panel relative mx-auto mt-7 w-full max-w-[1120px] overflow-hidden border border-forest bg-forest p-5 shadow-[0_30px_80px_rgba(23,57,44,0.18)] sm:p-8">
-            <div className="search-hero-signal mb-6 flex items-center gap-3" aria-hidden>
-              <span className="h-px flex-1 overflow-hidden bg-ink-2">
-                <span className="search-hero-signal-fill block h-full origin-left bg-green" />
-              </span>
-              <span className="num text-[10px] font-medium tracking-[.14em] text-[#A9B5AA]">
-                LIVE SEARCH SERVICE
-              </span>
-            </div>
-
-            <div className="flex flex-wrap items-end justify-between gap-4">
+          <div className="search-hero-panel relative mx-auto mt-9 w-full max-w-5xl">
+            <div className="flex flex-wrap items-end justify-between gap-4 border-b border-line pb-5">
               <div>
-                <p className="num m-0 text-[11px] font-semibold tracking-[.12em] text-[#A9B5AA]">
+                <p className="num m-0 text-[11px] font-semibold tracking-[.12em] text-green">
                   {getArea(area).shortName} · PHARMACY SEARCH
                 </p>
-                <h2 className="editorial-display mb-0 mt-2 text-[25px] leading-[1.25] text-paper sm:text-[30px]">
+                <h2 className="editorial-display mb-0 mt-2 text-[25px] leading-[1.25] text-forest sm:text-[30px]">
                   今天要找哪一支？
                 </h2>
               </div>
-              <p className="m-0 max-w-[360px] text-[13px] leading-[1.7] text-[#C4CEC7]">
+              <p className="m-0 max-w-[360px] text-[13px] leading-[1.7] text-muted">
                 可輸入品名、主成分，或像「痠痛」「止癢」這樣的症狀。
               </p>
             </div>
@@ -91,31 +82,31 @@ export default async function HomePage({
               <SearchInput size="xl" area={area} className="w-full shadow-none" />
             </div>
 
-            <div className="mt-4 flex flex-wrap items-center gap-2 text-[12px] text-[#A9B5AA]">
-              <span className="num mr-1 tracking-[.08em]">快速開始</span>
+            <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-1 text-[12px] text-muted">
+              <span className="num tracking-[.08em]">快速開始</span>
               <nav aria-label="品類" className="contents">
                 {CATEGORIES.map((c, index) => (
                   <Link
                     key={c.slug}
                     href={`/category/${c.slug}?area=${area}`}
-                    className="search-hero-option history-link inline-flex min-h-11 items-center gap-3 border border-ink-2 px-3.5 font-medium text-paper no-underline transition-[background-color,border-color,transform] hover:border-[#A9B5AA] hover:bg-white/5"
+                    className="search-hero-option history-link inline-flex min-h-11 items-center gap-2 border-b border-line-strong font-medium text-forest no-underline transition-[border-color,color] hover:border-green hover:text-green"
                     style={{ animationDelay: `${240 + index * 70}ms` }}
                   >
                     {c.name}
-                    <span className="num text-[#A9B5AA]">{drugsInCategory(c.slug).length}</span>
+                    <span className="num text-muted-2">{drugsInCategory(c.slug).length}</span>
                   </Link>
                 ))}
               </nav>
             </div>
 
-            <div className="search-hero-steps mt-7 grid border-t border-ink-2 pt-5 text-[12px] leading-[1.65] text-[#A9B5AA] sm:grid-cols-3">
+            <div className="search-hero-steps mt-5 grid border-y border-line py-4 text-[12px] leading-[1.65] text-muted sm:grid-cols-3">
               <span><b className="num mr-2 text-green">01</b>輸入藥名或症狀</span>
               <span className="mt-2 sm:mt-0"><b className="num mr-2 text-green">02</b>查看附近資料狀態</span>
               <span className="mt-2 sm:mt-0"><b className="num mr-2 text-green">03</b>預留後到店交付</span>
             </div>
           </div>
 
-          <div className="mx-auto mt-6 w-full max-w-[1120px]">
+          <div className="mx-auto mt-6 w-full max-w-5xl">
             <dl className="grid grid-cols-3 border-y border-line py-4">
               <div>
                 <dt className="num text-[20px] font-semibold text-forest">4</dt>
