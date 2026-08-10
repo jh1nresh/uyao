@@ -51,14 +51,14 @@ export function LocateButton({ area }: { area: AreaSlug }) {
           <Link
             href={withArea(pathname, searchParams.toString(), nearer.area.slug)}
             scroll={false}
-            className="font-medium text-green"
+            className="inline-flex min-h-11 items-center font-medium text-green"
           >
             {nearer.area.shortName}離你更近（<span className="num">
               {formatDistance(nearer.away)}
             </span>）→
           </Link>
         )}
-        <button type="button" onClick={clear} className="text-muted-2 underline">
+        <button type="button" onClick={clear} className="inline-flex min-h-11 items-center text-muted underline">
           關閉定位
         </button>
       </div>
@@ -71,7 +71,7 @@ export function LocateButton({ area }: { area: AreaSlug }) {
         type="button"
         onClick={request}
         disabled={status === "prompting"}
-        className="inline-flex min-h-11 items-center border border-line-strong px-2.5 font-medium text-ink-2 hover:border-green hover:text-green disabled:text-muted-2 sm:min-h-0 sm:py-[3px]"
+        className="inline-flex min-h-11 items-center border border-line-strong bg-paper px-3 font-medium text-ink-2 transition-colors hover:border-forest hover:text-forest disabled:text-muted-2"
       >
         <span aria-hidden>◎</span> {status === "prompting" ? "定位中…" : "用我的位置排序"}
       </button>

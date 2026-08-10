@@ -10,9 +10,13 @@
  */
 export function DemoBanner() {
   return (
-    <div className="border-b border-line bg-sage/70 px-4 py-2 text-[13px] leading-[1.65] text-muted sm:px-7 xl:px-12 2xl:px-16">
-      <b className="font-bold text-forest">試營運</b> · 店家基本資料來自政府開放資料與商業登記；
-      即時庫存尚未開始 — 前往門市前請先電話確認。本站不呈現藥品價格，售價與用藥說明由藥師於門市提供。
+    <div className="border-b border-green-tint-line bg-sage/70 text-[12.5px] leading-[1.65] text-muted">
+      <div className="shop-shell py-2">
+        <b className="mr-2 inline-flex border border-green-tint-line bg-green-tint px-2 py-0.5 font-bold text-forest">
+          試營運
+        </b>
+        店家資料來自政府開放資料；即時庫存尚未開始，前往門市前請先電話確認。售價與用藥說明由藥師於門市提供。
+      </div>
     </div>
   );
 }

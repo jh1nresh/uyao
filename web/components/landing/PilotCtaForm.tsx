@@ -126,7 +126,7 @@ export function PilotCtaForm({ copy }: { copy: PilotFormCopy }) {
                 type="button"
                 aria-pressed={active}
                 onClick={() => toggle(value)}
-                className={`min-h-[38px] whitespace-nowrap border px-3.5 py-2 text-[13.5px] transition-colors duration-150 ${
+                className={`min-h-11 whitespace-nowrap border px-3.5 py-2 text-[13.5px] transition-[background-color,border-color,transform] duration-150 active:translate-y-px ${
                   active
                     ? "border-green bg-green text-white"
                     : "border-ink-2 bg-transparent text-[#A9B5AA] hover:border-[#A9B5AA]"
@@ -148,7 +148,7 @@ export function PilotCtaForm({ copy }: { copy: PilotFormCopy }) {
       <button
         type="submit"
         disabled={status === "loading"}
-        className="min-h-12 justify-self-start bg-green px-8 py-[15px] text-[16px] font-bold text-white transition-colors duration-150 hover:bg-[#0C8A46] disabled:opacity-60"
+        className="action-primary min-h-12 justify-self-start px-8 py-[15px] text-[16px]"
       >
         {status === "loading" ? copy.submitting : copy.submit}
       </button>

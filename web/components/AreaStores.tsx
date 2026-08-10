@@ -57,7 +57,7 @@ export function AreaStores({
             >
               <Link
                 href={`/store/${s.slug}`}
-                className="-my-2.5 flex min-h-11 min-w-0 flex-1 flex-col justify-center py-2.5 no-underline"
+                className="history-link -my-2.5 flex min-h-11 min-w-0 flex-1 flex-col justify-center py-2.5 no-underline"
               >
                 <span className="block text-[15px] font-medium text-ink">{s.name}</span>
                 <span className="block text-[13px] text-muted">{s.address}</span>
@@ -72,7 +72,7 @@ export function AreaStores({
                 (s.phone ? (
                   <a
                     href={`tel:${s.phone.split("、")[0].replace(/-/g, "")}`}
-                    className="num inline-flex min-h-11 flex-none items-center border border-green px-3 text-[13px] font-bold text-green no-underline sm:min-h-0 sm:py-1.5"
+                    className="num inline-flex min-h-11 flex-none items-center border border-forest px-3 text-[13px] font-bold text-forest no-underline hover:bg-surface"
                   >
                     {s.phone.split("、")[0]}
                   </a>

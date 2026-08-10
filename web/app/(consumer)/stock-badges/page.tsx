@@ -31,13 +31,15 @@ export default function StockBadgesPage() {
     <>
       <SiteHeader showTagline />
 
-      <section className="max-w-[560px] px-4 pb-7 pt-6 sm:px-7 xl:px-12 2xl:px-16">
-        <h1 className="mb-1 text-sm font-black">誠實分級：來自盒子掃描新鮮度</h1>
+      <main className="min-h-[calc(100svh-11rem)]">
+      <section className="shop-shell max-w-[760px] py-10 sm:py-14">
+        <p className="shop-kicker mb-3">INVENTORY CONFIDENCE</p>
+        <h1 className="editorial-display mb-2 text-[32px] leading-[1.25] sm:text-[42px]">誠實分級：來自盒子掃描新鮮度</h1>
         <p className="mb-4 text-[13px] text-muted-2">
           永遠不顯示確切數量（是估計值），只顯示狀態。全站同一套字符：● ○ ？
         </p>
 
-        <div className="border border-line">
+        <div className="mt-7 border border-line bg-paper">
           {TIERS.map((t) => (
             <div
               key={t.badge.tier}
@@ -56,6 +58,7 @@ export default function StockBadgesPage() {
           徽章顏色只用墨色與同一個綠 — 不引入紅/黃警示色。
         </p>
       </section>
+      </main>
 
       <SiteFooter />
     </>

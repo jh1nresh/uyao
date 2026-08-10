@@ -22,9 +22,9 @@ export default function PharmacyPage() {
     <>
       <SiteHeader showSearch={false} />
 
-      <section className="max-w-[720px] px-4 pb-8 pt-7 sm:px-7 xl:px-12 2xl:px-16 sm:pt-10">
-        <p className="mb-2 text-[13px] font-medium tracking-[.08em] text-green">給藥局主</p>
-        <h1 className="m-0 text-xl font-black leading-[1.45] tracking-[.01em] sm:text-[26px]">
+      <section className="shop-shell max-w-[960px] py-12 sm:py-16">
+        <p className="shop-kicker mb-3">FOR PHARMACY OWNERS</p>
+        <h1 className="editorial-display m-0 max-w-[14em] text-[36px] leading-[1.22] sm:text-[48px]">
           過期藥不該是丟錢，還要再付清運費
         </h1>
         <p className="mt-2.5 text-[15px] leading-[1.75] text-muted">
@@ -47,9 +47,9 @@ export default function PharmacyPage() {
         </div>
       </section>
 
-      <section className="border-t border-line bg-surface px-4 py-7 sm:px-7 xl:px-12 2xl:px-16">
-        <div className="max-w-[720px]">
-          <h2 className="mb-3 text-sm font-black">盒子做什麼</h2>
+      <section className="border-t border-line bg-surface">
+        <div className="shop-shell max-w-[960px] py-10 sm:py-12">
+          <h2 className="editorial-display mb-4 text-[28px]">盒子做什麼</h2>
           <p className="text-[15px] leading-[1.8] text-ink-2">
             一個小盒子串在你現有的條碼掃描器和電腦之間。對電腦來說它就是原本那支掃描器，
             進貨、調劑照掃，<b className="text-ink">店內流程一個字都不用改</b>。
@@ -58,9 +58,9 @@ export default function PharmacyPage() {
         </div>
       </section>
 
-      <section className="px-4 py-7 sm:px-7 xl:px-12 2xl:px-16">
-        <div className="max-w-[720px]">
-          <h2 className="mb-3 text-sm font-black">順便被附近的人搜到</h2>
+      <section>
+        <div className="shop-shell max-w-[960px] py-10 sm:py-12">
+          <h2 className="editorial-display mb-4 text-[28px]">順便被附近的人搜到</h2>
           <p className="mb-3 text-[15px] leading-[1.8] text-ink-2">
             同一批掃描紀錄會變成你店裡的現貨狀態。附近的人搜一個藥，看到你這裡
             {/* 內文連結加底線：只靠綠色跟周圍文字的對比不到 3:1，色盲看不出是連結 */}
@@ -78,9 +78,9 @@ export default function PharmacyPage() {
         </div>
       </section>
 
-      <section className="border-t border-line px-4 py-7 sm:px-7 xl:px-12 2xl:px-16">
-        <div className="max-w-[720px]">
-          <h2 className="mb-1 text-sm font-black">申請免費試點</h2>
+      <section className="border-t border-line bg-paper">
+        <div className="shop-shell max-w-[960px] py-10 sm:py-12">
+          <h2 className="editorial-display mb-1 text-[28px]">申請免費試點</h2>
           <p className="mb-3.5 text-[13px] text-muted-2">
             我們帶盒子到店裡接上，現場大約 5 分鐘。
           </p>
@@ -88,11 +88,13 @@ export default function PharmacyPage() {
         </div>
       </section>
 
-      <section className="border-t border-line px-4 py-6 sm:px-7 xl:px-12 2xl:px-16">
-        <div className="max-w-[720px] border border-line px-4 py-3.5 text-[15px] leading-[1.7] text-ink-2">
+      <section className="border-t border-line">
+        <div className="shop-shell max-w-[960px] py-8">
+        <div className="border border-line bg-surface px-5 py-4 text-[15px] leading-[1.7] text-ink-2">
           <div className="mb-1 font-bold text-ink">已經是合作藥局？</div>
           預留確認走藥局端 LINE bot：消費者送出預留後，你在 LINE 按確認即可，
           不需要另外登入後台。庫存與效期由盒子自動同步。
+        </div>
         </div>
       </section>
 

@@ -30,10 +30,13 @@ export function StoreView({ store, preview }: { store: Store; preview: boolean }
       <SiteHeader area={store.area} locatable />
       {preview && <StorePreviewBanner storeName={store.name} storeSlug={store.slug} />}
 
-      <div className="flex flex-col gap-6 border-b border-line px-4 pb-[22px] pt-6 sm:px-7 xl:px-12 2xl:px-16 lg:flex-row lg:gap-8">
-        <div className="flex flex-1 flex-col gap-2">
+      <section className="border-b border-line bg-ivory">
+        <div className="shop-shell py-10 sm:py-14">
+          <p className="shop-kicker mb-3">PHARMACY RECORD</p>
+          <div className="flex flex-col gap-7 border border-line bg-paper p-5 sm:p-7 lg:flex-row lg:gap-10">
+        <div className="flex flex-1 flex-col gap-2.5">
           <div className="flex flex-wrap items-center gap-2.5">
-            <h1 className="m-0 text-xl font-black sm:text-2xl">{store.name}</h1>
+            <h1 className="editorial-display m-0 text-[32px] leading-[1.2] sm:text-[42px]">{store.name}</h1>
             {preview ? (
               <span className="border border-green-tint-line bg-green-tint px-2 py-0.5 text-[13px] font-bold text-green">
                 本店可預留
@@ -76,14 +79,14 @@ export function StoreView({ store, preview }: { store: Store; preview: boolean }
               href={store.mapsUrl}
               target="_blank"
               rel="noreferrer noopener"
-              className="inline-flex h-11 items-center border border-green px-3.5 text-xs font-bold text-green no-underline sm:h-auto sm:py-[7px]"
+              className="action-secondary h-11 px-3.5 text-xs"
             >
               在 Google Maps 開啟 ↗
             </a>
             {store.phone && (
               <a
                 href={`tel:${store.phone.split("、")[0].replace(/-/g, "")}`}
-                className="inline-flex h-11 items-center border border-line-strong px-3.5 text-xs font-medium text-ink-2 no-underline sm:h-auto sm:py-[7px]"
+                className="action-secondary h-11 px-3.5 text-xs font-medium"
               >
                 撥打電話
               </a>
@@ -91,8 +94,8 @@ export function StoreView({ store, preview }: { store: Store; preview: boolean }
           </div>
         </div>
 
-        <div className="w-full flex-none border border-line px-3.5 py-3 text-xs text-ink-2 lg:w-60">
-          <div className="mb-1.5 font-bold text-ink">{hoursTitle(store.hoursSource)}</div>
+        <div className="w-full flex-none border border-line bg-surface px-4 py-4 text-xs text-ink-2 lg:w-[280px]">
+          <div className="mb-3 border-b border-line pb-2 text-[13px] font-bold text-ink">{hoursTitle(store.hoursSource)}</div>
           {/* 標籤欄用 auto 且不換行 —— Google 的多時段字串
               （09:00–12:00、14:00–17:00、18:00–21:00）會把 1fr 的標籤欄
               壓到「星期一」直接斷成三行。 */}
@@ -120,24 +123,31 @@ export function StoreView({ store, preview }: { store: Store; preview: boolean }
             </p>
           )}
         </div>
-      </div>
+          </div>
+        </div>
+      </section>
 
       {preview ? (
-        <section className="px-4 pb-[26px] pt-5 sm:px-7 xl:px-12 2xl:px-16">
-          <div className="mb-2.5 flex flex-wrap items-baseline gap-2.5">
-            <h2 className="text-sm font-black">本店有貨商品</h2>
+        <section className="bg-paper">
+          <div className="shop-shell py-12 sm:py-16">
+          <p className="shop-kicker mb-3">AVAILABLE HERE</p>
+          <div className="mb-6 flex flex-wrap items-end gap-3">
+            <h2 className="editorial-display m-0 text-[30px] sm:text-[38px]">本店有貨商品</h2>
             <p className="text-[13px] text-muted-2">
               {items.length} 項 · 全部可預留，到店付款
             </p>
           </div>
           {/* 示範是封閉世界：卡片不連到讀真庫存的 /drug/[slug]，預留直接在卡上 */}
           <PreviewShelf store={store} items={items} />
+          </div>
         </section>
       ) : (
-        <section className="px-4 pb-[26px] pt-5 sm:px-7 xl:px-12 2xl:px-16">
-          <h2 className="mb-2.5 text-sm font-black">本店有貨商品</h2>
-          <div className="border border-line px-4 py-6">
-            <p className="text-[15px] leading-[1.7] text-ink-2">
+        <section className="bg-paper">
+          <div className="shop-shell py-12 sm:py-16">
+          <p className="shop-kicker mb-3">INVENTORY STATUS</p>
+          <h2 className="editorial-display mb-6 mt-0 text-[30px] sm:text-[38px]">本店有貨商品</h2>
+          <div className="border border-line bg-ivory px-5 py-7 sm:px-7 sm:py-8">
+            <p className="max-w-[760px] text-[15px] leading-[1.8] text-ink-2">
               這家藥局還沒有即時庫存。
               <br />
               <span className="text-muted">
@@ -148,17 +158,18 @@ export function StoreView({ store, preview }: { store: Store; preview: boolean }
             <div className="mt-3.5 flex flex-wrap gap-2.5">
               <Link
                 href="/pharmacy"
-                className="inline-flex min-h-11 items-center bg-green px-4 text-xs font-bold text-white no-underline hover:bg-green-hover"
+                className="action-primary min-h-11 px-4 text-xs"
               >
                 我是這家藥局 · 申請免費試裝
               </Link>
               <Link
                 href={`/store/${store.slug}/preview`}
-                className="inline-flex min-h-11 items-center border border-line-strong px-4 text-xs font-medium text-ink-2 no-underline hover:border-green hover:text-green"
+                className="action-secondary min-h-11 px-4 text-xs font-medium"
               >
                 預覽裝上盒子後的樣子 →
               </Link>
             </div>
+          </div>
           </div>
         </section>
       )}

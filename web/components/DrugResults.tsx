@@ -21,7 +21,7 @@ export function DrugResults({
   if (results.length === 0) {
     return (
       <>
-        <div className="border border-line px-4 py-8 text-center text-[15px] text-muted">
+        <div className="border border-line bg-paper px-4 py-14 text-center text-[15px] text-muted">
           附近沒有符合的品項。
           <br />
           <span className="text-[13px] text-muted-2">
@@ -34,15 +34,15 @@ export function DrugResults({
   }
 
   return (
-    <div className="border border-line">
+    <div className="border border-line bg-paper">
       {results.map((r) => (
         <Link
           key={r.drug.slug}
           href={`/drug/${r.drug.slug}?area=${area}`}
-          className="block border-b border-line-soft no-underline last:border-b-0 hover:bg-surface-hover"
+          className="history-link block border-b border-line-soft no-underline last:border-b-0 hover:bg-surface-hover"
         >
-          <div className="hidden grid-cols-[1fr_220px_120px_150px] items-center gap-x-3 px-3.5 py-2.5 text-[15px] lg:grid">
-            <span className="font-medium text-ink">
+          <div className="hidden min-h-[72px] grid-cols-[1fr_260px_120px_150px] items-center gap-x-4 px-5 py-4 text-[15px] lg:grid">
+            <span className="text-[17px] font-bold text-ink">
               {r.drug.name} {r.drug.spec}
             </span>
             <span className="text-xs text-muted">
@@ -59,9 +59,9 @@ export function DrugResults({
             <StockBadge badge={r.bestBadge} className="justify-end text-xs" />
           </div>
 
-          <div className="flex flex-col gap-0.5 px-4 py-2.5 lg:hidden">
+          <div className="flex min-h-[72px] flex-col justify-center gap-1 px-4 py-3.5 lg:hidden">
             <div className="flex items-center gap-2">
-              <span className="text-[15px] font-medium text-ink">
+              <span className="text-[16px] font-bold text-ink">
                 {r.drug.name} {r.drug.spec}
               </span>
               <div className="flex-1" />

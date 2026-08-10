@@ -50,7 +50,7 @@ export function CancelReservation({
       <button
         type="button"
         onClick={() => setAsking(true)}
-        className="mt-3 text-[13px] text-muted-2 underline"
+        className="mt-2 inline-flex min-h-11 items-center text-[13px] text-muted underline"
       >
         取消這筆預留
       </button>
@@ -78,7 +78,7 @@ export function CancelReservation({
           type="button"
           onClick={cancel}
           disabled={pending}
-          className="h-11 flex-1 border border-line-strong bg-white text-[14px] font-medium text-ink disabled:text-muted-2"
+          className="action-secondary h-11 flex-1 px-3 text-[14px] font-medium"
         >
           {pending ? "取消中…" : "確定取消"}
         </button>
@@ -86,7 +86,7 @@ export function CancelReservation({
           type="button"
           onClick={() => setAsking(false)}
           disabled={pending}
-          className="h-11 flex-1 bg-green text-[14px] font-bold text-white"
+          className="action-primary h-11 flex-1 px-3 text-[14px]"
         >
           不取消，保留
         </button>

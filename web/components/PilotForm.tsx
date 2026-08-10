@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 const INPUT =
-  "h-11 min-w-0 border border-line-strong bg-white px-3 text-[15px] text-ink outline-none placeholder:text-muted-2 focus:border-green sm:h-9";
+  "h-11 min-w-0 border border-line-strong bg-paper px-3 text-[15px] text-ink outline-none placeholder:text-muted-2 focus:border-green";
 
 /**
  * 藥局試點申請 — 供給側的唯一表單。
@@ -56,41 +56,41 @@ export function PilotForm() {
 
   return (
     <form onSubmit={submit} className="flex flex-col gap-2">
-      <div className="flex flex-col gap-2 sm:flex-row">
-        <label className="sr-only" htmlFor="pilot-name">
-          藥局名稱
+      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_1fr_auto] lg:items-end">
+        <label className="grid min-w-0 gap-1 text-[12px] font-medium text-muted" htmlFor="pilot-name">
+          <span>藥局名稱</span>
+          <input
+            id="pilot-name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="例如：中山藥局"
+            className={INPUT}
+          />
         </label>
-        <input
-          id="pilot-name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="藥局名稱"
-          className={`${INPUT} sm:flex-[2]`}
-        />
-        <label className="sr-only" htmlFor="pilot-area">
-          區域
+        <label className="grid min-w-0 gap-1 text-[12px] font-medium text-muted" htmlFor="pilot-area">
+          <span>區域</span>
+          <input
+            id="pilot-area"
+            value={area}
+            onChange={(e) => setArea(e.target.value)}
+            placeholder="例如：台北中山"
+            className={INPUT}
+          />
         </label>
-        <input
-          id="pilot-area"
-          value={area}
-          onChange={(e) => setArea(e.target.value)}
-          placeholder="區域（如：台北中山）"
-          className={`${INPUT} sm:flex-[2]`}
-        />
-        <label className="sr-only" htmlFor="pilot-contact">
-          LINE ID 或電話
+        <label className="grid min-w-0 gap-1 text-[12px] font-medium text-muted" htmlFor="pilot-contact">
+          <span>LINE ID 或電話</span>
+          <input
+            id="pilot-contact"
+            value={contact}
+            onChange={(e) => setContact(e.target.value)}
+            placeholder="方便聯絡的方式"
+            className={INPUT}
+          />
         </label>
-        <input
-          id="pilot-contact"
-          value={contact}
-          onChange={(e) => setContact(e.target.value)}
-          placeholder="LINE ID 或電話"
-          className={`${INPUT} sm:flex-[2]`}
-        />
         <button
           type="submit"
           disabled={pending}
-          className="h-11 flex-none bg-green px-[18px] text-[15px] font-bold text-white hover:bg-green-hover disabled:opacity-60 sm:h-9"
+          className="action-primary h-11 flex-none text-[15px] sm:col-span-2 lg:col-span-1"
         >
           {pending ? "送出中…" : "申請免費試點"}
         </button>

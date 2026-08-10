@@ -127,7 +127,7 @@ export default function EnglishLandingPage() {
       <nav className="sticky top-0 z-50 border-b border-line-strong bg-ivory text-ink">
         <Container>
           <div className="flex h-[72px] items-center justify-between gap-5 sm:h-20 sm:gap-6">
-            <Link href="/en" className="flex flex-none items-center text-ink no-underline">
+            <Link href="/en" className="flex min-h-11 flex-none items-center text-ink no-underline">
               <span className="flex items-center gap-1.5 sm:hidden">
                 <BrandLogo height={32} />
               </span>
@@ -136,20 +136,20 @@ export default function EnglishLandingPage() {
               </span>
             </Link>
             <div className="flex items-center gap-4 text-[15px] sm:gap-7">
-              <a href="#how" className="hidden text-ink no-underline hover:text-green md:inline">
+              <a href="#how" className="hidden min-h-11 items-center text-ink no-underline hover:text-green md:inline-flex">
                 How it works
               </a>
-              <a href={SHOP_URL} className="hidden text-ink no-underline hover:text-green md:inline">
+              <a href={SHOP_URL} className="hidden min-h-11 items-center text-ink no-underline hover:text-green md:inline-flex">
                 Consumer search
               </a>
               <a
                 href="#pilot"
-                className="whitespace-nowrap bg-green px-5 py-2.5 text-[15px] font-bold text-white no-underline hover:bg-green-hover"
+                className="action-primary whitespace-nowrap text-[15px]"
               >
                 Join the pilot
               </a>
-              <span className="num text-[13px] text-muted">
-                <Link href="/" className="text-muted no-underline hover:text-green">
+              <span className="num flex min-h-11 items-center text-[13px] text-muted">
+                <Link href="/" className="inline-flex min-h-11 items-center text-muted no-underline hover:text-green">
                   中
                 </Link>
                 {" / "}
@@ -180,7 +180,7 @@ export default function EnglishLandingPage() {
               <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4">
                 <a
                   href="#pilot"
-                  className="box-border inline-flex min-h-[54px] items-center whitespace-nowrap bg-green px-9 py-4 text-[16px] font-bold text-white no-underline hover:bg-green-hover"
+                  className="action-primary box-border min-h-[54px] whitespace-nowrap px-9 py-4 text-[16px]"
                 >
                   Join the pilot
                 </a>
@@ -415,7 +415,7 @@ export default function EnglishLandingPage() {
                     Return window approaching
                   </p>
                   <div className="mt-3 grid gap-1.5">
-                    <span className="bg-green px-3 py-2 text-center text-[13px] font-bold text-white">
+                    <span className="bg-forest px-3 py-2 text-center text-[13px] font-bold text-paper">
                       Start return
                     </span>
                     <span className="border border-line-strong px-3 py-1.5 text-center text-[13px]">
@@ -479,13 +479,13 @@ export default function EnglishLandingPage() {
               <BrandLogo height={30} />
             </div>
             <div className="flex flex-wrap gap-7 text-[14.5px]">
-              <a href={SHOP_URL} className="text-green hover:text-green-hover">
+              <a href={SHOP_URL} className="inline-flex min-h-11 items-center text-forest hover:text-green">
                 Consumer search
               </a>
-              <a href="#pilot" className="text-green hover:text-green-hover">
+              <a href="#pilot" className="inline-flex min-h-11 items-center text-forest hover:text-green">
                 Join the pilot
               </a>
-              <a href="mailto:edwardhsieh0122@gmail.com" className="text-green hover:text-green-hover">
+              <a href="mailto:edwardhsieh0122@gmail.com" className="inline-flex min-h-11 items-center text-forest hover:text-green">
                 edwardhsieh0122@gmail.com
               </a>
             </div>
