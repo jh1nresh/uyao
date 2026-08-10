@@ -6,7 +6,7 @@ export function BrandMark({ size = 26 }: { size?: number }) {
     <Image
       aria-hidden
       alt=""
-      src="/brand/uyao-mark-v3.svg"
+      src="/brand/uyao-mark-v4.svg"
       width={size}
       height={size}
       className="flex-none"
