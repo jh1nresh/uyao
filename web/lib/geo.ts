@@ -1,4 +1,5 @@
 import type { AreaSlug, Store } from "./types";
+import { AREAS } from "./data";
 
 export interface LatLng {
   lat: number;
@@ -49,4 +50,11 @@ export function byDistance(from: LatLng | null) {
 /** 使用者離這一區有多遠 —— 太遠就該提醒他這區不是他的生活圈。 */
 export function distanceToArea(area: AreaSlug, from: LatLng): number {
   return haversineM(from, AREA_CENTER[area]);
+}
+
+/** GPS 只負責選最近的已開放服務區；店家排序仍需要每家店自己的座標。 */
+export function nearestServiceArea(from: LatLng): AreaSlug {
+  return AREAS
+    .map((area) => ({ area: area.slug, distance: distanceToArea(area.slug, from) }))
+    .sort((a, b) => a.distance - b.distance)[0].area;
 }

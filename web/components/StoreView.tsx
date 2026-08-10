@@ -27,7 +27,7 @@ export function StoreView({ store, preview }: { store: Store; preview: boolean }
 
   return (
     <>
-      <SiteHeader area={store.area} />
+      <SiteHeader area={store.area} locatable />
       {preview && <StorePreviewBanner storeName={store.name} storeSlug={store.slug} />}
 
       <div className="flex flex-col gap-6 border-b border-line px-4 pb-[22px] pt-6 sm:px-7 xl:px-12 2xl:px-16 lg:flex-row lg:gap-8">

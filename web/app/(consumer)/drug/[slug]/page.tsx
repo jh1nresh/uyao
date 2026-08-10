@@ -2,19 +2,20 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { AreaSwitch } from "@/components/AreaSwitch";
 import { NoInventoryYet } from "@/components/NoInventoryYet";
 import { PharmacyList } from "@/components/PharmacyList";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import {
   allDrugs,
-  DEFAULT_AREA,
   alternativesFor,
   getArea,
   getCategory,
   getDrug,
   storesForDrug,
   storesInArea,
+  toAreaSlug,
 } from "@/lib/data";
 
 export function generateStaticParams() {
@@ -39,30 +40,38 @@ export async function generateMetadata({
 
 export default async function DrugPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ area?: string }>;
 }) {
   const { slug } = await params;
+  const { area: rawArea } = await searchParams;
+  const area = toAreaSlug(rawArea);
   const drug = getDrug(slug);
   if (!drug) notFound();
 
-  const rows = storesForDrug(drug.slug);
-  const alternatives = alternativesFor(drug.slug);
+  const rows = storesForDrug(drug.slug, area);
+  const alternatives = alternativesFor(drug.slug, area);
   const category = getCategory(drug.category);
 
   return (
     <>
-      <SiteHeader query={drug.name} showTagline />
+      <SiteHeader query={drug.name} showTagline area={area} preserveAreaPath locatable />
+
+      <div className="px-4 pt-3 md:hidden">
+        <AreaSwitch area={area} preservePath locatable />
+      </div>
 
       <nav aria-label="麵包屑" className="px-4 pt-6 text-xs text-muted-2 sm:px-7 xl:px-12 2xl:px-16">
-        <Link href="/app" className="-my-3 inline-flex min-h-11 items-center text-muted-2 no-underline hover:text-ink">
+        <Link href={`/app?area=${area}`} className="-my-3 inline-flex min-h-11 items-center text-muted-2 no-underline hover:text-ink">
           首頁
         </Link>
         {category && (
           <>
             {" / "}
             <Link
-              href={`/category/${category.slug}`}
+              href={`/category/${category.slug}?area=${area}`}
               className="-my-3 inline-flex min-h-11 items-center text-muted-2 no-underline hover:text-ink"
             >
               {category.name}
@@ -122,9 +131,9 @@ export default async function DrugPage({
         <NoInventoryYet
           drugName={drug.name}
           drugSlug={drug.slug}
-          area={DEFAULT_AREA}
-          areaLabel={getArea(DEFAULT_AREA).shortName}
-          stores={storesInArea(DEFAULT_AREA)}
+          area={area}
+          areaLabel={getArea(area).shortName}
+          stores={storesInArea(area)}
         />
       )}
 
@@ -142,7 +151,7 @@ export default async function DrugPage({
                 key={a.drug.slug}
                 className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line-soft px-3.5 py-2.5 text-[15px] last:border-b-0"
               >
-                <Link href={`/drug/${a.drug.slug}`} className="font-medium text-ink no-underline hover:text-green">
+                <Link href={`/drug/${a.drug.slug}?area=${area}`} className="font-medium text-ink no-underline hover:text-green">
                   {a.drug.name} {a.drug.spec}
                 </Link>
                 <span className="text-[13px] text-muted-2">{a.drug.form}</span>

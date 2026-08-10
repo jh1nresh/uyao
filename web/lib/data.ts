@@ -259,11 +259,11 @@ export function getCategory(slug: string): Category | undefined {
 }
 
 /** 藥品頁：附近有這個藥的藥局，依 新鮮度 → 距離 → 價格 排序。 */
-export function storesForDrug(drugSlug: string): StoreRow[] {
+export function storesForDrug(drugSlug: string, area?: AreaSlug): StoreRow[] {
   return OFFERS.filter((o) => o.drugSlug === drugSlug)
     .flatMap((o) => {
       const store = getStore(o.storeSlug);
-      if (!store) return [];
+      if (!store || (area && store.area !== area)) return [];
       return [{
         store,
         priceTwd: o.priceTwd,
@@ -316,7 +316,7 @@ export interface Alternative {
 }
 
 /** 同成分替代品 — 沒貨時的出路。比對主成分集合完全相同的其他品項。 */
-export function alternativesFor(drugSlug: string): Alternative[] {
+export function alternativesFor(drugSlug: string, area?: AreaSlug): Alternative[] {
   const drug = getDrug(drugSlug);
   if (!drug) return [];
   const signature = [...drug.ingredients].sort().join("|");
@@ -325,7 +325,7 @@ export function alternativesFor(drugSlug: string): Alternative[] {
     (d) => d.slug !== drug.slug && [...d.ingredients].sort().join("|") === signature,
   )
     .flatMap((d) => {
-      const rows = storesForDrug(d.slug);
+      const rows = storesForDrug(d.slug, area);
       const inStock = rows.filter((r) => r.badge.tier !== "unknown");
       if (inStock.length === 0) return [];
       return [{
@@ -416,10 +416,10 @@ export interface DrugSummary {
 }
 
 /** 搜尋 / 品類列表用的一行摘要。 */
-export function drugSummary(drugSlug: string): DrugSummary | undefined {
+export function drugSummary(drugSlug: string, area?: AreaSlug): DrugSummary | undefined {
   const drug = getDrug(drugSlug);
   if (!drug) return undefined;
-  const rows = storesForDrug(drugSlug);
+  const rows = storesForDrug(drugSlug, area);
   return {
     drug,
     storeCount: rows.length,
