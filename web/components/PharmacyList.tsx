@@ -51,7 +51,7 @@ export function PharmacyList({
               <div
                 className={`hidden ${COLS} items-center gap-x-3 border-b border-line-soft px-3.5 py-2.5 text-[15px] last:border-b-0 hover:bg-surface-hover lg:grid`}
               >
-                <Link href={`/store/${r.store.slug}`} className="font-medium text-ink no-underline hover:text-green">
+                <Link href={`/store/${r.store.slug}`} className="history-link font-medium text-ink no-underline hover:text-green">
                   {r.store.name}
                   <span className="ml-1.5 text-[13px] font-normal text-muted-2">
                     {getArea(r.store.area).shortName}
@@ -71,7 +71,7 @@ export function PharmacyList({
                   <div className="flex items-baseline gap-2">
                     <Link
                       href={`/store/${r.store.slug}`}
-                      className="text-[15px] font-medium text-ink no-underline"
+                      className="history-link text-[15px] font-medium text-ink no-underline"
                     >
                       {r.store.name}
                     </Link>
@@ -119,9 +119,13 @@ function ReserveButton({
       type="button"
       onClick={onClick}
       aria-label={`向${row.store.name}預留${outline ? "（由藥局確認有無現貨）" : ""}`}
-      className={`flex-none border border-green font-bold hover:opacity-85 ${
-        mobile ? "h-11 px-3.5 text-[15px]" : "h-[30px] text-xs"
-      } ${outline ? "bg-paper text-green" : "bg-green text-white"}`}
+      className={`min-h-11 flex-none border px-3.5 font-bold transition-[background-color,border-color,transform] active:translate-y-px ${
+        mobile ? "text-[15px]" : "text-xs"
+      } ${
+        outline
+          ? "border-forest bg-paper text-forest hover:bg-surface"
+          : "border-forest bg-forest text-paper hover:bg-ink"
+      }`}
     >
       預留
     </button>

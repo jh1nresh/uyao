@@ -52,10 +52,10 @@ export function PreviewShelf({ store, items }: { store: Store; items: DrugRow[] 
               }
               // 44px 觸控目標：這顆是拿手機遞給藥局老闆自己按的那一顆，
               // 漏掉它等於整場示範卡在最後一步。桌機用 sm: 還原原本的密度。
-              className={`mt-1.5 flex min-h-11 items-center justify-center border px-3 text-xs font-bold sm:min-h-0 sm:py-1.5 ${
+              className={`mt-1.5 flex min-h-11 items-center justify-center border px-3 text-xs font-bold transition-[background-color,border-color,transform] active:translate-y-px ${
                 it.badge.tier === "unknown"
                   ? "border-line-strong text-muted hover:border-green hover:text-green"
-                  : "border-green bg-green text-white hover:bg-green-hover"
+                  : "border-forest bg-forest text-paper hover:bg-ink"
               }`}
             >
               預留

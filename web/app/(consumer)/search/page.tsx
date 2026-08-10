@@ -35,7 +35,7 @@ export default async function SearchPage({
           <AreaSwitch area={area} preservePath locatable />
         </div>
         <div className="mb-2.5 flex flex-wrap items-baseline gap-2.5">
-          <h1 className="text-sm font-black">
+          <h1 className="text-lg font-black tracking-[-.01em]">
             {q ? `「${q}」的結果` : "搜尋藥品"}
           </h1>
           <p className="text-[13px] text-muted-2">

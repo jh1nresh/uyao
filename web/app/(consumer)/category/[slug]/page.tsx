@@ -59,7 +59,7 @@ export default async function CategoryPage({
           <AreaSwitch area={area} preservePath locatable />
         </div>
         <div className="mb-2.5 flex flex-wrap items-baseline gap-2.5">
-          <h1 className="text-sm font-black">{category.name}</h1>
+          <h1 className="text-lg font-black tracking-[-.01em]">{category.name}</h1>
           <p className="text-[13px] text-muted-2">
             {results.length} 項在附近有登錄 · {getArea(area).shortName}
           </p>

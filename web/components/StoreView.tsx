@@ -76,14 +76,14 @@ export function StoreView({ store, preview }: { store: Store; preview: boolean }
               href={store.mapsUrl}
               target="_blank"
               rel="noreferrer noopener"
-              className="inline-flex h-11 items-center border border-green px-3.5 text-xs font-bold text-green no-underline sm:h-auto sm:py-[7px]"
+              className="action-secondary h-11 px-3.5 text-xs"
             >
               在 Google Maps 開啟 ↗
             </a>
             {store.phone && (
               <a
                 href={`tel:${store.phone.split("、")[0].replace(/-/g, "")}`}
-                className="inline-flex h-11 items-center border border-line-strong px-3.5 text-xs font-medium text-ink-2 no-underline sm:h-auto sm:py-[7px]"
+                className="action-secondary h-11 px-3.5 text-xs font-medium"
               >
                 撥打電話
               </a>
@@ -148,13 +148,13 @@ export function StoreView({ store, preview }: { store: Store; preview: boolean }
             <div className="mt-3.5 flex flex-wrap gap-2.5">
               <Link
                 href="/pharmacy"
-                className="inline-flex min-h-11 items-center bg-green px-4 text-xs font-bold text-white no-underline hover:bg-green-hover"
+                className="action-primary min-h-11 px-4 text-xs"
               >
                 我是這家藥局 · 申請免費試裝
               </Link>
               <Link
                 href={`/store/${store.slug}/preview`}
-                className="inline-flex min-h-11 items-center border border-line-strong px-4 text-xs font-medium text-ink-2 no-underline hover:border-green hover:text-green"
+                className="action-secondary min-h-11 px-4 text-xs font-medium"
               >
                 預覽裝上盒子後的樣子 →
               </Link>

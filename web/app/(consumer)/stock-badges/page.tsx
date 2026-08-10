@@ -32,7 +32,7 @@ export default function StockBadgesPage() {
       <SiteHeader showTagline />
 
       <section className="max-w-[560px] px-4 pb-7 pt-6 sm:px-7 xl:px-12 2xl:px-16">
-        <h1 className="mb-1 text-sm font-black">誠實分級：來自盒子掃描新鮮度</h1>
+        <h1 className="mb-1 text-lg font-black tracking-[-.01em]">誠實分級：來自盒子掃描新鮮度</h1>
         <p className="mb-4 text-[13px] text-muted-2">
           永遠不顯示確切數量（是估計值），只顯示狀態。全站同一套字符：● ○ ？
         </p>

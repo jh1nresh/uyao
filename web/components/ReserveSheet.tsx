@@ -140,7 +140,7 @@ export function ReserveSheet({
         className="absolute inset-0 bg-[rgba(26,36,32,.32)]"
       />
       <div
-        className={`sheet-in relative flex w-full max-w-[420px] flex-col gap-3.5 border-t-2 bg-paper px-5 pb-6 pt-[18px] sm:border-x sm:border-b ${
+        className={`sheet-in relative flex w-full max-w-[420px] flex-col gap-3.5 border-t-2 bg-paper px-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-[18px] sm:border-x sm:border-b sm:pb-6 ${
           success ? "border-green" : "border-t-ink sm:border-x-line-strong sm:border-b-line-strong"
         }`}
       >
@@ -193,7 +193,7 @@ export function ReserveSheet({
                     setRemembered(false);
                     inputRef.current?.focus();
                   }}
-                  className="self-start text-[11px] text-muted-2 underline"
+                  className="inline-flex min-h-11 items-center self-start text-[11px] text-muted underline"
                 >
                   這是你上次用的號碼 · 換一個
                 </button>
@@ -210,7 +210,7 @@ export function ReserveSheet({
               <button
                 type="submit"
                 disabled={pending || contact.trim() === ""}
-                className="mt-1.5 h-12 bg-green text-[16px] font-bold tracking-[.1em] text-white hover:bg-green-hover disabled:bg-line-strong disabled:text-white"
+                className="action-primary mt-1.5 h-12 text-[16px] tracking-[.1em] disabled:shadow-none"
               >
                 {pending ? "送出中…" : "送出預留"}
               </button>
@@ -326,7 +326,7 @@ function SuccessBody({
         // 藥局確認後回來看狀態就會變。
         <a
           href={`/r/${success.token}`}
-          className="border border-line-strong px-3.5 py-2.5 text-center text-[14px] font-medium text-ink no-underline hover:border-green hover:text-green"
+          className="action-secondary px-3.5 text-center text-[14px] font-medium"
         >
           開啟取貨憑證（可截圖保存）→
         </a>
@@ -337,13 +337,13 @@ function SuccessBody({
           href={target.store.mapsUrl}
           target="_blank"
           rel="noreferrer noopener"
-          className="flex h-[46px] flex-1 items-center justify-center bg-green text-sm font-bold text-white no-underline hover:bg-green-hover"
+          className="action-primary h-[46px] flex-1 px-3 text-sm"
         >
           開啟導航
         </a>
         <Link
           href="/app"
-          className="flex h-[46px] flex-1 items-center justify-center border border-line-strong text-sm font-medium text-ink no-underline"
+          className="action-secondary h-[46px] flex-1 px-3 text-sm font-medium"
         >
           回到搜尋
         </Link>
@@ -360,7 +360,7 @@ function SuccessBody({
           });
           onClose();
         }}
-        className="text-center text-xs text-muted-2 underline"
+        className="inline-flex min-h-11 items-center justify-center text-center text-xs text-muted underline"
       >
         取消這筆預留
       </button>

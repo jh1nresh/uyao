@@ -39,7 +39,7 @@ export function DrugResults({
         <Link
           key={r.drug.slug}
           href={`/drug/${r.drug.slug}?area=${area}`}
-          className="block border-b border-line-soft no-underline last:border-b-0 hover:bg-surface-hover"
+          className="history-link block border-b border-line-soft no-underline last:border-b-0 hover:bg-surface-hover"
         >
           <div className="hidden grid-cols-[1fr_220px_120px_150px] items-center gap-x-3 px-3.5 py-2.5 text-[15px] lg:grid">
             <span className="font-medium text-ink">

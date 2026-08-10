@@ -113,7 +113,7 @@ export default function CompanyLandingPage() {
       <nav className="sticky top-0 z-50 border-b border-line-strong bg-ivory text-ink">
         <Container>
           <div className="flex h-[72px] items-center justify-between gap-5 sm:h-20 sm:gap-6">
-            <Link href="/" className="flex flex-none items-center text-ink no-underline">
+            <Link href="/" className="flex min-h-11 flex-none items-center text-ink no-underline">
               <span className="flex items-center gap-1.5 sm:hidden">
                 <BrandLogo height={32} />
               </span>
@@ -122,24 +122,24 @@ export default function CompanyLandingPage() {
               </span>
             </Link>
             <div className="flex items-center gap-4 text-[15px] sm:gap-7">
-              <a href="#how" className="hidden text-ink no-underline hover:text-green md:inline">
+              <a href="#how" className="hidden min-h-11 items-center text-ink no-underline hover:text-green md:inline-flex">
                 怎麼運作
               </a>
-              <a href={SHOP_URL} className="hidden text-ink no-underline hover:text-green md:inline">
+              <a href={SHOP_URL} className="hidden min-h-11 items-center text-ink no-underline hover:text-green md:inline-flex">
                 附近找藥
               </a>
               <a
                 href="#pilot"
-                className="bg-green px-5 py-2.5 text-[15px] font-bold text-white no-underline hover:bg-green-hover"
+                className="action-primary text-[15px]"
               >
                 申請試點
               </a>
-              <span className="num text-[13px] text-muted">
+              <span className="num flex min-h-11 items-center text-[13px] text-muted">
                 <span aria-current="true" className="font-semibold text-ink">
                   中
                 </span>
                 {" / "}
-                <Link href="/en" className="text-muted no-underline hover:text-green">
+                <Link href="/en" className="inline-flex min-h-11 items-center text-muted no-underline hover:text-green">
                   EN
                 </Link>
               </span>
@@ -168,7 +168,7 @@ export default function CompanyLandingPage() {
               <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4">
                 <a
                   href="#pilot"
-                  className="box-border inline-flex min-h-[54px] items-center whitespace-nowrap bg-green px-9 py-4 text-[16px] font-bold text-white no-underline hover:bg-green-hover"
+                className="action-primary box-border min-h-[54px] whitespace-nowrap px-9 py-4 text-[16px]"
                 >
                   申請試點
                 </a>
@@ -435,7 +435,7 @@ export default function CompanyLandingPage() {
                     退貨規則：待藥師／供應商確認
                   </div>
                   <div className="grid gap-2">
-                    <span className="bg-green px-3 py-[11px] text-center text-[14px] font-bold text-white">
+                    <span className="bg-forest px-3 py-[11px] text-center text-[14px] font-bold text-paper">
                       開始辦退貨
                     </span>
                     <span className="border border-line-strong px-3 py-2.5 text-center text-[14px]">
@@ -463,7 +463,7 @@ export default function CompanyLandingPage() {
                     附近需求：示範資料
                   </div>
                   <div className="grid gap-2">
-                    <span className="bg-green px-3 py-[11px] text-center text-[14px] font-bold text-white">
+                    <span className="bg-forest px-3 py-[11px] text-center text-[14px] font-bold text-paper">
                       我會補貨，開放預留
                     </span>
                     <span className="border border-line-strong px-3 py-2.5 text-center text-[14px]">
@@ -505,14 +505,14 @@ export default function CompanyLandingPage() {
             <div className="flex items-center">
               <BrandLogo height={30} />
             </div>
-            <div className="flex gap-7 text-[14.5px]">
-              <a href={SHOP_URL} className="text-green hover:text-green-hover">
+            <div className="flex flex-wrap gap-x-7 text-[14.5px]">
+              <a href={SHOP_URL} className="inline-flex min-h-11 items-center text-forest hover:text-green">
                 附近找藥
               </a>
-              <a href="#pilot" className="text-green hover:text-green-hover">
+              <a href="#pilot" className="inline-flex min-h-11 items-center text-forest hover:text-green">
                 申請試點
               </a>
-              <a href="mailto:edwardhsieh0122@gmail.com" className="text-green hover:text-green-hover">
+              <a href="mailto:edwardhsieh0122@gmail.com" className="inline-flex min-h-11 items-center text-forest hover:text-green">
                 edwardhsieh0122@gmail.com
               </a>
             </div>

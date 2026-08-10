@@ -82,14 +82,11 @@ export default async function DrugPage({
         {drug.name}
       </nav>
 
-      <div className="flex gap-5 border-b border-line px-4 pb-[22px] pt-3.5 sm:px-7 xl:px-12 2xl:px-16">
-        <div
-          aria-hidden
-          className="flex h-[104px] w-[104px] flex-none items-center justify-center border border-line bg-surface text-[13px] text-muted-2 max-sm:h-14 max-sm:w-14 max-sm:text-[12px]"
-        >
-          商品圖
-        </div>
-        <div className="flex flex-col gap-1.5">
+      <div className="border-b border-line px-4 pb-[22px] pt-3.5 sm:px-7 xl:px-12 2xl:px-16">
+        <div className="flex max-w-[820px] flex-col gap-1.5 border-l-2 border-forest pl-4 sm:pl-5">
+          <p className="num mb-1 text-[11px] font-semibold tracking-[.12em] text-green">
+            VERIFIED PRODUCT RECORD
+          </p>
           <h1 className="m-0 text-lg font-black leading-[1.25] sm:text-2xl">
             {drug.name}{" "}
             {drug.nameEn && (

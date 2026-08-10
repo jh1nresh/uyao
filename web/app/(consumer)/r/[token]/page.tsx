@@ -152,7 +152,7 @@ export default async function PickupPage({
         {overdue && r.storePhone && (
           <a
             href={`tel:${r.storePhone.split("、")[0].replace(/-/g, "")}`}
-            className="mb-4 flex h-12 items-center justify-center border border-green bg-green text-[14px] font-bold text-white no-underline"
+            className="action-primary mb-4 h-12 text-[14px]"
           >
             打電話問 {r.storeName} · {r.storePhone.split("、")[0]}
           </a>

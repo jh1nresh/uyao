@@ -61,7 +61,7 @@ export function NoInventoryYet({
 
       <p className="mt-3 text-[13px] leading-[1.6] text-muted-2">
         開藥局的？
-        <Link href="/pharmacy" className="text-green">
+        <Link href="/pharmacy" className="-my-3 ml-1 inline-flex min-h-11 items-center text-green">
           裝上盒子，你的庫存就會出現在這裡 →
         </Link>
       </p>

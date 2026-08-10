@@ -51,7 +51,7 @@ export default async function HomePage({
         第一印象「這是藥局名錄」，而名錄 Google Maps 做得更好。
         藥局家數留下來當可信度證據，但收成一行字。
       */}
-      <section className="flex min-h-[calc(100svh-6rem)] flex-col items-center justify-center bg-ivory px-4 py-16 text-center sm:px-7 sm:py-20">
+      <section className="flex min-h-[calc(100svh-9.5rem)] flex-col items-center justify-center bg-ivory px-4 py-16 text-center sm:min-h-[calc(100svh-8rem)] sm:px-7 sm:py-20 lg:min-h-[calc(100svh-6.5rem)]">
         <p className="num mb-5 mt-0 text-[11.5px] font-semibold tracking-[.14em] text-green">
           NEARBY SEARCH · RESERVE · PICK UP
         </p>
@@ -72,7 +72,7 @@ export default async function HomePage({
             <Link
               key={c.slug}
               href={`/category/${c.slug}?area=${area}`}
-              className="flex min-h-11 items-center gap-2 border border-line bg-paper px-4 text-xs font-medium text-ink no-underline hover:border-green hover:text-green"
+              className="history-link flex min-h-11 items-center gap-2 border border-line bg-paper px-4 text-xs font-medium text-ink no-underline hover:border-green hover:text-green"
             >
               {c.name}
               <span className="num text-[13px] text-muted-2">
@@ -101,7 +101,7 @@ export default async function HomePage({
             <Link
               key={store.slug}
               href={`/store/${store.slug}`}
-              className="flex min-h-20 flex-col justify-center border-b border-line-soft px-4 py-3 no-underline last:border-b-0 hover:bg-surface-hover sm:border-r sm:last:border-r-0 lg:[&:nth-child(3n)]:border-r-0"
+              className="history-link flex min-h-20 flex-col justify-center border-b border-line-soft px-4 py-3 no-underline last:border-b-0 hover:bg-surface-hover sm:border-r sm:[&:nth-child(2n)]:border-r-0 lg:[&:nth-child(2n)]:border-r lg:[&:nth-child(3n)]:border-r-0"
             >
               <span className="text-[13px] text-green">{store.district}</span>
               <span className="mt-0.5 text-[15px] font-bold text-ink">{store.name}</span>
@@ -126,7 +126,7 @@ export default async function HomePage({
             <Link
               key={d.slug}
               href={`/drug/${d.slug}?area=${area}`}
-              className="flex flex-col justify-center gap-1 border border-line bg-paper px-3.5 py-3 no-underline hover:border-green"
+              className="history-link flex flex-col justify-center gap-1 border border-line bg-paper px-3.5 py-3 no-underline hover:border-green"
             >
               <span className="text-[15px] font-medium text-ink">{d.name}</span>
               <span className="text-[13px] text-muted-2">
@@ -157,7 +157,7 @@ export default async function HomePage({
         </ol>
         <p className="mt-3 text-[13px] leading-[1.6] text-muted-2">
           庫存狀態怎麼讀？
-          <Link href="/stock-badges" className="ml-1 text-green">
+          <Link href="/stock-badges" className="-my-3 ml-1 inline-flex min-h-11 items-center text-green">
             看徽章分級說明 →
           </Link>
         </p>
