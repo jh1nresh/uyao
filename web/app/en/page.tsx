@@ -129,8 +129,7 @@ export default function EnglishLandingPage() {
           <div className="flex h-[68px] items-center justify-between gap-6">
             <Link href="/en" className="flex flex-none items-center text-ink no-underline">
               <span className="flex items-center gap-1.5 sm:hidden">
-                <BrandMark size={30} />
-                <span className="text-[17px] font-bold">uYao</span>
+                <BrandLogo height={30} />
               </span>
               <span className="hidden sm:block">
                 <BrandLogo />

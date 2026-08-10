@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-const ASPECT_RATIO = 1226 / 360;
+const ASPECT_RATIO = 1317 / 360;
 
 /** Full uYao | 有藥 lockup for the company landing navigation and footer. */
 export function BrandLogo({ height = 34 }: { height?: number }) {

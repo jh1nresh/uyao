@@ -1,6 +1,6 @@
 # uYao 正式向量圖包 v3
 
-這一版不是點陣圖描邊或放大，而是重新建立的可編輯向量幾何。
+這套幾何以使用者提供的品牌板為固定參考，忠實重建 U／膠囊／搜尋圈／訊號線、幾何 `uYao` 字標、中文比例與上下兩組版面。不是點陣放大，也不是替代方向。
 
 ## 檔案
 
@@ -18,12 +18,12 @@
 
 ## Illustrator
 
-Adobe Illustrator 可直接開啟這些 SVG。所有文字都已轉成 outline，Logo 主體、膠囊、搜尋圈與訊號線保留獨立群組；開啟後可直接另存為 `.ai`。沒有以改副檔名的方式偽造 AI 檔。
+Adobe Illustrator 可直接開啟這些 SVG。所有文字都已轉成 outline，Logo 主體、膠囊、搜尋圈、訊號線與字標保留獨立群組；開啟後可直接另存為 `.ai`。
 
 ## 色彩
 
-- Deep green: `#00563E`
-- Emerald: `#00A766`
-- Lime: `#91D438`
-- Mint: `#DCEFE5`
-- Ink: `#202322`
+- Deep green: `#0B4431`
+- Emerald: `#0C8F51`
+- Lime: `#89C840`
+- Mint: `#D8E8DA`
+- Ink: `#2F2F2F`

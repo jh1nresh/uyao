@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { BrandLogo } from "@/components/BrandLogo";
-import { BrandMark } from "@/components/BrandMark";
 import { SHOP_URL } from "@/lib/shop";
 import { HeroLoop, type HeroLoopCopy } from "@/components/landing/HeroLoop";
 import { PilotCtaForm, type PilotFormCopy } from "@/components/landing/PilotCtaForm";
@@ -116,8 +115,7 @@ export default function CompanyLandingPage() {
           <div className="flex h-[68px] items-center justify-between gap-6">
             <Link href="/" className="flex flex-none items-center text-ink no-underline">
               <span className="flex items-center gap-1.5 sm:hidden">
-                <BrandMark size={30} />
-                <span className="text-[17px] font-bold">uYao</span>
+                <BrandLogo height={30} />
               </span>
               <span className="hidden sm:block">
                 <BrandLogo />
