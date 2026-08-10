@@ -12,14 +12,43 @@
       "nhiCode": null,
       "nhiContracted": false,
       "nhiTerminatedOn": null,
-      "lat": null,
-      "lng": null,
-      "distanceM": null,
-      "placeId": null,
-      "businessStatus": null,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=建利西藥房+臺北市大同區重慶北路1段85之3號1樓",
-      "hours": [],
-      "hoursSource": "none",
+      "lat": 25.0528683,
+      "lng": 121.51435159999998,
+      "distanceM": 1168,
+      "placeId": "ChIJoZMctWypQjQRls8FYXvyKhA",
+      "businessStatus": "OPERATIONAL",
+      "mapsUrl": "https://maps.google.com/?cid=1165010065351364502&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+      "hours": [
+        {
+          "label": "週一",
+          "hours": "09:30–22:00"
+        },
+        {
+          "label": "週二",
+          "hours": "09:30–22:00"
+        },
+        {
+          "label": "週三",
+          "hours": "09:30–22:00"
+        },
+        {
+          "label": "週四",
+          "hours": "09:30–22:00"
+        },
+        {
+          "label": "週五",
+          "hours": "09:30–22:00"
+        },
+        {
+          "label": "週六",
+          "hours": "09:30–21:30"
+        },
+        {
+          "label": "週日",
+          "hours": "14:30–21:30"
+        }
+      ],
+      "hoursSource": "google",
       "notes": [
         "資料來源：臺北市商業登記"
       ],
@@ -36,19 +65,43 @@
       "nhiCode": "5931171957",
       "nhiContracted": true,
       "nhiTerminatedOn": null,
-      "lat": null,
-      "lng": null,
-      "distanceM": null,
-      "placeId": null,
-      "businessStatus": null,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=美得心藥局+新北市林口區公園路63號1樓",
+      "lat": 25.069208999999997,
+      "lng": 121.36787090000001,
+      "distanceM": 2550,
+      "placeId": "ChIJXbRszsWnQjQRoCdMsZrP8mk",
+      "businessStatus": "OPERATIONAL",
+      "mapsUrl": "https://maps.google.com/?cid=7634392581652883360&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
       "hours": [
         {
-          "label": "週一–週日",
-          "hours": "上午、下午、晚上"
+          "label": "週一",
+          "hours": "10:00–21:30"
+        },
+        {
+          "label": "週二",
+          "hours": "10:00–21:30"
+        },
+        {
+          "label": "週三",
+          "hours": "10:00–21:30"
+        },
+        {
+          "label": "週四",
+          "hours": "10:00–21:30"
+        },
+        {
+          "label": "週五",
+          "hours": "10:00–21:30"
+        },
+        {
+          "label": "週六",
+          "hours": "10:00–21:30"
+        },
+        {
+          "label": "週日",
+          "hours": "10:00–21:30"
         }
       ],
-      "hoursSource": "nhi",
+      "hoursSource": "google",
       "notes": [
         "健保特約"
       ],
@@ -65,12 +118,12 @@
       "nhiCode": null,
       "nhiContracted": false,
       "nhiTerminatedOn": null,
-      "lat": null,
-      "lng": null,
-      "distanceM": null,
-      "placeId": null,
-      "businessStatus": null,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=樂活健保藥局+新北市新莊區八德街58巷1號1樓",
+      "lat": 25.022442899999998,
+      "lng": 121.42475710000001,
+      "distanceM": 1674,
+      "placeId": "ChIJ1R-YcfOnQjQRaqU0erJUkxk",
+      "businessStatus": "OPERATIONAL",
+      "mapsUrl": "https://maps.google.com/?cid=1842909798055847274&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
       "hours": [],
       "hoursSource": "none",
       "notes": [],
@@ -87,19 +140,43 @@
       "nhiCode": "5931060744",
       "nhiContracted": true,
       "nhiTerminatedOn": null,
-      "lat": null,
-      "lng": null,
-      "distanceM": null,
-      "placeId": null,
-      "businessStatus": null,
-      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=祥好大藥局+新北市新莊區新泰路331號",
+      "lat": 25.0417494,
+      "lng": 121.4447753,
+      "distanceM": 1424,
+      "placeId": "ChIJjZZRZdinQjQR5_K92Liurgk",
+      "businessStatus": "OPERATIONAL",
+      "mapsUrl": "https://maps.google.com/?cid=697687101222548199&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
       "hours": [
         {
-          "label": "週一–週日",
-          "hours": "上午、下午、晚上"
+          "label": "週一",
+          "hours": "08:30–23:30"
+        },
+        {
+          "label": "週二",
+          "hours": "08:30–23:30"
+        },
+        {
+          "label": "週三",
+          "hours": "08:30–23:30"
+        },
+        {
+          "label": "週四",
+          "hours": "08:30–23:30"
+        },
+        {
+          "label": "週五",
+          "hours": "08:30–23:30"
+        },
+        {
+          "label": "週六",
+          "hours": "08:30–23:30"
+        },
+        {
+          "label": "週日",
+          "hours": "08:30–23:30"
         }
       ],
-      "hoursSource": "nhi",
+      "hoursSource": "google",
       "notes": [
         "健保特約"
       ],
