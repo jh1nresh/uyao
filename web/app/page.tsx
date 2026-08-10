@@ -104,21 +104,21 @@ const TIMELINE = [
 const PILOT_AREAS = ["大同區", "林口區", "新莊區", "中山區"] as const;
 
 function Container({ children }: { children: React.ReactNode }) {
-  return <div className="mx-auto max-w-[1160px] px-5 sm:px-8">{children}</div>;
+  return <div className="mx-auto max-w-[1240px] px-5 sm:px-8">{children}</div>;
 }
 
 export default function CompanyLandingPage() {
   return (
-    <div className="min-w-[320px] text-ink">
-      <nav className="sticky top-0 z-50 border-b border-line bg-white/95 backdrop-blur-[6px]">
+    <div className="min-w-[320px] bg-ivory text-ink">
+      <nav className="sticky top-0 z-50 border-b border-line-strong bg-ivory text-ink">
         <Container>
-          <div className="flex h-[68px] items-center justify-between gap-6">
+          <div className="flex h-[72px] items-center justify-between gap-5 sm:h-20 sm:gap-6">
             <Link href="/" className="flex flex-none items-center text-ink no-underline">
               <span className="flex items-center gap-1.5 sm:hidden">
-                <BrandLogo height={30} />
+                <BrandLogo height={32} />
               </span>
               <span className="hidden sm:block">
-                <BrandLogo />
+                <BrandLogo height={40} />
               </span>
             </Link>
             <div className="flex items-center gap-4 text-[15px] sm:gap-7">
@@ -149,35 +149,38 @@ export default function CompanyLandingPage() {
       </nav>
 
       {/* Hero：先賣結果，visual 是一條真實 action loop */}
-      <header className="border-b border-line bg-white">
+      <header className="border-b border-line bg-ivory">
         <Container>
-          <div className="grid items-start gap-12 py-14 sm:py-20 lg:grid-cols-2 lg:gap-16 lg:pb-16 lg:pt-[88px]">
+          <div className="grid items-center gap-14 py-16 sm:py-24 lg:min-h-[740px] lg:grid-cols-[1.08fr_.92fr] lg:gap-20 lg:py-24">
             <div>
-              <h1 className="m-0 text-[clamp(34px,4.5vw,56px)] font-black leading-[1.28] tracking-[.005em] [text-wrap:pretty]">
-                少丟貨，少缺貨。
+              <p className="num mb-6 mt-0 text-[12px] font-semibold tracking-[.14em] text-green">
+                INVENTORY → ACTION → OUTCOME
+              </p>
+              <h1 className="editorial-display m-0 text-[clamp(43px,5.5vw,74px)] leading-[1.16] [text-wrap:pretty]">
+                <span className="whitespace-nowrap">少丟貨，少缺貨。</span>
                 <br />
                 讓每一盒庫存跟附近需求連起來。
               </h1>
-              <p className="mb-0 mt-7 max-w-[34em] text-[17px] leading-[1.85] text-ink-2">
+              <p className="mb-0 mt-8 max-w-[35em] text-[17px] leading-[1.85] text-ink-2">
                 uYao
                 連接店內庫存、效期與附近需求，主動準備並推進退貨、補貨與預留工作，只把必要決策交給藥師批准。
               </p>
-              <div className="mt-9 flex flex-wrap gap-3.5">
+              <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4">
                 <a
                   href="#pilot"
-                  className="box-border inline-flex min-h-11 items-center whitespace-nowrap bg-green px-8 py-[15px] text-[16px] font-bold text-white no-underline hover:bg-green-hover"
+                  className="box-border inline-flex min-h-[54px] items-center whitespace-nowrap bg-green px-9 py-4 text-[16px] font-bold text-white no-underline hover:bg-green-hover"
                 >
                   申請試點
                 </a>
                 <a
                   href={SHOP_URL}
-                  className="box-border inline-flex min-h-11 items-center whitespace-nowrap border border-line-strong px-8 py-[15px] text-[16px] font-medium text-ink no-underline hover:border-green hover:text-green"
+                  className="inline-flex min-h-11 items-center whitespace-nowrap border-b border-forest py-2 text-[15px] font-semibold text-forest no-underline hover:border-green hover:text-green"
                 >
-                  附近找藥
+                  看看消費端怎麼找藥 →
                 </a>
               </div>
-              <p className="mb-0 mt-11 flex items-center gap-2.5 border-t border-line pt-5 text-[14px] text-muted">
-                <span className="h-2 w-2 flex-none bg-green" aria-hidden />
+              <p className="mb-0 mt-12 flex items-center gap-2.5 text-[13.5px] text-muted">
+                <span className="h-2 w-2 flex-none rounded-full bg-green" aria-hidden />
                 正在招募獨立藥局，一起驗證第一條現場閉環。
               </p>
             </div>
@@ -186,7 +189,7 @@ export default function CompanyLandingPage() {
         </Container>
       </header>
 
-      <section className="border-b border-line bg-surface" aria-labelledby="pilot-areas-heading">
+      <section className="border-b border-line bg-paper" aria-labelledby="pilot-areas-heading">
         <Container>
           <div className="py-8 sm:py-10">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -195,7 +198,7 @@ export default function CompanyLandingPage() {
               </h2>
               <p className="m-0 text-[13px] text-muted">正在進行現場流程與合作可行性訪談</p>
             </div>
-            <div className="mt-5 grid border-l border-t border-line-strong bg-white sm:grid-cols-4">
+            <div className="mt-5 grid border-l border-t border-line bg-paper sm:grid-cols-4">
               {PILOT_AREAS.map((area) => (
                 <div
                   key={area}
@@ -217,10 +220,10 @@ export default function CompanyLandingPage() {
       <section className="border-b border-line bg-surface">
         <Container>
           <div className="py-16 sm:py-[88px]">
-            <h2 className="mb-10 mt-0 text-[clamp(26px,3vw,34px)] font-black leading-[1.4] [text-wrap:pretty]">
+            <h2 className="editorial-display mb-10 mt-0 text-[clamp(30px,3.4vw,42px)] leading-[1.35] [text-wrap:pretty]">
               POS 記錄交易；uYao 告訴你下一步。
             </h2>
-            <div className="border border-line-strong bg-white">
+            <div className="border border-line bg-paper">
               <div className="hidden border-b border-line sm:grid sm:grid-cols-[1fr,1.2fr]">
                 <div className="num border-r border-line px-6 py-3.5 text-[12px] font-medium tracking-[.08em] text-muted">
                   現有系統通常看見
@@ -265,7 +268,7 @@ export default function CompanyLandingPage() {
       <section id="how" className="scroll-mt-[68px] border-b border-line">
         <Container>
           <div className="py-16 sm:py-[88px]">
-            <h2 className="mb-10 mt-0 text-[clamp(26px,3vw,34px)] font-black leading-[1.4] [text-wrap:pretty] sm:mb-14">
+            <h2 className="editorial-display mb-10 mt-0 text-[clamp(30px,3.4vw,42px)] leading-[1.35] [text-wrap:pretty] sm:mb-14">
               不是 dashboard，是一條完成工作的閉環。
             </h2>
             <div className="grid border-t-2 border-ink lg:grid-cols-[1fr,1fr,1.5fr,1fr,1fr]">
@@ -307,11 +310,11 @@ export default function CompanyLandingPage() {
       </section>
 
       {/* 第一個 wedge — return-window timeline */}
-      <section className="border-b border-line bg-white">
+      <section className="border-b border-line bg-paper">
         <Container>
           <div className="grid items-center gap-10 py-16 sm:py-[88px] lg:grid-cols-2 lg:gap-14">
             <div>
-              <h2 className="mb-5 mt-0 text-[clamp(26px,3vw,34px)] font-black leading-[1.4] [text-wrap:pretty]">
+              <h2 className="editorial-display mb-5 mt-0 text-[clamp(30px,3.4vw,42px)] leading-[1.35] [text-wrap:pretty]">
                 先在藥品變成報廢成本前行動。
               </h2>
               <p className="m-0 max-w-[32em] text-[16.5px] leading-[1.85] text-ink-2">
@@ -330,7 +333,7 @@ export default function CompanyLandingPage() {
                         className={`mt-[5px] h-2.5 w-2.5 flex-none border ${
                           "hot" in t && t.hot
                             ? "border-green bg-green"
-                            : "border-line-strong bg-white"
+                            : "border-line-strong bg-paper"
                         }`}
                       />
                       {!("last" in t && t.last) && <span className="w-px flex-1 bg-line-strong" />}
@@ -362,7 +365,7 @@ export default function CompanyLandingPage() {
         <Container>
           <div className="grid items-center gap-10 py-16 sm:py-[88px] lg:grid-cols-2 lg:gap-14">
             <div className="lg:order-2">
-              <h2 className="mb-5 mt-0 text-[clamp(26px,3vw,34px)] font-black leading-[1.4] [text-wrap:pretty]">
+              <h2 className="editorial-display mb-5 mt-0 text-[clamp(30px,3.4vw,42px)] leading-[1.35] [text-wrap:pretty]">
                 不只看昨天賣了什麼，也看今天附近的人找不到什麼。
               </h2>
               <p className="m-0 max-w-[32em] text-[16.5px] leading-[1.85] text-ink-2">
@@ -374,7 +377,7 @@ export default function CompanyLandingPage() {
               </p>
             </div>
             <div className="min-w-0 lg:order-1">
-              <div className="border border-line-strong bg-white p-3">
+              <div className="paper-elevation border border-line bg-paper p-3">
                 <div className="num mb-2 flex items-center justify-between gap-3 px-1 pt-1 text-[11px] font-medium tracking-[.06em] text-muted">
                   <span>CONSUMER WEB · 實際畫面</span>
                   <span>shop-uyao.vercel.app</span>
@@ -407,7 +410,7 @@ export default function CompanyLandingPage() {
         <Container>
           <div className="py-16 sm:py-[88px]">
             <div className="max-w-[38em]">
-              <h2 className="mb-5 mt-0 text-[clamp(26px,3vw,34px)] font-black leading-[1.4]">
+              <h2 className="editorial-display mb-5 mt-0 text-[clamp(30px,3.4vw,42px)] leading-[1.35]">
                 藥師不用再開一個後台。
               </h2>
               <p className="mb-12 mt-0 text-[16.5px] leading-[1.85] text-ink-2">
@@ -416,8 +419,8 @@ export default function CompanyLandingPage() {
               </p>
             </div>
             <div className="grid max-w-[860px] gap-8 sm:grid-cols-2">
-              <div className="border border-line-strong">
-                <div className="flex items-center justify-between bg-surface px-[18px] py-2.5 shadow-[inset_0_-1px_0_#DCE3DE]">
+              <div className="border border-line bg-paper">
+                <div className="flex items-center justify-between bg-surface px-[18px] py-2.5 shadow-[inset_0_-1px_0_#D8D7CF]">
                   <span className="num text-[12px] font-medium tracking-[.06em] text-muted">
                     RETURN REVIEW
                   </span>
@@ -444,8 +447,8 @@ export default function CompanyLandingPage() {
                   </div>
                 </div>
               </div>
-              <div className="border border-line-strong">
-                <div className="flex items-center justify-between bg-surface px-[18px] py-2.5 shadow-[inset_0_-1px_0_#DCE3DE]">
+              <div className="border border-line bg-paper">
+                <div className="flex items-center justify-between bg-surface px-[18px] py-2.5 shadow-[inset_0_-1px_0_#D8D7CF]">
                   <span className="num text-[12px] font-medium tracking-[.06em] text-muted">
                     REORDER REVIEW
                   </span>
@@ -479,11 +482,11 @@ export default function CompanyLandingPage() {
       </section>
 
       {/* Pilot CTA — 全頁唯一深色 end-cap */}
-      <section id="pilot" className="scroll-mt-[68px] bg-ink text-white">
+      <section id="pilot" className="scroll-mt-20 bg-forest text-white">
         <Container>
           <div className="grid gap-12 py-16 sm:py-24 lg:grid-cols-2 lg:gap-16">
             <div>
-              <h2 className="mb-5 mt-0 text-[clamp(28px,3.2vw,38px)] font-black leading-[1.4] [text-wrap:pretty]">
+              <h2 className="editorial-display mb-5 mt-0 text-[clamp(32px,3.6vw,44px)] leading-[1.35] [text-wrap:pretty]">
                 先從一家藥局、一條退貨閉環開始。
               </h2>
               <p className="m-0 max-w-[30em] text-[16.5px] leading-[1.9] text-[#A9B5AA]">
@@ -496,7 +499,7 @@ export default function CompanyLandingPage() {
         </Container>
       </section>
 
-      <footer className="border-t border-line bg-white">
+      <footer className="border-t border-line bg-paper">
         <Container>
           <div className="flex flex-wrap items-start justify-between gap-8 py-12">
             <div className="flex items-center">

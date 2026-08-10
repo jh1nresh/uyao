@@ -118,21 +118,21 @@ const TIMELINE = [
 const PILOT_AREAS = ["Datong", "Linkou", "Xinzhuang", "Zhongshan"] as const;
 
 function Container({ children }: { children: React.ReactNode }) {
-  return <div className="mx-auto max-w-[1160px] px-5 sm:px-8">{children}</div>;
+  return <div className="mx-auto max-w-[1240px] px-5 sm:px-8">{children}</div>;
 }
 
 export default function EnglishLandingPage() {
   return (
-    <div className="min-w-[320px] text-ink">
-      <nav className="sticky top-0 z-50 border-b border-line bg-white/95 backdrop-blur-[6px]">
+    <div className="min-w-[320px] bg-ivory text-ink">
+      <nav className="sticky top-0 z-50 border-b border-line-strong bg-ivory text-ink">
         <Container>
-          <div className="flex h-[68px] items-center justify-between gap-6">
+          <div className="flex h-[72px] items-center justify-between gap-5 sm:h-20 sm:gap-6">
             <Link href="/en" className="flex flex-none items-center text-ink no-underline">
               <span className="flex items-center gap-1.5 sm:hidden">
-                <BrandLogo height={30} />
+                <BrandLogo height={32} />
               </span>
               <span className="hidden sm:block">
-                <BrandLogo />
+                <BrandLogo height={40} />
               </span>
             </Link>
             <div className="flex items-center gap-4 text-[15px] sm:gap-7">
@@ -163,51 +163,46 @@ export default function EnglishLandingPage() {
       </nav>
 
       {/* Hero — category 先講清楚，visual 用同一條 action loop */}
-      <header className="border-b border-line bg-white">
+      <header className="border-b border-line bg-ivory">
         <Container>
-          <div className="py-14 sm:py-20 lg:pb-16 lg:pt-20">
-            <p className="num m-0 mb-5 text-[12.5px] font-medium tracking-[.14em] text-green">
-              AI OPERATING SYSTEM FOR INDEPENDENT PHARMACIES
-            </p>
-            {/* H1 橫跨全寬：exact copy 在 516px 半欄放不進兩行（spec 上限），
-                所以只有下方 subtext/CTA + visual 走 split。 */}
-            <h1 className="m-0 max-w-[19em] text-[clamp(29px,8.2vw,60px)] font-black leading-[1.16] tracking-[.005em] [text-wrap:balance] lg:text-[clamp(48px,4.6vw,60px)]">
-              Turn every inventory signal into completed work.
-            </h1>
-            <div className="mt-8 grid items-start gap-12 lg:grid-cols-2 lg:gap-16">
-              <div>
-                <p className="m-0 max-w-[32em] text-[17px] leading-[1.75] text-ink-2">
+          <div className="grid items-center gap-14 py-16 sm:py-24 lg:min-h-[740px] lg:grid-cols-[1.08fr_.92fr] lg:gap-20 lg:py-24">
+            <div>
+              <p className="num mb-6 mt-0 text-[12px] font-semibold tracking-[.14em] text-green">
+                AI OPERATING SYSTEM FOR INDEPENDENT PHARMACIES
+              </p>
+              <h1 className="editorial-display m-0 max-w-[12em] text-[clamp(46px,5.4vw,74px)] leading-[1.08] [text-wrap:balance]">
+                Turn every inventory signal into completed work.
+              </h1>
+              <p className="mb-0 mt-8 max-w-[35em] text-[17px] leading-[1.8] text-ink-2">
                   uYao handles returns, reordering, and reservations from inventory, expiry, and
                   local demand—with pharmacists approving critical decisions.
-                </p>
-                <div className="mt-9 flex flex-wrap items-center gap-3.5">
-                  <a
-                    href="#pilot"
-                    className="box-border inline-flex min-h-11 items-center whitespace-nowrap bg-green px-8 py-[15px] text-[16px] font-bold text-white no-underline hover:bg-green-hover"
-                  >
-                    Join the pilot
-                  </a>
-                  <a
-                    href={SHOP_URL}
-                    className="box-border inline-flex min-h-11 items-center whitespace-nowrap border border-line-strong px-8 py-[15px] text-[16px] font-medium text-ink no-underline hover:border-green hover:text-green"
-                  >
-                    See the consumer product
-                  </a>
-                </div>
-                <p className="mb-0 mt-11 flex items-center gap-2.5 border-t border-line pt-5 text-[14px] text-muted">
-                  <span className="h-2 w-2 flex-none bg-green" aria-hidden />
-                  We’re recruiting independent pharmacies to validate the first end-to-end
-                  workflow.
-                </p>
+              </p>
+              <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4">
+                <a
+                  href="#pilot"
+                  className="box-border inline-flex min-h-[54px] items-center whitespace-nowrap bg-green px-9 py-4 text-[16px] font-bold text-white no-underline hover:bg-green-hover"
+                >
+                  Join the pilot
+                </a>
+                <a
+                  href={SHOP_URL}
+                  className="inline-flex min-h-11 items-center whitespace-nowrap border-b border-forest py-2 text-[15px] font-semibold text-forest no-underline hover:border-green hover:text-green"
+                >
+                  See the consumer product →
+                </a>
               </div>
-              <HeroLoop copy={HERO_COPY} />
+              <p className="mb-0 mt-12 flex items-center gap-2.5 text-[13.5px] text-muted">
+                <span className="h-2 w-2 flex-none rounded-full bg-green" aria-hidden />
+                We’re recruiting independent pharmacies to validate the first end-to-end workflow.
+              </p>
             </div>
+            <HeroLoop copy={HERO_COPY} />
           </div>
         </Container>
       </header>
 
       <section
-        className="border-b border-line bg-surface"
+        className="border-b border-line bg-paper"
         aria-labelledby="pilot-areas-heading"
       >
         <Container>
@@ -220,7 +215,7 @@ export default function EnglishLandingPage() {
                 On-site workflow interviews and pilot-fit assessment are underway
               </p>
             </div>
-            <div className="mt-5 grid border-l border-t border-line-strong bg-white sm:grid-cols-4">
+            <div className="mt-5 grid border-l border-t border-line bg-paper sm:grid-cols-4">
               {PILOT_AREAS.map((area) => (
                 <div
                   key={area}
@@ -245,10 +240,10 @@ export default function EnglishLandingPage() {
       <section className="border-b border-line bg-surface">
         <Container>
           <div className="py-16 sm:py-[88px]">
-            <h2 className="mb-10 mt-0 text-[clamp(26px,3vw,34px)] font-black leading-[1.35] [text-wrap:pretty]">
+            <h2 className="editorial-display mb-10 mt-0 text-[clamp(30px,3.4vw,42px)] leading-[1.25] [text-wrap:pretty]">
               POS records transactions. uYao runs the next workflow.
             </h2>
-            <div className="border border-line-strong bg-white">
+            <div className="border border-line bg-paper">
               <div className="hidden border-b border-line sm:grid sm:grid-cols-[1fr,1.2fr]">
                 <div className="num border-r border-line px-6 py-3.5 text-[12px] font-medium tracking-[.08em] text-muted">
                   Existing systems see
@@ -294,7 +289,7 @@ export default function EnglishLandingPage() {
       <section id="how" className="scroll-mt-[68px] border-b border-line">
         <Container>
           <div className="py-16 sm:py-[88px]">
-            <h2 className="mb-10 mt-0 text-[clamp(26px,3vw,34px)] font-black leading-[1.35] [text-wrap:pretty] sm:mb-14">
+            <h2 className="editorial-display mb-10 mt-0 text-[clamp(30px,3.4vw,42px)] leading-[1.25] [text-wrap:pretty] sm:mb-14">
               One operating loop from signal to outcome.
             </h2>
             <div className="grid border-t-2 border-ink lg:grid-cols-[1fr,1fr,1.5fr,1fr,1fr]">
@@ -336,11 +331,11 @@ export default function EnglishLandingPage() {
       </section>
 
       {/* Starting wedge */}
-      <section className="border-b border-line bg-white">
+      <section className="border-b border-line bg-paper">
         <Container>
           <div className="grid items-center gap-10 py-16 sm:py-[88px] lg:grid-cols-2 lg:gap-14">
             <div>
-              <h2 className="mb-5 mt-0 text-[clamp(26px,3vw,34px)] font-black leading-[1.35] [text-wrap:pretty]">
+              <h2 className="editorial-display mb-5 mt-0 text-[clamp(30px,3.4vw,42px)] leading-[1.25] [text-wrap:pretty]">
                 Start before inventory becomes waste.
               </h2>
               <p className="m-0 max-w-[32em] text-[16.5px] leading-[1.8] text-ink-2">
@@ -360,7 +355,7 @@ export default function EnglishLandingPage() {
                         className={`mt-[5px] h-2.5 w-2.5 flex-none border ${
                           "hot" in t && t.hot
                             ? "border-green bg-green"
-                            : "border-line-strong bg-white"
+                            : "border-line-strong bg-paper"
                         }`}
                       />
                       {!("last" in t && t.last) && <span className="w-px flex-1 bg-line-strong" />}
@@ -389,11 +384,11 @@ export default function EnglishLandingPage() {
       <section className="border-b border-line bg-surface">
         <Container>
           <div className="py-16 sm:py-[88px]">
-            <h2 className="mb-12 mt-0 text-[clamp(26px,3vw,34px)] font-black leading-[1.35] [text-wrap:pretty]">
+            <h2 className="editorial-display mb-12 mt-0 text-[clamp(30px,3.4vw,42px)] leading-[1.25] [text-wrap:pretty]">
               Built around actions, not another dashboard.
             </h2>
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-              <div className="relative overflow-hidden border border-line-strong bg-white px-[18px] py-4">
+              <div className="relative overflow-hidden border border-line bg-paper px-[18px] py-4">
                 <div className="absolute bottom-0 left-0 top-0 w-[3px] bg-green" />
                 <div className="num mb-2 text-[12px] font-medium text-muted">
                   SCAN EVENT · parser output
@@ -407,7 +402,7 @@ export default function EnglishLandingPage() {
                   <span>2026-11</span>
                 </div>
               </div>
-              <div className="border border-line-strong bg-white">
+              <div className="border border-line bg-paper">
                 <div className="flex items-center gap-2 border-b border-line px-[18px] py-2.5">
                   <BrandMark size={18} />
                   <span className="text-[13px] font-bold">uYao</span>
@@ -429,7 +424,7 @@ export default function EnglishLandingPage() {
                   </div>
                 </div>
               </div>
-              <div className="num border border-dashed border-line-strong bg-white px-[18px] py-3.5 text-[12.5px] font-medium leading-[2]">
+              <div className="num border border-dashed border-line bg-paper px-[18px] py-3.5 text-[12.5px] font-medium leading-[2]">
                 <div className="tracking-[.08em] text-muted">OUTCOME RECEIPT</div>
                 <div className="mt-1 grid grid-cols-[auto,1fr] gap-x-3.5">
                   <span className="text-muted">Status</span>
@@ -438,7 +433,7 @@ export default function EnglishLandingPage() {
                   <span>Awaiting verified outcome</span>
                 </div>
               </div>
-              <div className="flex flex-col border border-line-strong bg-white">
+              <div className="paper-elevation flex flex-col border border-line bg-paper">
                 <div className="num border-b border-line px-[18px] py-2.5 text-[11px] font-medium tracking-[.06em] text-muted">
                   CONSUMER DEMAND SIGNAL · LIVE PRODUCT
                 </div>
@@ -460,11 +455,11 @@ export default function EnglishLandingPage() {
       </section>
 
       {/* Pilot CTA — 深色 end-cap */}
-      <section id="pilot" className="scroll-mt-[68px] bg-ink text-white">
+      <section id="pilot" className="scroll-mt-20 bg-forest text-white">
         <Container>
           <div className="grid gap-12 py-16 sm:py-24 lg:grid-cols-2 lg:gap-16">
             <div>
-              <h2 className="mb-5 mt-0 text-[clamp(28px,3.2vw,38px)] font-black leading-[1.3] [text-wrap:pretty]">
+              <h2 className="editorial-display mb-5 mt-0 text-[clamp(32px,3.6vw,44px)] leading-[1.2] [text-wrap:pretty]">
                 Start with one pharmacy and one return workflow.
               </h2>
               <p className="m-0 max-w-[30em] text-[16.5px] leading-[1.85] text-[#A9B5AA]">
@@ -477,7 +472,7 @@ export default function EnglishLandingPage() {
         </Container>
       </section>
 
-      <footer className="border-t border-line bg-white">
+      <footer className="border-t border-line bg-paper">
         <Container>
           <div className="flex flex-wrap items-start justify-between gap-8 py-12">
             <div className="flex items-center">
