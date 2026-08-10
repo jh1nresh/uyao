@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
+import { BrandLogo } from "@/components/BrandLogo";
 import { BrandMark } from "@/components/BrandMark";
 import { SHOP_URL } from "@/lib/shop";
 import { HeroLoop, type HeroLoopCopy } from "@/components/landing/HeroLoop";
@@ -126,9 +127,13 @@ export default function EnglishLandingPage() {
       <nav className="sticky top-0 z-50 border-b border-line bg-white/95 backdrop-blur-[6px]">
         <Container>
           <div className="flex h-[68px] items-center justify-between gap-6">
-            <Link href="/en" className="flex items-center gap-2.5 text-ink no-underline">
-              <BrandMark />
-              <span className="text-[19px] font-black tracking-[.01em]">uYao</span>
+            <Link href="/en" className="flex flex-none items-center text-ink no-underline">
+              <span className="flex items-center gap-1.5 sm:hidden">
+                <BrandLogo height={30} />
+              </span>
+              <span className="hidden sm:block">
+                <BrandLogo />
+              </span>
             </Link>
             <div className="flex items-center gap-4 text-[15px] sm:gap-7">
               <a href="#how" className="hidden text-ink no-underline hover:text-green md:inline">
@@ -475,9 +480,8 @@ export default function EnglishLandingPage() {
       <footer className="border-t border-line bg-white">
         <Container>
           <div className="flex flex-wrap items-start justify-between gap-8 py-12">
-            <div className="flex items-center gap-2.5">
-              <BrandMark size={22} />
-              <span className="text-[16px] font-black">uYao</span>
+            <div className="flex items-center">
+              <BrandLogo height={30} />
             </div>
             <div className="flex flex-wrap gap-7 text-[14.5px]">
               <a href={SHOP_URL} className="text-green hover:text-green-hover">
