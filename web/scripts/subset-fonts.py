@@ -34,7 +34,7 @@ VAR_FONT_URL = (
 )
 OUT_FONT = "noto-sans-tc-var.woff2"
 SOURCE_DIRS = ("app", "components", "lib")
-# .json 一定要包含：166 家藥局的店名、地址、巷弄都在 lib/stores.generated.json，
+# .json 一定要包含：店名、地址、巷弄都在 lib/stores.generated.json，
 # 只掃 .ts/.tsx 會讓整批藥局名掉回系統字型（804f344 導入真資料時漏掉這件事）。
 SOURCE_SUFFIXES = {".ts", ".tsx", ".json"}
 

@@ -10,6 +10,9 @@ export interface LatLng {
  * seed 用它算出靜態的「距區中心」距離，這裡用來判斷使用者離服務區多遠。
  */
 export const AREA_CENTER: Record<AreaSlug, LatLng> = {
+  datong: { lat: 25.0633, lng: 121.513 },
+  linkou: { lat: 25.0772, lng: 121.3916 },
+  xinzhuang: { lat: 25.0359, lng: 121.4322 },
   zhongshan: { lat: 25.0637, lng: 121.5265 },
   xinyi: { lat: 25.033, lng: 121.5654 },
 };

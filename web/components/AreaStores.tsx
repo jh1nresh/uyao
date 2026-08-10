@@ -18,7 +18,7 @@ import type { AreaSlug, Store } from "@/lib/types";
  *
  * 沒有定位時，距離是 seed 算好的「距區中心」，伺服器渲染的結果就是最終
  * 結果 —— 這一段必須跟 server 一致，否則 hydration 會錯。使用者按下定位
- * 之後才在 client 重算距離並重排；靜態 HTML 不受影響，166 個藥局頁照樣
+ * 之後才在 client 重算距離並重排；靜態 HTML 不受影響，收錄店家頁照樣
  * 靜態產生。
  */
 export function AreaStores({

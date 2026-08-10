@@ -1,11 +1,24 @@
 from pharmabox.places import PlacesAccessDenied, _confident
 from pharmabox.seed import (
+    DEFAULT_SCOPES,
+    LISTED_STORES,
     haversine_m,
     match_score,
     resolve_contested,
     sessions_to_hours,
     slugify,
 )
+
+
+def test_partner_store_scope_is_the_current_public_list():
+    assert LISTED_STORES == (
+        ("建利西藥房", "臺北市", "大同區"),
+        ("美得心藥局", "新北市", "林口區"),
+        ("樂活健保藥局", "新北市", "新莊區"),
+        ("祥好大藥局", "新北市", "新莊區"),
+        ("中山藥局", "臺北市", "中山區"),
+    )
+    assert DEFAULT_SCOPES == "臺北市:大同區,中山區;新北市:林口區,新莊區"
 
 
 class TestSlug:
