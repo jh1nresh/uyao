@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="105 220 1245 330" role="img" aria-labelledby="title desc">
+  <title id="title">uYao 有藥 logo reverse</title>
+  <desc id="desc">uYao 有藥 reference-locked outlined vector artwork.</desc>
+  <defs>
+    <linearGradient id="logo-reverse-mark" gradientUnits="userSpaceOnUse" x1="145" y1="258" x2="275" y2="520">
+      <stop offset="0" stop-color="#90CA3E"/>
+      <stop offset="0.35" stop-color="#7BC244"/>
+      <stop offset="0.50" stop-color="#5AAF45"/>
+      <stop offset="0.72" stop-color="#35A04C"/>
+      <stop offset="0.93" stop-color="#0C8F51"/>
+      <stop offset="1" stop-color="#0C8F51"/>
+    </linearGradient>
+    <linearGradient id="logo-reverse-right-stem" gradientUnits="userSpaceOnUse" x1="331" y1="306" x2="331" y2="444">
+      <stop offset="0" stop-color="#88CA70"/>
+      <stop offset="0.32" stop-color="#73BC64"/>
+      <stop offset="0.68" stop-color="#42A856"/>
+      <stop offset="1" stop-color="#2B9C52"/>
+    </linearGradient>
+    <linearGradient id="logo-reverse-word-u" gradientUnits="userSpaceOnUse" x1="530" y1="348" x2="530" y2="482">
+      <stop offset="0" stop-color="#66B93F"/>
+      <stop offset="0.90" stop-color="#208A49"/>
+      <stop offset="1" stop-color="#208A49"/>
+    </linearGradient>
+    <clipPath id="logo-reverse-capsule">
+      <rect x="211" y="307" width="61" height="140" rx="30.5"/>
+    </clipPath>
+  </defs>
+  <g id="uyao-full-logo-reverse">
+  <g id="uyao-mark-reverse">
+    <g transform="translate(-2 0)">
+    <path id="u-body" d="M149 286V411C149 469 178 497 237 497C296 497 331 468 331 410V337"
+      fill="none" stroke="#FFFFFF" stroke-width="53" stroke-linecap="round" stroke-linejoin="round"/>
+    <path id="right-stem-tone" d="M331 337V409" fill="none" stroke="#FFFFFF" stroke-width="53" stroke-linecap="round"/>
+    <g id="capsule" clip-path="url(#logo-reverse-capsule)">
+      <rect x="211" y="307" width="61" height="140" fill="#E1ECE5"/>
+      <rect x="211" y="376" width="61" height="71" fill="#0B4431"/>
+    </g>
+    <g id="search" fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="352" cy="472" r="36" stroke-width="18"/>
+      <path d="M378 498L411 534" stroke-width="17"/>
+    </g>
+    <g id="wireless-signal" fill="none" stroke="#FFFFFF" stroke-linecap="round" stroke-width="11">
+      <path d="M307 238C348 238 380 271 380 300"/>
+      <path d="M307 263C334 263 356 285 356 309"/>
+    </g>
+    </g>
+  </g>
+  <g id="uyao-name-lockup-reverse">
+  <g id="uyao-wordmark-reverse" fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path id="letter-u" d="M483 360V425C483 457 501 473 530 473C561 473 579 454 579 423V360" stroke="#FFFFFF" stroke-width="24"/>
+    <path id="letter-y" d="M613 319L686 394L760 319M686 394V473" stroke="#FFFFFF" stroke-width="20"/>
+    <path id="letter-a" d="M871 472V415C871 379 850 354 817 354C782 354 757 379 757 415C757 451 782 472 817 472C850 472 871 447 871 415" stroke="#FFFFFF" stroke-width="20"/>
+    <circle id="letter-o" cx="969" cy="416" r="55" stroke="#FFFFFF" stroke-width="20"/>
+  </g>
+    <path id="separator" d="M1084 348V482" stroke="#BCD9CB" stroke-width="3"/>
+    <g id="traditional-chinese-name" aria-label="有藥">
+    <path id="logo-reverse-zh-glyph-0" d="M63 710H939V640H63ZM300 353H776V289H300ZM748 524H822V14Q822 -19 813.0 -37.5Q804 -56 779 -66Q754 -74 711.5 -75.5Q669 -77 605 -77Q602 -62 595.0 -41.0Q588 -20 580 -5Q613 -6 642.5 -6.5Q672 -7 694.0 -6.5Q716 -6 726 -6Q739 -6 743.5 -1.5Q748 3 748 15ZM391 840 467 822Q433 714 381.5 608.5Q330 503 258.0 411.5Q186 320 92 253Q87 262 78.0 272.5Q69 283 60.0 293.0Q51 303 43 311Q110 356 165.0 416.5Q220 477 263.0 547.0Q306 617 338.0 691.5Q370 766 391 840ZM293 184H775V119H293ZM294 524H770V456H294ZM254 524H329V258Q329 217 325.0 171.0Q321 125 308.5 79.0Q296 33 273.5 -8.5Q251 -50 214 -85Q210 -77 200.0 -65.5Q190 -54 179.5 -43.0Q169 -32 161 -27Q204 14 223.5 62.0Q243 110 248.5 161.0Q254 212 254 259Z" fill="#FFFFFF" transform="translate(1129.000 459.500) scale(0.1025000 -0.1025000)"/>
+    <path id="logo-reverse-zh-glyph-1" d="M413 415V335H585V415ZM413 546V467H585V546ZM348 601H652V280H348ZM473 686 546 671Q533 642 521.0 615.0Q509 588 499 567L441 582Q450 605 459.0 634.5Q468 664 473 686ZM58 217H943V157H58ZM461 288H535V-80H461ZM244 397 289 411Q309 376 324.5 333.5Q340 291 345 259L297 243Q292 275 277.5 318.0Q263 361 244 397ZM80 418Q78 427 72.0 445.0Q66 463 60 475Q70 477 79.5 485.0Q89 493 99 506Q106 515 121.5 538.0Q137 561 155.0 592.0Q173 623 186 656L244 634Q217 582 183.5 533.0Q150 484 117 451V450Q117 450 108.0 444.5Q99 439 89.5 432.0Q80 425 80 418ZM80 418 79 463 109 481 256 491Q250 480 244.0 465.0Q238 450 234 441Q176 435 144.5 431.0Q113 427 100.0 424.0Q87 421 80 418ZM92 256Q91 262 88.0 272.5Q85 283 81.0 294.0Q77 305 73 313Q86 315 100.0 326.5Q114 338 130 356Q142 368 168.0 400.5Q194 433 225.0 476.5Q256 520 280 565L336 538Q289 467 235.5 401.5Q182 336 129 288V287Q129 287 120.0 282.0Q111 277 101.5 270.0Q92 263 92 256ZM92 256 91 301 121 320 300 337Q301 327 305.0 313.0Q309 299 311 290Q245 282 204.5 276.5Q164 271 141.0 267.5Q118 264 108.0 261.5Q98 259 92 256ZM848 400 895 416Q914 381 929.0 338.5Q944 296 949 265L899 248Q895 279 880.5 322.0Q866 365 848 400ZM677 421Q675 431 668.5 449.0Q662 467 657 479Q667 480 676.0 488.5Q685 497 695 509Q701 518 716.5 541.5Q732 565 749.0 596.0Q766 627 779 660L837 639Q811 587 778.0 537.5Q745 488 714 455V453Q714 453 705.0 448.0Q696 443 686.5 435.5Q677 428 677 421ZM677 421 676 466 706 485 860 495Q853 484 846.5 469.0Q840 454 837 445Q775 439 742.5 435.0Q710 431 696.5 428.0Q683 425 677 421ZM688 260Q687 265 683.5 276.0Q680 287 676.5 298.0Q673 309 669 317Q681 319 695.5 331.0Q710 343 726 361Q738 373 764.5 405.5Q791 438 822.0 482.5Q853 527 877 573L934 547Q887 475 832.5 407.5Q778 340 725 292V290Q725 290 715.5 285.0Q706 280 697.0 273.0Q688 266 688 260ZM688 260 686 305 717 323 904 343Q905 331 909.0 317.5Q913 304 916 295Q846 286 804.0 280.5Q762 275 738.5 271.5Q715 268 704.0 265.0Q693 262 688 260ZM60 780H476V716H60ZM261 841H336V654H261ZM667 840H742V654H667ZM520 780H945V716H520ZM359 134 418 109Q380 73 325.0 41.0Q270 9 208.5 -15.5Q147 -40 88 -54Q81 -41 67.5 -24.0Q54 -7 42 3Q100 15 160.0 34.5Q220 54 272.5 79.5Q325 105 359 134ZM592 94 633 140Q685 122 744.5 97.5Q804 73 858.5 48.0Q913 23 949 3L907 -50Q872 -29 818.5 -3.5Q765 22 705.5 48.0Q646 74 592 94Z" fill="#FFFFFF" transform="translate(1242.000 459.500) scale(0.1025000 -0.1025000)"/>
+    </g>
+  </g>
+  </g>
+</svg>
