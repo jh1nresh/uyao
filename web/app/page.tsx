@@ -507,7 +507,7 @@ export default function CompanyLandingPage() {
                 申請試點
               </a>
               <a href="mailto:edwardhsieh0122@gmail.com" className="text-green hover:text-green-hover">
-                聯絡方式
+                edwardhsieh0122@gmail.com
               </a>
             </div>
             <p className="m-0 max-w-[36em] flex-[1_1_100%] text-[13px] leading-[1.8] text-muted">
