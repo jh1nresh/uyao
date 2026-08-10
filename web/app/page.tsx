@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
-import { CrossMark } from "@/components/CrossMark";
+import { BrandMark } from "@/components/BrandMark";
 import { SHOP_URL } from "@/lib/shop";
 import { HeroLoop, type HeroLoopCopy } from "@/components/landing/HeroLoop";
 import { PilotCtaForm, type PilotFormCopy } from "@/components/landing/PilotCtaForm";
@@ -124,7 +124,7 @@ export default function CompanyLandingPage() {
         <Container>
           <div className="flex h-[68px] items-center justify-between gap-6">
             <Link href="/" className="flex items-center gap-2.5 text-ink no-underline">
-              <CrossMark />
+              <BrandMark />
               <span className="text-[19px] font-black tracking-[.01em]">uYao</span>
             </Link>
             <div className="flex items-center gap-4 text-[15px] sm:gap-7">
@@ -522,7 +522,7 @@ export default function CompanyLandingPage() {
         <Container>
           <div className="flex flex-wrap items-start justify-between gap-8 py-12">
             <div className="flex items-center gap-2.5">
-              <CrossMark size={22} />
+              <BrandMark size={22} />
               <span className="text-[16px] font-black">uYao</span>
             </div>
             <div className="flex gap-7 text-[14.5px]">

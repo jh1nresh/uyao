@@ -1,5 +1,6 @@
-# Landing Page 建置 Prompt（自包含 — 直接貼給任何 build session 用）
+# Landing Page 建置 Prompt（歷史版本）
 
+> Status: superseded for company positioning by `specs/company-landing-page.md`; retain only as evidence of the earlier consumer-first／效期雷達 direction.
 > 2026-08-05 · 產品代號 PharmaBox（品牌名未定，全站用 placeholder「藥雷達」，之後全域替換）
 
 ---

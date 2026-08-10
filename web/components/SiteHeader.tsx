@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { AreaSwitch } from "./AreaSwitch";
-import { CrossMark } from "./CrossMark";
+import { BrandMark } from "./BrandMark";
 import { SearchInput } from "./SearchInput";
 import { DEFAULT_AREA } from "@/lib/data";
 import type { AreaSlug } from "@/lib/types";
@@ -23,7 +23,7 @@ export function SiteHeader({
       {/* -my-3 py-3：把 26px 的 logo 撐成 50px 點擊區，版面高度不變。
           消費端 chrome 的 logo 回 app 首頁 /app，不是公司 landing。 */}
       <Link href="/app" className="-my-3 flex flex-none items-center gap-2 py-3 no-underline">
-        <CrossMark />
+        <BrandMark />
         <span className="text-[18px] font-black tracking-[.06em] text-ink">有藥</span>
         {showTagline && (
           <span className="ml-0.5 hidden pt-[3px] text-[13px] text-muted lg:inline">
