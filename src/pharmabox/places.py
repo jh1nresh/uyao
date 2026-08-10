@@ -245,19 +245,51 @@ def enrich(
 
 def main(argv: list[str] | None = None) -> int:
     from pharmabox.prospects import fetch_csv, parse, select
+    from pharmabox.seed import DEFAULT_SCOPES, DEFAULT_STORE_NAMES, MANUAL_STORES
 
     ap = argparse.ArgumentParser(description="用 Google Places 補齊藥局座標與營業時間")
     ap.add_argument("--city", default="臺北市")
     ap.add_argument("--districts", default="中山區,信義區")
+    ap.add_argument(
+        "--scopes",
+        default=DEFAULT_SCOPES,
+        help='跨城市範圍，覆蓋 --city/--districts。格式同 seed：「臺北市:大同區,中山區;新北市:林口區,新莊區」。傳空字串退回 --city/--districts。',
+    )
+    ap.add_argument(
+        "--stores",
+        default=DEFAULT_STORE_NAMES,
+        help="店名白名單（頓號/逗號分隔），只查這些店免得整區都產生 API 費用。傳空字串查整個範圍。",
+    )
     ap.add_argument("--limit", type=int, default=None, help="只跑前 N 家，試打用")
     ap.add_argument("--refresh", action="store_true", help="忽略 cache 重查")
     ap.add_argument("--cache", default=str(data_path(".cache", "fda-pharmacies.csv")))
     ap.add_argument("--places-cache", default=str(data_path(".cache", "places")))
     args = ap.parse_args(argv)
 
-    districts = [d.strip() for d in args.districts.split(",") if d.strip()]
     rows = parse(fetch_csv(Path(args.cache)))
-    picked, _ = select(rows, args.city, districts)
+    # 食藥署資料集不含一般西藥房 —— 手動補的店（如建利西藥房）也要能查座標。
+    rows = [*rows, *MANUAL_STORES]
+
+    if args.scopes:
+        scopes = []
+        for part in args.scopes.split(";"):
+            city, _, ds = part.strip().partition(":")
+            scopes.append((city, [d.strip() for d in ds.split(",") if d.strip()]))
+    else:
+        scopes = [(args.city, [d.strip() for d in args.districts.split(",") if d.strip()])]
+
+    picked = []
+    for city, districts in scopes:
+        got_rows, _ = select(rows, city, districts)
+        picked.extend(got_rows)
+
+    if args.stores:
+        only = {s.strip() for s in args.stores.replace("、", ",").split(",") if s.strip()}
+        picked = [p for p in picked if p.name in only]
+        missing = only - {p.name for p in picked}
+        if missing:
+            print(f"這些店在指定範圍找不到：{'、'.join(sorted(missing))}", file=sys.stderr)
+            return 2
 
     try:
         got = enrich(picked, Path(args.places_cache), args.limit, args.refresh)
