@@ -27,9 +27,10 @@ export function NoInventoryYet({
   stores: Store[];
 }) {
   return (
-    <section className="px-4 pb-6 pt-3.5 sm:px-7 xl:px-12 2xl:px-16">
-      <div className="border border-line-strong bg-surface px-4 py-3.5">
-        <p className="text-[15px] font-bold text-ink">目前查不到即時庫存</p>
+    <section className="shop-shell py-10 sm:py-14">
+      <p className="shop-kicker mb-3">INVENTORY STATUS</p>
+      <div className="border border-line-strong bg-surface px-5 py-5 sm:px-6">
+        <p className="text-[18px] font-bold text-ink">目前查不到即時庫存</p>
         <p className="mt-1 text-[13px] leading-[1.7] text-muted">
           庫存來自藥局店內掃描器，{areaLabel}還沒有藥局裝上盒子。
           下面是這一區的藥局，可以直接打電話問有沒有「{drugName}」。

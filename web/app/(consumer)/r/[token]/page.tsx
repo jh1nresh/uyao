@@ -84,8 +84,9 @@ export default async function PickupPage({
     return (
       <>
         <SiteHeader showSearch={false} />
-        <section className="px-4 py-10 sm:px-7 xl:px-12 2xl:px-16">
-          <h1 className="mb-2 text-lg font-black">查不到這筆預留</h1>
+        <section className="shop-shell min-h-[calc(100svh-11rem)] py-12">
+          <p className="shop-kicker mb-3">PICKUP RECEIPT</p>
+          <h1 className="editorial-display mb-2 text-[32px]">查不到這筆預留</h1>
           <p className="text-[15px] leading-[1.7] text-muted">
             連結可能不完整，或這筆預留已經超過保留期限。
             {!isStoreAvailable() &&
@@ -127,7 +128,9 @@ export default async function PickupPage({
       {/* 終態沒有東西可等，只有 pending 才輪詢 */}
       {r.status === "pending_store_confirm" && <PickupAutoRefresh />}
 
-      <section className="mx-auto max-w-[520px] px-4 py-6 sm:px-7 xl:px-12 2xl:px-16">
+      <section className="shop-shell max-w-[620px] py-10 sm:py-14">
+        <p className="shop-kicker mb-3">PICKUP RECEIPT</p>
+        <div className="border-t-2 border-forest bg-paper p-5 shadow-[0_18px_48px_rgba(37,54,45,0.08)] sm:p-7">
         {r.demo && (
           /* 示範單長得跟真單一樣的話，拿去店裡會很尷尬 —— 一定要標出來 */
           <div className="mb-3 border-2 border-green bg-green-tint px-3.5 py-2 text-[14px] leading-[1.6] text-ink">
@@ -208,6 +211,7 @@ export default async function PickupPage({
           <br />
           兩次預留未取將暫停預留權限。不提供線上交易，商品由藥師於門市交付。
         </p>
+        </div>
       </section>
 
       <SiteFooter />

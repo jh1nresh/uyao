@@ -54,21 +54,24 @@ export default async function CategoryPage({
     <>
       <SiteHeader showTagline area={area} preserveAreaPath locatable />
 
-      <section className="px-4 pb-6 pt-6 sm:px-7 xl:px-12 2xl:px-16">
+      <main className="min-h-[calc(100svh-11rem)]">
+      <section className="shop-shell py-10 sm:py-14">
         <div className="mb-3 md:hidden">
           <AreaSwitch area={area} preservePath locatable />
         </div>
-        <div className="mb-2.5 flex flex-wrap items-baseline gap-2.5">
-          <h1 className="text-lg font-black tracking-[-.01em]">{category.name}</h1>
+        <p className="shop-kicker mb-3">BROWSE BY CATEGORY</p>
+        <div className="mb-7 flex flex-wrap items-end gap-3 border-b border-line pb-5">
+          <h1 className="editorial-display m-0 text-[30px] leading-[1.25] sm:text-[40px]">{category.name}</h1>
           <p className="text-[13px] text-muted-2">
             {results.length} 項在附近有登錄 · {getArea(area).shortName}
           </p>
           <div className="flex-1" />
-          <p className="text-[13px] text-muted-2">排序：庫存新鮮度 → 距離 → 價格</p>
+          <p className="num text-[11px] tracking-[.04em] text-muted-2">排序：庫存新鮮度 → 距離</p>
         </div>
 
         <DrugResults results={results} area={area} />
       </section>
+      </main>
 
       <SiteFooter />
     </>

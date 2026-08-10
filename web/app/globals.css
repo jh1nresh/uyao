@@ -41,6 +41,14 @@ body {
 }
 
 @layer components {
+  .shop-shell {
+    @apply mx-auto w-full max-w-[1344px] px-4 sm:px-7 xl:px-12;
+  }
+
+  .shop-kicker {
+    @apply num text-[11px] font-semibold tracking-[.14em] text-green;
+  }
+
   .action-primary {
     @apply inline-flex min-h-11 items-center justify-center bg-forest px-5 font-bold text-paper no-underline shadow-[0_8px_22px_rgba(23,57,44,0.14)] transition-[background-color,box-shadow,transform] duration-200 hover:bg-ink active:translate-y-px active:shadow-none disabled:cursor-not-allowed disabled:opacity-55;
   }

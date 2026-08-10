@@ -28,13 +28,16 @@ export function PharmacyList({
 
   return (
     <>
-      <div className="flex flex-wrap items-center gap-3 px-4 py-3.5 sm:px-7 xl:px-12 2xl:px-16">
-        <h2 className="text-[15px] font-bold">附近 {rows.length} 家藥局</h2>
+      <section className="bg-paper">
+      <div className="shop-shell py-10 sm:py-14">
+      <p className="shop-kicker mb-3">NEARBY PHARMACIES</p>
+      <div className="mb-6 flex flex-wrap items-end gap-3">
+        <h2 className="editorial-display m-0 text-[28px] sm:text-[34px]">附近 {rows.length} 家藥局</h2>
         <div className="flex-1" />
         <p className="text-[13px] text-muted-2">排序：庫存新鮮度 → 距離</p>
       </div>
 
-      <div className="mx-4 mb-1.5 border border-line sm:mx-7">
+      <div className="mb-1.5 border border-line bg-ivory">
           {/* Desktop: 資料密表格 */}
           <div
             className={`hidden ${COLS} items-center gap-x-3 border-b border-line bg-surface px-3.5 py-2 text-[13px] font-bold text-muted lg:grid`}
@@ -93,10 +96,12 @@ export function PharmacyList({
           ))}
       </div>
 
-      <p className="px-4 pt-2 text-[13px] leading-[1.6] text-muted-2 sm:px-7 xl:px-12 2xl:px-16">
+      <p className="pt-3 text-[13px] leading-[1.6] text-muted-2">
         ？＝該店尚無近期掃描紀錄，按「預留」由藥局確認 · 價格與用藥說明由藥師於門市提供 ·
         本服務僅供預留，不提供線上交易
       </p>
+      </div>
+      </section>
 
       {target && <ReserveSheet target={target} onClose={() => setTarget(null)} />}
     </>
