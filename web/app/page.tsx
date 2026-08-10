@@ -11,8 +11,9 @@ import { PilotCtaForm, type PilotFormCopy } from "@/components/landing/PilotCtaF
  * 公司 landing（design: `uYao Landing.dc.html`，spec: company-landing-page.md
  * + company-landing-page-yc-en-adjustment.md）。
  * `/` 說清楚問題、閉環、證據與試點；消費者 app 在 /app，英文 YC 版在 /en。
- * 誠實原則：未驗證的一律標 prototype／示範資料，evidence 逐項標 ✓／○；
- * 尚無 active partner，status line 一律用 recruiting 版本。
+ * 誠實原則：未驗證的一律標 prototype／示範資料；尚無 active partner，
+ * status line 一律用 recruiting 版本。evidence ladder 2026-08-09 依
+ * founder 決定先下架（等有真實 pilot 進度再回來）。
  */
 export const metadata: Metadata = {
   title: { absolute: "uYao — 獨立藥局的 AI Operating System" },
@@ -70,19 +71,6 @@ const FORM_COPY: PilotFormCopy = {
     "我們會透過你留下的聯絡方式跟你約時間，聊掃描流程與退貨窗口怎麼在你的店裡跑起來。",
 };
 
-/** Evidence ladder — ✓ 只給 repo／測試／實際證據支持的項目，更新時附日期。 */
-const EVIDENCE_DATE = "2026-08-09";
-const EVIDENCE = [
-  { done: false, label: "問題來自共同創辦人的藥業現場經驗（整理中）" },
-  { done: true, label: "已建立早期藥局合作入口" },
-  { done: true, label: "Barcode parser／offline event pipeline／Consumer Web prototype" },
-  { done: false, label: "真實藥盒 DataMatrix field check" },
-  { done: false, label: "第一台 Box 現場安裝" },
-  { done: false, label: "第一筆 pharmacist-approved action" },
-  { done: false, label: "第一筆避免報廢、追回退貨或新增成交" },
-  { done: false, label: "第一家付費藥局" },
-] as const;
-
 const POS_ROWS = [
   { pos: "已完成的銷售", uyao: "因缺貨而離開的附近需求" },
   { pos: "人工維護的效期欄位", uyao: "掃描取得的批次／效期證據與待確認項目" },
@@ -130,9 +118,6 @@ export default function CompanyLandingPage() {
             <div className="flex items-center gap-4 text-[15px] sm:gap-7">
               <a href="#how" className="hidden text-ink no-underline hover:text-green md:inline">
                 怎麼運作
-              </a>
-              <a href="#progress" className="hidden text-ink no-underline hover:text-green md:inline">
-                目前進度
               </a>
               <a href={SHOP_URL} className="hidden text-ink no-underline hover:text-green md:inline">
                 附近找藥
@@ -456,46 +441,6 @@ export default function CompanyLandingPage() {
               產品核心是結構化 action 與結果，不是聊天。藥師的每個按鈕回覆都會寫回 outcome
               receipt。
             </p>
-          </div>
-        </Container>
-      </section>
-
-      {/* 目前進度與證據等級 */}
-      <section id="progress" className="scroll-mt-[68px] border-b border-line bg-surface">
-        <Container>
-          <div className="grid gap-10 py-16 sm:py-[88px] lg:grid-cols-2 lg:gap-14">
-            <div>
-              <h2 className="mb-5 mt-0 text-[clamp(26px,3vw,34px)] font-black leading-[1.4]">
-                我們正在證明第一筆真實結果。
-              </h2>
-              <p className="m-0 max-w-[30em] text-[16.5px] leading-[1.85] text-ink-2">
-                不做永遠不更新的假 traction。已完成的標 ✓，還沒做到的標 ○，全部公開。
-              </p>
-              <p className="num mb-0 mt-6 text-[12.5px] font-medium text-muted">
-                Evidence as of {EVIDENCE_DATE} · source: repo / pilot records
-              </p>
-            </div>
-            <ul className="m-0 list-none border border-line-strong bg-white p-0 py-3">
-              {EVIDENCE.map((row) => (
-                <li
-                  key={row.label}
-                  className="flex items-baseline gap-4 px-6 py-[11px] text-[15.5px]"
-                >
-                  <span
-                    className={`num w-[18px] flex-none text-center text-[15px] font-medium ${
-                      row.done ? "text-green" : "text-line-strong"
-                    }`}
-                    aria-hidden
-                  >
-                    {row.done ? "✓" : "○"}
-                  </span>
-                  <span className={`leading-[1.6] ${row.done ? "text-ink" : "text-muted"}`}>
-                    <span className="sr-only">{row.done ? "已完成：" : "尚未完成："}</span>
-                    {row.label}
-                  </span>
-                </li>
-              ))}
-            </ul>
           </div>
         </Container>
       </section>
