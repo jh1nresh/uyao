@@ -18,7 +18,7 @@ const SHOP_HOSTS = new Set(
   ["shop-uyao.vercel.app", process.env.SHOP_HOST ?? ""].filter(Boolean),
 );
 
-export function middleware(req: NextRequest) {
+export function proxy(req: NextRequest) {
   const host = (req.headers.get("host") ?? "").toLowerCase().split(":")[0];
   const isShop = SHOP_HOSTS.has(host) || host.startsWith("shop.");
   if (isShop) {
