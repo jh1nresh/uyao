@@ -1,156 +1,74 @@
-# 消費端 Web（有藥）
+# uYao Web
 
-`specs/web-marketplace.md` 的 v1 實作 — 從 Claude Design 的 `消費端 Web.dc.html`
-（藥品頁 1a / 搜尋首頁 1b / 藥局頁 1c / 行動端流程 1d / 庫存徽章 1e）落地。
+uYao 的 Next.js 16 App Router 應用，包含公司 landing、消費端附近找藥、藥局預留通知、試點申請與營運 console。
 
-Next.js 16 App Router + Tailwind，沒有 UI 元件庫、沒有資料庫。
+- Landing：[uyao.vercel.app](https://uyao.vercel.app)
+- Consumer app：[shop-uyao.vercel.app](https://shop-uyao.vercel.app)
+
+## 本機開發
 
 ```bash
-npm install
+npm ci
 npm run dev        # http://localhost:3100
-npm run build      # drug/store/category 是 SSG；首頁與搜尋依 ?area= 走 dynamic
+npm run test
 npm run typecheck
+npm run build
 ```
 
-## 頁面
+本機環境變數放在 `web/.env.local`，不要提交金鑰。
 
-| 路由 | 對應設計 | 說明 |
-|---|---|---|
-| `/` | 1b / M1 | 搜尋框 + 品類入口 + 附近現在有貨（依 `?area=` 過濾，預設中山區）|
-| `/drug/[slug]` | 1a / M2 | 核心單位、SEO 入口。附近藥局 rows（列表 ⇄ 地圖）+ 同成分替代品 |
-| `/store/[slug]` | 1c / M5 | 藥局頁（NAP + 有貨商品 grid），帶 `Pharmacy` JSON-LD — 對藥局的贈品 |
-| `/search?q=` | — | 搜尋結果，`noindex`（SEO 入口是藥品頁，不做內容農場） |
-| `/category/[slug]` | — | 品類列表，首頁品類入口的落點 |
-| `/stock-badges` | 1e | 庫存徽章分級說明 |
-| `/pharmacy` | — | 供給側：效期雷達說明 + 試點申請。`/pharmacy-login` 308 導到這裡 |
+## 主要路由
 
-預留流程（M3 → M4）是 `components/ReserveSheet.tsx` 的 bottom sheet，
-桌機同一個 panel 置中。
+| 路由 | 用途 |
+|---|---|
+| `/`、`/en` | 公司 landing 與試點申請 |
+| `/app` | 消費端搜尋首頁 |
+| `/drug/[slug]` | 藥品與附近藥局 |
+| `/store/[slug]` | 藥局店頁與可預留品項 |
+| `/search`、`/category/[slug]` | 搜尋結果與品類入口 |
+| `/pharmacy` | 藥局合作與 LINE 綁定入口 |
+| `/console` | 掃描、預留、LINE 與逾時處理流水 |
 
-## 資料層
+主要 API：
 
-`lib/data.ts` 是固定 fixture + 純函式查詢，換成 API 時上層 component 不用動：
+- `POST /api/box/ingest`：接收 PharmaBox 掃描事件。
+- `POST /api/reservations`：建立預留並通知已綁定的藥局 LINE。
+- `POST /api/demand`：記錄目錄或庫存未命中的搜尋。
+- `POST /api/pilot`：保存試點申請並寄送通知信。
+- `POST /api/line/webhook`：驗證 LINE 簽章並處理綁定／藥局回覆。
 
-- 庫存/效期 → 盒子掃描流（見 repo 根目錄的 `src/pharmabox/`）
-- 價格 → 藥局自報
+## 資料迴路
 
-`Offer.daysSinceScan` 存「距最近一次掃描的天數」而不是 timestamp，
-讓 render 不依賴時鐘（SSG 不會因為 build 時間不同而漂移）。正式版換成 timestamp 差值。
-
-`lib/stock.ts` 是差異化核心：
-
-- 徽章分級 `● 今日掃描確認 / ○ N 天前確認 / ？ 請預留確認`，永遠不顯示確切數量
-- 排序 `庫存新鮮度 → 距離 → 價格`（跟 GoodRx 相反）
-- `？` 的品項預留鈕轉外框樣式 — 不假裝有貨
-
-## 預留 API
-
-`POST /api/reservations` `{drugSlug, storeSlug, contact}` → `{code, holdHours: 4, ...}`
-`DELETE /api/reservations` `{code}`
-
-v1 沒有資料庫，落地成 `web/.data/reservations.jsonl`（已 gitignore），
-之後換成藥局端 LINE bot 的 queue。
-
-## 試點申請 API（供給側）
-
-`POST /api/pilot` `{name, area, contact}` → `{ok: true}`
-
-`name` 與 `contact` 必填，落地成 `web/.data/pilot.jsonl`。跟消費端預留完全分開 ——
-藥局端沒有帳號系統，這只是聯絡意圖。
-
-## 需求捕捉 API
-
-`POST /api/demand` `{kind, query, drugSlug?, area, contact?}` → `{ok: true}`
-
-`kind` 是 `catalog_miss`（查詢對不到目錄）或 `inventory_miss`（有藥但沒庫存）。
-兩個空狀態掛載時各送一筆被動紀錄（**不帶任何個資**），使用者留聯絡方式再送一筆。
-落地成 `web/.data/demand.jsonl`。規格見 `specs/demand-capture.md`。
-
-**`query` 存原話不做正規化** —— 同義詞／錯字／症狀對應是之後的事（那是這條鏈上
-唯一適合 LLM 的地方），把原始輸入丟掉就永遠補不回來。
-
-## 資料落地（`lib/record.ts`）
-
-三個 endpoint 的資料都走這一個出口，送到**所有設定好的 sink**，全部失敗才退回 log。
-
-| sink | 何時作用 | 設定 |
-|---|---|---|
-| `fs` | 本機 dev 寫 `.data/<kind>.jsonl` | 無 |
-| `webhook` | 設了就送。任何吃 JSON POST 的端點 | `RECORD_WEBHOOK_URL` |
-| `log`（退路） | **前面全滅才觸發** | 無 |
-
-`PILOT_WEBHOOK_URL` 可以單獨覆蓋藥局試點申請 —— 那是掉單代價最高的一種，
-通常要送到會跳通知的地方。
-
-試點申請也會用 Resend 寄純文字通知。申請會先走既有 record sinks，再嘗試寄信；
-寄信失敗不會要求藥局重送，Vercel log 會留下 `[pilot]` 錯誤供補處理。Production 需要：
-
-```bash
-vercel env add RESEND_API_KEY production --project uyao
-vercel env add PILOT_EMAIL_FROM production --project uyao  # Resend 已驗證的寄件地址
-vercel env add PILOT_EMAIL_TO production --project uyao    # 選填；預設 edwardhsieh0122@gmail.com
+```text
+box ingest → 庫存／效期狀態 → 消費端搜尋與 console
+預留 → rate limit → LINE 藥局通知 → 確認／拒絕／完成店取
+試點表單 → record sinks → Resend email
 ```
 
-payload 一份三邊通吃：`text`（Slack）、`content`（Discord）、`record`（程式讀）。
+本機開發會把部分資料寫到 `web/.data/`；Production 必須使用外部 KV／webhook，不能依賴 Vercel 唯讀檔案系統。
 
-```bash
-# Vercel 上設好就會生效，不用改任何程式
-vercel env add RECORD_WEBHOOK_URL production
-vercel env add PILOT_WEBHOOK_URL production
-```
+## Production 環境變數
 
-### 為什麼要這樣
+| 類別 | 變數 |
+|---|---|
+| KV | `KV_REST_API_URL`、`KV_REST_API_TOKEN` |
+| LINE | `LINE_CHANNEL_SECRET`、`LINE_CHANNEL_ACCESS_TOKEN`、`LINE_ADMIN_USER_IDS` |
+| Email | `RESEND_API_KEY`、`PILOT_EMAIL_FROM`、`PILOT_EMAIL_TO` |
+| Record sinks | `RECORD_WEBHOOK_URL`、`PILOT_WEBHOOK_URL` |
 
-**Vercel 的 `/var/task` 是唯讀的** —— 原本單純寫檔的版本在線上 `mkdir` 直接
-ENOENT，API 照樣回 200、畫面照樣顯示成功，**每一筆都靜默遺失**（生產環境
-runtime log 實測）。
+不要把實際值、Vercel sensitive pull 結果或 LINE user ID 寫進 README。
 
-不變條件：**任何一筆都不會無聲消失。** sink 全滅時一定印出單行
-`UYAO_RECORD <kind> {...}`，可以撈回來：
+## 產品邊界
 
-```bash
-vercel logs https://uyao.vercel.app --json | python3 -m pharmabox.demand --stdin
-```
+- 庫存徽章表示掃描新鮮度，不宣稱精確數量或保證現貨。
+- 消費端只支援預留與店取，沒有購物車、金流或配送。
+- 處方藥不進消費端目錄；藥師完成所有關鍵交付與核准。
+- 地區與距離品質取決於店家座標；缺座標時不可把跨區估算當成 GPS 距離。
+- Demo reservation 必須明確標示為示範資料，不能讓藥局誤認為真實訂單。
 
-⚠️ **log 保留期有限，那是最後防線不是儲存。** 沒設 webhook 就等於只有這道防線。
+## 相關規格
 
-要加 KV / Postgres：在 `SINKS` 多一個函式，其餘不用動。目前沒先寫是因為
-帳號上還沒有實例，寫了也驗不了。
-
-## 字型
-
-中文走**自架的 Noto Sans TC subset**（`app/fonts/noto-sans-tc-var.woff2`，253KB，
-wght 100–900 可變），不是 Google Fonts `<link>`。
-
-繁中字型在 Google Fonts 是按 unicode-range 切成上百塊的：原本那個 `<link>` 會拉進
-**430 個 `@font-face`、134KB gzip 的 render-blocking CSS**，Lighthouse mobile
-performance 只有 89（FCP/LCP 3.0s）。換成 subset 後 CSS 剩 5KB gzip，
-**performance 99（FCP/LCP 1.7s）**。
-
-```bash
-pip install "fonttools[woff]" brotli
-python3 scripts/subset-fonts.py
-```
-
-⚠️ **字符集是從 `app/` `components/` `lib/` 掃出來的，`.ts` `.tsx` `.json` 都掃**
-—— 店名與地址在 `lib/stores.generated.json`，漏掉那個副檔名整批店名
-就會掉回系統字型。**加藥品資料、重跑 seed、或改文案都要重跑這支 script。**
-
-使用者在搜尋框自己打的字本來就不在 subset 內 —— 那一格用系統字型，是刻意的取捨。
-
-## 法規邊界（不要改掉）
-
-- 全站只有「預留取貨」，沒有購物車 / 結帳 / 金流
-- 只呈現成藥、指示藥、非藥品；處方藥不進 `lib/data.ts`，也不出現在消費端搜尋
-- 藥價對消費者呈現可能構成廣告行為（藥事法 66 條事前審查）— **上線前要有懂藥事法的人 review**
-
-## 已知限制
-
-- 資料是 fixture，沒有真的定位：服務區固定為目前收錄店家所在的大同／林口／新莊／中山區（`?area=`），
-  距離以各區中心點估算，所以**跨區的距離不可互相比較** —— 會同時出現兩區藥局的
-  地方（藥品頁、搜尋結果）都標了行政區
-- 地圖是示意圖（CSS 網格 + `Store.mapPos` 百分比），正式版接圖資
-- 沒有會員系統；預留只留手機或 LINE ID
-- 字型 subset 的字符集綁在原始碼上，改文案要重跑 `scripts/subset-fonts.py`
-- `/pharmacy` 的 CLS 0.043（字型 swap 造成，仍在 Lighthouse「良好」的 0.1 以內）：
-  fallback 的 metrics 是 next/font 依 Arial 算的，對中文字型不準
+- [Web marketplace](../specs/web-marketplace.md)
+- [Company landing](../specs/company-landing-page.md)
+- [Demand capture](../specs/demand-capture.md)
+- [Box P1](../specs/box-p1.md)
