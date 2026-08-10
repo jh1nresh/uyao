@@ -1,43 +1,42 @@
-# uYao / PharmaBox
+# uYao
 
-uYao 把藥局既有掃描流程產生的庫存、效期與在地需求訊號，轉成退貨、補貨與預留建議；關鍵動作由藥師在 LINE 核准。PharmaBox 是串在掃描器與藥局電腦之間的被動資料入口，不取代 POS。
+**English** | [繁體中文](README.zh-TW.md)
 
-- 公司與試點：[uyao.vercel.app](https://uyao.vercel.app)
-- 消費端找藥：[shop-uyao.vercel.app](https://shop-uyao.vercel.app)
+uYao turns pharmacy inventory, expiry, and local demand signals into pharmacist-approved return, reorder, and reservation workflows. It connects to the pharmacy's existing scanner and POS workflow instead of replacing them.
 
-> 目前是試點原型。未接上真實藥局掃描流的庫存畫面與 demo 指令都是模擬資料，不代表藥局即時現貨。
+- Company and pilot: [uyao.vercel.app](https://uyao.vercel.app)
+- Consumer search: [shop-uyao.vercel.app](https://shop-uyao.vercel.app)
 
-## 系統迴路
+> uYao is currently a pilot prototype. Inventory shown without a live pharmacy scanner connection is simulated and must not be treated as confirmed real-time stock.
+
+## How it works
 
 ```text
-藥局掃描器 → PharmaBox → 藥局電腦（原樣轉發）
-                    └→ 解析／離線 spool → uYao API
-                                           ├→ 庫存與效期訊號
-                                           ├→ Action agent
-                                           └→ LINE 藥師核准
+Pharmacy scanner → transparent scanner connector → pharmacy computer
+                         └→ parse / offline spool → uYao API
+                                                    ├→ inventory and expiry signals
+                                                    ├→ action recommendations
+                                                    └→ pharmacist approval in LINE
 
-消費者搜尋 → 選擇藥局 → 預留 → LINE 通知藥局 → 店取完成
+Consumer search → select pharmacy → reserve → pharmacy receives LINE alert → in-store pickup
 ```
 
 ## Repository
 
-| 路徑 | 內容 |
+| Path | Purpose |
 |---|---|
-| `src/pharmabox/` | GS1／EAN 解析、session 分類、USB HID 轉發、SQLite spool 與資料工具 |
-| `web/` | Next.js landing、消費端找藥、藥局試點、LINE 預留與營運 console |
-| `setup/` | Pi service、demo simulator 與 YC demo runbook |
-| `specs/` | 產品、硬體、需求捕捉與 web 規格 |
-| `tests/` | PharmaBox Python 測試 |
+| `src/` | GS1 and EAN parsing, scan-session classification, USB HID forwarding, SQLite spool, and data tools |
+| `web/` | Next.js company site, consumer search, pharmacy pilot flow, LINE reservations, and operations console |
+| `setup/` | Raspberry Pi service, demo simulator, and YC demo runbook |
+| `specs/` | Product, hardware, demand-capture, and web specifications |
+| `tests/` | Scanner pipeline tests |
 
-品牌原稿與社群輸出不進版控；網站部署需要的精簡素材保留在 `web/public/brand/`。
+## Quick start
 
-## 本機啟動
-
-### PharmaBox pipeline
+### Scanner pipeline
 
 ```bash
 python3 -m pip install -e ".[dev]"
-echo '(01)04712345678901(17)271031(10)B7' | python3 -m pharmabox.dev_cli
 python3 -m pytest -q
 ```
 
@@ -51,20 +50,20 @@ npm run test
 npm run typecheck
 ```
 
-## 核心邊界
+## Product boundaries
 
-- PharmaBox 只側錄並原樣轉發掃描，不替換藥局 POS。
-- GS1 DataMatrix 可攜帶 GTIN、效期與批號；一般一維條碼通常沒有完整效期／批號。
-- 掃描訊號能證明「最近被掃到」，不能單獨保證精確庫存數量。
-- 消費端只做附近找藥、預留與店取，不提供購物車、線上結帳或處方藥交易。
-- LINE 是藥局端核准與通知介面；關鍵決策不由 agent 自動執行。
+- The scanner connector observes and forwards scans; it does not replace the pharmacy POS.
+- GS1 DataMatrix can carry GTIN, expiry, and batch data. A typical one-dimensional barcode does not contain complete expiry or batch data.
+- A scan proves that an item was recently observed, not the pharmacy's exact on-hand quantity.
+- The consumer product supports nearby search, reservation, and in-store pickup. It does not provide a shopping cart, online payment, delivery, or prescription-drug transactions.
+- LINE is the pharmacy approval and notification interface. The agent does not autonomously execute critical decisions.
 
-## 文件
+## Documentation
 
-- [Box P1](specs/box-p1.md)
+- [Scanner box P1](specs/box-p1.md)
 - [Web marketplace](specs/web-marketplace.md)
-- [Company landing](specs/company-landing-page.md)
+- [Company landing page](specs/company-landing-page.md)
 - [Demand capture](specs/demand-capture.md)
 - [Hardware options](specs/hardware-options.md)
 - [YC demo runbook](setup/yc-demo-runbook.md)
-- [Web 開發說明](web/README.md)
+- [Web development](web/README.md)
