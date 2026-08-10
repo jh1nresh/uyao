@@ -9,7 +9,7 @@ import type { AreaSlug } from "@/lib/types";
 export function SiteHeader({
   query,
   showSearch = true,
-  showTagline = false,
+  showTagline = true,
   area = DEFAULT_AREA,
   preserveAreaPath = false,
   locatable = false,
@@ -23,13 +23,13 @@ export function SiteHeader({
   locatable?: boolean;
 }) {
   return (
-    <header className="flex h-14 items-center gap-3 border-b border-line px-4 sm:px-7 xl:px-12 2xl:px-16">
+    <header className="sticky top-0 z-40 flex h-[60px] items-center gap-3 border-b border-line-strong bg-ivory px-4 sm:h-16 sm:px-7 xl:px-12 2xl:px-16">
       {/* -my-3 py-3：把 lockup 撐成 50px 點擊區，版面高度不變。
           消費端 chrome 的 logo 回 app 首頁 /app，不是公司 landing。 */}
       <Link href={`/app?area=${area}`} className="-my-3 flex flex-none items-center gap-2 py-3 no-underline">
-        <BrandLogo height={26} />
+        <BrandLogo height={30} />
         {showTagline && (
-          <span className="ml-0.5 hidden pt-[3px] text-[13px] text-muted lg:inline">
+          <span className="ml-1 hidden pt-[3px] text-[13px] text-muted lg:inline">
             附近藥局・現貨查詢
           </span>
         )}
@@ -52,7 +52,7 @@ export function SiteHeader({
           所以連的是合作說明頁而不是登入頁。 */}
       <Link
         href="/pharmacy"
-        className="-my-3.5 -mr-2 flex-none px-2 py-3.5 text-xs text-muted no-underline hover:text-ink"
+        className="-my-3.5 -mr-2 flex-none border-b border-transparent px-2 py-3.5 text-xs font-medium text-muted no-underline hover:border-forest hover:text-forest"
       >
         我是藥局
       </Link>

@@ -7,7 +7,9 @@
 :root {
   --font-sans: var(--font-noto-sans-tc), -apple-system, BlinkMacSystemFont,
     "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --font-serif: var(--font-noto-serif-tc), "Songti TC", "Noto Serif TC", serif;
   --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --ease-brand: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 html {
@@ -15,7 +17,7 @@ html {
 }
 
 body {
-  background: #fff;
+  background: #f3f1e8;
   color: #1a2420;
   -webkit-font-smoothing: antialiased;
   font-variant-numeric: tabular-nums;
@@ -38,7 +40,7 @@ body {
 }
 
 .crossfade {
-  animation: dc-fade-in 120ms ease-out;
+  animation: dc-fade-in 120ms var(--ease-brand);
 }
 
 @keyframes dc-sheet-up {
@@ -53,7 +55,17 @@ body {
 }
 
 .sheet-in {
-  animation: dc-sheet-up 140ms ease-out;
+  animation: dc-sheet-up 320ms var(--ease-brand);
+}
+
+.editorial-display {
+  font-family: var(--font-serif);
+  font-weight: 600;
+  letter-spacing: -0.035em;
+}
+
+.paper-elevation {
+  box-shadow: 0 24px 60px rgba(37, 54, 45, 0.12);
 }
 
 @media (prefers-reduced-motion: reduce) {
