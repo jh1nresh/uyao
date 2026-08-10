@@ -109,7 +109,7 @@ export async function POST(request: Request) {
       {
         error:
           `這個號碼有 ${strikes} 次預留未取，暫時無法預留。` +
-          "如果是誤判，請來信 hello@uyao.tw。",
+          "如果是誤判，請來信 edwardhsieh0122@gmail.com。",
       },
       { status: 403 },
     );

@@ -486,7 +486,7 @@ export default function EnglishLandingPage() {
               <a href="#pilot" className="text-green hover:text-green-hover">
                 Join the pilot
               </a>
-              <a href="mailto:hello@uyao.tw" className="text-green hover:text-green-hover">
+              <a href="mailto:edwardhsieh0122@gmail.com" className="text-green hover:text-green-hover">
                 Contact
               </a>
             </div>
