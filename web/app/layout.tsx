@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { IBM_Plex_Mono } from "next/font/google";
 import localFont from "next/font/local";
 
+import { MotionSystem } from "@/components/MotionSystem";
+
 import "./globals.css";
 
 /**
@@ -58,6 +60,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={`${notoSansTC.variable} ${notoSerifTC.variable} ${plexMono.variable}`}
     >
       <body>
+        <MotionSystem />
         <div className="min-h-screen bg-ivory">{children}</div>
       </body>
     </html>

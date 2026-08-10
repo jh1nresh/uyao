@@ -16,6 +16,23 @@ html {
   background: #eef1ed;
 }
 
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: clip;
+}
+
 body {
   background: #f3f1e8;
   color: #1a2420;
@@ -68,10 +85,29 @@ body {
   box-shadow: 0 24px 60px rgba(37, 54, 45, 0.12);
 }
 
+.motion-ready [data-motion-section="true"] {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  transition:
+    opacity 480ms var(--ease-brand),
+    transform 560ms var(--ease-brand);
+  will-change: opacity, transform;
+}
+
+.motion-ready [data-motion-section="true"][data-motion-visible="true"] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .crossfade,
-  .sheet-in {
+  .sheet-in,
+  [data-motion-section="true"] {
     animation: none;
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
 
