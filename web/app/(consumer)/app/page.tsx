@@ -52,16 +52,71 @@ export default async function HomePage({
         藥局家數留下來當可信度證據，但收成一行字。
       */}
       <section className="border-b border-line bg-ivory">
-        <div className="shop-shell grid min-h-[calc(100svh-8.5rem)] items-center gap-12 py-16 sm:py-20 lg:grid-cols-[1.02fr_.98fr] lg:gap-20 lg:py-24">
-          <div>
-            <p className="shop-kicker mb-6 mt-0">NEARBY SEARCH · RESERVE · PICK UP</p>
-            <h1 className="editorial-display m-0 max-w-[10.5em] text-[clamp(44px,5.5vw,68px)] leading-[1.12]">
-              搜一個藥，知道下一步往哪走。
+        <div className="shop-shell flex flex-col pb-14 pt-12 sm:pb-20 sm:pt-16 lg:pb-24 lg:pt-20">
+          <div className="mx-auto w-full max-w-[1120px] text-center">
+            <p className="shop-kicker mb-5 mt-0">NEARBY SEARCH · RESERVE · PICK UP</p>
+            <h1 className="editorial-display m-0 text-[clamp(40px,4.4vw,62px)] leading-[1.08]">
+              搜一個藥，現在就知道往哪走。
             </h1>
-            <p className="mt-7 max-w-[520px] text-[16px] leading-[1.8] text-ink-2 sm:text-[17px]">
-              查看附近店家與庫存狀態，送出預留後到店付款，由藥師當面確認交付。
+            <p className="mx-auto mt-5 max-w-[620px] text-[15px] leading-[1.8] text-ink-2 sm:text-[16px]">
+              輸入藥名、主成分或症狀，查看附近店家與資料狀態；預留後到店付款，由藥師當面交付。
             </p>
-            <dl className="mt-10 grid max-w-[560px] grid-cols-3 border-y border-line py-4">
+          </div>
+
+          <div className="search-hero-panel relative mx-auto mt-7 w-full max-w-[1120px] overflow-hidden border border-forest bg-forest p-5 shadow-[0_30px_80px_rgba(23,57,44,0.18)] sm:p-8">
+            <div className="search-hero-signal mb-6 flex items-center gap-3" aria-hidden>
+              <span className="h-px flex-1 overflow-hidden bg-ink-2">
+                <span className="search-hero-signal-fill block h-full origin-left bg-green" />
+              </span>
+              <span className="num text-[10px] font-medium tracking-[.14em] text-[#A9B5AA]">
+                LIVE SEARCH SERVICE
+              </span>
+            </div>
+
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <p className="num m-0 text-[11px] font-semibold tracking-[.12em] text-[#A9B5AA]">
+                  {getArea(area).shortName} · PHARMACY SEARCH
+                </p>
+                <h2 className="editorial-display mb-0 mt-2 text-[25px] leading-[1.25] text-paper sm:text-[30px]">
+                  今天要找哪一支？
+                </h2>
+              </div>
+              <p className="m-0 max-w-[360px] text-[13px] leading-[1.7] text-[#C4CEC7]">
+                可輸入品名、主成分，或像「痠痛」「止癢」這樣的症狀。
+              </p>
+            </div>
+
+            <div className="search-hero-field mt-7">
+              <SearchInput size="xl" area={area} className="w-full shadow-none" />
+            </div>
+
+            <div className="mt-4 flex flex-wrap items-center gap-2 text-[12px] text-[#A9B5AA]">
+              <span className="num mr-1 tracking-[.08em]">快速開始</span>
+              <nav aria-label="品類" className="contents">
+                {CATEGORIES.map((c, index) => (
+                  <Link
+                    key={c.slug}
+                    href={`/category/${c.slug}?area=${area}`}
+                    className="search-hero-option history-link inline-flex min-h-11 items-center gap-3 border border-ink-2 px-3.5 font-medium text-paper no-underline transition-[background-color,border-color,transform] hover:border-[#A9B5AA] hover:bg-white/5"
+                    style={{ animationDelay: `${240 + index * 70}ms` }}
+                  >
+                    {c.name}
+                    <span className="num text-[#A9B5AA]">{drugsInCategory(c.slug).length}</span>
+                  </Link>
+                ))}
+              </nav>
+            </div>
+
+            <div className="search-hero-steps mt-7 grid border-t border-ink-2 pt-5 text-[12px] leading-[1.65] text-[#A9B5AA] sm:grid-cols-3">
+              <span><b className="num mr-2 text-green">01</b>輸入藥名或症狀</span>
+              <span className="mt-2 sm:mt-0"><b className="num mr-2 text-green">02</b>查看附近資料狀態</span>
+              <span className="mt-2 sm:mt-0"><b className="num mr-2 text-green">03</b>預留後到店交付</span>
+            </div>
+          </div>
+
+          <div className="mx-auto mt-6 w-full max-w-[1120px]">
+            <dl className="grid grid-cols-3 border-y border-line py-4">
               <div>
                 <dt className="num text-[20px] font-semibold text-forest">4</dt>
                 <dd className="mt-1 text-[12px] text-muted">服務區</dd>
@@ -75,43 +130,12 @@ export default async function HomePage({
                 <dd className="mt-1 text-[12px] text-muted">藥師確認</dd>
               </div>
             </dl>
-            <div className="mt-5 md:hidden">
+            <p className="mb-0 mt-4 text-[12.5px] leading-[1.7] text-muted-2">
+              {getArea(area).shortName}目前收錄 {storeCount} 家店家；即時庫存尚未開始，我們會誠實標示資料狀態。
+            </p>
+            <div className="mt-4 md:hidden">
               <AreaSwitch area={area} preservePath locatable />
             </div>
-          </div>
-
-          <div className="border border-forest bg-forest p-5 shadow-[0_26px_70px_rgba(23,57,44,0.16)] sm:p-7">
-            <p className="num m-0 text-[11px] font-semibold tracking-[.12em] text-[#A9B5AA]">
-              SEARCH SERVICE · {getArea(area).shortName}
-            </p>
-            <h2 className="editorial-display mb-0 mt-3 text-[28px] leading-[1.3] text-paper sm:text-[34px]">
-              今天要找哪一支？
-            </h2>
-            <p className="mb-0 mt-2 text-[13px] leading-[1.7] text-[#C4CEC7]">
-              可輸入品名、主成分，或像「痠痛」「止癢」這樣的症狀。
-            </p>
-
-            <SearchInput size="lg" area={area} className="mt-6 w-full shadow-none" />
-
-            <nav aria-label="品類" className="mt-3 grid gap-2 sm:grid-cols-3">
-              {CATEGORIES.map((c) => (
-                <Link
-                  key={c.slug}
-                  href={`/category/${c.slug}?area=${area}`}
-                  className="history-link flex min-h-11 items-center justify-between border border-ink-2 px-3 text-xs font-medium text-paper no-underline transition-colors hover:border-[#A9B5AA] hover:bg-white/5"
-                >
-                  {c.name}
-                  <span className="num text-[12px] text-[#A9B5AA]">
-                    {drugsInCategory(c.slug).length}
-                  </span>
-                </Link>
-              ))}
-            </nav>
-
-            <p className="mb-0 mt-5 border-t border-ink-2 pt-4 text-[12.5px] leading-[1.7] text-[#A9B5AA]">
-              {getArea(area).shortName}目前收錄 {storeCount} 家店家；即時庫存尚未開始，
-              我們會誠實標示資料狀態。
-            </p>
           </div>
         </div>
       </section>
