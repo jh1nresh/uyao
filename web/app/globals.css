@@ -103,6 +103,9 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .crossfade,
   .sheet-in,
+  .hero-loop-progress,
+  .hero-loop-action,
+  .hero-loop-result,
   [data-motion-section="true"] {
     animation: none;
     opacity: 1;

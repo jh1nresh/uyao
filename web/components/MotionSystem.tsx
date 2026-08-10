@@ -15,6 +15,9 @@ export function MotionSystem() {
   const pathname = usePathname();
 
   useEffect(() => {
+    const isLanding = pathname === "/" || pathname === "/en";
+    if (!isLanding) return;
+
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (reducedMotion.matches) return;
 
