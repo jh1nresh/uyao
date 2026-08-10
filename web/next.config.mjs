@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  // 家目錄有雜散的 pnpm-lock.yaml，Turbopack 會誤判 workspace root — 固定在 web/。
+  turbopack: { root: import.meta.dirname },
   async redirects() {
     return [
       // 藥局端沒有後台帳號可以登入（預留確認走 LINE bot），
