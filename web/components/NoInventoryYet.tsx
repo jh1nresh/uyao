@@ -36,7 +36,13 @@ export function NoInventoryYet({
         </p>
       </div>
 
-      <NotifyMe kind="inventory_miss" query={drugName} drugSlug={drugSlug} drugName={drugName} />
+      <NotifyMe
+        kind="inventory_miss"
+        query={drugName}
+        drugSlug={drugSlug}
+        drugName={drugName}
+        area={area}
+      />
 
       <div className="mt-2.5 flex flex-wrap items-baseline gap-2.5">
         <h2 className="text-sm font-black">{areaLabel}的藥局</h2>

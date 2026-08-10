@@ -2,20 +2,13 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { AREAS, DEFAULT_AREA } from "@/lib/data";
+import { AREAS } from "@/lib/data";
 import type { AreaSlug } from "@/lib/types";
 
 type Kind = "catalog_miss" | "inventory_miss";
 
 const INPUT =
   "h-11 min-w-0 border border-line-strong bg-white px-3 text-[15px] text-ink outline-none placeholder:text-muted-2 focus:border-green sm:h-9";
-
-/** 從網址帶目前的服務區；沒有就用預設。 */
-function areaFromUrl(): AreaSlug {
-  if (typeof window === "undefined") return DEFAULT_AREA;
-  const raw = new URLSearchParams(window.location.search).get("area");
-  return AREAS.some((a) => a.slug === raw) ? (raw as AreaSlug) : DEFAULT_AREA;
-}
 
 /**
  * 落空搜尋的收口。
@@ -29,35 +22,37 @@ export function NotifyMe({
   query,
   drugSlug,
   drugName,
+  area: routeArea,
 }: {
   kind: Kind;
   /** 原始輸入，原樣送出不做正規化 */
   query: string;
   drugSlug?: string;
   drugName?: string;
+  area: AreaSlug;
 }) {
-  const [area, setArea] = useState<AreaSlug>(DEFAULT_AREA);
+  const [area, setArea] = useState<AreaSlug>(routeArea);
   const [contact, setContact] = useState("");
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [done, setDone] = useState(false);
-  const logged = useRef(false);
+  const loggedKey = useRef("");
 
   useEffect(() => {
-    const a = areaFromUrl();
-    setArea(a);
+    setArea(routeArea);
 
-    // StrictMode 會掛載兩次，用 ref 擋掉重複的被動紀錄
-    if (logged.current) return;
-    logged.current = true;
+    // StrictMode 會掛載兩次，用 key 擋掉重複紀錄；切區後則要記成另一筆需求。
+    const key = `${kind}:${query}:${drugSlug ?? ""}:${routeArea}`;
+    if (loggedKey.current === key) return;
+    loggedKey.current = key;
     void fetch("/api/demand", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ kind, query, drugSlug, area: a }),
+      body: JSON.stringify({ kind, query, drugSlug, area: routeArea }),
     }).catch(() => {
       /* 記錄失敗不該影響使用者，安靜吞掉 */
     });
-  }, [kind, query, drugSlug]);
+  }, [kind, query, drugSlug, routeArea]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();

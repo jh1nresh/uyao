@@ -1,3 +1,5 @@
+import type { AreaSlug } from "@/lib/types";
+
 /**
  * 搜尋框。用原生 GET form — 沒有 JS 也能搜，SEO 入口頁不依賴 client bundle。
  */
@@ -6,11 +8,13 @@ export function SearchInput({
   size = "sm",
   className = "",
   autoFocus = false,
+  area,
 }: {
   defaultValue?: string;
   size?: "sm" | "lg";
   className?: string;
   autoFocus?: boolean;
+  area?: AreaSlug;
 }) {
   const lg = size === "lg";
   return (
@@ -21,6 +25,7 @@ export function SearchInput({
         lg ? "h-[52px] border-[1.5px] border-ink px-4" : "h-11 border border-line-strong px-3 sm:h-9"
       } ${className}`}
     >
+      {area && <input type="hidden" name="area" value={area} />}
       <span aria-hidden className={lg ? "text-[18px] text-ink" : "text-sm text-muted-2"}>
         ⌕
       </span>

@@ -42,7 +42,7 @@ export default async function HomePage({
 
   return (
     <>
-      <SiteHeader showSearch={false} area={area} />
+      <SiteHeader showSearch={false} area={area} preserveAreaPath locatable />
 
       {/*
         第一屏只有一件事：搜尋。
@@ -59,7 +59,7 @@ export default async function HomePage({
           不用先跑三家藥局 — 查到就預留，到店取貨付款
         </p>
 
-        <SearchInput size="lg" className="mt-9 w-full max-w-[680px]" />
+        <SearchInput size="lg" area={area} className="mt-9 w-full max-w-[680px]" />
 
         <nav
           aria-label="品類"
@@ -68,7 +68,7 @@ export default async function HomePage({
           {CATEGORIES.map((c) => (
             <Link
               key={c.slug}
-              href={`/category/${c.slug}`}
+              href={`/category/${c.slug}?area=${area}`}
               className="flex min-h-11 items-center gap-2 border border-line-strong px-4 text-xs font-medium text-ink no-underline hover:border-green hover:text-green"
             >
               {c.name}
@@ -84,7 +84,7 @@ export default async function HomePage({
           但還沒有店家裝上盒子。先搜搜看，我們會記下你在找什麼。
         </p>
         <div className="mt-3 md:hidden">
-          <AreaSwitch area={area} />
+          <AreaSwitch area={area} preservePath locatable />
         </div>
       </section>
 
@@ -122,7 +122,7 @@ export default async function HomePage({
           {drugs.map((d) => (
             <Link
               key={d.slug}
-              href={`/drug/${d.slug}`}
+              href={`/drug/${d.slug}?area=${area}`}
               className="flex flex-col justify-center gap-1 border border-line px-3.5 py-3 no-underline hover:border-green"
             >
               <span className="text-[15px] font-medium text-ink">{d.name}</span>

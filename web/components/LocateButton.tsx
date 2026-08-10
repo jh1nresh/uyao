@@ -1,8 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname, useSearchParams } from "next/navigation";
 
 import { useLocation } from "./LocationProvider";
+import { withArea } from "@/lib/area-route";
 import { AREAS } from "@/lib/data";
 import { distanceToArea } from "@/lib/geo";
 import { formatDistance } from "@/lib/format";
@@ -22,6 +24,8 @@ const MESSAGES: Record<string, string> = {
  */
 export function LocateButton({ area }: { area: AreaSlug }) {
   const { position, status, request, clear } = useLocation();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   if (position) {
     const away = distanceToArea(area, position);
@@ -44,7 +48,11 @@ export function LocateButton({ area }: { area: AreaSlug }) {
           距{areaName}中心 <span className="num">{formatDistance(away)}</span>
         </span>
         {nearer && (
-          <Link href={`/app?area=${nearer.area.slug}`} className="font-medium text-green">
+          <Link
+            href={withArea(pathname, searchParams.toString(), nearer.area.slug)}
+            scroll={false}
+            className="font-medium text-green"
+          >
             {nearer.area.shortName}離你更近（<span className="num">
               {formatDistance(nearer.away)}
             </span>）→

@@ -11,18 +11,22 @@ export function SiteHeader({
   showSearch = true,
   showTagline = false,
   area = DEFAULT_AREA,
+  preserveAreaPath = false,
+  locatable = false,
 }: {
   query?: string;
   showSearch?: boolean;
   showTagline?: boolean;
   /** 目前服務區。只有會依地區過濾的頁面（首頁／搜尋）需要傳。 */
   area?: AreaSlug;
+  preserveAreaPath?: boolean;
+  locatable?: boolean;
 }) {
   return (
     <header className="flex h-14 items-center gap-3 border-b border-line px-4 sm:px-7 xl:px-12 2xl:px-16">
       {/* -my-3 py-3：把 26px 的 logo 撐成 50px 點擊區，版面高度不變。
           消費端 chrome 的 logo 回 app 首頁 /app，不是公司 landing。 */}
-      <Link href="/app" className="-my-3 flex flex-none items-center gap-2 py-3 no-underline">
+      <Link href={`/app?area=${area}`} className="-my-3 flex flex-none items-center gap-2 py-3 no-underline">
         <BrandMark />
         <span className="text-[18px] font-black tracking-[.06em] text-ink">有藥</span>
         {showTagline && (
@@ -33,13 +37,17 @@ export function SiteHeader({
       </Link>
 
       {showSearch && (
-        <SearchInput defaultValue={query} className="ml-2 min-w-0 flex-1 sm:ml-4 sm:max-w-[460px]" />
+        <SearchInput
+          defaultValue={query}
+          area={area}
+          className="ml-2 min-w-0 flex-1 sm:ml-4 sm:max-w-[460px]"
+        />
       )}
 
       <div className="flex-1" />
 
       <div className="hidden md:block">
-        <AreaSwitch area={area} />
+        <AreaSwitch area={area} preservePath={preserveAreaPath} locatable={locatable} />
       </div>
       {/* 供給側入口。藥局端不需要後台帳號（預留確認走 LINE bot），
           所以連的是合作說明頁而不是登入頁。 */}
