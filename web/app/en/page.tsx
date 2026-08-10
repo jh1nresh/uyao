@@ -9,9 +9,10 @@ import { PilotCtaForm, type PilotFormCopy } from "@/components/landing/PilotCtaF
 
 /**
  * English YC/company landing（spec: company-landing-page-yc-en-adjustment.md）。
- * 不是中文逐字翻譯：六個 section、hero 加 category eyebrow、evidence 只放
- * repo／測試支持的項目。與 `/` 共用 HeroLoop／PilotCtaForm 與視覺系統，
- * anchor（how/progress/pilot）兩邊一致供語言切換保留位置。
+ * 不是中文逐字翻譯：hero 加 category eyebrow，section 縮成核心五段。
+ * 與 `/` 共用 HeroLoop／PilotCtaForm 與視覺系統，anchor（how/pilot）
+ * 兩邊一致供語言切換保留位置。evidence ladder 2026-08-09 依 founder
+ * 決定先下架（等有真實 pilot 進度再回來）。
  * 尚無 active partner → status line 固定 recruiting 版本。
  */
 export const metadata: Metadata = {
@@ -113,18 +114,6 @@ const TIMELINE = [
   { label: "Outcome pending / verified", last: true },
 ] as const;
 
-/** Evidence ladder — ✓ 只給 repo／測試支持的項目；partner 項目要有正式 record 才能加。 */
-const EVIDENCE_DATE = "2026-08-09";
-const EVIDENCE = [
-  { done: true, label: "Barcode parsing and offline event pipeline" },
-  { done: true, label: "Consumer search and demand-capture prototype" },
-  { done: false, label: "First in-pharmacy DataMatrix field check" },
-  { done: false, label: "First installed Box" },
-  { done: false, label: "First pharmacist-approved action" },
-  { done: false, label: "First verified economic outcome" },
-  { done: false, label: "First paying pharmacy" },
-] as const;
-
 function Container({ children }: { children: React.ReactNode }) {
   return <div className="mx-auto max-w-[1160px] px-5 sm:px-8">{children}</div>;
 }
@@ -142,12 +131,6 @@ export default function EnglishLandingPage() {
             <div className="flex items-center gap-4 text-[15px] sm:gap-7">
               <a href="#how" className="hidden text-ink no-underline hover:text-green md:inline">
                 How it works
-              </a>
-              <a
-                href="#progress"
-                className="hidden text-ink no-underline hover:text-green md:inline"
-              >
-                Evidence
               </a>
               <a href={SHOP_URL} className="hidden text-ink no-underline hover:text-green md:inline">
                 Consumer search
@@ -360,8 +343,8 @@ export default function EnglishLandingPage() {
         </Container>
       </section>
 
-      {/* Product proof and evidence */}
-      <section id="progress" className="scroll-mt-[68px] border-b border-line bg-surface">
+      {/* Product proof */}
+      <section className="border-b border-line bg-surface">
         <Container>
           <div className="py-16 sm:py-[88px]">
             <h2 className="mb-12 mt-0 text-[clamp(26px,3vw,34px)] font-black leading-[1.35] [text-wrap:pretty]">
@@ -430,41 +413,6 @@ export default function EnglishLandingPage() {
               </div>
             </div>
 
-            <div className="mt-16 grid gap-10 lg:grid-cols-2 lg:gap-14">
-              <div>
-                <h2 className="mb-5 mt-0 text-[clamp(24px,2.6vw,30px)] font-black leading-[1.35]">
-                  What exists today.
-                </h2>
-                <p className="m-0 max-w-[30em] text-[16px] leading-[1.8] text-ink-2">
-                  No permanent fake traction. Shipped work is marked ✓, open work is marked ○ —
-                  all of it public.
-                </p>
-                <p className="num mb-0 mt-6 text-[12.5px] font-medium text-muted">
-                  Evidence as of {EVIDENCE_DATE} · source: repo / pilot records
-                </p>
-              </div>
-              <ul className="m-0 list-none border border-line-strong bg-white p-0 py-3">
-                {EVIDENCE.map((row) => (
-                  <li
-                    key={row.label}
-                    className="flex items-baseline gap-4 px-6 py-[11px] text-[15.5px]"
-                  >
-                    <span
-                      className={`num w-[18px] flex-none text-center text-[15px] font-medium ${
-                        row.done ? "text-green" : "text-line-strong"
-                      }`}
-                      aria-hidden
-                    >
-                      {row.done ? "✓" : "○"}
-                    </span>
-                    <span className={`leading-[1.6] ${row.done ? "text-ink" : "text-muted"}`}>
-                      <span className="sr-only">{row.done ? "Done: " : "Not yet: "}</span>
-                      {row.label}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
           </div>
         </Container>
       </section>
