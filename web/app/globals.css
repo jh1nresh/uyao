@@ -107,6 +107,60 @@ body {
   box-shadow: 0 22px 52px rgba(37, 54, 45, 0.09);
 }
 
+@keyframes search-hero-rise {
+  from {
+    opacity: 0.96;
+    transform: translate3d(0, 14px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes search-hero-field-in {
+  from {
+    opacity: 0.92;
+    transform: translate3d(0, 8px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes search-hero-option-in {
+  from {
+    opacity: 0.55;
+    transform: translate3d(0, 6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.search-hero-panel {
+  animation: search-hero-rise 620ms var(--ease-brand) both;
+}
+
+.search-hero-field {
+  animation: search-hero-field-in 520ms 120ms var(--ease-brand) backwards;
+  transition: transform 180ms var(--ease-brand);
+}
+
+.search-hero-panel:focus-within .search-hero-field {
+  transform: translate3d(0, -2px, 0);
+}
+
+.search-hero-option {
+  animation: search-hero-option-in 380ms var(--ease-brand) both;
+}
+
+.search-hero-steps {
+  animation: search-hero-option-in 420ms 500ms var(--ease-brand) both;
+}
+
 .motion-ready [data-motion-section="true"] {
   opacity: 0;
   transform: translate3d(0, 24px, 0);
@@ -128,6 +182,10 @@ body {
   .hero-loop-progress,
   .hero-loop-action,
   .hero-loop-result,
+  .search-hero-panel,
+  .search-hero-field,
+  .search-hero-option,
+  .search-hero-steps,
   [data-motion-section="true"] {
     animation: none;
     opacity: 1;
