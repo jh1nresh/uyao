@@ -82,6 +82,15 @@ v1 沒有資料庫，落地成 `web/.data/reservations.jsonl`（已 gitignore）
 `PILOT_WEBHOOK_URL` 可以單獨覆蓋藥局試點申請 —— 那是掉單代價最高的一種，
 通常要送到會跳通知的地方。
 
+試點申請也會用 Resend 寄純文字通知。申請會先走既有 record sinks，再嘗試寄信；
+寄信失敗不會要求藥局重送，Vercel log 會留下 `[pilot]` 錯誤供補處理。Production 需要：
+
+```bash
+vercel env add RESEND_API_KEY production --project uyao
+vercel env add PILOT_EMAIL_FROM production --project uyao  # Resend 已驗證的寄件地址
+vercel env add PILOT_EMAIL_TO production --project uyao    # 選填；預設 edwardhsieh0122@gmail.com
+```
+
 payload 一份三邊通吃：`text`（Slack）、`content`（Discord）、`record`（程式讀）。
 
 ```bash

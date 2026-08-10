@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { checkForm } from "@/lib/rate-limit";
 
+import { sendPilotApplicationEmail, type PilotApplication } from "@/lib/pilot-email";
 import { appendRecord } from "@/lib/record";
 
 export const runtime = "nodejs";
@@ -59,14 +60,28 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "請留 LINE ID 或電話，我們才能跟你聯繫" }, { status: 422 });
   }
 
-  await appendRecord("pilot", {
+  const application: PilotApplication = {
     name,
     area,
     contact,
     problems,
     createdAt: new Date().toISOString(),
+  };
+
+  // 申請先走既有 record sinks，再寄通知。郵件服務失敗時不要求藥局重送。
+  await appendRecord("pilot", {
+    ...application,
     status: "pending_contact" as const,
   });
+
+  try {
+    const email = await sendPilotApplicationEmail(application);
+    if (email === "not_configured") {
+      console.error("[pilot] email 未設定，申請已保存但沒有寄出通知");
+    }
+  } catch (error) {
+    console.error("[pilot] 申請已保存，但 email 通知失敗", String(error).slice(0, 160));
+  }
 
   return NextResponse.json({ ok: true });
 }
