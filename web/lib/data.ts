@@ -24,15 +24,16 @@ import type {
  */
 
 /**
- * 開放中的服務區。範圍跟藥局獲客名單一致（`data/prospects-taipei-zhongshan-xinyi.csv`）
- * —— 盒子先鋪這兩區，消費端就只開這兩區。
+ * 首波收錄店家所在的服務區。名單不代表已合作、已安裝盒子或已有即時庫存。
  */
 export const AREAS: Area[] = [
+  { slug: "datong", name: "台北市大同區", shortName: "大同區" },
+  { slug: "linkou", name: "新北市林口區", shortName: "林口區" },
+  { slug: "xinzhuang", name: "新北市新莊區", shortName: "新莊區" },
   { slug: "zhongshan", name: "台北市中山區", shortName: "中山區" },
-  { slug: "xinyi", name: "台北市信義區", shortName: "信義區" },
 ];
 
-export const DEFAULT_AREA: AreaSlug = "zhongshan";
+export const DEFAULT_AREA: AreaSlug = "datong";
 
 /** 跨區的頁面（搜尋、品類）用這個標範圍，不能只寫其中一區。 */
 export const SERVICE_AREA_LABEL = AREAS.map((a) => a.shortName).join("、");

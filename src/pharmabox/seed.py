@@ -33,6 +33,9 @@ from pharmabox.paths import data_path, repo_root
 AREA_BY_DISTRICT = {
     "中山區": "zhongshan",
     "信義區": "xinyi",
+    "大同區": "datong",
+    "林口區": "linkou",
+    "新莊區": "xinzhuang",
 }
 
 # 各區中心點，用來算「距離」。v1 沒有真的定位，距離一律是「距區中心」，
@@ -40,7 +43,38 @@ AREA_BY_DISTRICT = {
 AREA_CENTER = {
     "zhongshan": (25.0637, 121.5265),
     "xinyi": (25.0330, 121.5654),
+    "datong": (25.0633, 121.5130),
+    "linkou": (25.0772, 121.3916),
+    "xinzhuang": (25.0359, 121.4322),
 }
+
+# 目前首波收錄的店。洽談狀態不進公開資料，也不等於已安裝盒子。
+# 店址行政區以政府登記為準；「美得心」與新莊的「美德心」是不同店。
+LISTED_STORES = (
+    ("建利西藥房", "臺北市", "大同區"),
+    ("美得心藥局", "新北市", "林口區"),
+    ("樂活健保藥局", "新北市", "新莊區"),
+    ("祥好大藥局", "新北市", "新莊區"),
+    ("中山藥局", "臺北市", "中山區"),
+)
+
+# 食藥署「藥局基本資料」不含一般西藥房。建利仍有有效的西藥零售商業登記，
+# 因此在這裡補一筆並保留來源註記；不要把它偽裝成健保特約藥局。
+MANUAL_STORES = (
+    prospects_mod.Pharmacy(
+        name="建利西藥房",
+        city="臺北市",
+        district="大同區",
+        address="重慶北路1段85之3號1樓",
+        owner="",
+        phone="02-25556484",
+        nhi_contracted=False,
+    ),
+)
+MANUAL_STORE_NAMES = {store.name for store in MANUAL_STORES}
+
+DEFAULT_SCOPES = "臺北市:大同區,中山區;新北市:林口區,新莊區"
+DEFAULT_STORE_NAMES = ",".join(name for name, _, _ in LISTED_STORES)
 
 WEEKDAY_LABEL = {
     "一": "週一", "二": "週二", "三": "週三", "四": "週四",
@@ -135,15 +169,38 @@ def sessions_to_hours(sessions: dict[str, list[str]]) -> list[dict[str, str]]:
 
 
 def build(
-    city: str,
-    districts: list[str],
+    scopes: list[tuple[str, list[str]]],
     fda_cache: Path,
     nhi_cache: Path,
     places_cache: Path,
     today: str,
+    only_stores: set[str] | None = None,
+    reuse_from: Path | None = None,
 ) -> tuple[list[dict[str, Any]], dict[str, int]]:
     rows = prospects_mod.parse(prospects_mod.fetch_csv(fda_cache))
-    picked, _ = prospects_mod.select(rows, city, districts)
+    rows.extend(MANUAL_STORES)
+    picked = []
+    districts: list[str] = []
+    for city, city_districts in scopes:
+        got, _ = prospects_mod.select(rows, city, city_districts)
+        picked.extend(got)
+        districts.extend(city_districts)
+
+    # 公開收錄店家白名單。找不到的店名直接報錯 ——
+    # 名單是手打的，錯字比「那家店真的不在開放資料裡」常見得多。
+    if only_stores:
+        picked = [p for p in picked if p.name in only_stores]
+        missing = only_stores - {p.name for p in picked}
+        if missing:
+            raise SystemExit(f"這些店在開放資料的指定區域裡找不到：{'、'.join(sorted(missing))}")
+
+    # Places cache 沒進 repo：重產 seed 時從上一版 generated json 回收
+    # 座標/營業時間，不用重打付費 API。key 用 名字+地址，搬家就不沿用。
+    reuse: dict[str, dict[str, Any]] = {}
+    if reuse_from and reuse_from.exists():
+        prev = json.loads(reuse_from.read_text(encoding="utf-8"))
+        for s in prev.get("stores", []):
+            reuse[f"{s['name']} {s['address']}"] = s
 
     index = nhi_mod.NhiIndex(nhi_mod.parse(nhi_mod.fetch_csv(nhi_cache), today))
 
@@ -191,6 +248,8 @@ def build(
             stats["place_rejected"] += 1
             place = None
 
+        prev = reuse.get(ident) if not place else None
+
         if place:
             if place.get("lat"):
                 stats["with_coords"] += 1
@@ -203,8 +262,10 @@ def build(
             slug = f"{slug}-{p.district.replace('區', '')}"
         seen[slug] = seen.get(slug, 0) + 1
 
-        lat = place.get("lat") if place else None
-        lng = place.get("lng") if place else None
+        lat = place.get("lat") if place else (prev.get("lat") if prev else None)
+        lng = place.get("lng") if place else (prev.get("lng") if prev else None)
+        if prev and prev.get("lat"):
+            stats["with_coords"] += 1
         distance = (
             haversine_m(AREA_CENTER[area], (lat, lng)) if lat and lng else None
         )
@@ -222,6 +283,9 @@ def build(
                     "hours": value.strip().replace(" – ", "–").replace(", ", "、"),
                 })
             hours_source = "google"
+        elif prev and prev.get("hoursSource") == "google" and prev.get("hours"):
+            hours = prev["hours"]
+            hours_source = "google"
         elif record and record.sessions:
             hours = sessions_to_hours(record.sessions)
             hours_source = "nhi"
@@ -229,6 +293,8 @@ def build(
         notes = []
         if p.nhi_contracted:
             notes.append("健保特約")
+        if p.name in MANUAL_STORE_NAMES:
+            notes.append("資料來源：臺北市商業登記")
 
         out.append({
             "slug": slug,
@@ -246,9 +312,11 @@ def build(
             "lat": lat,
             "lng": lng,
             "distanceM": distance,
-            "placeId": place.get("place_id") if place else None,
-            "businessStatus": place.get("business_status") if place else None,
+            "placeId": place.get("place_id") if place else (prev.get("placeId") if prev else None),
+            "businessStatus": place.get("business_status") if place
+                else (prev.get("businessStatus") if prev else None),
             "mapsUrl": (place or {}).get("maps_uri")
+                or (prev or {}).get("mapsUrl")
                 or f"https://www.google.com/maps/search/?api=1&query={p.name}+{p.full_address}",
             "hours": hours,
             "hoursSource": hours_source,
@@ -257,7 +325,12 @@ def build(
             "status": "listed",
         })
 
-    out.sort(key=lambda s: (districts.index(s["district"]), s["name"]))
+    listed_order = {name: i for i, (name, _, _) in enumerate(LISTED_STORES)}
+    out.sort(key=lambda s: (
+        listed_order.get(s["name"], len(listed_order)),
+        districts.index(s["district"]),
+        s["name"],
+    ))
     return out, stats
 
 
@@ -265,6 +338,21 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="產生消費端藥局 seed")
     ap.add_argument("--city", default="臺北市")
     ap.add_argument("--districts", default="中山區,信義區")
+    ap.add_argument(
+        "--scopes",
+        default=DEFAULT_SCOPES,
+        help='跨城市範圍，覆蓋 --city/--districts。格式：「臺北市:大同區,中山區;新北市:林口區,新莊區」',
+    )
+    ap.add_argument(
+        "--stores",
+        default=DEFAULT_STORE_NAMES,
+        help="店名白名單（頓號/逗號分隔）。只留這些公開收錄店家。",
+    )
+    ap.add_argument(
+        "--reuse-from",
+        default=str(repo_root() / "web" / "lib" / "stores.generated.json"),
+        help="從上一版 generated json 回收座標/營業時間（places cache 不進 repo）",
+    )
     ap.add_argument("--fda-cache", default=str(data_path(".cache", "fda-pharmacies.csv")))
     ap.add_argument("--nhi-cache", default=str(data_path(".cache", "nhi-pharmacies.csv")))
     ap.add_argument("--places-cache", default=str(data_path(".cache", "places")))
@@ -272,17 +360,35 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--today", default=date.today().strftime("%Y%m%d"))
     args = ap.parse_args(argv)
 
-    districts = [d.strip() for d in args.districts.split(",") if d.strip()]
+    if args.scopes:
+        scopes = []
+        for part in args.scopes.split(";"):
+            city, _, ds = part.strip().partition(":")
+            scopes.append((city, [d.strip() for d in ds.split(",") if d.strip()]))
+    else:
+        scopes = [(args.city, [d.strip() for d in args.districts.split(",") if d.strip()])]
+
+    only_stores = (
+        {s.strip() for s in args.stores.replace("、", ",").split(",") if s.strip()}
+        if args.stores
+        else None
+    )
+
     stores, stats = build(
-        args.city, districts,
+        scopes,
         Path(args.fda_cache), Path(args.nhi_cache), Path(args.places_cache),
         args.today,
+        only_stores=only_stores,
+        reuse_from=Path(args.reuse_from) if args.reuse_from else None,
     )
 
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(
-        json.dumps({"generatedFrom": "FDA + NHI + Google Places", "stores": stores},
+        json.dumps({
+            "generatedFrom": "FDA + NHI + Google Places + 臺北市商業登記",
+            "stores": stores,
+        },
                    ensure_ascii=False, indent=2) + "\n",
         encoding="utf-8",
     )

@@ -124,7 +124,7 @@ python3 scripts/subset-fonts.py
 ```
 
 ⚠️ **字符集是從 `app/` `components/` `lib/` 掃出來的，`.ts` `.tsx` `.json` 都掃**
-—— 166 家藥局的店名與地址在 `lib/stores.generated.json`，漏掉那個副檔名整批藥局名
+—— 店名與地址在 `lib/stores.generated.json`，漏掉那個副檔名整批店名
 就會掉回系統字型。**加藥品資料、重跑 seed、或改文案都要重跑這支 script。**
 
 使用者在搜尋框自己打的字本來就不在 subset 內 —— 那一格用系統字型，是刻意的取捨。
@@ -137,7 +137,7 @@ python3 scripts/subset-fonts.py
 
 ## 已知限制
 
-- 資料是 fixture，沒有真的定位：服務區固定中山區／信義區兩選一（`?area=`），
+- 資料是 fixture，沒有真的定位：服務區固定為目前收錄店家所在的大同／林口／新莊／中山區（`?area=`），
   距離以各區中心點估算，所以**跨區的距離不可互相比較** —— 會同時出現兩區藥局的
   地方（藥品頁、搜尋結果）都標了行政區
 - 地圖是示意圖（CSS 網格 + `Store.mapPos` 百分比），正式版接圖資
