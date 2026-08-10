@@ -114,6 +114,8 @@ const TIMELINE = [
   { label: "Outcome pending / verified", last: true },
 ] as const;
 
+const PILOT_AREAS = ["Datong", "Linkou", "Xinzhuang", "Zhongshan"] as const;
+
 function Container({ children }: { children: React.ReactNode }) {
   return <div className="mx-auto max-w-[1160px] px-5 sm:px-8">{children}</div>;
 }
@@ -198,6 +200,41 @@ export default function EnglishLandingPage() {
           </div>
         </Container>
       </header>
+
+      <section
+        className="border-b border-line bg-surface"
+        aria-labelledby="pilot-areas-heading"
+      >
+        <Container>
+          <div className="py-8 sm:py-10">
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <h2 id="pilot-areas-heading" className="m-0 text-[17px] font-black">
+                First-wave pilot focus across four Greater Taipei districts
+              </h2>
+              <p className="m-0 text-[13px] text-muted">
+                On-site workflow interviews and pilot-fit assessment are underway
+              </p>
+            </div>
+            <div className="mt-5 grid border-l border-t border-line-strong bg-white sm:grid-cols-4">
+              {PILOT_AREAS.map((area) => (
+                <div
+                  key={area}
+                  className="flex min-h-[70px] items-center border-b border-r border-line-strong px-4 py-3 text-[15px] font-bold text-ink"
+                >
+                  <span className="mr-2 text-green" aria-hidden>
+                    ＋
+                  </span>
+                  {area}
+                </div>
+              ))}
+            </div>
+            <p className="mb-0 mt-3 text-[12.5px] leading-[1.7] text-muted">
+              Area focus does not imply a formal partnership, installed hardware, or live
+              inventory.
+            </p>
+          </div>
+        </Container>
+      </section>
 
       {/* Why POS is not enough */}
       <section className="border-b border-line bg-surface">
