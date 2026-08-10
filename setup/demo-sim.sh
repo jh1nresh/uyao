@@ -3,7 +3,7 @@
 #
 # 用法：
 #   BOX_API_KEY=xxx ./setup/demo-sim.sh                          # 打線上
-#   UYAO_URL=http://localhost:3000 ./setup/demo-sim.sh           # 打本機（key 可省）
+#   UYAO_URL=http://localhost:3100 ./setup/demo-sim.sh           # 打本機（key 可省）
 #   STORE=中山伊通藥局 BOX_API_KEY=xxx ./setup/demo-sim.sh       # 換一家店
 #
 # GTIN 是示範對照表裡的假碼（web/lib/box.ts 的 SIM_GTIN_TO_DRUG）。

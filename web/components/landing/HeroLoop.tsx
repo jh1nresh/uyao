@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-import { CrossMark } from "@/components/CrossMark";
+import { BrandMark } from "@/components/BrandMark";
 
 /** Hero 閉環的 locale-aware 文案；zh／en 版本分別由 app/page.tsx 與 app/en/page.tsx 提供。 */
 export interface HeroLoopCopy {
@@ -78,7 +78,7 @@ export function HeroLoop({ copy }: { copy: HeroLoopCopy }) {
       <div className={fx(2)}>
         <div className="border border-line-strong bg-white">
           <div className="flex items-center gap-2 border-b border-line px-[18px] py-2.5">
-            <CrossMark size={18} />
+            <BrandMark size={18} />
             <span className="text-[13px] font-bold">uYao</span>
             <span className="num ml-auto text-[11px] font-medium text-muted">
               {copy.lineHeader}
