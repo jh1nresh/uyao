@@ -59,11 +59,11 @@ export default async function DrugPage({
     <>
       <SiteHeader query={drug.name} showTagline area={area} preserveAreaPath locatable />
 
-      <div className="px-4 pt-3 md:hidden">
+      <div className="shop-shell pt-3 md:hidden">
         <AreaSwitch area={area} preservePath locatable />
       </div>
 
-      <nav aria-label="麵包屑" className="px-4 pt-6 text-xs text-muted-2 sm:px-7 xl:px-12 2xl:px-16">
+      <nav aria-label="麵包屑" className="shop-shell pt-6 text-xs text-muted-2">
         <Link href={`/app?area=${area}`} className="-my-3 inline-flex min-h-11 items-center text-muted-2 no-underline hover:text-ink">
           首頁
         </Link>
@@ -82,15 +82,13 @@ export default async function DrugPage({
         {drug.name}
       </nav>
 
-      <div className="flex gap-5 border-b border-line px-4 pb-[22px] pt-3.5 sm:px-7 xl:px-12 2xl:px-16">
-        <div
-          aria-hidden
-          className="flex h-[104px] w-[104px] flex-none items-center justify-center border border-line bg-surface text-[13px] text-muted-2 max-sm:h-14 max-sm:w-14 max-sm:text-[12px]"
-        >
-          商品圖
-        </div>
-        <div className="flex flex-col gap-1.5">
-          <h1 className="m-0 text-lg font-black leading-[1.25] sm:text-2xl">
+      <section className="border-b border-line bg-paper">
+      <div className="shop-shell py-8 sm:py-10">
+        <div className="flex max-w-[900px] flex-col gap-2 border-l-2 border-forest pl-4 sm:pl-6">
+          <p className="num mb-1 text-[11px] font-semibold tracking-[.12em] text-green">
+            VERIFIED PRODUCT RECORD
+          </p>
+          <h1 className="editorial-display m-0 text-[32px] leading-[1.2] sm:text-[44px]">
             {drug.name}{" "}
             {drug.nameEn && (
               <span className="num text-sm font-medium text-muted">{drug.nameEn}</span>
@@ -121,6 +119,7 @@ export default async function DrugPage({
           </p>
         </div>
       </div>
+      </section>
 
       {rows.length > 0 ? (
         <PharmacyList
@@ -138,9 +137,11 @@ export default async function DrugPage({
       )}
 
       {alternatives.length > 0 && (
-        <section className="px-4 pb-[26px] pt-5 sm:px-7 xl:px-12 2xl:px-16">
-          <div className="mb-2.5 flex flex-wrap items-baseline gap-2">
-            <h2 className="text-sm font-black">同成分替代品</h2>
+        <section className="bg-ivory">
+          <div className="shop-shell py-10 sm:py-14">
+          <p className="shop-kicker mb-3">ALTERNATIVES</p>
+          <div className="mb-6 flex flex-wrap items-end gap-2">
+            <h2 className="editorial-display m-0 text-[28px] sm:text-[34px]">同成分替代品</h2>
             <p className="text-[13px] font-normal text-muted-2">
               {drug.ingredients.join("＋")} · 沒貨時的出路
             </p>
@@ -164,6 +165,7 @@ export default async function DrugPage({
                 </span>
               </div>
             ))}
+          </div>
           </div>
         </section>
       )}

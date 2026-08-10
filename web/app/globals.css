@@ -13,14 +13,53 @@
 }
 
 html {
-  background: #eef1ed;
+  background: #f2efe6;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-stopped {
+  overflow: clip;
 }
 
 body {
-  background: #f3f1e8;
-  color: #1a2420;
+  background: #f2efe6;
+  color: #1c2722;
   -webkit-font-smoothing: antialiased;
   font-variant-numeric: tabular-nums;
+}
+
+@layer components {
+  .shop-shell {
+    @apply mx-auto w-full max-w-[1344px] px-4 sm:px-7 xl:px-12;
+  }
+
+  .shop-kicker {
+    @apply num text-[11px] font-semibold tracking-[.14em] text-green;
+  }
+
+  .action-primary {
+    @apply inline-flex min-h-11 items-center justify-center bg-forest px-5 font-bold text-paper no-underline shadow-[0_8px_22px_rgba(23,57,44,0.14)] transition-[background-color,box-shadow,transform] duration-200 hover:bg-ink active:translate-y-px active:shadow-none disabled:cursor-not-allowed disabled:opacity-55;
+  }
+
+  .action-secondary {
+    @apply inline-flex min-h-11 items-center justify-center border border-line-strong bg-paper px-5 font-bold text-ink no-underline transition-[background-color,border-color,transform] duration-200 hover:border-forest hover:bg-surface active:translate-y-px disabled:cursor-not-allowed disabled:opacity-55;
+  }
+
+  .history-link:visited {
+    color: #59665f;
+  }
 }
 
 /* 數據欄位（價格/距離/效期）一律等寬 */
@@ -65,17 +104,39 @@ body {
 }
 
 .paper-elevation {
-  box-shadow: 0 24px 60px rgba(37, 54, 45, 0.12);
+  box-shadow: 0 22px 52px rgba(37, 54, 45, 0.09);
+}
+
+.motion-ready [data-motion-section="true"] {
+  opacity: 0;
+  transform: translate3d(0, 24px, 0);
+  transition:
+    opacity 480ms var(--ease-brand),
+    transform 560ms var(--ease-brand);
+  will-change: opacity, transform;
+}
+
+.motion-ready [data-motion-section="true"][data-motion-visible="true"] {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .crossfade,
-  .sheet-in {
+  .sheet-in,
+  .hero-loop-progress,
+  .hero-loop-action,
+  .hero-loop-result,
+  [data-motion-section="true"] {
     animation: none;
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
 }
 
 :focus-visible {
-  outline: 2px solid #0b7a3e;
+  outline: 2px solid #087b43;
   outline-offset: 1px;
 }

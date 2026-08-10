@@ -23,25 +23,22 @@ export interface HeroLoopCopy {
 
 /**
  * Hero 的 Supply → Action → Outcome 閉環視覺。
- * 一次性的三段進場（200ms 起、每段 +240ms）；prefers-reduced-motion
- * 或無 JS 時三段直接完整可見 —— 敘事不靠動畫成立。
+ * 三段內容始終可見；動畫只把注意力從供給訊號帶到行動與結果。
+ * 因此 hydration、無 JS 與 reduced motion 都不會先閃現再消失。
  */
 export function HeroLoop({ copy }: { copy: HeroLoopCopy }) {
-  const [step, setStep] = useState(3);
+  const [step, setStep] = useState(0);
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    setStep(0);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setStep(3);
+      return;
+    }
     const timers = [1, 2, 3].map((s, i) =>
       window.setTimeout(() => setStep(s), 200 + i * 240),
     );
     return () => timers.forEach(clearTimeout);
   }, []);
-
-  const fx = (n: number) =>
-    `transition-[opacity,transform] duration-[320ms] ease-[cubic-bezier(0.23,1,0.32,1)] ${
-      step >= n ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
-    }`;
 
   return (
     <div className="min-w-0">
@@ -55,9 +52,14 @@ export function HeroLoop({ copy }: { copy: HeroLoopCopy }) {
       </div>
 
       <div className="paper-elevation relative overflow-hidden border border-line bg-paper px-5 py-5 sm:px-7 sm:py-6">
-        <div className="absolute inset-y-0 left-0 w-1 bg-green" />
+        <div className="absolute inset-y-0 left-0 w-1 bg-green-tint-line" aria-hidden>
+          <span
+            className="hero-loop-progress block h-full origin-top bg-green transition-transform duration-500 ease-[cubic-bezier(0.23,1,0.32,1)]"
+            style={{ transform: `scaleY(${step / 3})` }}
+          />
+        </div>
 
-        <div className={`${fx(1)} border-b border-line pb-5`}>
+        <div className="border-b border-line pb-5">
           <div className="num mb-3 text-[11.5px] font-semibold tracking-[.08em] text-muted">
             {copy.scanTitle}
           </div>
@@ -69,7 +71,7 @@ export function HeroLoop({ copy }: { copy: HeroLoopCopy }) {
           </div>
         </div>
 
-        <div className={`${fx(2)} py-5`}>
+        <div className="py-5">
           <div className="flex items-center gap-2">
             <BrandMark size={18} />
             <span className="text-[13px] font-bold">uYao</span>
@@ -82,7 +84,11 @@ export function HeroLoop({ copy }: { copy: HeroLoopCopy }) {
             {copy.cardMetaLines.map((line) => <div key={line}>{line}</div>)}
           </div>
           <div className="grid gap-2">
-            <span className="bg-green px-3 py-3 text-center text-[14px] font-bold text-white">
+            <span
+              className={`hero-loop-action bg-forest px-3 py-3 text-center text-[14px] font-bold text-paper transition-transform duration-300 ${
+                step >= 2 ? "scale-[1.01]" : "scale-100"
+              }`}
+            >
               {copy.primaryBtn}
             </span>
             <div className="grid gap-2 sm:grid-cols-2">
@@ -95,7 +101,13 @@ export function HeroLoop({ copy }: { copy: HeroLoopCopy }) {
           </div>
         </div>
 
-        <div className={`${fx(3)} num border-t border-dashed border-line pt-4 text-[12px] font-medium leading-[1.9]`}>
+        <div className="num relative border-t border-dashed border-line pt-4 text-[12px] font-medium leading-[1.9]">
+          <span
+            aria-hidden
+            className={`hero-loop-result absolute right-0 top-4 h-2 w-2 rounded-full bg-green transition-[opacity,transform] duration-300 ${
+              step >= 3 ? "scale-100 opacity-100" : "scale-50 opacity-0"
+            }`}
+          />
           <div className="tracking-[.08em] text-muted">{copy.receiptTitle}</div>
           <div className="mt-1 flex flex-wrap gap-x-6 gap-y-1">
             <span><span className="mr-2 text-muted">{copy.statusLabel}</span><strong className="text-green">{copy.statusValue}</strong></span>

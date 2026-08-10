@@ -8,7 +8,7 @@ import type { AreaSlug } from "@/lib/types";
 type Kind = "catalog_miss" | "inventory_miss";
 
 const INPUT =
-  "h-11 min-w-0 border border-line-strong bg-white px-3 text-[15px] text-ink outline-none placeholder:text-muted-2 focus:border-green sm:h-9";
+  "h-11 min-w-0 border border-line-strong bg-paper px-3 text-[15px] text-ink outline-none placeholder:text-muted-2 focus:border-green";
 
 /**
  * 落空搜尋的收口。
@@ -99,38 +99,38 @@ export function NotifyMe({
         留個聯絡方式。這一區有藥局裝上盒子、而且{what}有貨時第一時間通知你。
       </p>
 
-      <div className="mt-2.5 flex flex-col gap-2 sm:flex-row">
-        <label className="sr-only" htmlFor="notify-area">
-          你在哪一區
+      <div className="mt-2.5 flex flex-col gap-2 sm:flex-row sm:items-end">
+        <label className="grid gap-1 text-[12px] font-medium text-muted" htmlFor="notify-area">
+          <span>你在哪一區</span>
+          <select
+            id="notify-area"
+            value={area}
+            onChange={(e) => setArea(e.target.value as AreaSlug)}
+            className={`${INPUT} flex-none`}
+          >
+            {AREAS.map((a) => (
+              <option key={a.slug} value={a.slug}>
+                {a.shortName}
+              </option>
+            ))}
+          </select>
         </label>
-        <select
-          id="notify-area"
-          value={area}
-          onChange={(e) => setArea(e.target.value as AreaSlug)}
-          className={`${INPUT} flex-none`}
-        >
-          {AREAS.map((a) => (
-            <option key={a.slug} value={a.slug}>
-              {a.shortName}
-            </option>
-          ))}
-        </select>
 
-        <label className="sr-only" htmlFor="notify-contact">
-          Email 或 LINE ID
+        <label className="grid min-w-0 flex-1 gap-1 text-[12px] font-medium text-muted" htmlFor="notify-contact">
+          <span>Email 或 LINE ID</span>
+          <input
+            id="notify-contact"
+            value={contact}
+            onChange={(e) => setContact(e.target.value)}
+            placeholder="例如 name@example.com"
+            className={INPUT}
+          />
         </label>
-        <input
-          id="notify-contact"
-          value={contact}
-          onChange={(e) => setContact(e.target.value)}
-          placeholder="Email 或 LINE ID"
-          className={`${INPUT} sm:flex-1`}
-        />
 
         <button
           type="submit"
           disabled={pending}
-          className="h-11 flex-none bg-green px-[18px] text-[15px] font-bold text-white hover:bg-green-hover disabled:opacity-60 sm:h-9"
+          className="action-primary h-11 flex-none text-[15px]"
         >
           {pending ? "送出中…" : "通知我"}
         </button>
