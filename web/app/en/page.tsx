@@ -442,8 +442,8 @@ export default function EnglishLandingPage() {
                   <Image
                     src="/landing/consumer-web.png"
                     alt="Live consumer product: a search for a medicine shows no verified stock nearby and offers a restock notification form"
-                    width={1081}
-                    height={1930}
+                    width={860}
+                    height={1536}
                     className="absolute inset-0 h-full w-full object-cover object-bottom"
                   />
                 </div>
