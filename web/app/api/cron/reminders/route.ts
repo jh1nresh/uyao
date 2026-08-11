@@ -79,6 +79,10 @@ export async function GET(request: Request) {
         (wasConfirmed
           ? `保留 ${r.holdHours} 小時已過 → 自動關單，通知藥局放回架上`
           : `藥局 ${EXPIRE_UNANSWERED_AFTER_HOURS} 小時未回覆 → 自動關單，不算消費者未取`),
+      `${r.demo ? "[DEMO] " : ""}${r.code} ` +
+        (wasConfirmed
+          ? `${r.holdHours}-hour hold expired → reservation closed and pharmacy told to return the item to the shelf`
+          : `pharmacy did not reply within ${EXPIRE_UNANSWERED_AFTER_HOURS} hours → reservation closed without counting a missed pickup`),
     );
 
     if (wasConfirmed && !r.demo) {
@@ -134,6 +138,7 @@ export async function GET(request: Request) {
       logConsole(
         "⏳",
         `${r.demo ? "［示範］" : ""}${r.code} 藥局 ${REMIND_STORE_AFTER_MIN} 分鐘未回 → 自動催單（只催這一次）`,
+        `${r.demo ? "[DEMO] " : ""}${r.code} pharmacy had not replied after ${REMIND_STORE_AFTER_MIN} minutes → one automatic reminder sent`,
       );
     } catch (err) {
       console.error(`[cron] 催單推播失敗 ${r.code}`, String(err).slice(0, 200));

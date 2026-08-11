@@ -25,6 +25,17 @@ from .gs1 import classify_and_parse
 from .spool import EventSpool, Uploader
 
 
+def drain_all(up: Uploader, spool: EventSpool) -> int:
+    """Drain the spool or fail instead of reporting a false zero-event success."""
+    total = 0
+    while (n := up.drain_once()) > 0:
+        total += n
+    remaining = len(spool.pending(10_000))
+    if remaining:
+        raise RuntimeError(f"upload failed: {remaining} events remain pending")
+    return total
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="PharmaBox dev pipeline (stdin scanner)")
     ap.add_argument("--db", default="/tmp/pharmabox-dev.db")
@@ -46,9 +57,10 @@ def main() -> None:
             sys.exit("set PHARMABOX_API_URL first")
         up = Uploader(spool, api_url, device_id=args.device,
                       api_key=os.environ.get("PHARMABOX_API_KEY"))
-        total = 0
-        while (n := up.drain_once()) > 0:
-            total += n
+        try:
+            total = drain_all(up, spool)
+        except RuntimeError as err:
+            sys.exit(str(err))
         print(f"uploaded {total} events")
         return
 

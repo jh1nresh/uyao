@@ -1,4 +1,8 @@
+"use client";
+
 import { BADGE_COLOR } from "@/lib/stock";
+import { stockCopy } from "@/lib/i18n";
+import { useLocale } from "./LocaleProvider";
 import type { StockBadgeSpec } from "@/lib/types";
 
 /**
@@ -14,6 +18,8 @@ export function StockBadge({
   short?: boolean;
   className?: string;
 }) {
+  const locale = useLocale();
+  const localized = stockCopy(badge, locale);
   return (
     <span
       className={`inline-flex items-center gap-1.5 font-medium ${BADGE_COLOR[badge.tier]} ${className}`}
@@ -21,7 +27,7 @@ export function StockBadge({
       <span className="num" aria-hidden>
         {badge.char}
       </span>
-      {short ? badge.shortText : badge.text}
+      {short ? localized.shortText : localized.text}
     </span>
   );
 }

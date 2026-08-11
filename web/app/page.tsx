@@ -7,6 +7,8 @@ import { SHOP_URL } from "@/lib/shop";
 import { HeroLoop, type HeroLoopCopy } from "@/components/landing/HeroLoop";
 import { PilotCtaForm, type PilotFormCopy } from "@/components/landing/PilotCtaForm";
 
+const ZH_SHOP_URL = `${SHOP_URL.replace(/\/$/, "")}/zh-tw/app`;
+
 /**
  * 公司 landing（design: `uYao Landing.dc.html`，spec: company-landing-page.md
  * + company-landing-page-yc-en-adjustment.md）。
@@ -20,8 +22,8 @@ export const metadata: Metadata = {
   description:
     "uYao 主動處理獨立藥局的庫存、效期與附近需求，只把必要決策交給藥師批准。",
   alternates: {
-    canonical: "/",
-    languages: { "zh-TW": "/", en: "/en", "x-default": "/" },
+    canonical: "/zh-tw",
+    languages: { "zh-TW": "/zh-tw", en: "/en", "x-default": "/zh-tw" },
   },
   openGraph: {
     title: "uYao｜獨立藥局的 AI Operating System",
@@ -113,7 +115,7 @@ export default function CompanyLandingPage() {
       <nav className="sticky top-0 z-50 border-b border-line-strong bg-ivory text-ink">
         <Container>
           <div className="flex h-[72px] items-center justify-between gap-5 sm:h-20 sm:gap-6">
-            <Link href="/" className="flex min-h-11 flex-none items-center text-ink no-underline">
+            <Link href="/zh-tw" className="flex min-h-11 flex-none items-center text-ink no-underline">
               <span className="flex items-center gap-1.5 sm:hidden">
                 <BrandLogo height={32} />
               </span>
@@ -125,7 +127,7 @@ export default function CompanyLandingPage() {
               <a href="#how" className="hidden min-h-11 items-center text-ink no-underline hover:text-green md:inline-flex">
                 怎麼運作
               </a>
-              <a href={SHOP_URL} className="hidden min-h-11 items-center text-ink no-underline hover:text-green md:inline-flex">
+              <a href={ZH_SHOP_URL} className="hidden min-h-11 items-center text-ink no-underline hover:text-green md:inline-flex">
                 附近找藥
               </a>
               <a
@@ -136,7 +138,7 @@ export default function CompanyLandingPage() {
               </a>
               <span className="num flex min-h-11 items-center text-[13px] text-muted">
                 <span aria-current="true" className="font-semibold text-ink">
-                  中
+                  ZH-TW
                 </span>
                 {" / "}
                 <Link href="/en" className="inline-flex min-h-11 items-center text-muted no-underline hover:text-green">
@@ -173,7 +175,7 @@ export default function CompanyLandingPage() {
                   申請試點
                 </a>
                 <a
-                  href={SHOP_URL}
+                  href={ZH_SHOP_URL}
                   className="inline-flex min-h-11 items-center whitespace-nowrap border-b border-forest py-2 text-[15px] font-semibold text-forest no-underline hover:border-green hover:text-green"
                 >
                   看看消費端怎麼找藥 →
@@ -506,7 +508,7 @@ export default function CompanyLandingPage() {
               <BrandLogo height={30} />
             </div>
             <div className="flex flex-wrap gap-x-7 text-[14.5px]">
-              <a href={SHOP_URL} className="inline-flex min-h-11 items-center text-forest hover:text-green">
+              <a href={ZH_SHOP_URL} className="inline-flex min-h-11 items-center text-forest hover:text-green">
                 附近找藥
               </a>
               <a href="#pilot" className="inline-flex min-h-11 items-center text-forest hover:text-green">

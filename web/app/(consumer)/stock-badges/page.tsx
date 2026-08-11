@@ -4,12 +4,14 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { StockBadge } from "@/components/StockBadge";
 import { stockBadge } from "@/lib/stock";
+import { getRequestLocale } from "@/lib/locale-server";
 
-export const metadata: Metadata = {
-  title: "庫存徽章怎麼讀",
-  description:
-    "有藥的庫存狀態來自藥局店內掃描的新鮮度，誠實分級：今日掃描確認、N 天前確認、請預留確認。我們永遠不顯示確切數量。",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale();
+  return locale === "en"
+    ? { title: "How availability signals work", description: "uYao shows receiving-scan freshness, never an invented exact quantity." }
+    : { title: "庫存徽章怎麼讀", description: "有藥的庫存狀態來自藥局店內掃描的新鮮度，誠實分級：今日掃描確認、N 天前確認、請預留確認。我們永遠不顯示確切數量。" };
+}
 
 const TIERS = [
   {
@@ -26,7 +28,15 @@ const TIERS = [
   },
 ];
 
-export default function StockBadgesPage() {
+export default async function StockBadgesPage() {
+  const locale = await getRequestLocale();
+  const tiers = locale === "en"
+    ? [
+        { badge: stockBadge(0), desc: "A receiving scan arrived within 24 hours. This is a fresh supply signal, not an exact quantity." },
+        { badge: stockBadge(3), desc: "The latest receiving scan was 1–7 days ago. The item may remain, so reserve before traveling." },
+        { badge: stockBadge(null), desc: "No recent receiving signal. The pharmacy must confirm availability before pickup." },
+      ]
+    : TIERS;
   return (
     <>
       <SiteHeader showTagline />
@@ -34,13 +44,13 @@ export default function StockBadgesPage() {
       <main className="min-h-[calc(100svh-11rem)]">
       <section className="shop-shell max-w-[760px] py-10 sm:py-14">
         <p className="shop-kicker mb-3">INVENTORY CONFIDENCE</p>
-        <h1 className="editorial-display mb-2 text-[32px] leading-[1.25] sm:text-[42px]">誠實分級：來自盒子掃描新鮮度</h1>
+        <h1 className="editorial-display mb-2 text-[32px] leading-[1.25] sm:text-[42px]">{locale === "en" ? "Honest availability from receiving-scan freshness" : "誠實分級：來自盒子掃描新鮮度"}</h1>
         <p className="mb-4 text-[13px] text-muted-2">
-          永遠不顯示確切數量（是估計值），只顯示狀態。全站同一套字符：● ○ ？
+          {locale === "en" ? "We never show an estimated exact quantity. The same symbols appear everywhere: ● ○ ?" : "永遠不顯示確切數量（是估計值），只顯示狀態。全站同一套字符：● ○ ？"}
         </p>
 
         <div className="mt-7 border border-line bg-paper">
-          {TIERS.map((t) => (
+          {tiers.map((t) => (
             <div
               key={t.badge.tier}
               className="flex flex-col gap-1 border-b border-line-soft px-4 py-3 last:border-b-0 sm:flex-row sm:items-center sm:gap-3.5"
@@ -52,10 +62,7 @@ export default function StockBadgesPage() {
         </div>
 
         <p className="mt-3.5 text-[13px] leading-[1.7] text-muted">
-          排序規則跟比價網站相反：<b className="text-ink">有貨新鮮度 → 距離 → 價格</b>
-          。買貼布的人要「現在拿到」，不是省 5 塊。
-          <br />
-          徽章顏色只用墨色與同一個綠 — 不引入紅/黃警示色。
+          {locale === "en" ? <><b className="text-ink">Freshness → distance → price.</b> A customer searching for medicine usually values getting it now more than saving a small amount.</> : <>排序規則跟比價網站相反：<b className="text-ink">有貨新鮮度 → 距離 → 價格</b>。買貼布的人要「現在拿到」，不是省 5 塊。<br />徽章顏色只用墨色與同一個綠 — 不引入紅/黃警示色。</>}
         </p>
       </section>
       </main>

@@ -4,8 +4,10 @@ import { useState } from "react";
 
 import { ReserveSheet, type ReserveTarget } from "./ReserveSheet";
 import { StockBadge } from "./StockBadge";
+import { useLocale } from "./LocaleProvider";
 import type { DrugRow } from "@/lib/data";
 import { formatPrice } from "@/lib/format";
+import { drugCopy } from "@/lib/i18n";
 import type { Store } from "@/lib/types";
 
 /**
@@ -19,19 +21,22 @@ import type { Store } from "@/lib/types";
  *    藥局若已綁 LINE 會當場收到標了「示範」的推播。這就是 pitch 的高潮。
  */
 export function PreviewShelf({ store, items }: { store: Store; items: DrugRow[] }) {
+  const locale = useLocale();
   const [target, setTarget] = useState<ReserveTarget | null>(null);
 
   return (
     <>
       <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 lg:grid-cols-4">
-        {items.map((it) => (
+        {items.map((it) => {
+          const drug = drugCopy(it.drug, locale);
+          return (
           <div
             key={it.drug.slug}
             className="flex flex-col gap-[5px] border border-line px-3.5 py-3"
           >
-            <span className="text-[15px] font-medium text-ink">{it.drug.name}</span>
+            <span className="text-[15px] font-medium text-ink">{drug.name}</span>
             <span className="text-[13px] text-muted-2">
-              {it.drug.spec} · {it.drug.drugClass}
+              {drug.spec} · {drug.drugClass}
             </span>
             <span className="mt-0.5 flex items-center gap-2">
               <span className="num text-[15px] font-semibold text-ink">
@@ -44,7 +49,7 @@ export function PreviewShelf({ store, items }: { store: Store; items: DrugRow[] 
               type="button"
               onClick={() =>
                 setTarget({
-                  drug: { slug: it.drug.slug, name: it.drug.name, spec: it.drug.spec },
+                  drug: { slug: it.drug.slug, name: drug.name, spec: drug.spec },
                   store,
                   priceTwd: it.priceTwd,
                   badge: it.badge,
@@ -58,10 +63,10 @@ export function PreviewShelf({ store, items }: { store: Store; items: DrugRow[] 
                   : "border-forest bg-forest text-paper hover:bg-ink"
               }`}
             >
-              預留
+              {locale === "en" ? "Reserve" : "預留"}
             </button>
           </div>
-        ))}
+        );})}
       </div>
 
       {target && (

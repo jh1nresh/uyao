@@ -44,6 +44,6 @@ async function cmd(args) {
   const scans = (await cmd(["KEYS", "scan:*"])) ?? [];
   for (const k of scans) await cmd(["DEL", k]);
   await cmd(["DEL", "console:log"]);
-  console.log(`已清除 ${scans.length} 個掃描訊號 + console 流水，/console 現在是空白`);
+  console.log(`已清除 ${scans.length} 個掃描訊號 + console 流水，/zh-tw/console 現在是空白`);
 })();
 '

@@ -2,7 +2,9 @@
 
 import { useEffect, useRef, useState } from "react";
 
+import { useLocale } from "./LocaleProvider";
 import { AREAS } from "@/lib/data";
+import { areaCopy } from "@/lib/i18n";
 import type { AreaSlug } from "@/lib/types";
 
 type Kind = "catalog_miss" | "inventory_miss";
@@ -31,6 +33,7 @@ export function NotifyMe({
   drugName?: string;
   area: AreaSlug;
 }) {
+  const locale = useLocale();
   const [area, setArea] = useState<AreaSlug>(routeArea);
   const [contact, setContact] = useState("");
   const [pending, setPending] = useState(false);
@@ -67,41 +70,40 @@ export function NotifyMe({
       });
       const data = (await res.json()) as { ok?: boolean; error?: string };
       if (!res.ok) {
-        setError(data.error ?? "送出失敗，請稍後再試");
+        setError(locale === "en" ? "Could not submit. Please try again." : data.error ?? "送出失敗，請稍後再試");
         return;
       }
       setDone(true);
       setContact("");
     } catch {
-      setError("連線失敗，請稍後再試");
+      setError(locale === "en" ? "Connection failed. Please try again." : "連線失敗，請稍後再試");
     } finally {
       setPending(false);
     }
   }
 
-  const what = drugName ? `「${drugName}」` : query ? `「${query}」` : "這支藥";
+  const what = drugName ? `“${drugName}”` : query ? `“${query}”` : locale === "en" ? "this product" : "這支藥";
 
   if (done) {
     return (
       <div className="mt-2.5 border border-green-tint-line bg-green-tint px-4 py-3 text-[14px] leading-[1.7] text-ink-2">
-        <b className="font-bold text-ink">記下來了</b> —— 這一區有藥局裝上盒子、
-        而且{what}有貨的時候，我們會通知你。
+        {locale === "en" ? <><b className="font-bold text-ink">Request saved.</b> We will notify you when a participating pharmacy in this area confirms {what}.</> : <><b className="font-bold text-ink">記下來了</b> —— 這一區有藥局裝上盒子、而且{what}有貨的時候，我們會通知你。</>}
       </div>
     );
   }
 
   return (
     <form onSubmit={submit} className="mt-2.5 border border-line px-4 py-3.5">
-      <p className="text-[14px] font-bold text-ink">有貨的時候通知我</p>
+      <p className="text-[14px] font-bold text-ink">{locale === "en" ? "Notify me when available" : "有貨的時候通知我"}</p>
       {/* 沒有庫存流可以觸發通知，所以不能寫「有貨就通知」——
           只能承諾「有藥局裝上盒子而且有貨時」。 */}
       <p className="mt-0.5 text-[13px] leading-[1.6] text-muted">
-        留個聯絡方式。這一區有藥局裝上盒子、而且{what}有貨時第一時間通知你。
+        {locale === "en" ? `Leave a contact. We will notify you when a participating pharmacy in this area confirms ${what}.` : <>留個聯絡方式。這一區有藥局裝上盒子、而且{what}有貨時第一時間通知你。</>}
       </p>
 
       <div className="mt-2.5 flex flex-col gap-2 sm:flex-row sm:items-end">
         <label className="grid gap-1 text-[12px] font-medium text-muted" htmlFor="notify-area">
-          <span>你在哪一區</span>
+          <span>{locale === "en" ? "Your area" : "你在哪一區"}</span>
           <select
             id="notify-area"
             value={area}
@@ -110,7 +112,7 @@ export function NotifyMe({
           >
             {AREAS.map((a) => (
               <option key={a.slug} value={a.slug}>
-                {a.shortName}
+                {areaCopy(a, locale).shortName}
               </option>
             ))}
           </select>
@@ -132,7 +134,7 @@ export function NotifyMe({
           disabled={pending}
           className="action-primary h-11 flex-none text-[15px]"
         >
-          {pending ? "送出中…" : "通知我"}
+          {pending ? (locale === "en" ? "Submitting…" : "送出中…") : (locale === "en" ? "Notify me" : "通知我")}
         </button>
       </div>
 

@@ -38,8 +38,14 @@ export function drugSlugForGtin(gtin: string): string | null {
 // 徽章邏輯 7 天就降回「待確認」，狀態多留幾週是給 console 回顧用
 const SCAN_TTL = 30 * 24 * 3600;
 
-export async function recordScan(storeSlug: string, drugSlug: string): Promise<void> {
-  await kv.set(`scan:${storeSlug}:${drugSlug}`, new Date().toISOString(), SCAN_TTL);
+interface StoredScanSignal {
+  at: string;
+  kind: "receiving";
+}
+
+export async function recordReceivingScan(storeSlug: string, drugSlug: string): Promise<void> {
+  const signal: StoredScanSignal = { at: new Date().toISOString(), kind: "receiving" };
+  await kv.set(`scan:${storeSlug}:${drugSlug}`, JSON.stringify(signal), SCAN_TTL);
 }
 
 export interface ScanRow {
@@ -48,6 +54,7 @@ export interface ScanRow {
   lastScanAt: string;
   daysSinceScan: number;
   badge: StockBadgeSpec;
+  kind: "receiving";
 }
 
 /** console 用的現況總表。走 KEYS，不要放進消費者請求的路徑上。 */
@@ -55,18 +62,28 @@ export async function scanSummary(): Promise<ScanRow[]> {
   const ks = await kv.keys("scan:").catch(() => []);
   const rows: ScanRow[] = [];
   for (const k of ks) {
-    const at = await kv.get(k).catch(() => null);
-    if (!at) continue;
+    const raw = await kv.get(k).catch(() => null);
+    if (!raw) continue;
+    let signal: StoredScanSignal;
+    try {
+      const parsed = JSON.parse(raw) as Partial<StoredScanSignal>;
+      if (!parsed.at || parsed.kind !== "receiving") continue;
+      signal = parsed as StoredScanSignal;
+    } catch {
+      // Existing local demo state stored only the ISO timestamp.
+      signal = { at: raw, kind: "receiving" };
+    }
     // key 形狀是 scan:<store>:<drug>，兩個 slug 本身都不含冒號
     const [, storeSlug, drugSlug] = k.split(":");
     if (!storeSlug || !drugSlug) continue;
-    const days = (Date.now() - new Date(at).getTime()) / 86_400_000;
+    const days = (Date.now() - new Date(signal.at).getTime()) / 86_400_000;
     rows.push({
       storeSlug,
       drugSlug,
-      lastScanAt: at,
+      lastScanAt: signal.at,
       daysSinceScan: days,
       badge: stockBadge(days),
+      kind: "receiving",
     });
   }
   return rows.sort((a, b) => b.lastScanAt.localeCompare(a.lastScanAt));
@@ -86,14 +103,15 @@ export interface ConsoleEvent {
   /** 一個 emoji，讓流水掃一眼就分得出訊號類型 */
   icon: string;
   msg: string;
+  msgEn?: string;
 }
 
 /**
  * fire-and-forget：console 流水斷了不能拖垮正事（預留、推播）。
  * 但失敗要出聲 —— 靜默吞錯誤這個坑踩過一次了。
  */
-export function logConsole(icon: string, msg: string): void {
-  const e: ConsoleEvent = { at: new Date().toISOString(), icon, msg };
+export function logConsole(icon: string, msg: string, msgEn?: string): void {
+  const e: ConsoleEvent = { at: new Date().toISOString(), icon, msg, msgEn };
   kv.append(LOG_KEY, JSON.stringify(e), LOG_KEEP).catch((err) =>
     console.error("[console] 流水寫入失敗", String(err).slice(0, 200)),
   );

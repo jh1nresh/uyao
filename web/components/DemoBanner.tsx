@@ -8,14 +8,19 @@
  * 有藥局裝上盒子、開始有掃描流之後，這個橫幅連同 layout.tsx 的 noindex
  * 一起移除。
  */
-export function DemoBanner() {
+import { getRequestLocale } from "@/lib/locale-server";
+
+export async function DemoBanner() {
+  const locale = await getRequestLocale();
   return (
     <div className="border-b border-green-tint-line bg-sage/70 text-[12.5px] leading-[1.65] text-muted">
       <div className="shop-shell py-2">
         <b className="mr-2 inline-flex border border-green-tint-line bg-green-tint px-2 py-0.5 font-bold text-forest">
-          試營運
+          {locale === "en" ? "EARLY ACCESS" : "試營運"}
         </b>
-        店家資料來自政府開放資料；即時庫存尚未開始，前往門市前請先電話確認。售價與用藥說明由藥師於門市提供。
+        {locale === "en"
+          ? "Store records come from government open data. Live inventory is not yet available; call before visiting. Pharmacists provide prices and medicine guidance in store."
+          : "店家資料來自政府開放資料；即時庫存尚未開始，前往門市前請先電話確認。售價與用藥說明由藥師於門市提供。"}
       </div>
     </div>
   );

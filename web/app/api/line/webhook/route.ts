@@ -176,6 +176,7 @@ async function onPostback(userId: string, replyToken: string, data: string) {
       logConsole(
         "✅",
         `${done.demo ? "［示範］" : ""}${code} 藥局回報已交付 → 這筆圓滿結束，關閉催單與逾期`,
+        `${done.demo ? "[DEMO] " : ""}${code} pharmacy recorded pickup → workflow completed; reminders and expiry closed`,
       );
     }
     await appendRecord("reservations", {
@@ -214,6 +215,9 @@ async function onPostback(userId: string, replyToken: string, data: string) {
       action === "confirm"
         ? `${tag}${code} 藥局確認有貨 → 開始保留 ${updated.holdHours} 小時，消費者取貨頁已翻牌`
         : `${tag}${code} 藥局回報沒貨 → 取貨頁已更新，缺貨記入需求訊號`,
+      action === "confirm"
+        ? `${updated.demo ? "[DEMO] " : ""}${code} pharmacy confirmed availability → ${updated.holdHours}-hour hold started and pickup page updated`
+        : `${updated.demo ? "[DEMO] " : ""}${code} pharmacy reported no stock → pickup page updated and unmet demand recorded`,
     );
   }
 

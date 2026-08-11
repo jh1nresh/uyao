@@ -1,12 +1,20 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLocale } from "./LocaleProvider";
+import { localizedPath } from "@/lib/i18n";
 import type { AreaSlug } from "@/lib/types";
 
-const SEARCH_EXAMPLES = [
+const SEARCH_EXAMPLES_ZH = [
   "搜尋藥品，如：曼秀雷敦",
   "描述症狀，如：被蚊子咬",
   "搜尋需求，如：痠痛、止癢",
+] as const;
+
+const SEARCH_EXAMPLES_EN = [
+  "Search a product, e.g. Mentholatum",
+  "Describe a need, e.g. insect bite",
+  "Search a symptom, e.g. soreness or itch",
 ] as const;
 
 /**
@@ -25,6 +33,8 @@ export function SearchInput({
   autoFocus?: boolean;
   area?: AreaSlug;
 }) {
+  const locale = useLocale();
+  const examples = locale === "en" ? SEARCH_EXAMPLES_EN : SEARCH_EXAMPLES_ZH;
   const large = size !== "sm";
   const xl = size === "xl";
   const [exampleIndex, setExampleIndex] = useState(0);
@@ -55,16 +65,16 @@ export function SearchInput({
     if (!large || !isPlaceholderExiting || reduceMotion) return;
 
     const timeout = window.setTimeout(() => {
-      setExampleIndex((current) => (current + 1) % SEARCH_EXAMPLES.length);
+      setExampleIndex((current) => (current + 1) % examples.length);
       setIsPlaceholderExiting(false);
     }, 500);
 
     return () => window.clearTimeout(timeout);
-  }, [isPlaceholderExiting, large, reduceMotion]);
+  }, [examples.length, isPlaceholderExiting, large, reduceMotion]);
 
   return (
     <form
-      action="/search"
+      action={localizedPath("/search", locale)}
       role="search"
       className={`flex items-center bg-paper transition-[border-color,box-shadow,transform] duration-200 ${
         xl
@@ -79,7 +89,7 @@ export function SearchInput({
         ⌕
       </span>
       <label className="sr-only" htmlFor={`q-${size}`}>
-        搜尋藥品
+        {locale === "en" ? "Search medicines" : "搜尋藥品"}
       </label>
       <div className="group relative h-full min-w-0 flex-1">
         <input
@@ -88,7 +98,7 @@ export function SearchInput({
           type="search"
           autoFocus={autoFocus}
           defaultValue={defaultValue}
-          placeholder={large ? "" : "搜尋藥品"}
+          placeholder={large ? "" : locale === "en" ? "Search medicines" : "搜尋藥品"}
           onChange={(event) => setHasValue(event.currentTarget.value.length > 0)}
           // h-full：讓整個框都是點擊區，不是只有文字那 20px
           className={`h-full w-full min-w-0 bg-transparent text-ink outline-none placeholder:text-muted-2 focus:outline-none focus-visible:outline-none ${
@@ -110,7 +120,7 @@ export function SearchInput({
                   : "search-placeholder-enter"
               }
             >
-              {SEARCH_EXAMPLES[exampleIndex]}
+              {examples[exampleIndex]}
             </span>
           </div>
         )}
@@ -120,7 +130,7 @@ export function SearchInput({
           type="submit"
           className={`action-primary flex-none ${xl ? "h-14 px-5 text-[16px] sm:px-9" : "h-12 px-6 text-[15px]"}`}
         >
-          搜尋
+          {locale === "en" ? "Search" : "搜尋"}
         </button>
       )}
     </form>

@@ -5,9 +5,11 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useRef } from "react";
 
 import { useLocation } from "./LocationProvider";
+import { useLocale } from "./LocaleProvider";
 import { withArea } from "@/lib/area-route";
 import { AREAS } from "@/lib/data";
 import { nearestServiceArea } from "@/lib/geo";
+import { areaCopy, localizedPath } from "@/lib/i18n";
 import type { AreaSlug } from "@/lib/types";
 
 /**
@@ -37,9 +39,10 @@ function AreaSwitchWithRoute({
   const searchParams = useSearchParams();
   const router = useRouter();
   const { position, status, request } = useLocation();
+  const locale = useLocale();
   const applyWhenReady = useRef(false);
 
-  const targetPath = preservePath ? pathname : "/app";
+  const targetPath = preservePath ? pathname : localizedPath("/app", locale);
   const targetSearch = preservePath ? searchParams.toString() : "";
   const hrefFor = (nextArea: AreaSlug) => withArea(targetPath, targetSearch, nextArea);
 
@@ -66,13 +69,13 @@ function AreaSwitchWithRoute({
 
   const locationMessage =
     status === "denied"
-      ? "定位權限被拒絕，請改用行政區切換"
+      ? locale === "en" ? "Location permission was denied. Choose an area instead." : "定位權限被拒絕，請改用行政區切換"
       : status === "unavailable"
-        ? "這個瀏覽器不支援定位，請改用行政區切換"
+        ? locale === "en" ? "Location is unavailable in this browser. Choose an area instead." : "這個瀏覽器不支援定位，請改用行政區切換"
         : status === "timeout"
-          ? "定位逾時，請重試或改用行政區切換"
+          ? locale === "en" ? "Location timed out. Try again or choose an area." : "定位逾時，請重試或改用行政區切換"
           : status === "granted"
-            ? "已使用你的位置選擇最近服務區"
+            ? locale === "en" ? "Using your location to select the nearest service area." : "已使用你的位置選擇最近服務區"
             : "";
 
   return (
@@ -82,17 +85,17 @@ function AreaSwitchWithRoute({
           type="button"
           onClick={locate}
           disabled={status === "prompting"}
-          title={locationMessage || "使用我的位置選擇最近服務區"}
+          title={locationMessage || (locale === "en" ? "Use my location" : "使用我的位置選擇最近服務區")}
           className="-my-3 inline-flex min-h-11 items-center gap-1 pr-1 text-muted hover:text-green disabled:text-muted-2"
         >
           <span aria-hidden>◎</span>
-          <span className="hidden sm:inline">{status === "prompting" ? "定位中…" : "定位"}</span>
+          <span className="hidden sm:inline">{status === "prompting" ? (locale === "en" ? "Locating…" : "定位中…") : (locale === "en" ? "Locate" : "定位")}</span>
         </button>
       )}
       <span className="sr-only" aria-live="polite">
         {locationMessage}
       </span>
-      <div role="group" aria-label="選擇服務區" className="flex items-center gap-1">
+      <div role="group" aria-label={locale === "en" ? "Choose service area" : "選擇服務區"} className="flex items-center gap-1">
         {AREAS.map((a) => {
           const active = a.slug === area;
           return (
@@ -107,7 +110,7 @@ function AreaSwitchWithRoute({
                   : "-my-3 inline-flex min-h-11 items-center px-2 text-muted-2 no-underline hover:text-ink"
               }
             >
-              {a.shortName}
+              {areaCopy(a, locale).shortName}
             </Link>
           );
         })}
@@ -117,15 +120,16 @@ function AreaSwitchWithRoute({
 }
 
 function AreaSwitchFallback({ area, locatable = false }: AreaSwitchProps) {
+  const locale = useLocale();
   return (
     <div className="flex items-center gap-1.5 border border-line px-2.5 py-[5px] text-xs text-muted">
       {locatable && (
         <span className="-my-3 inline-flex min-h-11 items-center gap-1 pr-1 text-muted-2">
           <span aria-hidden>◎</span>
-          <span className="hidden sm:inline">定位</span>
+          <span className="hidden sm:inline">{locale === "en" ? "Locate" : "定位"}</span>
         </span>
       )}
-      <div role="group" aria-label="選擇服務區" className="flex items-center gap-1">
+      <div role="group" aria-label={locale === "en" ? "Choose service area" : "選擇服務區"} className="flex items-center gap-1">
         {AREAS.map((candidate) => (
           <span
             key={candidate.slug}
@@ -135,7 +139,7 @@ function AreaSwitchFallback({ area, locatable = false }: AreaSwitchProps) {
                 : "-my-3 inline-flex min-h-11 items-center px-2 text-muted-2"
             }
           >
-            {candidate.shortName}
+            {areaCopy(candidate, locale).shortName}
           </span>
         ))}
       </div>

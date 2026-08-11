@@ -4,6 +4,8 @@ import { AreaStores } from "./AreaStores";
 import { NotifyMe } from "./NotifyMe";
 import { formatDistance } from "@/lib/format";
 import { hoursSummary } from "@/lib/hours";
+import { localizedPath } from "@/lib/i18n";
+import { getRequestLocale } from "@/lib/locale-server";
 import type { AreaSlug, Store } from "@/lib/types";
 
 /**
@@ -13,7 +15,7 @@ import type { AreaSlug, Store } from "@/lib/types";
  * 已經登錄的藥局列出來讓人直接打電話 —— 對消費者是可用的退路，對我們
  * 是把「有人在找這個藥」變成看得見的需求。
  */
-export function NoInventoryYet({
+export async function NoInventoryYet({
   drugName,
   drugSlug,
   area,
@@ -26,14 +28,14 @@ export function NoInventoryYet({
   areaLabel: string;
   stores: Store[];
 }) {
+  const locale = await getRequestLocale();
   return (
     <section className="shop-shell py-10 sm:py-14">
       <p className="shop-kicker mb-3">INVENTORY STATUS</p>
       <div className="border border-line-strong bg-surface px-5 py-5 sm:px-6">
-        <p className="text-[18px] font-bold text-ink">目前查不到即時庫存</p>
+        <p className="text-[18px] font-bold text-ink">{locale === "en" ? "No live availability yet" : "目前查不到即時庫存"}</p>
         <p className="mt-1 text-[13px] leading-[1.7] text-muted">
-          庫存來自藥局店內掃描器，{areaLabel}還沒有藥局裝上盒子。
-          下面是這一區的藥局，可以直接打電話問有沒有「{drugName}」。
+          {locale === "en" ? `Availability comes from in-store scanners. No pharmacy in ${areaLabel} has installed the box yet. Call a pharmacy below to ask for “${drugName}”.` : <>庫存來自藥局店內掃描器，{areaLabel}還沒有藥局裝上盒子。下面是這一區的藥局，可以直接打電話問有沒有「{drugName}」。</>}
         </p>
       </div>
 
@@ -46,8 +48,8 @@ export function NoInventoryYet({
       />
 
       <div className="mt-2.5 flex flex-wrap items-baseline gap-2.5">
-        <h2 className="text-sm font-black">{areaLabel}的藥局</h2>
-        <p className="text-[13px] text-muted-2">{stores.length} 家 · 打電話前先看營業時段</p>
+        <h2 className="text-sm font-black">{locale === "en" ? `Pharmacies in ${areaLabel}` : `${areaLabel}的藥局`}</h2>
+        <p className="text-[13px] text-muted-2">{locale === "en" ? `${stores.length} stores · Check hours before calling` : `${stores.length} 家 · 打電話前先看營業時段`}</p>
       </div>
 
       <div className="mt-2">
@@ -61,9 +63,9 @@ export function NoInventoryYet({
       </div>
 
       <p className="mt-3 text-[13px] leading-[1.6] text-muted-2">
-        開藥局的？
-        <Link href="/pharmacy" className="-my-3 ml-1 inline-flex min-h-11 items-center text-green">
-          裝上盒子，你的庫存就會出現在這裡 →
+        {locale === "en" ? "Run a pharmacy?" : "開藥局的？"}
+        <Link href={localizedPath("/pharmacy", locale)} className="-my-3 ml-1 inline-flex min-h-11 items-center text-green">
+          {locale === "en" ? "Install the box and make your inventory visible →" : "裝上盒子，你的庫存就會出現在這裡 →"}
         </Link>
       </p>
     </section>

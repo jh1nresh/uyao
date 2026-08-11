@@ -17,6 +17,8 @@ import {
   storesInArea,
   toAreaSlug,
 } from "@/lib/data";
+import { areaCopy, categoryName, drugCopy, localizedPath } from "@/lib/i18n";
+import { getRequestLocale } from "@/lib/locale-server";
 
 export function generateStaticParams() {
   return allDrugs().map((d) => ({ slug: d.slug }));
@@ -28,13 +30,17 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+  const locale = await getRequestLocale();
   const drug = getDrug(slug);
-  if (!drug) return { title: "找不到這個藥品" };
+  if (!drug) return { title: locale === "en" ? "Medicine not found" : "找不到這個藥品" };
+  const displayDrug = drugCopy(drug, locale);
   const rows = storesForDrug(drug.slug);
   const inStock = rows.filter((r) => r.badge.tier === "fresh").length;
   return {
-    title: `${drug.name} ${drug.spec} — 附近哪家藥局有貨`,
-    description: `${drug.name}（${drug.form} · ${drug.spec}）附近 ${rows.length} 家藥局的庫存狀態，其中 ${inStock} 家今日掃描確認有貨。可線上預留，到店由藥師確認交付。`,
+    title: locale === "en" ? `${displayDrug.name} ${drug.spec} — nearby pharmacy availability` : `${drug.name} ${drug.spec} — 附近哪家藥局有貨`,
+    description: locale === "en"
+      ? `${displayDrug.name} (${displayDrug.form} · ${drug.spec}) availability at ${rows.length} nearby pharmacies; ${inStock} received today. Reserve for pharmacist-confirmed pickup.`
+      : `${drug.name}（${drug.form} · ${drug.spec}）附近 ${rows.length} 家藥局的庫存狀態，其中 ${inStock} 家今日掃描確認有貨。可線上預留，到店由藥師確認交付。`,
   };
 }
 
@@ -48,8 +54,10 @@ export default async function DrugPage({
   const { slug } = await params;
   const { area: rawArea } = await searchParams;
   const area = toAreaSlug(rawArea);
+  const locale = await getRequestLocale();
   const drug = getDrug(slug);
   if (!drug) notFound();
+  const displayDrug = drugCopy(drug, locale);
 
   const rows = storesForDrug(drug.slug, area);
   const alternatives = alternativesFor(drug.slug, area);
@@ -57,29 +65,29 @@ export default async function DrugPage({
 
   return (
     <>
-      <SiteHeader query={drug.name} showTagline area={area} preserveAreaPath locatable />
+      <SiteHeader query={displayDrug.name} showTagline area={area} preserveAreaPath locatable />
 
       <div className="shop-shell pt-3 md:hidden">
         <AreaSwitch area={area} preservePath locatable />
       </div>
 
-      <nav aria-label="麵包屑" className="shop-shell pt-6 text-xs text-muted-2">
-        <Link href={`/app?area=${area}`} className="-my-3 inline-flex min-h-11 items-center text-muted-2 no-underline hover:text-ink">
-          首頁
+      <nav aria-label={locale === "en" ? "Breadcrumb" : "麵包屑"} className="shop-shell pt-6 text-xs text-muted-2">
+        <Link href={`${localizedPath("/app", locale)}?area=${area}`} className="-my-3 inline-flex min-h-11 items-center text-muted-2 no-underline hover:text-ink">
+          {locale === "en" ? "Home" : "首頁"}
         </Link>
         {category && (
           <>
             {" / "}
             <Link
-              href={`/category/${category.slug}?area=${area}`}
+              href={`${localizedPath(`/category/${category.slug}`, locale)}?area=${area}`}
               className="-my-3 inline-flex min-h-11 items-center text-muted-2 no-underline hover:text-ink"
             >
-              {category.name}
+              {categoryName(category.slug, category.name, locale)}
             </Link>
           </>
         )}
         {" / "}
-        {drug.name}
+        {displayDrug.name}
       </nav>
 
       <section className="border-b border-line bg-paper">
@@ -89,14 +97,14 @@ export default async function DrugPage({
             VERIFIED PRODUCT RECORD
           </p>
           <h1 className="editorial-display m-0 text-[32px] leading-[1.2] sm:text-[44px]">
-            {drug.name}{" "}
-            {drug.nameEn && (
+            {displayDrug.name}{" "}
+            {locale !== "en" && drug.nameEn && (
               <span className="num text-sm font-medium text-muted">{drug.nameEn}</span>
             )}
           </h1>
           <div className="flex flex-wrap items-center gap-2.5 text-[15px] text-ink-2">
             <span>
-              {drug.form} · {drug.spec}
+              {displayDrug.form} · {drug.spec}
             </span>
             {/* 許可證字號在行動端收起來 — 小螢幕先讓「規格 + 藥品分類」站穩 */}
             {drug.licenseNo && (
@@ -111,11 +119,11 @@ export default async function DrugPage({
               |
             </span>
             <span className="border border-green px-[7px] py-px text-[13px] font-bold text-green">
-              {drug.drugClass}
+              {displayDrug.drugClass}
             </span>
           </div>
           <p className="text-xs text-muted-2">
-            主成分：{drug.ingredients.join("、")} · 適用：{drug.indications.join("、")}
+            {locale === "en" ? "Active ingredients" : "主成分"}：{displayDrug.ingredients.join(locale === "en" ? ", " : "、")} · {locale === "en" ? "Used for" : "適用"}：{displayDrug.indications.join(locale === "en" ? ", " : "、")}
           </p>
         </div>
       </div>
@@ -123,15 +131,15 @@ export default async function DrugPage({
 
       {rows.length > 0 ? (
         <PharmacyList
-          drug={{ slug: drug.slug, name: drug.name, spec: drug.spec }}
+          drug={{ slug: drug.slug, name: displayDrug.name, spec: drug.spec }}
           rows={rows}
         />
       ) : (
         <NoInventoryYet
-          drugName={drug.name}
+          drugName={displayDrug.name}
           drugSlug={drug.slug}
           area={area}
-          areaLabel={getArea(area).shortName}
+          areaLabel={areaCopy(getArea(area), locale).shortName}
           stores={storesInArea(area)}
         />
       )}
@@ -141,9 +149,9 @@ export default async function DrugPage({
           <div className="shop-shell py-10 sm:py-14">
           <p className="shop-kicker mb-3">ALTERNATIVES</p>
           <div className="mb-6 flex flex-wrap items-end gap-2">
-            <h2 className="editorial-display m-0 text-[28px] sm:text-[34px]">同成分替代品</h2>
+            <h2 className="editorial-display m-0 text-[28px] sm:text-[34px]">{locale === "en" ? "Same-ingredient alternatives" : "同成分替代品"}</h2>
             <p className="text-[13px] font-normal text-muted-2">
-              {drug.ingredients.join("＋")} · 沒貨時的出路
+              {displayDrug.ingredients.join(locale === "en" ? " + " : "＋")} · {locale === "en" ? "options when unavailable" : "沒貨時的出路"}
             </p>
           </div>
           <div className="border border-line">
@@ -152,16 +160,16 @@ export default async function DrugPage({
                 key={a.drug.slug}
                 className="flex flex-wrap items-center gap-x-3 gap-y-1 border-b border-line-soft px-3.5 py-2.5 text-[15px] last:border-b-0"
               >
-                <Link href={`/drug/${a.drug.slug}?area=${area}`} className="font-medium text-ink no-underline hover:text-green">
-                  {a.drug.name} {a.drug.spec}
+                <Link href={`${localizedPath(`/drug/${a.drug.slug}`, locale)}?area=${area}`} className="font-medium text-ink no-underline hover:text-green">
+                  {drugCopy(a.drug, locale).name} {a.drug.spec}
                 </Link>
-                <span className="text-[13px] text-muted-2">{a.drug.form}</span>
+                <span className="text-[13px] text-muted-2">{drugCopy(a.drug, locale).form}</span>
                 <div className="flex-1" />
                 <span className="text-xs font-medium text-green">
                   <span className="num" aria-hidden>
                     ●
                   </span>{" "}
-                  附近 {a.storesWithStock} 家有貨
+                  {locale === "en" ? `${a.storesWithStock} nearby stores` : `附近 ${a.storesWithStock} 家有貨`}
                 </span>
               </div>
             ))}

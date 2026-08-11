@@ -4,7 +4,7 @@ import {
   drugSlugForGtin,
   logConsole,
   recentEvents,
-  recordScan,
+  recordReceivingScan,
   scanSummary,
 } from "./box";
 import { __resetForTests } from "./kv";
@@ -29,17 +29,18 @@ describe("drugSlugForGtin", () => {
 
 describe("scan state", () => {
   it("記掃描 → summary 讀得回來，徽章是今日", async () => {
-    await recordScan("OK藥師藥局", "green-oil");
+    await recordReceivingScan("OK藥師藥局", "green-oil");
     const rows = await scanSummary();
     expect(rows).toHaveLength(1);
     expect(rows[0].storeSlug).toBe("OK藥師藥局");
     expect(rows[0].drugSlug).toBe("green-oil");
     expect(rows[0].badge.tier).toBe("fresh");
+    expect(rows[0].kind).toBe("receiving");
   });
 
   it("同店同藥重掃是覆寫不是累積", async () => {
-    await recordScan("OK藥師藥局", "green-oil");
-    await recordScan("OK藥師藥局", "green-oil");
+    await recordReceivingScan("OK藥師藥局", "green-oil");
+    await recordReceivingScan("OK藥師藥局", "green-oil");
     expect(await scanSummary()).toHaveLength(1);
   });
 });

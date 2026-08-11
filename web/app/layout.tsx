@@ -3,6 +3,8 @@ import { IBM_Plex_Mono } from "next/font/google";
 import localFont from "next/font/local";
 
 import { MotionSystem } from "@/components/MotionSystem";
+import { LocaleProvider } from "@/components/LocaleProvider";
+import { getRequestLocale } from "@/lib/locale-server";
 
 import "./globals.css";
 
@@ -33,35 +35,38 @@ const plexMono = IBM_Plex_Mono({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://uyao.tw"),
-  // 預設（= 公司 landing `/`）講公司定位；消費端各頁自帶標題與描述。
-  title: {
-    default: "uYao 有藥 — 獨立藥局的供需庫存 Agent",
-    template: "%s · 有藥",
-  },
-  description:
-    "uYao 從店內掃描與附近搜尋取得供需訊號，在 LINE 提出退貨、減量、補貨與預留行動，由藥師批准並記錄實際結果。",
-  openGraph: {
-    siteName: "有藥",
-    locale: "zh_TW",
-    type: "website",
-  },
-  // 全站 noindex — 目前是示範資料，藥局名稱/地址/電話都是虛構的，
-  // 帶著 Pharmacy JSON-LD 被 Google 索引會變成假的門市資訊。
-  // 接上真實藥局資料後移除這段（藥品頁本來就是 SEO 入口）。
-  robots: { index: false, follow: false },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale();
+  return {
+    metadataBase: new URL("https://uyao.tw"),
+    title: locale === "en"
+      ? { default: "uYao — AI operating system for independent pharmacies", template: "%s · uYao" }
+      : { default: "uYao 有藥 — 獨立藥局的供需庫存 Agent", template: "%s · 有藥" },
+    description: locale === "en"
+      ? "uYao turns pharmacy supply and local demand signals into pharmacist-approved actions in LINE and records the outcome."
+      : "uYao 從店內掃描與附近搜尋取得供需訊號，在 LINE 提出退貨、減量、補貨與預留行動，由藥師批准並記錄實際結果。",
+    openGraph: {
+      siteName: locale === "en" ? "uYao" : "有藥",
+      locale: locale === "en" ? "en_US" : "zh_TW",
+      type: "website",
+    },
+    // Demo records must not be indexed until a real pilot is connected.
+    robots: { index: false, follow: false },
+  };
+}
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const locale = await getRequestLocale();
   return (
     <html
-      lang="zh-Hant-TW"
+      lang={locale === "en" ? "en-US" : "zh-Hant-TW"}
       className={`${notoSansTC.variable} ${notoSerifTC.variable} ${plexMono.variable}`}
     >
       <body>
         <MotionSystem />
-        <div className="min-h-screen bg-ivory">{children}</div>
+        <LocaleProvider locale={locale}>
+          <div className="min-h-screen bg-ivory">{children}</div>
+        </LocaleProvider>
       </body>
     </html>
   );
