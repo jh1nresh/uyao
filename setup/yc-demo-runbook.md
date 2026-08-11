@@ -5,16 +5,16 @@
 
 ## 這支影片要證明什麼
 
-90 秒內只證明一件事：**既有藥局掃描流程產生庫存訊號，消費者預留後，藥局能在 LINE 一鍵確認。**
+110 秒內只證明一件事：**既有藥局進貨掃描產生供應訊號，消費者預留後，藥局能在 LINE 一鍵確認並記錄完成取貨。**
 
 目前的誠實邊界：
 
 - 沒有 Pi／實體掃描器，所以條碼輸入是**明確標示的模擬掃描**。
 - parser → classifier → SQLite spool → uploader → ingest API → Agent Console 是真的程式與資料流。
-- `/store/中山藥局/preview` 的商品、售價與庫存徽章是**明確標示的 consumer preview**；目前還不是由上一步的 scan signal 自動產生。
+- `/en/store/中山藥局/preview` 的商品與售價是**明確標示的 consumer preview**；其中「Received today」新鮮度會由上一步的 demo receiving scan 真正更新。
 - 從「送出預留」開始，reservation、LINE 推播、藥局確認與取貨頁狀態更新都是真的。
 
-不要說「每一幕都不是 mock」，也不要說「剛剛的 scan 已經讓 consumer page 上架」。
+不要說「每一幕都不是 mock」，也不要說掃描會產生精確庫存數量。能說的是：receiving scan 更新了 consumer preview 裡既有品項的供應新鮮度。
 
 ## 目前應該錄 localhost
 
@@ -28,7 +28,7 @@ http://localhost:3100
 
 ## 建議成片規格
 
-- 16:9、1920×1080、30 fps，長度 75–90 秒。
+- 16:9、1920×1080、30 fps，長度 95–110 秒。
 - 英文 founder voice-over；不用 AI 配音、不加音樂、不做動畫片頭。
 - 游標要看得見，但不要繞圈；每次點擊前停半秒。
 - Browser zoom 125–150%，Terminal 字級 22–26 px。
@@ -45,8 +45,8 @@ http://localhost:3100
 
 1. Terminal：只留 demo command，看不到 server log。
 2. Browser：開兩個 tabs。
-   - `http://localhost:3100/console`
-   - `http://localhost:3100/store/中山藥局/preview`
+   - `http://localhost:3100/en/console`
+   - `http://localhost:3100/en/store/中山藥局/preview`
 3. iPhone Mirroring：停在綁定中山藥局的 LINE 聊天室。
 
 ### 2. 啟動 server（不要錄這段）
@@ -67,10 +67,10 @@ cd /Users/jhinresh/pharmabox
 
 這只清 `scan:*` 與 `console:log`；不刪 reservation、LINE binding 或真實需求資料。
 
-重新整理 `/console`，必須同時看到：
+重新整理 `/en/console`，必須同時看到：
 
-- 「還沒有任何掃描進來」
-- 「目前沒有事件」
+- “No receiving scans yet”
+- “No events yet”
 
 ### 4. 做一次閉環預檢
 
@@ -81,30 +81,31 @@ cd /Users/jhinresh/pharmabox
 
 注意：示範預留的 IP rate limit 是每小時 3 次，`demo-reset.sh` 不會清它。不要為了練旁白重複送單；先空走動作，最後只做一次預檢、一次正式錄影。
 
-## 90 秒 shot list 與逐字旁白
+## 110 秒 shot list 與逐字旁白
 
 | 時間 | 畫面與動作 | 英文旁白 |
 |---|---|---|
-| 0–8 秒 | `/console` 空白畫面，停一秒後切 Terminal。 | “Independent pharmacies in Taiwan have inventory, but none of it is searchable in real time. UYao turns the scanner they already use into an inventory signal.” |
-| 8–24 秒 | Terminal 執行下方 command。讓三筆進貨與一筆售出完整跑完。 | “We do not have the hardware in this demo, so I’m simulating the barcode input. Everything after that is the real pipeline: parsing the product, expiry and batch, classifying the scan, storing it locally, and uploading it.” |
-| 24–38 秒 | 切 `/console`、重新整理。先停在「庫存訊號現況」，再往下讓決策流水入鏡。 | “The box does not pretend to know exact quantity. It records a fresh stock signal and exposes every decision here, including receiving versus dispensing.” |
-| 38–52 秒 | 切 `/store/中山藥局/preview`。先讓頂部「示範預覽」橫幅清楚入鏡，再捲到一個商品按「預留」。 | “This labeled preview shows the customer experience we are giving each pharmacy. The catalog data in this preview is simulated; the reservation flow from here is live.” |
-| 52–65 秒 | 輸入測試手機號、送出。停在「已推播給藥局的 LINE」，點「開啟取貨憑證」。 | “A customer reserves for pickup, with no checkout and no delivery. The request is routed to the pharmacy’s existing LINE account.” |
-| 65–78 秒 | 切手機；LINE 卡片要看得到「新的預留（示範）」與取貨碼。按「有貨，確認保留」。立刻切回取貨憑證頁等它自動翻牌。 | “The pharmacist confirms with one tap. Within seconds, the customer’s pickup page updates with the hold window and pickup code.” |
-| 78–90 秒 | 切回 `/console`，停在預留→LINE→確認三行完整流水。 | “We are starting with pickup, not e-commerce. Each installation makes a local pharmacy searchable, and each confirmed reservation gives us demand and stock signals that do not exist today.” |
+| 0–8 秒 | `/en/console` 空白畫面，停一秒後切 Terminal。 | “A pharmacy POS records what sold. It cannot expose fresh supply to nearby customers or turn that demand into completed work.” |
+| 8–24 秒 | Terminal 執行下方 command。讓三筆 receiving scan 完整跑完；不模擬售出。 | “The hardware is not connected in this demo, so barcode input is simulated. Parsing, session classification, offline storage, upload, and the decision pipeline are real.” |
+| 24–38 秒 | 切 `/en/console`、重新整理。停在 Receiving signals，再讓 Decision trace 入鏡。 | “A receiving scan refreshes supply without pretending to know an exact quantity. This console is our internal trace, not a dashboard pharmacy staff must learn.” |
+| 38–52 秒 | 切 `/en/store/中山藥局/preview`，讓 demo boundary 與 “Received today” 入鏡，再按 Reserve。 | “The catalog and prices in this labeled preview are simulated. The received-today signal came from the scan you just saw.” |
+| 52–67 秒 | 輸入測試手機號、送出，停在 LINE delivery diagnosis，再開 pickup receipt。 | “A nearby customer reserves for pickup—no checkout and no delivery. The request goes to the pharmacy’s existing LINE account.” |
+| 67–82 秒 | LINE 按「有貨，確認保留」，回英文 pickup receipt 等狀態變成 Pickup confirmed。 | “The pharmacist keeps decision authority and confirms with one tap. The customer immediately gets a pickup code and hold window.” |
+| 82–98 秒 | 模擬顧客已到店；LINE 按「客人已取走」，回 pickup receipt 看 Picked up。 | “At pickup, the pharmacist closes the loop in LINE. The outcome is now recorded instead of inferred.” |
+| 98–110 秒 | 回 `/en/console`，停在 reservation → LINE → confirmed → picked up 四行。 | “One supply signal became one pharmacist-approved pickup. UYao records the outcome so the next inventory action can improve.” |
 
 正式錄影 command：
 
 ```bash
 cd /Users/jhinresh/pharmabox
 clear
-STORE=中山藥局 UYAO_URL=http://localhost:3100 ./setup/demo-sim.sh
+DEMO_LANG=en STORE=中山藥局 UYAO_URL=http://localhost:3100 ./setup/demo-sim.sh
 ```
 
 ## 錄影時的節奏
 
 - 按下錄影後先等 2 秒；最後一幕停 3 秒再停止。
-- 不等頁面慢慢載入：所有 tabs 都要預先開好，錄影時只重新整理 `/console`。
+- 不等頁面慢慢載入：所有 tabs 都要預先開好，錄影時只重新整理 `/en/console`。
 - 不要把 terminal server log 放進成片；它會分散注意力，也可能露出不該露的資料。
 - LINE 卡片進來後先停 1 秒再按，讓 YC 看清楚「示範」標示與取貨碼。
 - 取貨頁最久每 15 秒 refresh。若沒有立刻翻牌，不要一直點；等一次 refresh。
@@ -115,16 +116,16 @@ STORE=中山藥局 UYAO_URL=http://localhost:3100 ./setup/demo-sim.sh
 - 不說 “AI agent decides”。目前決策是 deterministic；LLM 只可能用在之後的需求整理，不碰藥品安全。
 - 不說 “real-time inventory count”。目前是 scan freshness signal，不是精確數量。
 - 不說 “pharmacies are already using this” 或 “customers are already transacting”，除非錄影前已有可驗證的真實使用證據。
-- 不說「consumer page 是剛才 scan 自動產生」；目前還沒串上。
+- 不說 receiving scan 產生商品目錄或精確數量；它只更新 preview 中已知品項的供應新鮮度。
 - 不把 preview 橫幅裁掉。誠實標示比假裝 production 更有說服力。
 
 ## 成片驗收
 
 輸出前從頭看一次，五項全部通過才上傳：
 
-- [ ] 90 秒內，前 8 秒已說清楚問題與產品。
+- [ ] 110 秒內，前 8 秒已說清楚問題與產品。
 - [ ] 模擬掃碼、真實 pipeline、consumer preview、真實 reservation/LINE boundary 都講清楚。
-- [ ] LINE 通知、藥局確認、取貨頁翻牌三個結果都看得到。
+- [ ] LINE 通知、藥局確認、完成取貨、Console outcome event 都看得到。
 - [ ] 沒有 API key、手機完整號碼、其他通知或私人 tab 入鏡。
 - [ ] 1080p 下文字可讀，英文聲音比電腦音量清楚。
 
@@ -132,6 +133,5 @@ STORE=中山藥局 UYAO_URL=http://localhost:3100 ./setup/demo-sim.sh
 
 ## 錄完收尾
 
-1. 停止錄影後，在 LINE 最新一張確認卡按「客人已取走」，關閉這筆 demo reservation 的催單與逾期通知。
-2. 再跑一次 `./setup/demo-reset.sh`，清掉錄影產生的 scan signal 與 console 流水。
-3. 不要刪 LINE binding、reservation store 或 rate-limit keys。
+1. 再跑一次 `./setup/demo-reset.sh`，清掉錄影產生的 scan signal 與 console 流水。
+2. 不要刪 LINE binding、reservation store 或 rate-limit keys。

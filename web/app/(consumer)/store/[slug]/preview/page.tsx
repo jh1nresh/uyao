@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 
 import { StoreView } from "@/components/StoreView";
 import { allStores, getStore } from "@/lib/data";
+import { getRequestLocale } from "@/lib/locale-server";
 
 /**
  * 業務示範用：`/store/惠民藥局/preview` 讓藥局老闆看到「裝上盒子之後
@@ -20,9 +21,10 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+  const locale = await getRequestLocale();
   const store = getStore(slug);
   return {
-    title: store ? `${store.name} — 示範預覽` : "示範預覽",
+    title: store ? `${store.name} — ${locale === "en" ? "Demo preview" : "示範預覽"}` : locale === "en" ? "Demo preview" : "示範預覽",
     // 模擬庫存絕不能進搜尋引擎
     robots: { index: false, follow: false },
   };

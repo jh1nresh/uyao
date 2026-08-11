@@ -6,12 +6,17 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { drugSummary, getArea, searchDrugs, toAreaSlug } from "@/lib/data";
 import { matchSymptom } from "@/lib/symptoms";
+import { areaCopy } from "@/lib/i18n";
+import { getRequestLocale } from "@/lib/locale-server";
 
-export const metadata: Metadata = {
-  title: "搜尋結果",
-  // 搜尋結果頁不做 SEO 入口（那是 /drug/[slug] 的工作），避免內容農場化。
-  robots: { index: false, follow: true },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale();
+  return {
+    title: locale === "en" ? "Search results" : "搜尋結果",
+    // 搜尋結果頁不做 SEO 入口（那是 /drug/[slug] 的工作），避免內容農場化。
+    robots: { index: false, follow: true },
+  };
+}
 
 export default async function SearchPage({
   searchParams,
@@ -19,6 +24,7 @@ export default async function SearchPage({
   searchParams: Promise<{ q?: string; area?: string }>;
 }) {
   const { q: rawQ, area: rawArea } = await searchParams;
+  const locale = await getRequestLocale();
   const q = (rawQ ?? "").trim();
   const area = toAreaSlug(rawArea);
   const symptom = matchSymptom(q);
@@ -38,27 +44,23 @@ export default async function SearchPage({
         <p className="shop-kicker mb-3">SEARCH RESULTS</p>
         <div className="mb-7 flex flex-wrap items-end gap-3 border-b border-line pb-5">
           <h1 className="editorial-display m-0 text-[30px] leading-[1.25] sm:text-[40px]">
-            {q ? `「${q}」的結果` : "搜尋藥品"}
+            {q ? (locale === "en" ? `Results for “${q}”` : `「${q}」的結果`) : (locale === "en" ? "Search medicines" : "搜尋藥品")}
           </h1>
           <p className="text-[13px] text-muted-2">
             {!q
-              ? "輸入藥品名、主成分或症狀"
+              ? locale === "en" ? "Enter a product, ingredient, or symptom" : "輸入藥品名、主成分或症狀"
               : symptom?.kind === "refer"
-                ? "建議先問藥師"
-                : `${results.length} 項 · ${getArea(area).shortName}`}
+                ? locale === "en" ? "Ask a pharmacist first" : "建議先問藥師"
+                : `${results.length} ${locale === "en" ? "items" : "項"} · ${areaCopy(getArea(area), locale).shortName}`}
           </p>
           <div className="flex-1" />
-          <p className="num text-[11px] tracking-[.04em] text-muted-2">排序：庫存新鮮度 → 距離</p>
+          <p className="num text-[11px] tracking-[.04em] text-muted-2">{locale === "en" ? "SORT: FRESHNESS → DISTANCE" : "排序：庫存新鮮度 → 距離"}</p>
         </div>
 
         {/* 症狀類查詢要交代兩件事：為什麼是這些結果，以及我們不是在給醫療建議 */}
         {q && symptom?.kind === "expand" && (
           <p className="mb-2.5 border border-line-strong bg-surface px-3.5 py-2.5 text-[13px] leading-[1.7] text-muted">
-            「{symptom.matched}」對應到<b className="font-bold text-ink">
-              {symptom.terms.join("、")}
-            </b>，以下是含這些適應症的品項。
-            <br />
-            這是搜尋結果不是用藥建議 —— 不確定該用哪一種，到店問藥師。
+            {locale === "en" ? "These are search matches, not medicine advice. Ask a pharmacist if you are unsure which product is appropriate." : <>「{symptom.matched}」對應到<b className="font-bold text-ink">{symptom.terms.join("、")}</b>，以下是含這些適應症的品項。<br />這是搜尋結果不是用藥建議 —— 不確定該用哪一種，到店問藥師。</>}
           </p>
         )}
 
@@ -71,18 +73,18 @@ export default async function SearchPage({
         {q && symptom?.kind === "refer" ? (
           <div className="border-2 border-green bg-green-tint px-4 py-4">
             <p className="text-[15px] font-bold text-ink">
-              「{symptom.matched}」建議先問藥師或就醫
+              {locale === "en" ? "Ask a pharmacist or seek medical care first" : `「${symptom.matched}」建議先問藥師或就醫`}
             </p>
-            <p className="mt-1.5 text-[15px] leading-[1.8] text-ink-2">{symptom.advice}</p>
+            <p className="mt-1.5 text-[15px] leading-[1.8] text-ink-2">{locale === "en" ? "This situation is not suitable for self-selecting an OTC product through search." : symptom.advice}</p>
             <p className="mt-2.5 text-[13px] leading-[1.7] text-muted">
-              我們沒有為這個狀況列出成藥 —— 不是查不到，是自行選藥不合適。
+              {locale === "en" ? "No OTC products are listed because self-selection may be inappropriate." : "我們沒有為這個狀況列出成藥 —— 不是查不到，是自行選藥不合適。"}
             </p>
           </div>
         ) : q ? (
           <DrugResults results={results} query={q} area={area} />
         ) : (
           <div className="border border-line px-4 py-8 text-center text-[15px] text-muted">
-            上面輸入藥品名或症狀開始搜尋。
+            {locale === "en" ? "Enter a product or symptom above to start searching." : "上面輸入藥品名或症狀開始搜尋。"}
           </div>
         )}
       </section>

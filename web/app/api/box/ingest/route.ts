@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 
-import { drugSlugForGtin, logConsole, recordScan } from "@/lib/box";
+import { drugSlugForGtin, logConsole, recordReceivingScan } from "@/lib/box";
 import { getDrug, getStore } from "@/lib/data";
+import { drugCopy } from "@/lib/i18n";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -61,6 +62,11 @@ const KIND_LABEL: Record<string, string> = {
   dispensing: "售出",
   unknown: "未分類",
 };
+const KIND_LABEL_EN: Record<string, string> = {
+  receiving: "receiving",
+  dispensing: "dispensing",
+  unknown: "unclassified",
+};
 
 export async function POST(request: Request) {
   if (!authorized(request)) {
@@ -86,7 +92,7 @@ export async function POST(request: Request) {
   const store = storeSlug ? getStore(storeSlug) : undefined;
   if (!store) {
     // 收下但講明白 —— 掉單不行，但也不能默默算給不知道哪家店
-    logConsole("⚠️", `裝置 ${deviceId} 未綁定藥局，收到 ${events.length} 筆掃描先擱置`);
+    logConsole("⚠️", `裝置 ${deviceId} 未綁定藥局，收到 ${events.length} 筆掃描先擱置`, `Device ${deviceId} is not bound to a pharmacy; ${events.length} scan event(s) were held for review`);
     return NextResponse.json({ accepted: events.length, matched: 0, unbound: true });
   }
 
@@ -97,10 +103,11 @@ export async function POST(request: Request) {
     const kind = typeof e.kind === "string" ? e.kind : "unknown";
     const gtin = typeof e.payload?.gtin === "string" ? e.payload.gtin : null;
     const kindLabel = KIND_LABEL[kind] ?? kind;
+    const kindLabelEn = KIND_LABEL_EN[kind] ?? kind;
 
     if (!gtin) {
       // 健保碼、EAN 讀不出 GTIN 的那些 —— 記一筆但不動庫存訊號
-      logConsole("📦", `${store.name} 掃描 1 筆（${kindLabel}）→ 無 GTIN，略過比對`);
+      logConsole("📦", `${store.name} 掃描 1 筆（${kindLabel}）→ 無 GTIN，略過比對`, `${store.name} scanned one ${kindLabelEn} event without a GTIN; catalog matching was skipped`);
       continue;
     }
 
@@ -109,17 +116,25 @@ export async function POST(request: Request) {
     if (!drug || !drugSlug) {
       // 目錄沒有的品項本身就是訊號：藥局在賣我們沒收錄的東西
       unknownGtin += 1;
-      logConsole("❓", `${store.name} 掃到目錄外 GTIN ${gtin}（${kindLabel}）→ 待建檔`);
+      logConsole("❓", `${store.name} 掃到目錄外 GTIN ${gtin}（${kindLabel}）→ 待建檔`, `${store.name} scanned uncatalogued GTIN ${gtin} during ${kindLabelEn}; item setup is required`);
       continue;
     }
 
-    await recordScan(storeSlug!, drugSlug).catch((err) =>
-      console.error("[box] 掃描狀態寫入失敗", String(err).slice(0, 200)),
-    );
+    if (kind === "receiving") {
+      await recordReceivingScan(storeSlug!, drugSlug).catch((err) =>
+        console.error("[box] 進貨掃描狀態寫入失敗", String(err).slice(0, 200)),
+      );
+    }
+    const drugNameEn = drugCopy(drug, "en").name;
     matched += 1;
     logConsole(
       "🧠",
-      `${store.name} 掃到「${drug.name}」（${kindLabel}）→ 庫存訊號更新：今日掃描確認`,
+      kind === "receiving"
+        ? `${store.name} 掃到「${drug.name}」（進貨）→ 供應訊號更新：今日進貨掃描`
+        : `${store.name} 掃到「${drug.name}」（${kindLabel}）→ 記錄品項移動，不宣稱仍有庫存`,
+      kind === "receiving"
+        ? `${store.name} scanned “${drugNameEn}” during receiving → supply signal updated: received today`
+        : `${store.name} scanned “${drugNameEn}” during ${kind} → movement recorded; availability was not asserted`,
     );
   }
 

@@ -1,6 +1,7 @@
 import generated from "./stores.generated.json";
 import { compareByFreshness, stockBadge } from "./stock";
 import { matchSymptom } from "./symptoms";
+import { drugCopy } from "./i18n";
 import type {
   Area,
   AreaSlug,
@@ -197,12 +198,13 @@ export function previewOffers(storeSlug: string): Offer[] {
     const h = hash(`${storeSlug}:${d.slug}`);
     if (h % 10 < 2) return []; // 兩成品項這家店沒進貨
     const base = PREVIEW_BASE_PRICE[d.slug] ?? 100;
-    const freshness = h % 100;
     return [{
       drugSlug: d.slug,
       storeSlug,
       priceTwd: base + ((h >> 8) % 5) * 2 - 4,
-      daysSinceScan: freshness < 60 ? 0 : freshness < 90 ? (h >> 4) % 6 + 1 : null,
+      // Preview catalog and price are synthetic, but availability starts unknown.
+      // Only a receiving event from the demo pipeline may upgrade this signal.
+      daysSinceScan: null,
     }];
   });
 }
@@ -365,7 +367,18 @@ export function nearbyInStock(area: AreaSlug = DEFAULT_AREA, limit = 6): DrugRow
 
 /** 搜尋：品名 / 英文名 / 成分 / 適應症 都吃。 */
 function haystack(d: Drug): string {
-  return [d.name, d.nameEn ?? "", d.form, ...d.ingredients, ...d.indications]
+  const en = drugCopy(d, "en");
+  return [
+    d.name,
+    d.nameEn ?? "",
+    d.form,
+    ...d.ingredients,
+    ...d.indications,
+    en.name,
+    en.form,
+    ...en.ingredients,
+    ...en.indications,
+  ]
     .join(" ")
     .toLowerCase();
 }

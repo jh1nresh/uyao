@@ -1,4 +1,5 @@
 from pharmabox.spool import EventSpool, Uploader
+from pharmabox.dev_cli import drain_all
 
 
 def make_spool(tmp_path):
@@ -54,3 +55,23 @@ def test_recovery_after_outage(tmp_path):
     ok["v"] = True
     assert up.drain_once() == 1
     assert spool.pending() == []
+
+
+def test_dev_drain_reports_success_only_when_spool_is_empty(tmp_path):
+    spool = make_spool(tmp_path)
+    spool.append(1000.0, "receiving", {"raw": "1"})
+    up = Uploader(spool, "http://x", "dev", http_post=lambda url, body: True)
+    assert drain_all(up, spool) == 1
+    assert spool.pending() == []
+
+
+def test_dev_drain_fails_when_upload_leaves_pending_rows(tmp_path):
+    spool = make_spool(tmp_path)
+    spool.append(1000.0, "receiving", {"raw": "1"})
+    up = Uploader(spool, "http://x", "dev", http_post=lambda url, body: False)
+    try:
+        drain_all(up, spool)
+    except RuntimeError as err:
+        assert str(err) == "upload failed: 1 events remain pending"
+    else:
+        raise AssertionError("drain_all should fail when pending rows remain")

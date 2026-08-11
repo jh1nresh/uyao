@@ -6,6 +6,9 @@ import { PickupAutoRefresh } from "@/components/PickupAutoRefresh";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { PRICE_NOTICE } from "@/lib/pricing";
+import { getDrug } from "@/lib/data";
+import { drugCopy, localizedPath } from "@/lib/i18n";
+import { getRequestLocale } from "@/lib/locale-server";
 import {
   TELL_CONSUMER_AFTER_MIN,
   contactTail,
@@ -27,11 +30,13 @@ import {
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "取貨憑證",
-  // 別人的預留單絕對不能進搜尋引擎
-  robots: { index: false, follow: false, nocache: true },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const locale = await getRequestLocale();
+  return {
+    title: locale === "en" ? "Pickup receipt" : "取貨憑證",
+    robots: { index: false, follow: false, nocache: true },
+  };
+}
 
 const STATUS_UI: Record<
   StoredReservation["status"],
@@ -72,12 +77,34 @@ const STATUS_UI: Record<
   },
 };
 
+const STATUS_UI_EN: typeof STATUS_UI = {
+  pending_store_confirm: {
+    label: "Waiting for pharmacy",
+    tone: "wait",
+    body: "The hold window begins after the pharmacy confirms availability, usually within 10 minutes. This page refreshes automatically.",
+  },
+  confirmed: {
+    label: "Pickup confirmed",
+    tone: "ok",
+    body: "The item is waiting at the counter. Pay when you pick it up.",
+  },
+  rejected_no_stock: {
+    label: "Unavailable at this pharmacy",
+    tone: "bad",
+    body: "The pharmacy reported no stock. Do not travel there; the missed demand has been recorded.",
+  },
+  cancelled_by_user: { label: "Cancelled", tone: "bad", body: "This reservation was cancelled." },
+  picked_up: { label: "Picked up", tone: "ok", body: "Pickup is complete. Thank you." },
+  expired: { label: "Expired", tone: "bad", body: "The hold window ended and the item was returned to the shelf." },
+};
+
 export default async function PickupPage({
   params,
 }: {
   params: Promise<{ token: string }>;
 }) {
   const { token } = await params;
+  const locale = await getRequestLocale();
   const r = await getByToken(token).catch(() => null);
 
   if (!r) {
@@ -86,14 +113,14 @@ export default async function PickupPage({
         <SiteHeader showSearch={false} />
         <section className="shop-shell min-h-[calc(100svh-11rem)] py-12">
           <p className="shop-kicker mb-3">PICKUP RECEIPT</p>
-          <h1 className="editorial-display mb-2 text-[32px]">查不到這筆預留</h1>
+          <h1 className="editorial-display mb-2 text-[32px]">{locale === "en" ? "Reservation not found" : "查不到這筆預留"}</h1>
           <p className="text-[15px] leading-[1.7] text-muted">
-            連結可能不完整，或這筆預留已經超過保留期限。
+            {locale === "en" ? "This link may be incomplete or the reservation may have expired." : "連結可能不完整，或這筆預留已經超過保留期限。"}
             {!isStoreAvailable() &&
-              "（也可能是系統暫時讀不到資料，請直接聯絡藥局。）"}
+              (locale === "en" ? " The reservation store may also be temporarily unavailable; contact the pharmacy directly." : "（也可能是系統暫時讀不到資料，請直接聯絡藥局。）")}
             <br />
-            <Link href="/app" className="text-green">
-              回到搜尋 →
+            <Link href={localizedPath("/app", locale)} className="text-green">
+              {locale === "en" ? "Back to search →" : "回到搜尋 →"}
             </Link>
           </p>
         </section>
@@ -110,11 +137,13 @@ export default async function PickupPage({
 
   const ui = overdue
     ? {
-        label: "藥局還沒回覆",
+        label: locale === "en" ? "Pharmacy has not replied" : "藥局還沒回覆",
         tone: "wait" as const,
-        body: "已經超過一般回覆時間了。想確定的話，直接打電話問這家藥局最快。",
+        body: locale === "en" ? "The usual reply time has passed. Calling the pharmacy is the fastest way to confirm." : "已經超過一般回覆時間了。想確定的話，直接打電話問這家藥局最快。",
       }
-    : STATUS_UI[r.status];
+    : (locale === "en" ? STATUS_UI_EN : STATUS_UI)[r.status];
+  const storedDrug = getDrug(r.drugSlug);
+  const displayDrugName = storedDrug ? drugCopy(storedDrug, locale).name : r.drugName;
   const toneClass =
     ui.tone === "ok"
       ? "border-green bg-green-tint text-green"
@@ -134,8 +163,7 @@ export default async function PickupPage({
         {r.demo && (
           /* 示範單長得跟真單一樣的話，拿去店裡會很尷尬 —— 一定要標出來 */
           <div className="mb-3 border-2 border-green bg-green-tint px-3.5 py-2 text-[14px] leading-[1.6] text-ink">
-            <b className="font-bold">示範預留</b> ·
-            這筆來自藥局示範頁，商品與庫存都是模擬的。請勿持此憑證前往門市。
+            <b className="font-bold">{locale === "en" ? "Demo reservation" : "示範預留"}</b> · {locale === "en" ? "This came from a demo preview. Catalog and prices are simulated; receiving freshness may come from the demo scan pipeline. Do not take it to the store." : "這筆來自藥局示範頁。商品與價格是模擬資料；進貨新鮮度可能來自 demo 掃描流程。請勿持此憑證前往門市。"}
           </div>
         )}
         <div className={`mb-3 border px-3.5 py-2 text-[14px] font-bold ${toneClass}`}>
@@ -145,10 +173,10 @@ export default async function PickupPage({
           {ui.body}
           {r.status === "expired" && !r.confirmedAt && (
             // 藥局從沒確認過 —— 不能讓人以為是自己放鳥
-            <> 這一筆藥局一直沒有回覆，不算你未取。</>
+            <> {locale === "en" ? "The pharmacy never replied, so this does not count as a missed pickup." : "這一筆藥局一直沒有回覆，不算你未取。"}</>
           )}
           {r.status === "expired" && r.confirmedAt && (
-            <> 還需要的話請重新預留。</>
+            <> {locale === "en" ? "Reserve again if you still need it." : "還需要的話請重新預留。"}</>
           )}
         </p>
 
@@ -157,34 +185,34 @@ export default async function PickupPage({
             href={`tel:${r.storePhone.split("、")[0].replace(/-/g, "")}`}
             className="action-primary mb-4 h-12 text-[14px]"
           >
-            打電話問 {r.storeName} · {r.storePhone.split("、")[0]}
+            {locale === "en" ? "Call" : "打電話問"} {r.storeName} · {r.storePhone.split("、")[0]}
           </a>
         )}
 
         {/* 到店只需要唸這個 */}
         <div className="flex flex-col items-center gap-1 border border-line bg-surface px-4 py-6">
-          <div className="text-[13px] font-medium text-muted-2">取貨碼</div>
+          <div className="text-[13px] font-medium text-muted-2">{locale === "en" ? "Pickup code" : "取貨碼"}</div>
           <div className="num text-[44px] font-semibold leading-none tracking-[.12em] text-ink">
             {r.code}
           </div>
           <div className="mt-1 text-[13px] text-muted">
-            到店請報這組號碼，藥師會核對手機尾號{" "}
+            {locale === "en" ? "Give this code at the counter. The pharmacist will verify phone digits " : "到店請報這組號碼，藥師會核對手機尾號 "}
             <span className="num font-medium text-ink">{contactTail(r)}</span>
           </div>
         </div>
 
         <div className="mt-3 border border-line">
           <div className="border-b border-line-soft px-3.5 py-3">
-            <div className="text-[15px] font-medium text-ink">{r.drugName}</div>
+            <div className="text-[15px] font-medium text-ink">{displayDrugName}</div>
             <div className="text-[13px] text-muted">{r.drugSpec}</div>
             <div className="mt-1 text-[13px] text-muted">
-              {PRICE_NOTICE}，到店付款
+              {locale === "en" ? "Price shown by the pharmacy; pay at pickup" : `${PRICE_NOTICE}，到店付款`}
             </div>
           </div>
 
           <div className="px-3.5 py-3">
             <Link
-              href={`/store/${r.storeSlug}`}
+              href={localizedPath(`/store/${r.storeSlug}`, locale)}
               className="text-[15px] font-medium text-ink no-underline hover:text-green"
             >
               {r.storeName}
@@ -195,7 +223,7 @@ export default async function PickupPage({
               rel="noreferrer noopener"
               className="mt-0.5 block text-[13px] text-green no-underline"
             >
-              {r.storeAddress} · 開啟地圖 ↗
+              {r.storeAddress} · {locale === "en" ? "Open map" : "開啟地圖"} ↗
             </a>
             <div className="mt-1 text-[13px] text-muted">{r.storeHours}</div>
           </div>
@@ -207,9 +235,9 @@ export default async function PickupPage({
         )}
 
         <p className="mt-3 text-[13px] leading-[1.7] text-muted-2">
-          把這一頁截圖或加入書籤就好，不需要登入。
+          {locale === "en" ? "Screenshot or bookmark this page; no account is required." : "把這一頁截圖或加入書籤就好，不需要登入。"}
           <br />
-          兩次預留未取將暫停預留權限。不提供線上交易，商品由藥師於門市交付。
+          {locale === "en" ? "Two missed confirmed pickups suspend reservations. There is no online sale; a pharmacist hands over the product in store." : "兩次預留未取將暫停預留權限。不提供線上交易，商品由藥師於門市交付。"}
         </p>
         </div>
       </section>
