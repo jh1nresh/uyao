@@ -56,10 +56,10 @@ export default async function HomePage({
           <div className="mx-auto w-full max-w-[1120px] text-center">
             <p className="shop-kicker mb-5 mt-0">NEARBY SEARCH · RESERVE · PICK UP</p>
             <h1 className="editorial-display m-0 text-[clamp(40px,4.4vw,62px)] leading-[1.08]">
-              搜一個藥，現在就知道往哪走。
+              不用先知道藥名。從症狀開始找。
             </h1>
             <p className="mx-auto mt-5 max-w-[620px] text-[15px] leading-[1.8] text-ink-2 sm:text-[16px]">
-              輸入藥名、主成分或症狀，查看附近店家與資料狀態；預留後到店付款，由藥師當面交付。
+              輸入哪裡不舒服或想改善的問題，我們整理相關的非處方藥品與附近藥局；到店再由藥師確認。
             </p>
           </div>
 
@@ -70,11 +70,11 @@ export default async function HomePage({
                   {getArea(area).shortName} · PHARMACY SEARCH
                 </p>
                 <h2 className="editorial-display mb-0 mt-2 text-[25px] leading-[1.25] text-forest sm:text-[30px]">
-                  今天要找哪一支？
+                  今天哪裡不舒服？
                 </h2>
               </div>
               <p className="m-0 max-w-[360px] text-[13px] leading-[1.7] text-muted">
-                可輸入品名、主成分，或像「痠痛」「止癢」這樣的症狀。
+                也可以直接輸入藥名或主成分。
               </p>
             </div>
 
