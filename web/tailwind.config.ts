@@ -19,6 +19,8 @@ const config: Config = {
         "green-hover": "#066737",
         "green-tint": "#E2EEE5",
         "green-tint-line": "#B8D2C0",
+        oxblood: "#74352F",
+        "oxblood-tint": "#E9D9D2",
         line: "#D2CDC1",
         "line-strong": "#B8B1A4",
         "line-soft": "#E2DCCF",

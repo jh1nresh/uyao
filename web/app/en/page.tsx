@@ -167,7 +167,7 @@ export default function EnglishLandingPage() {
         <Container>
           <div className="grid items-center gap-14 py-16 sm:py-24 lg:min-h-[740px] lg:grid-cols-[1.08fr_.92fr] lg:gap-20 lg:py-24">
             <div>
-              <p className="num mb-6 mt-0 text-[12px] font-semibold tracking-[.14em] text-green">
+              <p className="num mb-6 mt-0 text-[12px] font-semibold tracking-[.14em] text-oxblood">
                 AI OPERATING SYSTEM FOR INDEPENDENT PHARMACIES
               </p>
               <h1 className="editorial-display m-0 max-w-[12em] text-[clamp(46px,5.4vw,74px)] leading-[1.08] [text-wrap:balance]">
@@ -221,7 +221,7 @@ export default function EnglishLandingPage() {
                   key={area}
                   className="flex min-h-[70px] items-center border-b border-r border-line-strong px-4 py-3 text-[15px] font-bold text-ink"
                 >
-                  <span className="mr-2 text-green" aria-hidden>
+                  <span className="mr-2 text-oxblood" aria-hidden>
                     ＋
                   </span>
                   {area}
@@ -248,7 +248,7 @@ export default function EnglishLandingPage() {
                 <div className="num border-r border-line px-6 py-3.5 text-[12px] font-medium tracking-[.08em] text-muted">
                   Existing systems see
                 </div>
-                <div className="num px-6 py-3.5 text-[12px] font-medium tracking-[.08em] text-green">
+                <div className="num px-6 py-3.5 text-[12px] font-medium tracking-[.08em] text-oxblood">
                   uYao adds
                 </div>
               </div>
@@ -266,10 +266,10 @@ export default function EnglishLandingPage() {
                     {row.pos}
                   </div>
                   <div className="px-6 pb-4 pt-3 text-[16px] leading-[1.7] sm:py-[22px]">
-                    <span className="num mb-1 block text-[11px] font-medium tracking-[.08em] text-green sm:hidden">
+                    <span className="num mb-1 block text-[11px] font-medium tracking-[.08em] text-oxblood sm:hidden">
                       uYao adds
                     </span>
-                    <span className="mr-2 font-bold text-green" aria-hidden>
+                    <span className="mr-2 font-bold text-oxblood" aria-hidden>
                       ＋
                     </span>
                     {row.uyao}
@@ -298,14 +298,14 @@ export default function EnglishLandingPage() {
                   key={step.n}
                   className={
                     step.hot
-                      ? "-mt-0.5 border-t-2 border-green bg-surface p-6 lg:border-r lg:border-r-line lg:py-7"
+                      ? "-mt-0.5 border-t-2 border-oxblood bg-oxblood-tint/35 p-6 lg:border-r lg:border-r-line lg:py-7"
                       : `border-b border-line px-6 py-6 last:border-b-0 lg:border-b-0 lg:py-7 ${
                           i < FLOW.length - 1 ? "lg:border-r lg:border-r-line" : ""
                         } ${i === 0 ? "lg:pl-0" : ""} ${i === FLOW.length - 1 ? "lg:pr-0" : ""}`
                   }
                 >
                   <div
-                    className={`num text-[13px] font-medium ${step.hot ? "text-green" : "text-muted"}`}
+                    className={`num text-[13px] font-medium ${step.hot ? "text-oxblood" : "text-muted"}`}
                   >
                     {step.n}
                   </div>
@@ -316,7 +316,7 @@ export default function EnglishLandingPage() {
                       {ACTION_CHIPS.map((chip) => (
                         <span
                           key={chip}
-                          className="num border border-green px-2 py-[3px] text-[11.5px] font-medium text-green"
+                          className="num border border-oxblood px-2 py-[3px] text-[11.5px] font-medium text-oxblood"
                         >
                           {chip}
                         </span>
@@ -389,7 +389,7 @@ export default function EnglishLandingPage() {
             </h2>
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
               <div className="relative overflow-hidden border border-line bg-paper px-[18px] py-4">
-                <div className="absolute bottom-0 left-0 top-0 w-[3px] bg-green" />
+                <div className="absolute bottom-0 left-0 top-0 w-[3px] bg-oxblood" />
                 <div className="num mb-2 text-[12px] font-medium text-muted">
                   SCAN EVENT · parser output
                 </div>

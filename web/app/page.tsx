@@ -153,7 +153,7 @@ export default function CompanyLandingPage() {
         <Container>
           <div className="grid items-center gap-14 py-16 sm:py-24 lg:min-h-[740px] lg:grid-cols-[1.08fr_.92fr] lg:gap-20 lg:py-24">
             <div>
-              <p className="num mb-6 mt-0 text-[12px] font-semibold tracking-[.14em] text-green">
+              <p className="num mb-6 mt-0 text-[12px] font-semibold tracking-[.14em] text-oxblood">
                 INVENTORY → ACTION → OUTCOME
               </p>
               <h1 className="editorial-display m-0 text-[clamp(43px,5.5vw,74px)] leading-[1.16] [text-wrap:pretty]">
@@ -204,7 +204,7 @@ export default function CompanyLandingPage() {
                   key={area}
                   className="flex min-h-[70px] items-center border-b border-r border-line-strong px-4 py-3 text-[15px] font-bold text-ink"
                 >
-                  <span className="mr-2 text-green" aria-hidden>＋</span>
+                  <span className="mr-2 text-oxblood" aria-hidden>＋</span>
                   {area}
                 </div>
               ))}
@@ -228,7 +228,7 @@ export default function CompanyLandingPage() {
                 <div className="num border-r border-line px-6 py-3.5 text-[12px] font-medium tracking-[.08em] text-muted">
                   現有系統通常看見
                 </div>
-                <div className="num px-6 py-3.5 text-[12px] font-medium tracking-[.08em] text-green">
+                <div className="num px-6 py-3.5 text-[12px] font-medium tracking-[.08em] text-oxblood">
                   uYao 補上的訊號與行動
                 </div>
               </div>
@@ -246,10 +246,10 @@ export default function CompanyLandingPage() {
                     {row.pos}
                   </div>
                   <div className="px-6 pb-4 pt-3 text-[16px] leading-[1.7] sm:py-[22px]">
-                    <span className="num mb-1 block text-[11px] font-medium tracking-[.08em] text-green sm:hidden">
+                    <span className="num mb-1 block text-[11px] font-medium tracking-[.08em] text-oxblood sm:hidden">
                       uYao 補上的訊號與行動
                     </span>
-                    <span className="mr-2 font-bold text-green" aria-hidden>
+                    <span className="mr-2 font-bold text-oxblood" aria-hidden>
                       ＋
                     </span>
                     {row.uyao}
@@ -277,14 +277,14 @@ export default function CompanyLandingPage() {
                   key={step.n}
                   className={
                     step.hot
-                      ? "-mt-0.5 border-t-2 border-green bg-surface p-6 lg:border-r lg:border-r-line lg:py-7"
+                      ? "-mt-0.5 border-t-2 border-oxblood bg-oxblood-tint/35 p-6 lg:border-r lg:border-r-line lg:py-7"
                       : `border-b border-line px-6 py-6 last:border-b-0 lg:border-b-0 lg:py-7 ${
                           i < FLOW.length - 1 ? "lg:border-r lg:border-r-line" : ""
                         } ${i === 0 ? "lg:pl-0" : ""} ${i === FLOW.length - 1 ? "lg:pr-0" : ""}`
                   }
                 >
                   <div
-                    className={`num text-[13px] font-medium ${step.hot ? "text-green" : "text-muted"}`}
+                    className={`num text-[13px] font-medium ${step.hot ? "text-oxblood" : "text-muted"}`}
                   >
                     {step.n}
                   </div>
@@ -295,7 +295,7 @@ export default function CompanyLandingPage() {
                       {ACTION_CHIPS.map((chip) => (
                         <span
                           key={chip}
-                          className="num border border-green px-2 py-[3px] text-[11.5px] font-medium text-green"
+                          className="num border border-oxblood px-2 py-[3px] text-[11.5px] font-medium text-oxblood"
                         >
                           {chip}
                         </span>
@@ -424,7 +424,7 @@ export default function CompanyLandingPage() {
                   <span className="num text-[12px] font-medium tracking-[.06em] text-muted">
                     RETURN REVIEW
                   </span>
-                  <span className="num border border-[#C9A227] px-[7px] py-0.5 text-[11px] font-medium text-[#8A6A00]">
+                  <span className="num border border-oxblood/60 bg-oxblood-tint/40 px-[7px] py-0.5 text-[11px] font-medium text-oxblood">
                     規則待確認
                   </span>
                 </div>
@@ -452,7 +452,7 @@ export default function CompanyLandingPage() {
                   <span className="num text-[12px] font-medium tracking-[.06em] text-muted">
                     REORDER REVIEW
                   </span>
-                  <span className="num border border-[#C9A227] px-[7px] py-0.5 text-[11px] font-medium text-[#8A6A00]">
+                  <span className="num border border-oxblood/60 bg-oxblood-tint/40 px-[7px] py-0.5 text-[11px] font-medium text-oxblood">
                     示範資料
                   </span>
                 </div>

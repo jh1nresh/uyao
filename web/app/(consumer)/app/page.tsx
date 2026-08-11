@@ -56,25 +56,25 @@ export default async function HomePage({
           <div className="mx-auto w-full max-w-[1120px] text-center">
             <p className="shop-kicker mb-5 mt-0">NEARBY SEARCH · RESERVE · PICK UP</p>
             <h1 className="editorial-display m-0 text-[clamp(40px,4.4vw,62px)] leading-[1.08]">
-              搜一個藥，現在就知道往哪走。
+              不用先知道藥名。從症狀開始找。
             </h1>
             <p className="mx-auto mt-5 max-w-[620px] text-[15px] leading-[1.8] text-ink-2 sm:text-[16px]">
-              輸入藥名、主成分或症狀，查看附近店家與資料狀態；預留後到店付款，由藥師當面交付。
+              輸入哪裡不舒服或想改善的問題，我們整理相關的非處方藥品與附近藥局；到店再由藥師確認。
             </p>
           </div>
 
           <div className="search-hero-panel relative mx-auto mt-9 w-full max-w-5xl">
             <div className="flex flex-wrap items-end justify-between gap-4 border-b border-line pb-5">
               <div>
-                <p className="num m-0 text-[11px] font-semibold tracking-[.12em] text-green">
+                <p className="num m-0 text-[11px] font-semibold tracking-[.12em] text-oxblood">
                   {getArea(area).shortName} · PHARMACY SEARCH
                 </p>
                 <h2 className="editorial-display mb-0 mt-2 text-[25px] leading-[1.25] text-forest sm:text-[30px]">
-                  今天要找哪一支？
+                  今天哪裡不舒服？
                 </h2>
               </div>
               <p className="m-0 max-w-[360px] text-[13px] leading-[1.7] text-muted">
-                可輸入品名、主成分，或像「痠痛」「止癢」這樣的症狀。
+                也可以直接輸入藥名或主成分。
               </p>
             </div>
 
@@ -100,9 +100,9 @@ export default async function HomePage({
             </div>
 
             <div className="search-hero-steps mt-5 grid border-y border-line py-4 text-[12px] leading-[1.65] text-muted sm:grid-cols-3">
-              <span><b className="num mr-2 text-green">01</b>輸入藥名或症狀</span>
-              <span className="mt-2 sm:mt-0"><b className="num mr-2 text-green">02</b>查看附近資料狀態</span>
-              <span className="mt-2 sm:mt-0"><b className="num mr-2 text-green">03</b>預留後到店交付</span>
+              <span><b className="num mr-2 text-oxblood">01</b>輸入藥名或症狀</span>
+              <span className="mt-2 sm:mt-0"><b className="num mr-2 text-oxblood">02</b>查看附近資料狀態</span>
+              <span className="mt-2 sm:mt-0"><b className="num mr-2 text-oxblood">03</b>預留後到店交付</span>
             </div>
           </div>
 
@@ -145,7 +145,7 @@ export default async function HomePage({
               href={`/store/${store.slug}`}
               className="history-link group flex min-h-[132px] flex-col justify-between border-b border-r border-line px-5 py-5 no-underline transition-colors hover:bg-surface-hover last:sm:col-span-2"
             >
-              <span className="flex items-center justify-between text-[12px] font-medium text-green">
+              <span className="flex items-center justify-between text-[12px] font-medium text-oxblood">
                 {store.district}<span className="text-forest transition-transform group-hover:translate-x-1">→</span>
               </span>
               <span>
@@ -198,7 +198,7 @@ export default async function HomePage({
               key={s.title}
               className="flex min-h-[150px] gap-5 border-b border-line-soft px-5 py-6 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0"
             >
-              <span className="num flex-none text-[24px] font-semibold text-green">
+              <span className="num flex-none text-[24px] font-semibold text-oxblood">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <div>
