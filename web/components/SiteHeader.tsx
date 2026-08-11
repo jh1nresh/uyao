@@ -4,10 +4,13 @@ import { AreaSwitch } from "./AreaSwitch";
 import { BrandMark } from "./BrandMark";
 import { BrandLogo } from "./BrandLogo";
 import { SearchInput } from "./SearchInput";
+import { LanguageSwitch } from "./LanguageSwitch";
 import { DEFAULT_AREA } from "@/lib/data";
+import { localizedPath } from "@/lib/i18n";
+import { getRequestLocale } from "@/lib/locale-server";
 import type { AreaSlug } from "@/lib/types";
 
-export function SiteHeader({
+export async function SiteHeader({
   query,
   showSearch = true,
   showTagline = true,
@@ -23,13 +26,14 @@ export function SiteHeader({
   preserveAreaPath?: boolean;
   locatable?: boolean;
 }) {
+  const locale = await getRequestLocale();
   return (
     <header className="sticky top-0 z-40 border-b border-line-strong bg-ivory/95 backdrop-blur-sm">
       <div className="shop-shell flex h-[68px] items-center gap-3 sm:h-[72px]">
         {/* 消費端 chrome 的 logo 回 app 首頁 /app，不是公司 landing。 */}
         <Link
-          href={`/app?area=${area}`}
-          aria-label="回到找藥首頁"
+          href={`${localizedPath("/app", locale)}?area=${area}`}
+          aria-label={locale === "en" ? "Back to medicine search" : "回到找藥首頁"}
           className="flex min-h-11 flex-none items-center gap-2 no-underline"
         >
           {showSearch ? (
@@ -42,7 +46,7 @@ export function SiteHeader({
           )}
           {showTagline && (
             <span className="ml-1 hidden border-l border-line-strong pl-3 text-[12px] font-medium tracking-[.04em] text-muted lg:inline">
-              附近藥局・現貨查詢
+              {locale === "en" ? "Nearby pharmacies · Pickup" : "附近藥局・現貨查詢"}
             </span>
           )}
         </Link>
@@ -60,13 +64,14 @@ export function SiteHeader({
         <div className="hidden md:block">
           <AreaSwitch area={area} preservePath={preserveAreaPath} locatable={locatable} />
         </div>
+        <LanguageSwitch />
         {/* 供給側入口。藥局端不需要後台帳號（預留確認走 LINE bot），
             所以連的是合作說明頁而不是登入頁。 */}
         <Link
-          href="/pharmacy"
+          href={localizedPath("/pharmacy", locale)}
           className="inline-flex min-h-11 flex-none items-center border border-line-strong bg-paper px-3 text-xs font-bold text-forest no-underline transition-colors hover:border-forest hover:bg-surface"
         >
-          我是藥局
+          {locale === "en" ? "For pharmacies" : "我是藥局"}
         </Link>
       </div>
     </header>

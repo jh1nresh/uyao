@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import { logConsole } from "@/lib/box";
 import { getDrug, getStore, previewOffers, storesForDrug } from "@/lib/data";
 import { hoursSummary } from "@/lib/hours";
+import { drugCopy } from "@/lib/i18n";
 import { stockBadge } from "@/lib/stock";
 import { userForStore } from "@/lib/bindings";
 import { isConfigured, push, reservationFlex, text } from "@/lib/line";
@@ -162,14 +163,14 @@ export async function POST(request: Request) {
   // 畫面卻一切正常，你當場沒有任何線索。所以把結果帶回前端（只在 demo 模式
   // 回傳，正式路徑不吐 —— 那會洩漏哪些藥局已經上線）。
   const demoTag = demo ? "［示範］" : "";
-  logConsole("🛎", `${demoTag}收到預留 ${code}：${drug.name} → 路由到 ${store.name}`);
+  logConsole("🛎", `${demoTag}收到預留 ${code}：${drug.name} → 路由到 ${store.name}`, `${demo ? "[DEMO] " : ""}Reservation ${code} received: ${drugCopy(drug, "en").name} → routed to ${store.name}`);
 
   const lineUser = await userForStore(storeSlug);
   let notify: NotifyResult;
   if (!lineUser) {
     notify = "unbound";
     console.log(`[reservations] ${storeSlug} 尚未綁定 LINE，${code} 需人工通知`);
-    logConsole("⚠️", `${demoTag}${store.name} 未綁定 LINE，${code} 轉人工通知`);
+    logConsole("⚠️", `${demoTag}${store.name} 未綁定 LINE，${code} 轉人工通知`, `${demo ? "[DEMO] " : ""}${store.name} is not bound to LINE; ${code} requires manual notification`);
   } else if (!isConfigured()) {
     // 原本這條分支什麼都不印 —— 綁好了卻因為少一個環境變數而全靜音，
     // 是最難查的一種。
@@ -191,11 +192,11 @@ export async function POST(request: Request) {
         }),
       ]);
       notify = "sent";
-      logConsole("📲", `${demoTag}${code} 已推播到 ${store.name} 的 LINE，等藥師按確認`);
+      logConsole("📲", `${demoTag}${code} 已推播到 ${store.name} 的 LINE，等藥師按確認`, `${demo ? "[DEMO] " : ""}${code} was sent to ${store.name} in LINE; awaiting pharmacist approval`);
     } catch (err) {
       notify = "failed";
       console.error("[reservations] 推播給藥局失敗", code, String(err).slice(0, 200));
-      logConsole("🔴", `${demoTag}${code} 推播失敗，需人工聯絡 ${store.name}`);
+      logConsole("🔴", `${demoTag}${code} 推播失敗，需人工聯絡 ${store.name}`, `${demo ? "[DEMO] " : ""}${code} LINE delivery failed; ${store.name} requires manual contact`);
     }
   }
 
@@ -255,6 +256,8 @@ export async function DELETE(request: Request) {
     "🚫",
     `${r.demo ? "［示範］" : ""}${r.code} 消費者取消` +
       (wasConfirmed ? " → 通知藥局把貨放回架上" : " → 通知藥局不用處理"),
+    `${r.demo ? "[DEMO] " : ""}${r.code} consumer cancelled` +
+      (wasConfirmed ? " → pharmacy told to return the item to the shelf" : " → pharmacy told no action is needed"),
   );
   await appendRecord("reservations", {
     code: r.code,

@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useLocale } from "./LocaleProvider";
 
 /**
  * 取貨頁的取消按鈕。
@@ -22,6 +23,7 @@ export function CancelReservation({
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const locale = useLocale();
 
   async function cancel() {
     setPending(true);
@@ -34,12 +36,12 @@ export function CancelReservation({
       });
       if (!res.ok) {
         const d = (await res.json().catch(() => ({}))) as { error?: string };
-        setError(d.error ?? "取消失敗，請再試一次");
+        setError(locale === "en" ? "Could not cancel. Please try again." : d.error ?? "取消失敗，請再試一次");
         return;
       }
       router.refresh();
     } catch {
-      setError("連線失敗，請確認網路後再試");
+      setError(locale === "en" ? "Connection failed. Check your network and try again." : "連線失敗，請確認網路後再試");
     } finally {
       setPending(false);
     }
@@ -52,7 +54,7 @@ export function CancelReservation({
         onClick={() => setAsking(true)}
         className="mt-2 inline-flex min-h-11 items-center text-[13px] text-muted underline"
       >
-        取消這筆預留
+        {locale === "en" ? "Cancel this reservation" : "取消這筆預留"}
       </button>
     );
   }
@@ -60,11 +62,11 @@ export function CancelReservation({
   return (
     <div className="mt-3 border border-line-strong bg-surface px-3.5 py-3">
       <p className="text-[13px] leading-[1.7] text-ink">
-        確定要取消嗎？
+        {locale === "en" ? "Cancel this reservation?" : "確定要取消嗎？"}
         {confirmed && (
           <span className="text-muted">
             {" "}
-            藥局已經把商品留在櫃檯了，取消後他會放回架上。
+            {locale === "en" ? " The pharmacy has already set the item aside and will return it to the shelf." : " 藥局已經把商品留在櫃檯了，取消後他會放回架上。"}
           </span>
         )}
       </p>
@@ -80,7 +82,7 @@ export function CancelReservation({
           disabled={pending}
           className="action-secondary h-11 flex-1 px-3 text-[14px] font-medium"
         >
-          {pending ? "取消中…" : "確定取消"}
+          {pending ? (locale === "en" ? "Cancelling…" : "取消中…") : (locale === "en" ? "Confirm cancellation" : "確定取消")}
         </button>
         <button
           type="button"
@@ -88,7 +90,7 @@ export function CancelReservation({
           disabled={pending}
           className="action-primary h-11 flex-1 px-3 text-[14px]"
         >
-          不取消，保留
+          {locale === "en" ? "Keep reservation" : "不取消，保留"}
         </button>
       </div>
     </div>

@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     "uYao turns inventory, expiry, and local demand into pharmacist-approved return, reorder, and reservation workflows.",
   alternates: {
     canonical: "/en",
-    languages: { "zh-TW": "/", en: "/en", "x-default": "/" },
+    languages: { "zh-TW": "/zh-tw", en: "/en", "x-default": "/zh-tw" },
   },
   openGraph: {
     title: "uYao | The AI Operating System for Independent Pharmacies",
@@ -116,6 +116,7 @@ const TIMELINE = [
 ] as const;
 
 const PILOT_AREAS = ["Datong", "Linkou", "Xinzhuang", "Zhongshan"] as const;
+const EN_SHOP_URL = `${SHOP_URL.replace(/\/$/, "")}/en/app`;
 
 function Container({ children }: { children: React.ReactNode }) {
   return <div className="mx-auto max-w-[1240px] px-5 sm:px-8">{children}</div>;
@@ -139,7 +140,7 @@ export default function EnglishLandingPage() {
               <a href="#how" className="hidden min-h-11 items-center text-ink no-underline hover:text-green md:inline-flex">
                 How it works
               </a>
-              <a href={SHOP_URL} className="hidden min-h-11 items-center text-ink no-underline hover:text-green md:inline-flex">
+              <a href={EN_SHOP_URL} className="hidden min-h-11 items-center text-ink no-underline hover:text-green md:inline-flex">
                 Consumer search
               </a>
               <a
@@ -149,8 +150,8 @@ export default function EnglishLandingPage() {
                 Join the pilot
               </a>
               <span className="num flex min-h-11 items-center text-[13px] text-muted">
-                <Link href="/" className="inline-flex min-h-11 items-center text-muted no-underline hover:text-green">
-                  中
+                <Link href="/zh-tw" className="inline-flex min-h-11 items-center text-muted no-underline hover:text-green">
+                  ZH-TW
                 </Link>
                 {" / "}
                 <span aria-current="true" className="font-semibold text-ink">
@@ -185,7 +186,7 @@ export default function EnglishLandingPage() {
                   Join the pilot
                 </a>
                 <a
-                  href={SHOP_URL}
+                  href={EN_SHOP_URL}
                   className="inline-flex min-h-11 items-center whitespace-nowrap border-b border-forest py-2 text-[15px] font-semibold text-forest no-underline hover:border-green hover:text-green"
                 >
                   See the consumer product →
@@ -510,7 +511,7 @@ export default function EnglishLandingPage() {
               <BrandLogo height={30} />
             </div>
             <div className="flex flex-wrap gap-7 text-[14.5px]">
-              <a href={SHOP_URL} className="inline-flex min-h-11 items-center text-forest hover:text-green">
+              <a href={EN_SHOP_URL} className="inline-flex min-h-11 items-center text-forest hover:text-green">
                 Consumer search
               </a>
               <a href="#pilot" className="inline-flex min-h-11 items-center text-forest hover:text-green">
