@@ -46,7 +46,7 @@ body {
   }
 
   .shop-kicker {
-    @apply num text-[11px] font-semibold tracking-[.14em] text-green;
+    @apply num text-[11px] font-semibold tracking-[.14em] text-oxblood;
   }
 
   .action-primary {

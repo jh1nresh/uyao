@@ -66,7 +66,7 @@ export default async function HomePage({
           <div className="search-hero-panel relative mx-auto mt-9 w-full max-w-5xl">
             <div className="flex flex-wrap items-end justify-between gap-4 border-b border-line pb-5">
               <div>
-                <p className="num m-0 text-[11px] font-semibold tracking-[.12em] text-green">
+                <p className="num m-0 text-[11px] font-semibold tracking-[.12em] text-oxblood">
                   {getArea(area).shortName} · PHARMACY SEARCH
                 </p>
                 <h2 className="editorial-display mb-0 mt-2 text-[25px] leading-[1.25] text-forest sm:text-[30px]">
@@ -100,9 +100,9 @@ export default async function HomePage({
             </div>
 
             <div className="search-hero-steps mt-5 grid border-y border-line py-4 text-[12px] leading-[1.65] text-muted sm:grid-cols-3">
-              <span><b className="num mr-2 text-green">01</b>輸入藥名或症狀</span>
-              <span className="mt-2 sm:mt-0"><b className="num mr-2 text-green">02</b>查看附近資料狀態</span>
-              <span className="mt-2 sm:mt-0"><b className="num mr-2 text-green">03</b>預留後到店交付</span>
+              <span><b className="num mr-2 text-oxblood">01</b>輸入藥名或症狀</span>
+              <span className="mt-2 sm:mt-0"><b className="num mr-2 text-oxblood">02</b>查看附近資料狀態</span>
+              <span className="mt-2 sm:mt-0"><b className="num mr-2 text-oxblood">03</b>預留後到店交付</span>
             </div>
           </div>
 
@@ -145,7 +145,7 @@ export default async function HomePage({
               href={`/store/${store.slug}`}
               className="history-link group flex min-h-[132px] flex-col justify-between border-b border-r border-line px-5 py-5 no-underline transition-colors hover:bg-surface-hover last:sm:col-span-2"
             >
-              <span className="flex items-center justify-between text-[12px] font-medium text-green">
+              <span className="flex items-center justify-between text-[12px] font-medium text-oxblood">
                 {store.district}<span className="text-forest transition-transform group-hover:translate-x-1">→</span>
               </span>
               <span>
@@ -198,7 +198,7 @@ export default async function HomePage({
               key={s.title}
               className="flex min-h-[150px] gap-5 border-b border-line-soft px-5 py-6 last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0"
             >
-              <span className="num flex-none text-[24px] font-semibold text-green">
+              <span className="num flex-none text-[24px] font-semibold text-oxblood">
                 {String(i + 1).padStart(2, "0")}
               </span>
               <div>
