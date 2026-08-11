@@ -386,19 +386,19 @@ export default function CompanyLandingPage() {
                 <Image
                   src="/landing/consumer-web.png"
                   alt="Consumer Web 實際畫面：搜尋綠油精，頁面顯示「目前查不到即時庫存」，並提供「有貨的時候通知我」的到貨通知表單"
-                  width={1081}
-                  height={1930}
+                  width={860}
+                  height={1536}
                   className="mx-auto h-[400px] w-auto sm:h-[480px]"
                 />
               </div>
               <div className="num mt-3.5 flex flex-wrap items-center gap-2 text-[12px] font-medium text-muted">
-                <span>搜尋一支藥</span>
+                <span>搜尋藥名或症狀</span>
                 <span className="text-line-strong">→</span>
                 <span className="text-green">inventory_miss</span>
                 <span className="text-line-strong">→</span>
                 <span>留下通知</span>
                 <span className="text-line-strong">→</span>
-                <span>彙總成藥局 action signal</span>
+                <span>彙總成藥局補貨訊號</span>
               </div>
             </div>
           </div>
