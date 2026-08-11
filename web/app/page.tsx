@@ -16,7 +16,7 @@ import { PilotCtaForm, type PilotFormCopy } from "@/components/landing/PilotCtaF
  * founder 決定先下架（等有真實 pilot 進度再回來）。
  */
 export const metadata: Metadata = {
-  title: { absolute: "uYao — 獨立藥局的 AI Operating System" },
+  title: { absolute: "uYao｜獨立藥局的 AI Operating System" },
   description:
     "uYao 主動處理獨立藥局的庫存、效期與附近需求，只把必要決策交給藥師批准。",
   alternates: {
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     languages: { "zh-TW": "/", en: "/en", "x-default": "/" },
   },
   openGraph: {
-    title: "uYao — 獨立藥局的 AI Operating System",
+    title: "uYao｜獨立藥局的 AI Operating System",
     description:
       "uYao 主動處理獨立藥局的庫存、效期與附近需求，只把必要決策交給藥師批准。",
     locale: "zh_TW",
@@ -225,10 +225,10 @@ export default function CompanyLandingPage() {
             </h2>
             <div className="border border-line bg-paper">
               <div className="hidden border-b border-line sm:grid sm:grid-cols-[1fr,1.2fr]">
-                <div className="num border-r border-line px-6 py-3.5 text-[12px] font-medium tracking-[.08em] text-muted">
+                <div className="num border-r border-line bg-surface px-6 py-3.5 text-[12px] font-medium tracking-[.08em] text-muted">
                   現有系統通常看見
                 </div>
-                <div className="num px-6 py-3.5 text-[12px] font-medium tracking-[.08em] text-oxblood">
+                <div className="num bg-sage px-6 py-3.5 text-[12px] font-semibold tracking-[.08em] text-forest">
                   uYao 補上的訊號與行動
                 </div>
               </div>
@@ -245,11 +245,11 @@ export default function CompanyLandingPage() {
                     </span>
                     {row.pos}
                   </div>
-                  <div className="px-6 pb-4 pt-3 text-[16px] leading-[1.7] sm:py-[22px]">
-                    <span className="num mb-1 block text-[11px] font-medium tracking-[.08em] text-oxblood sm:hidden">
+                  <div className="bg-green-tint px-6 pb-4 pt-3 text-[16px] leading-[1.7] sm:py-[22px]">
+                    <span className="num mb-1 block text-[11px] font-semibold tracking-[.08em] text-forest sm:hidden">
                       uYao 補上的訊號與行動
                     </span>
-                    <span className="mr-2 font-bold text-oxblood" aria-hidden>
+                    <span className="mr-2 font-bold text-green" aria-hidden>
                       ＋
                     </span>
                     {row.uyao}
