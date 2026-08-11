@@ -28,7 +28,7 @@ export function SearchInput({
   const large = size !== "sm";
   const xl = size === "xl";
   const [exampleIndex, setExampleIndex] = useState(0);
-  const [isFocused, setIsFocused] = useState(false);
+  const [isPlaceholderExiting, setIsPlaceholderExiting] = useState(false);
   const [hasValue, setHasValue] = useState(defaultValue.length > 0);
   const [reduceMotion, setReduceMotion] = useState(false);
 
@@ -42,14 +42,25 @@ export function SearchInput({
   }, []);
 
   useEffect(() => {
-    if (!large || isFocused || hasValue || reduceMotion) return;
+    if (!large || reduceMotion) return;
 
     const interval = window.setInterval(() => {
-      setExampleIndex((current) => (current + 1) % SEARCH_EXAMPLES.length);
-    }, 2600);
+      setIsPlaceholderExiting(true);
+    }, 3000);
 
     return () => window.clearInterval(interval);
-  }, [hasValue, isFocused, large, reduceMotion]);
+  }, [large, reduceMotion]);
+
+  useEffect(() => {
+    if (!large || !isPlaceholderExiting || reduceMotion) return;
+
+    const timeout = window.setTimeout(() => {
+      setExampleIndex((current) => (current + 1) % SEARCH_EXAMPLES.length);
+      setIsPlaceholderExiting(false);
+    }, 500);
+
+    return () => window.clearTimeout(timeout);
+  }, [isPlaceholderExiting, large, reduceMotion]);
 
   return (
     <form
@@ -57,7 +68,7 @@ export function SearchInput({
       role="search"
       className={`flex items-center bg-paper transition-[border-color,box-shadow,transform] duration-200 ${
         xl
-          ? "h-16 gap-3 border border-line-strong px-2 focus-within:border-green focus-within:shadow-[0_12px_34px_rgba(37,54,45,0.08)] sm:h-20 sm:px-3"
+          ? "h-16 gap-3 border border-line-strong px-2 sm:h-20 sm:px-3"
           : large
             ? "paper-elevation h-[60px] gap-2 border border-line px-5"
           : "h-12 border border-line-strong px-3"
@@ -70,7 +81,7 @@ export function SearchInput({
       <label className="sr-only" htmlFor={`q-${size}`}>
         搜尋藥品
       </label>
-      <div className="relative h-full min-w-0 flex-1">
+      <div className="group relative h-full min-w-0 flex-1">
         <input
           id={`q-${size}`}
           name="q"
@@ -78,24 +89,30 @@ export function SearchInput({
           autoFocus={autoFocus}
           defaultValue={defaultValue}
           placeholder={large ? "" : "搜尋藥品"}
-          onFocus={() => setIsFocused(true)}
-          onBlur={() => setIsFocused(false)}
           onChange={(event) => setHasValue(event.currentTarget.value.length > 0)}
           // h-full：讓整個框都是點擊區，不是只有文字那 20px
-          className={`h-full w-full min-w-0 bg-transparent text-ink outline-none placeholder:text-muted-2 ${
+          className={`h-full w-full min-w-0 bg-transparent text-ink outline-none placeholder:text-muted-2 focus:outline-none focus-visible:outline-none ${
             xl ? "text-[16px] sm:text-[18px]" : large ? "text-[16px]" : "text-[15px]"
           }`}
         />
         {large && !hasValue && (
-          <span
-            key={exampleIndex}
+          <div
             aria-hidden
-            className={`search-placeholder-swap pointer-events-none absolute inset-0 flex items-center overflow-hidden text-ellipsis whitespace-nowrap text-muted-2 ${
+            className={`pointer-events-none absolute inset-0 flex items-center overflow-hidden text-ellipsis whitespace-nowrap text-muted-2 transition-opacity duration-150 group-focus-within:opacity-0 ${
               xl ? "text-[16px] sm:text-[18px]" : "text-[16px]"
             }`}
           >
-            {SEARCH_EXAMPLES[exampleIndex]}
-          </span>
+            <span
+              key={exampleIndex}
+              className={
+                isPlaceholderExiting
+                  ? "search-placeholder-exit"
+                  : "search-placeholder-enter"
+              }
+            >
+              {SEARCH_EXAMPLES[exampleIndex]}
+            </span>
+          </div>
         )}
       </div>
       {large && (
