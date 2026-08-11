@@ -17,7 +17,7 @@ import { PilotCtaForm, type PilotFormCopy } from "@/components/landing/PilotCtaF
  * 尚無 active partner → status line 固定 recruiting 版本。
  */
 export const metadata: Metadata = {
-  title: { absolute: "uYao — The AI Operating System for Independent Pharmacies" },
+  title: { absolute: "uYao | The AI Operating System for Independent Pharmacies" },
   description:
     "uYao turns inventory, expiry, and local demand into pharmacist-approved return, reorder, and reservation workflows.",
   alternates: {
@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     languages: { "zh-TW": "/", en: "/en", "x-default": "/" },
   },
   openGraph: {
-    title: "uYao — The AI Operating System for Independent Pharmacies",
+    title: "uYao | The AI Operating System for Independent Pharmacies",
     description:
       "uYao turns inventory, expiry, and local demand into pharmacist-approved return, reorder, and reservation workflows.",
     locale: "en_US",
@@ -67,7 +67,7 @@ const FORM_COPY: PilotFormCopy = {
   submit: "Join the pilot",
   submitting: "Submitting…",
   requiredError: "Please provide your pharmacy name and contact.",
-  genericError: "Something went wrong — please try again.",
+  genericError: "Something went wrong. Please try again.",
   successTitle: "Application received",
   successBody:
     "We’ll reach out via the contact you left to schedule a conversation about scanning and return windows in your pharmacy.",
@@ -175,7 +175,7 @@ export default function EnglishLandingPage() {
               </h1>
               <p className="mb-0 mt-8 max-w-[35em] text-[17px] leading-[1.8] text-ink-2">
                   uYao handles returns, reordering, and reservations from inventory, expiry, and
-                  local demand—with pharmacists approving critical decisions.
+                  local demand, with pharmacists approving critical decisions.
               </p>
               <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4">
                 <a
@@ -245,10 +245,10 @@ export default function EnglishLandingPage() {
             </h2>
             <div className="border border-line bg-paper">
               <div className="hidden border-b border-line sm:grid sm:grid-cols-[1fr,1.2fr]">
-                <div className="num border-r border-line px-6 py-3.5 text-[12px] font-medium tracking-[.08em] text-muted">
+                <div className="num border-r border-line bg-surface px-6 py-3.5 text-[12px] font-medium tracking-[.08em] text-muted">
                   Existing systems see
                 </div>
-                <div className="num px-6 py-3.5 text-[12px] font-medium tracking-[.08em] text-oxblood">
+                <div className="num bg-sage px-6 py-3.5 text-[12px] font-semibold tracking-[.08em] text-forest">
                   uYao adds
                 </div>
               </div>
@@ -265,11 +265,11 @@ export default function EnglishLandingPage() {
                     </span>
                     {row.pos}
                   </div>
-                  <div className="px-6 pb-4 pt-3 text-[16px] leading-[1.7] sm:py-[22px]">
-                    <span className="num mb-1 block text-[11px] font-medium tracking-[.08em] text-oxblood sm:hidden">
+                  <div className="bg-green-tint px-6 pb-4 pt-3 text-[16px] leading-[1.7] sm:py-[22px]">
+                    <span className="num mb-1 block text-[11px] font-semibold tracking-[.08em] text-forest sm:hidden">
                       uYao adds
                     </span>
-                    <span className="mr-2 font-bold text-oxblood" aria-hidden>
+                    <span className="mr-2 font-bold text-green" aria-hidden>
                       ＋
                     </span>
                     {row.uyao}
@@ -380,14 +380,60 @@ export default function EnglishLandingPage() {
         </Container>
       </section>
 
-      {/* Product proof */}
+      {/* Demand is a first-class operating signal */}
       <section className="border-b border-line bg-surface">
+        <Container>
+          <div className="grid items-center gap-10 py-16 sm:py-[88px] lg:grid-cols-2 lg:gap-14">
+            <div className="lg:order-2">
+              <h2 className="editorial-display mb-5 mt-0 text-[clamp(30px,3.4vw,42px)] leading-[1.25] [text-wrap:pretty]">
+                See what sold yesterday. See what nearby people can't find today.
+              </h2>
+              <p className="m-0 max-w-[32em] text-[16.5px] leading-[1.8] text-ink-2">
+                When nearby people search, come up empty, leave a restock alert, or reserve, uYao
+                sends those signals back to the pharmacy so it can reorder from live demand, not
+                historical sales alone.
+              </p>
+              <p className="mb-0 mt-4 text-[13.5px] text-muted">
+                Public views show aggregates only. They do not expose personal contact details or
+                another pharmacy's data.
+              </p>
+            </div>
+            <div className="min-w-0 lg:order-1">
+              <div className="paper-elevation border border-line bg-paper p-3">
+                <div className="num mb-2 flex items-center justify-between gap-3 px-1 pt-1 text-[11px] font-medium tracking-[.06em] text-muted">
+                  <span>CONSUMER WEB · LIVE PRODUCT</span>
+                  <span>shop-uyao.vercel.app</span>
+                </div>
+                <Image
+                  src="/landing/consumer-web.png"
+                  alt="Live consumer product: a medicine search shows no verified stock nearby and offers a restock notification form"
+                  width={860}
+                  height={1536}
+                  className="mx-auto h-[400px] w-auto sm:h-[480px]"
+                />
+              </div>
+              <div className="num mt-3.5 flex flex-wrap items-center gap-2 text-[12px] font-medium text-muted">
+                <span>Search by medicine or symptom</span>
+                <span className="text-line-strong">→</span>
+                <span className="text-green">inventory_miss</span>
+                <span className="text-line-strong">→</span>
+                <span>leave an alert</span>
+                <span className="text-line-strong">→</span>
+                <span>aggregate into a pharmacy reorder signal</span>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* Product proof */}
+      <section className="border-b border-line">
         <Container>
           <div className="py-16 sm:py-[88px]">
             <h2 className="editorial-display mb-12 mt-0 text-[clamp(30px,3.4vw,42px)] leading-[1.25] [text-wrap:pretty]">
               Built around actions, not another dashboard.
             </h2>
-            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+            <div className="grid gap-6 md:grid-cols-[1fr_1.15fr_.85fr]">
               <div className="relative overflow-hidden border border-line bg-paper px-[18px] py-4">
                 <div className="absolute bottom-0 left-0 top-0 w-[3px] bg-oxblood" />
                 <div className="num mb-2 text-[12px] font-medium text-muted">
@@ -433,21 +479,6 @@ export default function EnglishLandingPage() {
                   <span>Awaiting verified outcome</span>
                 </div>
               </div>
-              <div className="paper-elevation flex flex-col border border-line bg-paper">
-                <div className="num border-b border-line px-[18px] py-2.5 text-[11px] font-medium tracking-[.06em] text-muted">
-                  CONSUMER DEMAND SIGNAL · LIVE PRODUCT
-                </div>
-                {/* 真實 Consumer Web 截圖，object-bottom 露出 inventory-miss + 到貨通知表單 */}
-                <div className="relative h-[280px] overflow-hidden">
-                  <Image
-                    src="/landing/consumer-web.png"
-                    alt="Live consumer product: a search for a medicine shows no verified stock nearby and offers a restock notification form"
-                    width={860}
-                    height={1536}
-                    className="absolute inset-0 h-full w-full object-cover object-bottom"
-                  />
-                </div>
-              </div>
             </div>
 
           </div>
@@ -464,7 +495,7 @@ export default function EnglishLandingPage() {
               </h2>
               <p className="m-0 max-w-[30em] text-[16.5px] leading-[1.85] text-[#A9B5AA]">
                 We’re looking for independent pharmacies to validate scanning, return windows,
-                and pharmacist-approved LINE actions—without replacing the POS.
+                and pharmacist-approved LINE actions without replacing the POS.
               </p>
             </div>
             <PilotCtaForm copy={FORM_COPY} />
