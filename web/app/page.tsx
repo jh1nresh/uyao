@@ -3,7 +3,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 import { BrandLogo } from "@/components/BrandLogo";
+import { JsonLd } from "@/components/JsonLd";
 import { SHOP_URL } from "@/lib/shop";
+import { organizationJsonLd, softwareApplicationJsonLd, webSiteJsonLd } from "@/lib/seo";
+import { indexablePageRobots } from "@/lib/seo-server";
 import { HeroLoop, type HeroLoopCopy } from "@/components/landing/HeroLoop";
 import { PilotCtaForm, type PilotFormCopy } from "@/components/landing/PilotCtaForm";
 
@@ -17,22 +20,25 @@ const ZH_SHOP_URL = `${SHOP_URL.replace(/\/$/, "")}/zh-tw/app`;
  * status line 一律用 recruiting 版本。evidence ladder 2026-08-09 依
  * founder 決定先下架（等有真實 pilot 進度再回來）。
  */
-export const metadata: Metadata = {
-  title: { absolute: "uYao｜獨立藥局的 AI Operating System" },
-  description:
-    "uYao 主動處理獨立藥局的庫存、效期與附近需求，只把必要決策交給藥師批准。",
-  alternates: {
-    canonical: "/zh-tw",
-    languages: { "zh-TW": "/zh-tw", en: "/en", "x-default": "/zh-tw" },
-  },
-  openGraph: {
-    title: "uYao｜獨立藥局的 AI Operating System",
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: { absolute: "uYao｜台灣獨立藥局的 AI Operating System" },
     description:
       "uYao 主動處理獨立藥局的庫存、效期與附近需求，只把必要決策交給藥師批准。",
-    locale: "zh_TW",
-    url: "/",
-  },
-};
+    alternates: {
+      canonical: "/zh-tw",
+      languages: { "zh-TW": "/zh-tw", en: "/en", "x-default": "/zh-tw" },
+    },
+    openGraph: {
+      title: "uYao｜台灣獨立藥局的 AI Operating System",
+      description:
+        "uYao 主動處理獨立藥局的庫存、效期與附近需求，只把必要決策交給藥師批准。",
+      locale: "zh_TW",
+      url: "/zh-tw",
+    },
+    robots: await indexablePageRobots(),
+  };
+}
 
 const HERO_COPY: HeroLoopCopy = {
   flowLabel: "SUPPLY → ACTION → OUTCOME",
@@ -112,6 +118,7 @@ function Container({ children }: { children: React.ReactNode }) {
 export default function CompanyLandingPage() {
   return (
     <div className="min-w-[320px] bg-ivory text-ink">
+      <JsonLd nodes={[organizationJsonLd(), webSiteJsonLd("zh"), softwareApplicationJsonLd("zh")]} />
       <nav className="sticky top-0 z-50 border-b border-line-strong bg-ivory text-ink">
         <Container>
           <div className="flex h-[72px] items-center justify-between gap-5 sm:h-20 sm:gap-6">
@@ -514,6 +521,9 @@ export default function CompanyLandingPage() {
               <a href="#pilot" className="inline-flex min-h-11 items-center text-forest hover:text-green">
                 申請試點
               </a>
+              <Link href="/zh-tw/evidence" className="inline-flex min-h-11 items-center text-forest hover:text-green">
+                產品證據
+              </Link>
               <a href="mailto:edwardhsieh0122@gmail.com" className="inline-flex min-h-11 items-center text-forest hover:text-green">
                 Contact
               </a>

@@ -6,12 +6,32 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
+import { indexablePageRobots } from "@/lib/seo-server";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getRequestLocale();
+  const robots = await indexablePageRobots();
+  const alternates = {
+    canonical: locale === "en" ? "/en/pharmacy" : "/zh-tw/pharmacy",
+    languages: {
+      "zh-TW": "/zh-tw/pharmacy",
+      en: "/en/pharmacy",
+      "x-default": "/zh-tw/pharmacy",
+    },
+  };
   return locale === "en"
-    ? { title: "For pharmacies", description: "Expiry and local demand signals from the scanner workflow pharmacies already use, with actions delivered in LINE." }
-    : { title: "我是藥局", description: "效期雷達：快過退貨期限的品項提前 30 天提醒，過期藥從丟錢變退回藥商。一個盒子串在現有條碼掃描器上，掃描流程不用改。" };
+    ? {
+        title: { absolute: "Pharmacy pilot | Expiry, return, reorder, and demand workflows | uYao" },
+        description: "Expiry and local demand signals from the scanner workflow pharmacies already use, with actions delivered in LINE.",
+        alternates,
+        robots,
+      }
+    : {
+        title: { absolute: "獨立藥局試點｜效期、退貨、補貨與需求工作流｜uYao" },
+        description: "效期雷達：快過退貨期限的品項提前 30 天提醒，過期藥從丟錢變退回藥商。一個盒子串在現有條碼掃描器上，掃描流程不用改。",
+        alternates,
+        robots,
+      };
 }
 
 const STATS = [

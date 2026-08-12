@@ -5,6 +5,7 @@ import localFont from "next/font/local";
 import { MotionSystem } from "@/components/MotionSystem";
 import { LocaleProvider } from "@/components/LocaleProvider";
 import { getRequestLocale } from "@/lib/locale-server";
+import { SITE_URL } from "@/lib/seo";
 
 import "./globals.css";
 
@@ -38,7 +39,7 @@ const plexMono = IBM_Plex_Mono({
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getRequestLocale();
   return {
-    metadataBase: new URL("https://uyao.tw"),
+    metadataBase: new URL(SITE_URL),
     title: locale === "en"
       ? { default: "uYao — AI operating system for independent pharmacies", template: "%s · uYao" }
       : { default: "uYao 有藥 — 獨立藥局的供需庫存 Agent", template: "%s · 有藥" },
@@ -50,8 +51,16 @@ export async function generateMetadata(): Promise<Metadata> {
       locale: locale === "en" ? "en_US" : "zh_TW",
       type: "website",
     },
-    // Demo records must not be indexed until a real pilot is connected.
+    // 預設 noindex：只有 SEO v1 白名單頁面自己 override 成
+    // indexablePageRobots()（production canonical host 才 index）。
+    // 消費端 demo 資料頁在 consumer SEO spec 完成前一律不收錄。
     robots: { index: false, follow: false },
+    verification: {
+      google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+      other: process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+        ? { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION }
+        : undefined,
+    },
   };
 }
 

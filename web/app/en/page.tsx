@@ -4,7 +4,10 @@ import Link from "next/link";
 
 import { BrandLogo } from "@/components/BrandLogo";
 import { BrandMark } from "@/components/BrandMark";
+import { JsonLd } from "@/components/JsonLd";
 import { SHOP_URL } from "@/lib/shop";
+import { organizationJsonLd, softwareApplicationJsonLd, webSiteJsonLd } from "@/lib/seo";
+import { indexablePageRobots } from "@/lib/seo-server";
 import { HeroLoop, type HeroLoopCopy } from "@/components/landing/HeroLoop";
 import { PilotCtaForm, type PilotFormCopy } from "@/components/landing/PilotCtaForm";
 
@@ -16,22 +19,25 @@ import { PilotCtaForm, type PilotFormCopy } from "@/components/landing/PilotCtaF
  * 決定先下架（等有真實 pilot 進度再回來）。
  * 尚無 active partner → status line 固定 recruiting 版本。
  */
-export const metadata: Metadata = {
-  title: { absolute: "uYao | The AI Operating System for Independent Pharmacies" },
-  description:
-    "uYao turns inventory, expiry, and local demand into pharmacist-approved return, reorder, and reservation workflows.",
-  alternates: {
-    canonical: "/en",
-    languages: { "zh-TW": "/zh-tw", en: "/en", "x-default": "/zh-tw" },
-  },
-  openGraph: {
-    title: "uYao | The AI Operating System for Independent Pharmacies",
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: { absolute: "uYao | The AI Operating System for Independent Pharmacies" },
     description:
       "uYao turns inventory, expiry, and local demand into pharmacist-approved return, reorder, and reservation workflows.",
-    locale: "en_US",
-    url: "/en",
-  },
-};
+    alternates: {
+      canonical: "/en",
+      languages: { "zh-TW": "/zh-tw", en: "/en", "x-default": "/zh-tw" },
+    },
+    openGraph: {
+      title: "uYao | The AI Operating System for Independent Pharmacies",
+      description:
+        "uYao turns inventory, expiry, and local demand into pharmacist-approved return, reorder, and reservation workflows.",
+      locale: "en_US",
+      url: "/en",
+    },
+    robots: await indexablePageRobots(),
+  };
+}
 
 const HERO_COPY: HeroLoopCopy = {
   flowLabel: "SUPPLY → ACTION → OUTCOME",
@@ -125,6 +131,7 @@ function Container({ children }: { children: React.ReactNode }) {
 export default function EnglishLandingPage() {
   return (
     <div className="min-w-[320px] bg-ivory text-ink">
+      <JsonLd nodes={[organizationJsonLd(), webSiteJsonLd("en"), softwareApplicationJsonLd("en")]} />
       <nav className="sticky top-0 z-50 border-b border-line-strong bg-ivory text-ink">
         <Container>
           <div className="flex h-[72px] items-center justify-between gap-5 sm:h-20 sm:gap-6">
@@ -517,6 +524,9 @@ export default function EnglishLandingPage() {
               <a href="#pilot" className="inline-flex min-h-11 items-center text-forest hover:text-green">
                 Join the pilot
               </a>
+              <Link href="/zh-tw/evidence" className="inline-flex min-h-11 items-center text-forest hover:text-green">
+                Product evidence
+              </Link>
               <a href="mailto:edwardhsieh0122@gmail.com" className="inline-flex min-h-11 items-center text-forest hover:text-green">
                 Contact
               </a>
