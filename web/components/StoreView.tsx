@@ -11,6 +11,7 @@ import type { Store } from "@/lib/types";
 import { formatDistance } from "@/lib/format";
 import { areaCopy, localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
+import { SITE_URL } from "@/lib/seo";
 import { stockBadge } from "@/lib/stock";
 import {
   businessStatusWarning,
@@ -222,7 +223,7 @@ export async function StoreView({ store, preview }: { store: Store; preview: boo
               ...(store.lat && store.lng
                 ? { geo: { "@type": "GeoCoordinates", latitude: store.lat, longitude: store.lng } }
                 : {}),
-              url: `https://uyao.tw/store/${store.slug}`,
+              url: `${SITE_URL}/zh-tw/store/${store.slug}`,
             }),
           }}
         />
