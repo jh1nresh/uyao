@@ -8,11 +8,13 @@ import {
   SHOP_CANONICAL_HOST,
   SHOP_INDEXABLE_PATHS,
   SITE_URL,
+  X_URL,
   articleJsonLd,
   breadcrumbJsonLd,
   consumerIndexingAllowed,
   consumerWebPageJsonLd,
   consumerWebSiteJsonLd,
+  faqPageJsonLd,
   indexingAllowed,
   jsonLdGraph,
   organizationJsonLd,
@@ -82,6 +84,10 @@ describe("json-ld", () => {
     );
   });
 
+  it("links the organization to the official uYao X account", () => {
+    expect(organizationJsonLd()).toMatchObject({ sameAs: [X_URL] });
+  });
+
   it("builds absolute breadcrumb urls on the canonical site", () => {
     const crumb = breadcrumbJsonLd([{ name: "首頁", path: "/zh-tw" }]);
     expect(JSON.stringify(crumb)).toContain(`${SITE_URL}/zh-tw`);
@@ -110,5 +116,18 @@ describe("json-ld", () => {
     for (const banned of ["Offer", "availability", "price", "MedicalOrganization"]) {
       expect(graph).not.toContain(banned);
     }
+  });
+
+  it("builds FAQ answers from visible question and answer copy", () => {
+    expect(faqPageJsonLd([{ question: "怎麼找藥？", answer: "先搜尋，再由藥局確認。" }])).toMatchObject({
+      "@type": "FAQPage",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "怎麼找藥？",
+          acceptedAnswer: { "@type": "Answer", text: "先搜尋，再由藥局確認。" },
+        },
+      ],
+    });
   });
 });

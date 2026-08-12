@@ -319,6 +319,10 @@ export default async function HomePage({
               <h3 className="m-0 text-[16px] font-bold text-ink">{locale === "en" ? "Biotech partner" : "生技合作夥伴"}</h3>
               <p className="mb-0 mt-2 text-[13px] leading-[1.75] text-muted">
                 {locale === "en" ? "uYao partners with WE STRONG CO., LTD. (維淳有限公司). This does not imply product availability, online sales, or medical endorsement." : "uYao 與維淳有限公司（WeStrong／WE STRONG CO., LTD.）為合作夥伴；這不代表任何商品已有庫存、可在線購買或構成醫療背書。"}{" "}
+                <a href={`${SITE_URL}/zh-tw/evidence#partners`} className="text-forest underline underline-offset-2 hover:text-green">
+                  {locale === "en" ? "Partnership evidence" : "合作與證據"}
+                </a>
+                {" · "}
                 <a href="https://taiwanwestrong.com/info.html" className="text-forest underline underline-offset-2 hover:text-green">
                   {locale === "en" ? "Public website" : "公開網站"}
                 </a>
