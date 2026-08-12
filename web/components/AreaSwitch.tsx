@@ -42,7 +42,7 @@ function AreaSwitchWithRoute({
   const locale = useLocale();
   const applyWhenReady = useRef(false);
 
-  const targetPath = preservePath ? pathname : localizedPath("/app", locale);
+  const targetPath = preservePath ? pathname : localizedPath("/", locale);
   const targetSearch = preservePath ? searchParams.toString() : "";
   const hrefFor = (nextArea: AreaSlug) => withArea(targetPath, targetSearch, nextArea);
 

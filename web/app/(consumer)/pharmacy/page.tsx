@@ -7,6 +7,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
 import { indexablePageRobots } from "@/lib/seo-server";
+import { SHOP_URL } from "@/lib/shop";
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getRequestLocale();
@@ -99,7 +100,7 @@ export default async function PharmacyPage() {
           </p>
           <p className="text-[13px] leading-[1.7] text-muted-2">
             {locale === "en" ? "We never claim an exact quantity; we show only signal freshness." : "我們永遠不顯示確切數量，只顯示掃描新鮮度。"}
-            <Link href={localizedPath("/app", locale)} className="ml-1 text-green underline underline-offset-2">
+            <Link href={`${SHOP_URL}${localizedPath("/", locale)}`} className="ml-1 text-green underline underline-offset-2">
               {locale === "en" ? "See the consumer experience →" : "看消費端長什麼樣 →"}
             </Link>
           </p>

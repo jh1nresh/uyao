@@ -10,14 +10,14 @@ import { indexablePageRobots } from "@/lib/seo-server";
 import { HeroLoop, type HeroLoopCopy } from "@/components/landing/HeroLoop";
 import { PilotCtaForm, type PilotFormCopy } from "@/components/landing/PilotCtaForm";
 
-const ZH_SHOP_URL = `${SHOP_URL.replace(/\/$/, "")}/zh-tw/app`;
+const ZH_SHOP_URL = `${SHOP_URL.replace(/\/$/, "")}/zh-tw`;
 
 /**
  * 公司 landing（design: `uYao Landing.dc.html`，spec: company-landing-page.md
  * + company-landing-page-yc-en-adjustment.md）。
- * `/` 說清楚問題、閉環、證據與試點；消費者 app 在 /app，英文 YC 版在 /en。
- * 誠實原則：未驗證的一律標 prototype／示範資料；尚無 active partner，
- * status line 一律用 recruiting 版本。evidence ladder 2026-08-09 依
+ * `/` 說清楚問題、閉環、證據與試點；Consumer Web 使用獨立 shop host。
+ * 誠實原則：未驗證的一律標 prototype／示範資料；WeStrong 是生技公司
+ * 合作夥伴，不代表已有合作藥局、即時庫存或商品供應。evidence ladder 2026-08-09 依
  * founder 決定先下架（等有真實 pilot 進度再回來）。
  */
 export async function generateMetadata(): Promise<Metadata> {
@@ -225,6 +225,35 @@ export default function CompanyLandingPage() {
         </Container>
       </section>
 
+      <section className="border-b border-line bg-ivory" aria-labelledby="partner-heading">
+        <Container>
+          <div className="grid gap-6 py-10 sm:grid-cols-[.8fr,1.2fr] sm:items-start sm:py-14">
+            <div>
+              <p className="num mb-3 mt-0 text-[11px] font-semibold tracking-[.14em] text-oxblood">
+                BIOTECH PARTNER
+              </p>
+              <h2 id="partner-heading" className="editorial-display m-0 text-[30px] leading-[1.3] sm:text-[38px]">
+                生技合作夥伴
+              </h2>
+            </div>
+            <div className="border-l-2 border-green pl-5 sm:pl-7">
+              <p className="m-0 text-[18px] font-bold text-ink">
+                維淳有限公司（WeStrong／WE STRONG CO., LTD.）
+              </p>
+              <p className="mb-0 mt-3 max-w-[44em] text-[14.5px] leading-[1.8] text-ink-2">
+                uYao 已與維淳有限公司建立合作關係。現階段公開資訊只確認合作事實；不代表維淳的任何商品已有即時庫存、可在 uYao 直接購買，或構成醫療與用藥背書。
+              </p>
+              <p className="mb-0 mt-3 text-[13px] text-muted">
+                法定名稱：維淳有限公司 · 英文名稱：WE STRONG CO., LTD. · 統一編號：16816971 ·{" "}
+                <a href="https://taiwanwestrong.com/info.html" className="text-forest underline underline-offset-2 hover:text-green">
+                  公開網站
+                </a>
+              </p>
+            </div>
+          </div>
+        </Container>
+      </section>
+
       {/* 為什麼 POS 還是不夠 — comparison strip */}
       <section className="border-b border-line bg-surface">
         <Container>
@@ -389,7 +418,7 @@ export default function CompanyLandingPage() {
               <div className="paper-elevation border border-line bg-paper p-3">
                 <div className="num mb-2 flex items-center justify-between gap-3 px-1 pt-1 text-[11px] font-medium tracking-[.06em] text-muted">
                   <span>CONSUMER WEB · 實際畫面</span>
-                  <span>shop-uyao.vercel.app</span>
+                  <span>shop.uyaohealth.com</span>
                 </div>
                 {/* 真實截圖：綠油精搜尋落空（查不到即時庫存）→ 到貨通知表單 */}
                 <Image

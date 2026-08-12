@@ -8,6 +8,7 @@ import { useLocale } from "./LocaleProvider";
 import { PRICE_NOTICE } from "@/lib/pricing";
 import { hoursSummary } from "@/lib/hours";
 import { localizedPath } from "@/lib/i18n";
+import { SHOP_URL } from "@/lib/shop";
 import type { NotifyResult, StockBadgeSpec, Store } from "@/lib/types";
 
 export interface ReserveTarget {
@@ -368,7 +369,7 @@ function SuccessBody({
           {locale === "en" ? "Open directions" : "開啟導航"}
         </a>
         <Link
-          href={localizedPath("/app", locale)}
+          href={`${SHOP_URL}${localizedPath("/", locale)}`}
           className="action-secondary h-[46px] flex-1 px-3 text-sm font-medium"
         >
           {locale === "en" ? "Back to search" : "回到搜尋"}
