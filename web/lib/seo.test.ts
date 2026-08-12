@@ -49,6 +49,18 @@ describe("consumerIndexingAllowed", () => {
 });
 
 describe("indexable paths", () => {
+  it("includes the GEO benchmark answer pages", () => {
+    expect(INDEXABLE_PATHS).toEqual(
+      expect.arrayContaining([
+        "/zh-tw/guides/ai-tools-pharmacy-inventory",
+        "/zh-tw/guides/pharmacy-expiry-management",
+        "/zh-tw/guides/pharmacy-return-window",
+        "/zh-tw/evidence",
+        "/zh-tw/compare/uyao-vs-pos",
+      ]),
+    );
+  });
+
   it("only contains locale-prefixed canonical routes", () => {
     for (const path of INDEXABLE_PATHS) {
       expect(path).toMatch(/^\/(zh-tw|en)(\/|$)/);

@@ -43,6 +43,7 @@ export const INDEXABLE_PATHS = [
   "/zh-tw/pharmacy",
   "/en/pharmacy",
   "/zh-tw/evidence",
+  "/zh-tw/guides/ai-tools-pharmacy-inventory",
   "/zh-tw/guides/pharmacy-expiry-management",
   "/zh-tw/guides/pharmacy-return-window",
   "/zh-tw/compare/uyao-vs-pos",

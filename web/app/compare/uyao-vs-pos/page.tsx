@@ -140,7 +140,11 @@ export default function CompareUyaoVsPosPage() {
             <Link href="/zh-tw/guides/pharmacy-expiry-management" className="mx-1 text-forest underline underline-offset-2 hover:text-green">
               藥品效期管理指南
             </Link>
-            開始，或直接申請試點。
+            開始；若正在評估工具，也可先看
+            <Link href="/zh-tw/guides/ai-tools-pharmacy-inventory" className="mx-1 text-forest underline underline-offset-2 hover:text-green">
+              藥局庫存 AI 工具選擇指南
+            </Link>
+            ，或直接申請試點。
           </p>
         </section>
 
