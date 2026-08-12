@@ -27,7 +27,7 @@ uYao 把藥局的庫存、效期與在地需求訊號，轉成由藥師核准的
 |---|---|
 | `src/` | GS1／EAN 解析、掃描 session 分類、USB HID 轉發、SQLite spool 與資料工具 |
 | `web/` | Next.js 公司網站、消費端找藥、藥局試點、LINE 預留與營運 console |
-| `setup/` | Raspberry Pi service、demo simulator 與 YC demo runbook |
+| `setup/` | Raspberry Pi service 與本機 pipeline simulator |
 | `specs/` | 產品、硬體、需求捕捉與 web 規格 |
 | `tests/` | 掃描 pipeline 測試 |
 
@@ -65,5 +65,4 @@ npm run typecheck
 - [公司 Landing Page](specs/company-landing-page.md)
 - [需求捕捉](specs/demand-capture.md)
 - [硬體選項](specs/hardware-options.md)
-- [YC demo runbook](setup/yc-demo-runbook.md)
 - [Web 開發說明](web/README.md)

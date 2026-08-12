@@ -27,7 +27,7 @@ Consumer search → select pharmacy → reserve → pharmacy receives LINE alert
 |---|---|
 | `src/` | GS1 and EAN parsing, scan-session classification, USB HID forwarding, SQLite spool, and data tools |
 | `web/` | Next.js company site, consumer search, pharmacy pilot flow, LINE reservations, and operations console |
-| `setup/` | Raspberry Pi service, demo simulator, and YC demo runbook |
+| `setup/` | Raspberry Pi service and local pipeline simulator |
 | `specs/` | Product, hardware, demand-capture, and web specifications |
 | `tests/` | Scanner pipeline tests |
 
@@ -65,5 +65,4 @@ npm run typecheck
 - [Company landing page](specs/company-landing-page.md)
 - [Demand capture](specs/demand-capture.md)
 - [Hardware options](specs/hardware-options.md)
-- [YC demo runbook](setup/yc-demo-runbook.md)
 - [Web development](web/README.md)
