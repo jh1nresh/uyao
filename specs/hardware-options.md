@@ -37,6 +37,30 @@ standalone 模式是既有能力不是新功能。
 | ESP32-S3 | ❌ 單 USB 口 |
 | **Tuya T5AI / BK7258** | ❌ 單 USB 口（板上 Type-C 走 CH343 序列晶片，不是真 USB device）。它的 USB host stack 主要為 UVC 相機做，HID 鍵盤 host 未驗證 |
 
+這個限制只針對「保留藥局現有 USB 掃描器」的透明中介盒。ESP32-S3 可以用於兩種較便宜的形態：
+
+- **獨立掃描站**：GM805 走 UART 進 ESP32-S3，再由 Wi-Fi 上傳；
+- **替代／新增掃描器**：GM805 走 UART 進 ESP32-S3，ESP32-S3 唯一的原生 USB 口對 POS 模擬 HID keyboard。
+
+第二種技術上可行，但它要求藥局改用我們的掃描頭或多做一次掃描，不是「原設備、原動作零改變」的
+transparent inline 主線，而且目前尚未實作／實機驗證。
+
+### Pi 4 inline 供電陷阱
+
+Pi 4 的 USB-C 同時是 gadget data port 與主要電源輸入。接到藥局電腦做 HID gadget 時，
+不可再讓外部電源與電腦 USB 的 5V 直接並聯。第一台 MVP 採兩階段：
+
+1. **standalone demo**：官方 USB-C 電源供電，掃描器接 USB-A，只側錄／上傳，不接下游電腦；
+2. **inline demo**：Pi 改由隔離的 PoE HAT 供電，USB-C→電腦的 data cable 加「阻斷 5V、保留 data」的 power blocker。
+
+不要用一般 Y-cable，也不要在未確認 VBUS 隔離時同時接 USB-C host 與外部 5V。GPIO 5V
+供電繞過保護，只適合懂電源風險的 bench test，不作為第一台 MVP 的預設方案。
+PoE + data-only cable 這組供電方式目前也還沒有實機驗證；進店前必須先量測沒有 VBUS
+回灌，並完成斷電重啟與 HID 重新枚舉測試。
+
+官方依據：[Raspberry Pi USB gadget mode](https://www.raspberrypi.com/news/usb-gadget-mode-in-raspberry-pi-os-ssh-over-usb/)、
+[ESP32-S3 USB Device Stack](https://docs.espressif.com/projects/esp-idf/en/stable/esp32s3/api-reference/peripherals/usb_device.html)。
+
 ## Tuya 的評估結論
 
 TuyaOpen 開源、板便宜、內建麥克風喇叭相機，**但兩個理由不用**：
