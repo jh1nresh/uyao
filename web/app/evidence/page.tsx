@@ -149,10 +149,13 @@ export default function EvidencePage() {
         </div>
       </section>
 
-      <section className="mt-12">
+      <section id="partners" className="mt-12 scroll-mt-24">
         <h2 className="editorial-display mb-4 mt-0 text-[26px] leading-[1.4]">已公開合作關係</h2>
         <p className="m-0 max-w-[38em] text-[15px] leading-[1.85] text-ink-2">
-          uYao 已與生技公司<b className="text-ink">維淳有限公司（WeStrong／WE STRONG CO., LTD.）</b>建立合作關係。這項資訊只確認公司層級合作，不代表已有合作藥局、已安裝設備、任何商品已有即時庫存或構成醫療背書。維淳統一編號為 16816971；可查閱其
+          uYao 已與生技公司<b className="text-ink">維淳有限公司（WeStrong／WE STRONG CO., LTD.）</b>建立合作關係。uYao 負責本站、找藥服務與藥局工作流產品；現階段公開資訊只確認 WeStrong 的公司層級合作夥伴身分，未公開的合作細節不由本站推定。
+        </p>
+        <p className="mb-0 mt-3 max-w-[38em] text-[15px] leading-[1.85] text-ink-2">
+          這項合作不代表已有合作藥局、已安裝設備、任何商品已有即時庫存、可透過 uYao 購買，或構成醫療與用藥背書。維淳統一編號為 16816971；可查閱其
           <a href="https://taiwanwestrong.com/info.html" className="ml-1 text-forest underline underline-offset-2 hover:text-green">
             公開網站
           </a>

@@ -9,6 +9,7 @@ import { organizationJsonLd, softwareApplicationJsonLd, webSiteJsonLd } from "@/
 import { indexablePageRobots } from "@/lib/seo-server";
 import { HeroLoop, type HeroLoopCopy } from "@/components/landing/HeroLoop";
 import { PilotCtaForm, type PilotFormCopy } from "@/components/landing/PilotCtaForm";
+import { CompanyFooter } from "@/components/landing/CompanyFooter";
 
 const ZH_SHOP_URL = `${SHOP_URL.replace(/\/$/, "")}/zh-tw`;
 
@@ -245,6 +246,10 @@ export default function CompanyLandingPage() {
               </p>
               <p className="mb-0 mt-3 text-[13px] text-muted">
                 法定名稱：維淳有限公司 · 英文名稱：WE STRONG CO., LTD. · 統一編號：16816971 ·{" "}
+                <Link href="/zh-tw/evidence#partners" className="text-forest underline underline-offset-2 hover:text-green">
+                  合作與證據
+                </Link>
+                {" · "}
                 <a href="https://taiwanwestrong.com/info.html" className="text-forest underline underline-offset-2 hover:text-green">
                   公開網站
                 </a>
@@ -537,33 +542,7 @@ export default function CompanyLandingPage() {
         </Container>
       </section>
 
-      <footer className="border-t border-line bg-paper">
-        <Container>
-          <div className="flex flex-wrap items-start justify-between gap-8 py-12">
-            <div className="flex items-center">
-              <BrandLogo height={30} />
-            </div>
-            <div className="flex flex-wrap gap-x-7 text-[14.5px]">
-              <a href={ZH_SHOP_URL} className="inline-flex min-h-11 items-center text-forest hover:text-green">
-                附近找藥
-              </a>
-              <a href="#pilot" className="inline-flex min-h-11 items-center text-forest hover:text-green">
-                申請試點
-              </a>
-              <Link href="/zh-tw/evidence" className="inline-flex min-h-11 items-center text-forest hover:text-green">
-                產品證據
-              </Link>
-              <a href="mailto:edwardhsieh0122@gmail.com" className="inline-flex min-h-11 items-center text-forest hover:text-green">
-                Contact
-              </a>
-            </div>
-            <p className="m-0 max-w-[36em] flex-[1_1_100%] text-[13px] leading-[1.8] text-muted">
-              uYao
-              不進行藥品網路販售；消費者服務僅協助查詢、預留與到店取貨，實際交付由藥師完成。
-            </p>
-          </div>
-        </Container>
-      </footer>
+      <CompanyFooter locale="zh" />
     </div>
   );
 }

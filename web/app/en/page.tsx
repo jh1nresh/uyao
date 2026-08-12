@@ -10,6 +10,7 @@ import { organizationJsonLd, softwareApplicationJsonLd, webSiteJsonLd } from "@/
 import { indexablePageRobots } from "@/lib/seo-server";
 import { HeroLoop, type HeroLoopCopy } from "@/components/landing/HeroLoop";
 import { PilotCtaForm, type PilotFormCopy } from "@/components/landing/PilotCtaForm";
+import { CompanyFooter } from "@/components/landing/CompanyFooter";
 
 /**
  * English YC/company landing（spec: company-landing-page-yc-en-adjustment.md）。
@@ -265,6 +266,10 @@ export default function EnglishLandingPage() {
               </p>
               <p className="mb-0 mt-3 text-[13px] text-muted">
                 Taiwan company ID: 16816971 ·{" "}
+                <Link href="/zh-tw/evidence#partners" className="text-forest underline underline-offset-2 hover:text-green">
+                  Partnership evidence
+                </Link>
+                {" · "}
                 <a href="https://taiwanwestrong.com/info.html" className="text-forest underline underline-offset-2 hover:text-green">
                   Public website
                 </a>
@@ -541,33 +546,7 @@ export default function EnglishLandingPage() {
         </Container>
       </section>
 
-      <footer className="border-t border-line bg-paper">
-        <Container>
-          <div className="flex flex-wrap items-start justify-between gap-8 py-12">
-            <div className="flex items-center">
-              <BrandLogo height={30} />
-            </div>
-            <div className="flex flex-wrap gap-7 text-[14.5px]">
-              <a href={EN_SHOP_URL} className="inline-flex min-h-11 items-center text-forest hover:text-green">
-                Consumer search
-              </a>
-              <a href="#pilot" className="inline-flex min-h-11 items-center text-forest hover:text-green">
-                Join the pilot
-              </a>
-              <Link href="/zh-tw/evidence" className="inline-flex min-h-11 items-center text-forest hover:text-green">
-                Product evidence
-              </Link>
-              <a href="mailto:edwardhsieh0122@gmail.com" className="inline-flex min-h-11 items-center text-forest hover:text-green">
-                Contact
-              </a>
-            </div>
-            <p className="m-0 max-w-[38em] flex-[1_1_100%] text-[13px] leading-[1.8] text-muted">
-              uYao does not sell medicines online. The consumer service supports search,
-              reservation, and in-store pickup only, with pharmacists completing every handover.
-            </p>
-          </div>
-        </Container>
-      </footer>
+      <CompanyFooter locale="en" />
     </div>
   );
 }
