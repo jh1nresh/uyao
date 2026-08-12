@@ -150,6 +150,17 @@ export default function EvidencePage() {
       </section>
 
       <section className="mt-12">
+        <h2 className="editorial-display mb-4 mt-0 text-[26px] leading-[1.4]">已公開合作關係</h2>
+        <p className="m-0 max-w-[38em] text-[15px] leading-[1.85] text-ink-2">
+          uYao 已與生技公司<b className="text-ink">維淳有限公司（WeStrong／WE STRONG CO., LTD.）</b>建立合作關係。這項資訊只確認公司層級合作，不代表已有合作藥局、已安裝設備、任何商品已有即時庫存或構成醫療背書。維淳統一編號為 16816971；可查閱其
+          <a href="https://taiwanwestrong.com/info.html" className="ml-1 text-forest underline underline-offset-2 hover:text-green">
+            公開網站
+          </a>
+          。
+        </p>
+      </section>
+
+      <section className="mt-12">
         <h2 className="editorial-display mb-4 mt-0 text-[26px] leading-[1.4]">目前試點進度</h2>
         <p className="m-0 max-w-[38em] text-[15px] leading-[1.85] text-ink-2">
           目前<b className="text-ink">尚無正式簽約的試點藥局</b>。我們正在雙北四區（大同、林口、新莊、中山）進行現場流程訪談與試點招募。區域聚焦不代表已正式合作、已安裝設備或已有即時庫存。
@@ -179,7 +190,7 @@ export default function EvidencePage() {
         <Link href="/zh-tw/pharmacy" className="text-forest underline underline-offset-2 hover:text-green">
           藥局試點說明與申請
         </Link>
-        <a href={`${SHOP_URL.replace(/\/$/, "")}/zh-tw/app`} className="text-forest underline underline-offset-2 hover:text-green">
+        <a href={`${SHOP_URL.replace(/\/$/, "")}/zh-tw`} className="text-forest underline underline-offset-2 hover:text-green">
           消費者找藥（Consumer Web）
         </a>
         <Link

@@ -10,12 +10,12 @@ export async function SiteFooter({ note }: { note?: string }) {
     <footer className="border-t border-line bg-paper text-[13px] leading-[1.75] text-muted-2">
       <div className="shop-shell py-7">
         {note ?? (locale === "en"
-          ? "This service provides store and availability information only. It does not offer online medicine sales; pharmacists confirm and hand over every item in store. Ask a pharmacy about prescription medicines."
-          : "本站僅呈現庫存與門市資訊，不呈現藥品價格、不提供線上交易；商品一律由藥師於門市確認後交付。處方藥請洽藥局。藥品廣告依藥事法第 66 條事前審查。")}
+          ? "This service provides trial catalog and public pharmacy information. It does not claim live stock or offer online medicine sales; pharmacies and pharmacists confirm supply, pickup, and medicine questions."
+          : "本站提供試營運目錄與公開藥局資料，不代表即時庫存、不呈現藥品價格，也不提供線上交易；供應、預留、交付與用藥問題均由藥局或藥師確認。藥品廣告依藥事法第 66 條事前審查。")}
         <br />
         {locale === "en"
-          ? "uYao · Pharmacy partnerships · Pickup reservations only, no online checkout"
-          : "有藥 uyao.tw · 藥局合作洽詢 · 僅提供預留取貨，不提供線上交易"}
+          ? "shop-uYao · shop.uyaohealth.com · Medicine requests only, no online checkout"
+          : "shop-uYao · shop.uyaohealth.com · 僅協助找藥需求，不提供線上交易"}
         <span className="ml-2"><LanguageSwitch /></span>
       </div>
     </footer>

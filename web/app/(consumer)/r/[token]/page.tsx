@@ -9,6 +9,7 @@ import { PRICE_NOTICE } from "@/lib/pricing";
 import { getDrug } from "@/lib/data";
 import { drugCopy, localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
+import { SHOP_URL } from "@/lib/shop";
 import {
   TELL_CONSUMER_AFTER_MIN,
   contactTail,
@@ -119,7 +120,7 @@ export default async function PickupPage({
             {!isStoreAvailable() &&
               (locale === "en" ? " The reservation store may also be temporarily unavailable; contact the pharmacy directly." : "（也可能是系統暫時讀不到資料，請直接聯絡藥局。）")}
             <br />
-            <Link href={localizedPath("/app", locale)} className="text-green">
+            <Link href={`${SHOP_URL}${localizedPath("/", locale)}`} className="text-green">
               {locale === "en" ? "Back to search →" : "回到搜尋 →"}
             </Link>
           </p>
