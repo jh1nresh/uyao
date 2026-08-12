@@ -17,7 +17,8 @@ import { PilotCtaForm, type PilotFormCopy } from "@/components/landing/PilotCtaF
  * 與 `/` 共用 HeroLoop／PilotCtaForm 與視覺系統，anchor（how/pilot）
  * 兩邊一致供語言切換保留位置。evidence ladder 2026-08-09 依 founder
  * 決定先下架（等有真實 pilot 進度再回來）。
- * 尚無 active partner → status line 固定 recruiting 版本。
+ * WeStrong is a biotech partner; this does not imply a partner pharmacy,
+ * live inventory, product availability, or medical endorsement.
  */
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -122,7 +123,7 @@ const TIMELINE = [
 ] as const;
 
 const PILOT_AREAS = ["Datong", "Linkou", "Xinzhuang", "Zhongshan"] as const;
-const EN_SHOP_URL = `${SHOP_URL.replace(/\/$/, "")}/en/app`;
+const EN_SHOP_URL = `${SHOP_URL.replace(/\/$/, "")}/en`;
 
 function Container({ children }: { children: React.ReactNode }) {
   return <div className="mx-auto max-w-[1240px] px-5 sm:px-8">{children}</div>;
@@ -240,6 +241,35 @@ export default function EnglishLandingPage() {
               Area focus does not imply a formal partnership, installed hardware, or live
               inventory.
             </p>
+          </div>
+        </Container>
+      </section>
+
+      <section className="border-b border-line bg-ivory" aria-labelledby="partner-heading-en">
+        <Container>
+          <div className="grid gap-6 py-10 sm:grid-cols-[.8fr,1.2fr] sm:items-start sm:py-14">
+            <div>
+              <p className="num mb-3 mt-0 text-[11px] font-semibold tracking-[.14em] text-oxblood">
+                BIOTECH PARTNER
+              </p>
+              <h2 id="partner-heading-en" className="editorial-display m-0 text-[30px] leading-[1.3] sm:text-[38px]">
+                Partnership
+              </h2>
+            </div>
+            <div className="border-l-2 border-green pl-5 sm:pl-7">
+              <p className="m-0 text-[18px] font-bold text-ink">
+                WE STRONG CO., LTD.（維淳有限公司／WeStrong）
+              </p>
+              <p className="mb-0 mt-3 max-w-[44em] text-[14.5px] leading-[1.8] text-ink-2">
+                uYao and WE STRONG CO., LTD. have established a partnership. This public statement confirms the relationship only; it does not mean that any WE STRONG product is in stock, sold through uYao, or medically endorsed.
+              </p>
+              <p className="mb-0 mt-3 text-[13px] text-muted">
+                Taiwan company ID: 16816971 ·{" "}
+                <a href="https://taiwanwestrong.com/info.html" className="text-forest underline underline-offset-2 hover:text-green">
+                  Public website
+                </a>
+              </p>
+            </div>
           </div>
         </Container>
       </section>
@@ -410,7 +440,7 @@ export default function EnglishLandingPage() {
               <div className="paper-elevation border border-line bg-paper p-3">
                 <div className="num mb-2 flex items-center justify-between gap-3 px-1 pt-1 text-[11px] font-medium tracking-[.06em] text-muted">
                   <span>CONSUMER WEB · LIVE PRODUCT</span>
-                  <span>shop-uyao.vercel.app</span>
+                  <span>shop.uyaohealth.com</span>
                 </div>
                 <Image
                   src="/landing/consumer-web.png"

@@ -1,21 +1,22 @@
 import type { Locale } from "./i18n";
+import { SHOP_URL } from "./shop";
 
 /**
  * SEO/GEO v1（spec: company-landing-page-seo-geo-v1.md）。
  *
- * Canonical host 走 env：uyao.tw 尚未設 DNS（2026-08-12 查無解析），
- * 實際 production host 是 uyao.vercel.app。等自訂網域上線，在 Vercel 設
- * NEXT_PUBLIC_SITE_URL=https://uyao.tw 即可全站切換，不用改 code。
+ * Canonical host 走 env；fallback 也是已驗證的正式 owned domain，避免
+ * 本機 build 或漏設 preview env 時重新產生舊 Vercel canonical。
  */
 export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://uyao.vercel.app"
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://uyaohealth.com"
 ).replace(/\/$/, "");
 
 export const CANONICAL_HOST = new URL(SITE_URL).host;
+export const SHOP_CANONICAL_HOST = new URL(SHOP_URL).host;
 
 /**
  * Index 三重閘門：production deployment、canonical host、route 白名單。
- * Vercel preview／deployment URL／shop host 一律拿不到 index。
+ * Vercel preview、deployment URL 與非 company canonical host 一律拿不到 index。
  */
 export function indexingAllowed(
   requestHost: string | null | undefined,
@@ -24,6 +25,15 @@ export function indexingAllowed(
   if (vercelEnv !== "production") return false;
   const host = (requestHost ?? "").toLowerCase().split(":")[0];
   return host === CANONICAL_HOST;
+}
+
+export function consumerIndexingAllowed(
+  requestHost: string | null | undefined,
+  vercelEnv: string | undefined = process.env.VERCEL_ENV,
+): boolean {
+  if (vercelEnv !== "production") return false;
+  const host = (requestHost ?? "").toLowerCase().split(":")[0];
+  return host === SHOP_CANONICAL_HOST;
 }
 
 /** 允許 index 的 canonical 公開路徑 —— robots meta 與 sitemap 的唯一來源。 */
@@ -38,10 +48,18 @@ export const INDEXABLE_PATHS = [
   "/zh-tw/compare/uyao-vs-pos",
 ] as const;
 
+/** Consumer v1 先只開首頁；drug/store/category 仍須逐頁通過 admission gate。 */
+export const SHOP_INDEXABLE_PATHS = ["/zh-tw", "/en"] as const;
+
 /** Spec §3 的 stable entity description —— 全站與 schema 共用，不得改寫成 marketplace／POS／電商。 */
 export const ENTITY_DESCRIPTION: Record<Locale, string> = {
   zh: "uYao 是台灣獨立藥局的 AI Operating System，將庫存、效期與附近需求轉成退貨、減量、補貨與預留工作，並由藥師批准關鍵決策。",
   en: "uYao is the AI operating system for independent pharmacies. It turns inventory, expiry, and local demand into return, reorder, and reservation workflows, with pharmacists approving critical decisions.",
+};
+
+export const CONSUMER_DESCRIPTION: Record<Locale, string> = {
+  zh: "shop-uYao 協助使用者搜尋藥品與附近公開藥局資料，並留下找藥需求；實際庫存、預留、領取與用藥問題仍由藥局或藥師確認。",
+  en: "shop-uYao helps people search a trial medicine catalog and nearby public pharmacy records, then leave a medicine request. Pharmacies and pharmacists confirm supply, pickup, and medicine questions.",
 };
 
 export const CONTACT_EMAIL = "edwardhsieh0122@gmail.com";
@@ -85,6 +103,33 @@ export function softwareApplicationJsonLd(locale: Locale): JsonLd {
     url: `${SITE_URL}${locale === "en" ? "/en" : "/zh-tw"}`,
     description: ENTITY_DESCRIPTION[locale],
     publisher: { "@id": `${SITE_URL}/#organization` },
+  };
+}
+
+export function consumerWebSiteJsonLd(locale: Locale): JsonLd {
+  const path = locale === "en" ? "/en" : "/zh-tw";
+  return {
+    "@type": "WebSite",
+    "@id": `${SHOP_URL}/#website`,
+    name: "shop-uYao",
+    url: `${SHOP_URL}${path}`,
+    inLanguage: locale === "en" ? "en" : "zh-Hant-TW",
+    description: CONSUMER_DESCRIPTION[locale],
+    publisher: { "@id": `${SITE_URL}/#organization` },
+  };
+}
+
+export function consumerWebPageJsonLd(locale: Locale): JsonLd {
+  const path = locale === "en" ? "/en" : "/zh-tw";
+  return {
+    "@type": "WebPage",
+    "@id": `${SHOP_URL}${path}#webpage`,
+    name: locale === "en" ? "Find medicine nearby | shop-uYao" : "附近藥局找藥與到貨通知｜shop-uYao",
+    url: `${SHOP_URL}${path}`,
+    inLanguage: locale === "en" ? "en" : "zh-Hant-TW",
+    description: CONSUMER_DESCRIPTION[locale],
+    isPartOf: { "@id": `${SHOP_URL}/#website` },
+    about: { "@id": `${SITE_URL}/#organization` },
   };
 }
 

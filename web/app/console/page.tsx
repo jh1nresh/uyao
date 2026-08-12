@@ -9,6 +9,7 @@ import { BADGE_COLOR } from "@/lib/stock";
 import { allStores, getDrug } from "@/lib/data";
 import { drugCopy, localizedPath, stockCopy, type Locale } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
+import { SHOP_URL } from "@/lib/shop";
 
 /**
  * Agent Console —— 把系統自主做的每一個決定攤開來看。
@@ -156,7 +157,7 @@ export default async function ConsolePage({
       <section className="border-t border-line px-4 py-5 sm:px-7 xl:px-12 2xl:px-16">
         <p className="text-[13px] leading-[1.7] text-muted-2">
           {locale === "en" ? "Read-only · No personal data · " : "唯讀頁面 · 不含任何個資 · "}
-          <Link href={localizedPath("/app", locale)} className="text-green">
+          <Link href={`${SHOP_URL}${localizedPath("/", locale)}`} className="text-green">
             {locale === "en" ? "Back to search →" : "回到搜尋 →"}
           </Link>
         </p>

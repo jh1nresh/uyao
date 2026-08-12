@@ -1,15 +1,27 @@
 import type { MetadataRoute } from "next";
+import { headers } from "next/headers";
 
-import { INDEXABLE_PATHS, SITE_URL } from "@/lib/seo";
+import {
+  INDEXABLE_PATHS,
+  SHOP_CANONICAL_HOST,
+  SHOP_INDEXABLE_PATHS,
+  SITE_URL,
+} from "@/lib/seo";
+import { SHOP_URL } from "@/lib/shop";
 
 /**
- * Sitemap 只列 canonical、允許 index 的 URL（spec §2）：噪音 route
- * （search、console、consumer demo 頁）一律不進來。preview deployment
- * 的 sitemap 內容無害 —— robots.txt 已全站 Disallow 且各頁 noindex。
+ * 依 request host 回傳單一 canonical namespace：company sitemap 只列公司
+ * 白名單，shop sitemap v1 只列 Consumer 雙語首頁。drug/store/search 等
+ * 尚未通過 admission gate 的 route 一律不進 sitemap。
  */
-export default function sitemap(): MetadataRoute.Sitemap {
-  return INDEXABLE_PATHS.map((path) => ({
-    url: `${SITE_URL}${path}`,
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const host = ((await headers()).get("host") ?? "").toLowerCase().split(":")[0];
+  const isShop = host === SHOP_CANONICAL_HOST;
+  const baseUrl = isShop ? SHOP_URL : SITE_URL;
+  const paths = isShop ? SHOP_INDEXABLE_PATHS : INDEXABLE_PATHS;
+
+  return paths.map((path) => ({
+    url: `${baseUrl}${path}`,
     changeFrequency: "monthly",
   }));
 }

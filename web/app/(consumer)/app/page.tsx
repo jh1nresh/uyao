@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AreaSwitch } from "@/components/AreaSwitch";
+import { JsonLd } from "@/components/JsonLd";
 import { SearchInput } from "@/components/SearchInput";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -16,34 +17,69 @@ import {
 } from "@/lib/data";
 import { areaCopy, categoryName, drugCopy, localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
+import {
+  CONSUMER_DESCRIPTION,
+  SITE_URL,
+  consumerWebPageJsonLd,
+  consumerWebSiteJsonLd,
+} from "@/lib/seo";
+import { consumerIndexablePageRobots } from "@/lib/seo-server";
+import { SHOP_URL } from "@/lib/shop";
 
-// 消費端 app 入口從 `/` 搬到 `/app`：`/` 現在是公司 landing（specs/company-landing）。
-// 搜尋、地區參數與所有下游路由行為不變。
+const UPDATED_AT = "2026-08-12";
+
+// `/app` 只保留為內部 implementation route；公開 canonical 是 shop host
+// 的 `/zh-tw` 與 `/en`，由 proxy rewrite 到這裡。
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getRequestLocale();
+  const robots = await consumerIndexablePageRobots();
+  const canonical = `${SHOP_URL}${locale === "en" ? "/en" : "/zh-tw"}`;
+  const title = locale === "en"
+    ? "Find medicine nearby and leave a request | shop-uYao"
+    : "附近藥局找藥與到貨通知｜shop-uYao";
   return locale === "en"
     ? {
-        title: "Find medicine nearby — shop-uYao early access",
-        description: "Search the prototype catalog and nearby public pharmacy records, then leave a medicine request. Live inventory is not available; pharmacies must confirm supply, pickup, and medicine questions.",
-        robots: { index: false, follow: true },
+        title: { absolute: title },
+        description: CONSUMER_DESCRIPTION.en,
+        alternates: {
+          canonical,
+          languages: {
+            "zh-TW": `${SHOP_URL}/zh-tw`,
+            en: `${SHOP_URL}/en`,
+            "x-default": `${SHOP_URL}/zh-tw`,
+          },
+        },
+        openGraph: { title, description: CONSUMER_DESCRIPTION.en, locale: "en_US", url: canonical },
+        twitter: { card: "summary_large_image", title, description: CONSUMER_DESCRIPTION.en },
+        robots,
       }
     : {
-        title: "附近藥局找藥｜shop-uYao 試營運",
-        description: "搜尋試營運藥品目錄與附近公開藥局資料，並留下找藥需求。即時庫存尚未啟用，供應、預留與用藥問題仍須由藥局或藥師確認。",
-        robots: { index: false, follow: true },
+        title: { absolute: title },
+        description: CONSUMER_DESCRIPTION.zh,
+        alternates: {
+          canonical,
+          languages: {
+            "zh-TW": `${SHOP_URL}/zh-tw`,
+            en: `${SHOP_URL}/en`,
+            "x-default": `${SHOP_URL}/zh-tw`,
+          },
+        },
+        openGraph: { title, description: CONSUMER_DESCRIPTION.zh, locale: "zh_TW", url: canonical },
+        twitter: { card: "summary_large_image", title, description: CONSUMER_DESCRIPTION.zh },
+        robots,
       };
 }
 
 const STEPS_ZH = [
-  { title: "搜尋", body: "輸入藥名或症狀，看附近哪幾家藥局現在有貨。" },
-  { title: "預留", body: "一鍵預留，藥局確認後為你保留 4 小時。" },
-  { title: "到店取", body: "到店付款，由藥師當面交付 — 不做線上交易。" },
+  { title: "搜尋", body: "輸入藥名或症狀，查看試營運目錄與附近公開藥局資料。" },
+  { title: "留下需求", body: "送出找藥或預留需求，等待藥局確認是否能供應。" },
+  { title: "依回覆前往", body: "藥局確認後再依回覆前往；到店付款並由藥師交付。" },
 ];
 
 const STEPS_EN = [
-  { title: "Search", body: "Enter a product or symptom and check nearby pharmacy availability." },
-  { title: "Reserve", body: "Request pickup. The pharmacy holds it for four hours after confirmation." },
-  { title: "Pick up", body: "Pay in store and receive the item from a pharmacist. No online checkout." },
+  { title: "Search", body: "Enter a product or symptom to check the trial catalog and nearby public pharmacy records." },
+  { title: "Leave a request", body: "Send a medicine or pickup request and wait for a pharmacy to confirm supply." },
+  { title: "Follow the reply", body: "Travel only after confirmation; pay in store and receive the item from a pharmacist." },
 ];
 
 export default async function HomePage({
@@ -62,6 +98,7 @@ export default async function HomePage({
 
   return (
     <>
+      <JsonLd nodes={[consumerWebSiteJsonLd(locale), consumerWebPageJsonLd(locale)]} />
       <SiteHeader showSearch={false} area={area} preserveAreaPath locatable />
 
       {/*
@@ -74,7 +111,7 @@ export default async function HomePage({
       <section className="border-b border-line bg-ivory">
         <div className="shop-shell flex flex-col pb-14 pt-12 sm:pb-20 sm:pt-16 lg:pb-24 lg:pt-20">
           <div className="mx-auto w-full max-w-[1120px] text-center">
-            <p className="shop-kicker mb-5 mt-0">NEARBY SEARCH · RESERVE · PICK UP</p>
+            <p className="shop-kicker mb-5 mt-0">NEARBY SEARCH · REQUEST · PHARMACY CONFIRMATION</p>
             <h1 className="editorial-display m-0 text-[clamp(40px,4.4vw,62px)] leading-[1.08]">
               {locale === "en" ? "Start with a symptom, not a product name." : "不用先知道藥名。從症狀開始找。"}
             </h1>
@@ -122,7 +159,7 @@ export default async function HomePage({
             <div className="search-hero-steps mt-5 grid border-y border-line py-4 text-[12px] leading-[1.65] text-muted sm:grid-cols-3">
               <span><b className="num mr-2 text-oxblood">01</b>{locale === "en" ? "Search a product or symptom" : "輸入藥名或症狀"}</span>
               <span className="mt-2 sm:mt-0"><b className="num mr-2 text-oxblood">02</b>{locale === "en" ? "Check nearby data freshness" : "查看附近資料狀態"}</span>
-              <span className="mt-2 sm:mt-0"><b className="num mr-2 text-oxblood">03</b>{locale === "en" ? "Reserve and pick up in store" : "預留後到店交付"}</span>
+              <span className="mt-2 sm:mt-0"><b className="num mr-2 text-oxblood">03</b>{locale === "en" ? "Leave a request and wait for confirmation" : "留下需求，等待藥局確認"}</span>
             </div>
           </div>
 
@@ -137,8 +174,8 @@ export default async function HomePage({
                 <dd className="mt-1 text-[12px] text-muted">{locale === "en" ? "listed stores" : "首波店家"}</dd>
               </div>
               <div className="border-l border-line pl-4 sm:pl-6">
-                <dt className="text-[15px] font-bold text-forest">{locale === "en" ? "In-store pickup" : "到店交付"}</dt>
-                <dd className="mt-1 text-[12px] text-muted">{locale === "en" ? "Pharmacist confirmed" : "藥師確認"}</dd>
+                <dt className="text-[15px] font-bold text-forest">{locale === "en" ? "Pharmacy confirmation" : "藥局確認"}</dt>
+                <dd className="mt-1 text-[12px] text-muted">{locale === "en" ? "Supply and pickup" : "供應與到店安排"}</dd>
               </div>
             </dl>
             <p className="mb-0 mt-4 text-[12.5px] leading-[1.7] text-muted-2">
@@ -188,7 +225,7 @@ export default async function HomePage({
           <p className="shop-kicker mb-3">COMMON ITEMS</p>
           <div className="mb-7 flex flex-wrap items-end justify-between gap-3">
             <h2 className="editorial-display m-0 text-[32px] leading-[1.25] sm:text-[40px]">{locale === "en" ? "Common products" : "常見品項"}</h2>
-            <p className="m-0 text-[13px] text-muted">{locale === "en" ? "Select a product to check nearby listings" : "點一支，看附近哪家有登錄"}</p>
+            <p className="m-0 text-[13px] text-muted">{locale === "en" ? "Select an item to review its record and nearby public listings" : "點一項，查看品項資料與附近公開藥局"}</p>
           </div>
           <div className="grid grid-cols-2 border-l border-t border-line sm:grid-cols-3 lg:grid-cols-5">
           {drugs.map((d) => {
@@ -213,7 +250,7 @@ export default async function HomePage({
       <section className="border-t border-line bg-paper">
         <div className="shop-shell py-14 sm:py-20">
           <p className="shop-kicker mb-3">HOW IT WORKS</p>
-          <h2 className="editorial-display mb-7 mt-0 text-[32px] leading-[1.25] sm:text-[40px]">{locale === "en" ? "Three steps to in-store pickup" : "三步完成，到店交付"}</h2>
+          <h2 className="editorial-display mb-7 mt-0 text-[32px] leading-[1.25] sm:text-[40px]">{locale === "en" ? "Three steps to the next reliable action" : "三步找到可靠的下一步"}</h2>
           <ol className="m-0 grid list-none border border-line p-0 sm:grid-cols-3">
           {steps.map((s, i) => (
             <li
@@ -236,6 +273,62 @@ export default async function HomePage({
               {locale === "en" ? "Read the freshness labels →" : "看徽章分級說明 →"}
             </Link>
           </p>
+        </div>
+      </section>
+
+      <section className="border-t border-line bg-ivory" aria-labelledby="consumer-answer-heading">
+        <div className="shop-shell py-14 sm:py-20">
+          <p className="shop-kicker mb-3">DIRECT ANSWER · SOURCES · LIMITS</p>
+          <h2 id="consumer-answer-heading" className="editorial-display mb-5 mt-0 text-[30px] leading-[1.25] [text-wrap:balance] sm:text-[40px]">
+            {locale === "en" ? (
+              "What can shop-uYao confirm today?"
+            ) : (
+              <><span className="block sm:inline">shop-uYao</span>{" "}<span>現在能確認什麼？</span></>
+            )}
+          </h2>
+          <p className="m-0 max-w-[760px] text-[16px] leading-[1.85] text-ink-2">
+            {CONSUMER_DESCRIPTION[locale]}
+          </p>
+          <dl className="mt-8 grid border-l border-t border-line bg-paper sm:grid-cols-3">
+            <div className="border-b border-r border-line p-5">
+              <dt className="text-[14px] font-bold text-forest">{locale === "en" ? "Known" : "目前可確認"}</dt>
+              <dd className="mb-0 mt-2 text-[13.5px] leading-[1.75] text-muted">
+                {locale === "en" ? "Trial catalog records, public pharmacy listings, and the request you submit." : "試營運目錄、公開藥局收錄資料，以及你送出的找藥需求。"}
+              </dd>
+            </div>
+            <div className="border-b border-r border-line p-5">
+              <dt className="text-[14px] font-bold text-forest">{locale === "en" ? "Not yet known" : "目前不能確認"}</dt>
+              <dd className="mb-0 mt-2 text-[13.5px] leading-[1.75] text-muted">
+                {locale === "en" ? "Live stock, guaranteed availability, price, hold time, or medical suitability." : "即時庫存、保證供應、價格、保留時間或個人是否適合使用。"}
+              </dd>
+            </div>
+            <div className="border-b border-r border-line p-5">
+              <dt className="text-[14px] font-bold text-forest">{locale === "en" ? "Next step" : "下一步"}</dt>
+              <dd className="mb-0 mt-2 text-[13.5px] leading-[1.75] text-muted">
+                {locale === "en" ? "Search or leave a request, then wait for a pharmacy or pharmacist to confirm." : "搜尋或留下需求，再等待藥局或藥師確認供應與用藥問題。"}
+              </dd>
+            </div>
+          </dl>
+          <div className="mt-6 grid gap-5 border-t border-line pt-6 sm:grid-cols-[1fr,1fr]">
+            <div>
+              <h3 className="m-0 text-[16px] font-bold text-ink">{locale === "en" ? "Sources and freshness" : "資料來源與更新"}</h3>
+              <p className="mb-0 mt-2 text-[13px] leading-[1.75] text-muted">
+                {locale === "en" ? `Trial catalog and public pharmacy records. This page was last updated ${UPDATED_AT}.` : `試營運藥品目錄與公開藥局資料；本頁最後更新：${UPDATED_AT}。`}{" "}
+                <a href={`${SITE_URL}/zh-tw/evidence`} className="text-forest underline underline-offset-2 hover:text-green">
+                  {locale === "en" ? "Read product evidence" : "查看產品證據"}
+                </a>
+              </p>
+            </div>
+            <div>
+              <h3 className="m-0 text-[16px] font-bold text-ink">{locale === "en" ? "Biotech partner" : "生技合作夥伴"}</h3>
+              <p className="mb-0 mt-2 text-[13px] leading-[1.75] text-muted">
+                {locale === "en" ? "uYao partners with WE STRONG CO., LTD. (維淳有限公司). This does not imply product availability, online sales, or medical endorsement." : "uYao 與維淳有限公司（WeStrong／WE STRONG CO., LTD.）為合作夥伴；這不代表任何商品已有庫存、可在線購買或構成醫療背書。"}{" "}
+                <a href="https://taiwanwestrong.com/info.html" className="text-forest underline underline-offset-2 hover:text-green">
+                  {locale === "en" ? "Public website" : "公開網站"}
+                </a>
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 

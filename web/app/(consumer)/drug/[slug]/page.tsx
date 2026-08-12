@@ -19,6 +19,7 @@ import {
 } from "@/lib/data";
 import { areaCopy, categoryName, drugCopy, localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
+import { SHOP_URL } from "@/lib/shop";
 
 export function generateStaticParams() {
   return allDrugs().map((d) => ({ slug: d.slug }));
@@ -77,7 +78,7 @@ export default async function DrugPage({
       </div>
 
       <nav aria-label={locale === "en" ? "Breadcrumb" : "麵包屑"} className="shop-shell pt-6 text-xs text-muted-2">
-        <Link href={`${localizedPath("/app", locale)}?area=${area}`} className="-my-3 inline-flex min-h-11 items-center text-muted-2 no-underline hover:text-ink">
+        <Link href={`${SHOP_URL}${localizedPath("/", locale)}?area=${area}`} className="-my-3 inline-flex min-h-11 items-center text-muted-2 no-underline hover:text-ink">
           {locale === "en" ? "Home" : "首頁"}
         </Link>
         {category && (
