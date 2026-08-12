@@ -58,8 +58,8 @@ export const ENTITY_DESCRIPTION: Record<Locale, string> = {
 };
 
 export const CONSUMER_DESCRIPTION: Record<Locale, string> = {
-  zh: "shop-uYao 協助使用者搜尋藥品與附近公開藥局資料，並留下找藥需求；實際庫存、預留、領取與用藥問題仍由藥局或藥師確認。",
-  en: "shop-uYao helps people search a trial medicine catalog and nearby public pharmacy records, then leave a medicine request. Pharmacies and pharmacists confirm supply, pickup, and medicine questions.",
+  zh: "uYao 找藥協助使用者搜尋藥品與附近公開藥局資料，並留下找藥需求；實際庫存、預留、領取與用藥問題仍由藥局或藥師確認。",
+  en: "uYao Medicine Finder helps people search a trial medicine catalog and nearby public pharmacy records, then leave a medicine request. Pharmacies and pharmacists confirm supply, pickup, and medicine questions.",
 };
 
 export const CONTACT_EMAIL = "edwardhsieh0122@gmail.com";
@@ -111,7 +111,7 @@ export function consumerWebSiteJsonLd(locale: Locale): JsonLd {
   return {
     "@type": "WebSite",
     "@id": `${SHOP_URL}/#website`,
-    name: "shop-uYao",
+    name: locale === "en" ? "uYao Medicine Finder" : "uYao 找藥",
     url: `${SHOP_URL}${path}`,
     inLanguage: locale === "en" ? "en" : "zh-Hant-TW",
     description: CONSUMER_DESCRIPTION[locale],
@@ -124,7 +124,7 @@ export function consumerWebPageJsonLd(locale: Locale): JsonLd {
   return {
     "@type": "WebPage",
     "@id": `${SHOP_URL}${path}#webpage`,
-    name: locale === "en" ? "Find medicine nearby | shop-uYao" : "附近藥局找藥與到貨通知｜shop-uYao",
+    name: locale === "en" ? "Find medicine nearby | uYao Medicine Finder" : "附近藥局找藥與到貨通知｜uYao 找藥",
     url: `${SHOP_URL}${path}`,
     inLanguage: locale === "en" ? "en" : "zh-Hant-TW",
     description: CONSUMER_DESCRIPTION[locale],

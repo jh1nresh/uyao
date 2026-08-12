@@ -35,8 +35,8 @@ export async function generateMetadata(): Promise<Metadata> {
   const robots = await consumerIndexablePageRobots();
   const canonical = `${SHOP_URL}${locale === "en" ? "/en" : "/zh-tw"}`;
   const title = locale === "en"
-    ? "Find medicine nearby and leave a request | shop-uYao"
-    : "附近藥局找藥與到貨通知｜shop-uYao";
+    ? "Find medicine nearby and leave a request | uYao Medicine Finder"
+    : "附近藥局找藥與到貨通知｜uYao 找藥";
   return locale === "en"
     ? {
         title: { absolute: title },
@@ -280,11 +280,7 @@ export default async function HomePage({
         <div className="shop-shell py-14 sm:py-20">
           <p className="shop-kicker mb-3">DIRECT ANSWER · SOURCES · LIMITS</p>
           <h2 id="consumer-answer-heading" className="editorial-display mb-5 mt-0 text-[30px] leading-[1.25] [text-wrap:balance] sm:text-[40px]">
-            {locale === "en" ? (
-              "What can shop-uYao confirm today?"
-            ) : (
-              <><span className="block sm:inline">shop-uYao</span>{" "}<span>現在能確認什麼？</span></>
-            )}
+            {locale === "en" ? "What can this service help you confirm?" : "現在可以幫你確認哪些資訊？"}
           </h2>
           <p className="m-0 max-w-[760px] text-[16px] leading-[1.85] text-ink-2">
             {CONSUMER_DESCRIPTION[locale]}
