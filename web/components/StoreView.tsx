@@ -200,33 +200,6 @@ export async function StoreView({ store, preview }: { store: Store; preview: boo
             : locale === "en" ? "Store records come from Taiwan government open data. Contact us to correct errors. Ask a pharmacist in store about prescription medicines." : "藥局基本資料來自食藥署與健保署開放資料，如有錯誤請來信更正。處方藥請至門市洽詢藥師。"
         }
       />
-
-      {/* 每家藥局免費得到一個會被 Google 索引的網頁 — NAP 結構化。
-          資料來自政府開放資料，所以這裡可以放心給搜尋引擎。 */}
-      {!preview && (
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Pharmacy",
-              name: store.name,
-              address: {
-                "@type": "PostalAddress",
-                streetAddress: store.address,
-                addressLocality: store.district,
-                addressRegion: "臺北市",
-                addressCountry: "TW",
-              },
-              ...(store.phone ? { telephone: store.phone.split("、")[0] } : {}),
-              ...(store.lat && store.lng
-                ? { geo: { "@type": "GeoCoordinates", latitude: store.lat, longitude: store.lng } }
-                : {}),
-              url: `https://uyao.tw/store/${store.slug}`,
-            }),
-          }}
-        />
-      )}
     </>
   );
 }
