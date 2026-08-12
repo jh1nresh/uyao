@@ -32,15 +32,20 @@ export async function generateMetadata({
   const { slug } = await params;
   const locale = await getRequestLocale();
   const drug = getDrug(slug);
-  if (!drug) return { title: locale === "en" ? "Medicine not found" : "找不到這個藥品" };
+  if (!drug) {
+    return {
+      title: locale === "en" ? "Medicine not found" : "找不到這個藥品",
+      robots: { index: false, follow: false },
+    };
+  }
   const displayDrug = drugCopy(drug, locale);
-  const rows = storesForDrug(drug.slug);
-  const inStock = rows.filter((r) => r.badge.tier === "fresh").length;
   return {
-    title: locale === "en" ? `${displayDrug.name} ${drug.spec} — nearby pharmacy availability` : `${drug.name} ${drug.spec} — 附近哪家藥局有貨`,
+    title: locale === "en" ? `${displayDrug.name} ${drug.spec} — early-access record` : `${drug.name} ${drug.spec}｜找藥資料（試營運）`,
     description: locale === "en"
-      ? `${displayDrug.name} (${displayDrug.form} · ${drug.spec}) availability at ${rows.length} nearby pharmacies; ${inStock} received today. Reserve for pharmacist-confirmed pickup.`
-      : `${drug.name}（${drug.form} · ${drug.spec}）附近 ${rows.length} 家藥局的庫存狀態，其中 ${inStock} 家今日掃描確認有貨。可線上預留，到店由藥師確認交付。`,
+      ? `${displayDrug.name} (${displayDrug.form} · ${drug.spec}) identification in the shop-uYao prototype catalog. Live supply is not available; confirm the product, supply, and pickup with a pharmacist.`
+      : `${drug.name}（${drug.form} · ${drug.spec}）的試營運辨識資料。即時供應資料尚未上線，品項、供應與預留仍須由藥局或藥師確認。`,
+    // 藥品 identity/source/freshness 尚未通過 Drug Page Admission Gate。
+    robots: { index: false, follow: true },
   };
 }
 
@@ -179,22 +184,6 @@ export default async function DrugPage({
       )}
 
       <SiteFooter />
-
-      <script
-        type="application/ld+json"
-        // SEO：藥品頁是索引入口，把品名/規格/許可證餵給 Google。
-        dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "Drug",
-            name: drug.name,
-            alternateName: drug.nameEn,
-            dosageForm: drug.form,
-            activeIngredient: drug.ingredients,
-            legalStatus: drug.drugClass,
-          }),
-        }}
-      />
     </>
   );
 }
