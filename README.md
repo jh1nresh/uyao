@@ -4,8 +4,8 @@
 
 uYao turns pharmacy inventory, expiry, and local demand signals into pharmacist-approved return, reorder, and reservation workflows. It connects to the pharmacy's existing scanner and POS workflow instead of replacing them.
 
-- Company and pilot: [uyao.vercel.app](https://uyao.vercel.app)
-- Consumer search: [shop-uyao.vercel.app](https://shop-uyao.vercel.app)
+- Company and pilot: [uyaohealth.com](https://uyaohealth.com)
+- Consumer search: [shop.uyaohealth.com](https://shop.uyaohealth.com)
 
 > uYao is currently a pilot prototype. Inventory shown without a live pharmacy scanner connection is simulated and must not be treated as confirmed real-time stock.
 
