@@ -5,8 +5,8 @@ import { nearestServiceArea } from "./geo";
 
 describe("區域網址", () => {
   it("在目前藥品頁加上區域", () => {
-    expect(withArea("/drug/salonpas-ae", "", "linkou")).toBe(
-      "/drug/salonpas-ae?area=linkou",
+    expect(withArea("/drug/hugu-gaishu-100", "", "linkou")).toBe(
+      "/drug/hugu-gaishu-100?area=linkou",
     );
   });
 

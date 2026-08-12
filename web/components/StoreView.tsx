@@ -242,7 +242,7 @@ export async function StoreView({ store, preview }: { store: Store; preview: boo
       <SiteFooter
         note={
           preview
-            ? locale === "en" ? "Demo data. Receiving-scan freshness comes from the demo pipeline; catalog and prices are simulated. Consumer pages do not show medicine prices." : "以上為示範資料。進貨掃描新鮮度來自 demo pipeline；商品與售價為模擬資料，消費端不顯示藥品價格。"
+            ? locale === "en" ? "Demo data. Product names come from the partner-provided catalog; availability and prices are simulated. Receiving-scan freshness comes from the demo pipeline. Consumer pages do not show medicine prices." : "以上為示範資料。品項名稱來自合作藥局提供的目錄；供應狀態與售價為模擬資料，進貨掃描新鮮度來自 demo pipeline。消費端不顯示藥品價格。"
             : locale === "en" ? "Store records come from Taiwan government open data. Contact us to correct errors. Ask a pharmacist in store about prescription medicines." : "藥局基本資料來自食藥署與健保署開放資料，如有錯誤請來信更正。處方藥請至門市洽詢藥師。"
         }
       />

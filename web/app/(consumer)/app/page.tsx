@@ -73,13 +73,13 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const STEPS_ZH = [
-  { title: "搜尋", body: "輸入藥名或症狀，查看試營運目錄與附近公開藥局資料。" },
+  { title: "搜尋", body: "輸入品項名稱或規格，查看合作藥局提供的試營運目錄。" },
   { title: "留下需求", body: "送出找藥或預留需求，等待藥局確認是否能供應。" },
   { title: "依回覆前往", body: "藥局確認後再依回覆前往；到店付款並由藥師交付。" },
 ];
 
 const STEPS_EN = [
-  { title: "Search", body: "Enter a product or symptom to check the trial catalog and nearby public pharmacy records." },
+  { title: "Search", body: "Enter a product name or package size to check the partner-provided trial catalog." },
   { title: "Leave a request", body: "Send a medicine or pickup request and wait for a pharmacy to confirm supply." },
   { title: "Follow the reply", body: "Travel only after confirmation; pay in store and receive the item from a pharmacist." },
 ];
@@ -115,10 +115,10 @@ export default async function HomePage({
           <div className="mx-auto w-full max-w-[1120px] text-center">
             <p className="shop-kicker mb-5 mt-0">NEARBY SEARCH · REQUEST · PHARMACY CONFIRMATION</p>
             <h1 className="editorial-display m-0 text-[clamp(40px,4.4vw,62px)] leading-[1.08]">
-              {locale === "en" ? "Start with a symptom, not a product name." : "不用先知道藥名。從症狀開始找。"}
+              {locale === "en" ? "Start with a product name or package size." : "先輸入品項名稱或規格。"}
             </h1>
             <p className="mx-auto mt-5 max-w-[620px] text-[15px] leading-[1.8] text-ink-2 sm:text-[16px]">
-              {locale === "en" ? "Describe what you need. uYao organizes relevant non-prescription products and nearby pharmacies; a pharmacist confirms in store." : "輸入哪裡不舒服或想改善的問題，我們整理相關的非處方藥品與附近藥局；到店再由藥師確認。"}
+              {locale === "en" ? "The catalog currently contains names and package sizes provided by partner pharmacies. Supply and suitability still require pharmacy confirmation." : "目前先收錄合作藥局提供的品項名稱與規格；實際供應與是否適合使用，仍由藥局或藥師確認。"}
             </p>
           </div>
 
@@ -129,11 +129,11 @@ export default async function HomePage({
                   {currentArea.shortName} · PHARMACY SEARCH
                 </p>
                 <h2 className="editorial-display mb-0 mt-2 text-[25px] leading-[1.25] text-forest sm:text-[30px]">
-                  {locale === "en" ? "What do you need today?" : "今天哪裡不舒服？"}
+                  {locale === "en" ? "Which product are you looking for?" : "今天要找哪個品項？"}
                 </h2>
               </div>
               <p className="m-0 max-w-[360px] text-[13px] leading-[1.7] text-muted">
-                {locale === "en" ? "You can also search a product or active ingredient." : "也可以直接輸入藥名或主成分。"}
+                {locale === "en" ? "Search by product name or package size." : "可輸入品名或規格，例如「護智康 60粒」。"}
               </p>
             </div>
 
@@ -159,8 +159,8 @@ export default async function HomePage({
             </div>
 
             <div className="search-hero-steps mt-5 grid border-y border-line py-4 text-[12px] leading-[1.65] text-muted sm:grid-cols-3">
-              <span><b className="num mr-2 text-oxblood">01</b>{locale === "en" ? "Search a product or symptom" : "輸入藥名或症狀"}</span>
-              <span className="mt-2 sm:mt-0"><b className="num mr-2 text-oxblood">02</b>{locale === "en" ? "Check nearby data freshness" : "查看附近資料狀態"}</span>
+              <span><b className="num mr-2 text-oxblood">01</b>{locale === "en" ? "Search a name or package size" : "輸入品名或規格"}</span>
+              <span className="mt-2 sm:mt-0"><b className="num mr-2 text-oxblood">02</b>{locale === "en" ? "Review the data source and status" : "查看資料來源與狀態"}</span>
               <span className="mt-2 sm:mt-0"><b className="num mr-2 text-oxblood">03</b>{locale === "en" ? "Leave a request and wait for confirmation" : "留下需求，等待藥局確認"}</span>
             </div>
           </div>
@@ -184,7 +184,7 @@ export default async function HomePage({
               {locale === "en" ? `${currentArea.shortName} currently lists ${storeCount} stores. Live inventory has not started; every data state is labeled.` : `${currentArea.shortName}目前收錄 ${storeCount} 家店家；即時庫存尚未開始，我們會誠實標示資料狀態。`}
             </p>
             <div className="mt-4 md:hidden">
-              <AreaSwitch area={area} preservePath locatable />
+              <AreaSwitch area={area} preservePath locatable compact />
             </div>
           </div>
         </div>
@@ -231,7 +231,7 @@ export default async function HomePage({
           <p className="shop-kicker mb-3">COMMON ITEMS</p>
           <div className="mb-7 flex flex-wrap items-end justify-between gap-3">
             <h2 className="editorial-display m-0 text-[32px] leading-[1.25] sm:text-[40px]">{locale === "en" ? "Common products" : "常見品項"}</h2>
-            <p className="m-0 text-[13px] text-muted">{locale === "en" ? "Select an item to review its record and nearby public listings" : "點一項，查看品項資料與附近公開藥局"}</p>
+            <p className="m-0 text-[13px] text-muted">{locale === "en" ? "Names and package sizes provided by partner pharmacies · Not live inventory" : "名稱與規格由合作藥局提供 · 並非即時庫存"}</p>
           </div>
           <div className="grid grid-cols-2 border-l border-t border-line sm:grid-cols-3 lg:grid-cols-5">
           {drugs.map((d) => {
@@ -244,7 +244,7 @@ export default async function HomePage({
             >
               <span className="text-[16px] font-bold text-ink">{drug.name}</span>
               <span className="flex items-end justify-between gap-2 text-[12px] text-muted-2">
-                <span>{drug.spec} · {drug.drugClass}</span>
+                <span>{drug.spec} · {locale === "en" ? "Partner-provided" : "合作藥局提供"}</span>
                 <span className="text-forest transition-transform group-hover:translate-x-1">→</span>
               </span>
             </Link>

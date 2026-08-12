@@ -27,7 +27,7 @@ export PYTHONPATH="$PWD/src"
 
 # dev_cli 的輸出翻成人話：JSON 掃描行 → 「藥名・批號・效期」，
 # session/spool/upload 狀態行 → 錄影用英文結論。VERBOSE=1 原樣放行。
-# 藥名對照與 web/lib/box.ts 的 SIM_GTIN_TO_DRUG + web/lib/data.ts 同步。
+# 品項名稱與 web/lib/box.ts 的 SIM_GTIN_TO_DRUG + web/lib/data.ts 同步。
 humanize() {
   if [ "$VERBOSE" = "1" ]; then cat; return; fi
   python3 -u -c "$(cat <<'PYEOF'
@@ -35,15 +35,15 @@ import json, os, re, sys
 
 EN = os.environ.get("DEMO_LANG", "en") == "en"
 NAMES = ({
-    "04712345678901": "Green Oil 10ml",
-    "04712345678902": "Salonpas-AE Patch",
-    "04712345678903": "Povidone-Iodine Ointment",
-    "04712345678904": "Mentholatum AD Ointment",
-    "04712345678905": "White Flower Oil No. 5",
+    "04712345678901": "護谷鈣素 100粒",
+    "04712345678902": "勝康寧 150粒",
+    "04712345678903": "恩體能 230粒",
+    "04712345678904": "進磯為常 60粒",
+    "04712345678905": "克氣清咳嗽膠囊",
 } if EN else {
-    "04712345678901": "綠油精 10ml", "04712345678902": "撒隆巴斯-愛涼 貼布",
-    "04712345678903": "優碘軟膏", "04712345678904": "曼秀雷敦 AD 軟膏",
-    "04712345678905": "白花油 5 號",
+    "04712345678901": "護谷鈣素 100粒", "04712345678902": "勝康寧 150粒",
+    "04712345678903": "恩體能 230粒", "04712345678904": "進磯為常 60粒",
+    "04712345678905": "克氣清咳嗽膠囊",
 })
 KINDS = {"receiving": "receiving" if EN else "進貨", "dispensing": "dispensing" if EN else "售出"}
 
@@ -82,7 +82,7 @@ if [ "$DEMO_LANG" = "en" ]; then
 else
   echo "① 進貨掃描 — 3 盒（box 離線也照收）"
 fi
-# 三筆連掃 = receiving session；GTIN 對到示範目錄的綠油精/撒隆巴斯/優碘。
+# 三筆連掃 = receiving session；GTIN 對到示範目錄的護谷鈣素/勝康寧/恩體能。
 # 展開一律帶大括號：macOS 內建 bash 3.2 在 UTF-8 locale 下，$VAR 後面
 # 直接接全形字元會把變數名解析錯（實測踩過：$STORE） 變成 unbound）。
 if [ "$VERBOSE" = "1" ]; then echo "spool → ${DB}"; fi

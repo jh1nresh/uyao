@@ -14,67 +14,10 @@ const DRUG_EN: Record<string, {
   form: string;
   ingredients: string[];
   indications: string[];
-}> = {
-  "salonpas-ae": {
-    name: "Salonpas-AE Patch",
-    form: "Patch",
-    ingredients: ["Methyl salicylate", "l-Menthol"],
-    indications: ["Muscle soreness", "Sprains", "Lower back pain"],
-  },
-  "golden-cross-patch": {
-    name: "Golden Cross Pain Relief Patch",
-    form: "Patch",
-    ingredients: ["Methyl salicylate", "l-Menthol"],
-    indications: ["Muscle soreness", "Neck and shoulder stiffness"],
-  },
-  "cool-relief-patch": {
-    name: "Cool Relief Patch",
-    form: "Patch",
-    ingredients: ["Methyl salicylate", "l-Menthol"],
-    indications: ["Muscle soreness", "Post-exercise discomfort"],
-  },
-  "mentholatum-ad": {
-    name: "Mentholatum AD Ointment",
-    form: "Ointment",
-    ingredients: ["Allantoin", "dl-Camphor"],
-    indications: ["Dry, itchy skin", "Itch relief"],
-  },
-  "jimu-spray": {
-    name: "Jimu Cooling Spray",
-    form: "Spray",
-    ingredients: ["Methyl salicylate", "Menthol"],
-    indications: ["Muscle soreness", "Fatigue"],
-  },
-  "green-oil": {
-    name: "Green Oil",
-    form: "Topical liquid",
-    ingredients: ["Menthol", "Camphor", "Eucalyptus oil"],
-    indications: ["Headache", "Motion sickness", "Insect bites"],
-  },
-  "white-flower-oil": {
-    name: "White Flower Oil No. 5",
-    form: "Topical liquid",
-    ingredients: ["Menthol", "Methyl salicylate", "Eucalyptus oil"],
-    indications: ["Headache", "Insect bites"],
-  },
-  "povidone-iodine": {
-    name: "Povidone-Iodine Ointment",
-    form: "Ointment",
-    ingredients: ["Povidone-iodine"],
-    indications: ["Wound disinfection"],
-  },
-  "artificial-tears": {
-    name: "Hulikan Artificial Tears",
-    form: "Eye drops",
-    ingredients: ["Sodium hyaluronate"],
-    indications: ["Dry eyes"],
-  },
-};
+}> = {};
 
 const CATEGORY_EN: Record<string, string> = {
-  patch: "Pain relief patches",
-  ointment: "Ointments",
-  "otc-staple": "Everyday OTC products",
+  "partner-item": "Partner-listed items",
 };
 
 const AREA_EN: Record<string, { name: string; shortName: string }> = {
@@ -101,8 +44,8 @@ export function drugCopy(drug: Drug, locale: Locale) {
   return {
     ...drug,
     name: translated?.name ?? drug.nameEn ?? drug.name,
-    form: translated?.form ?? drug.form,
-    spec: drug.spec.replace("片/盒", "patches/box"),
+    form: translated?.form ?? (drug.form === "劑型待確認" ? "Form pending" : drug.form === "膠囊" ? "Capsule" : drug.form),
+    spec: drug.spec === "規格待確認" ? "Package size pending" : drug.spec.replace("粒", " count"),
     ingredients: translated?.ingredients ?? drug.ingredients,
     indications: translated?.indications ?? drug.indications,
     drugClass: CLASS_EN[drug.drugClass] ?? drug.drugClass,

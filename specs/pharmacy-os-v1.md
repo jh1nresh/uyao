@@ -322,7 +322,7 @@ LINE 只提供批准、拒絕、修正與查看明細。此階段不向藥商送
 
 ```text
 supplier: A
-product: 綠油精 10ml
+product: example_product
 quantity: 12
 unit_price_ceiling: NT$X
 total_ceiling: NT$Y

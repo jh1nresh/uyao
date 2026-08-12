@@ -17,18 +17,23 @@ import type { StockBadgeSpec } from "./types";
 // licenseNo 一樣：那是可查證的識別碼，寧缺勿假。真實對照要靠試點藥局
 // 第一次掃到時人工建檔（掃描器打出來的 GTIN + 藥師說這是哪支藥）。
 const SIM_GTIN_TO_DRUG: Record<string, string> = {
-  "04712345678901": "green-oil",
-  "04712345678902": "salonpas-ae",
-  "04712345678903": "povidone-iodine",
-  "04712345678904": "mentholatum-ad",
-  "04712345678905": "white-flower-oil",
+  "04712345678901": "hugu-gaishu-100",
+  "04712345678902": "shengkangning-150",
+  "04712345678903": "entineng-230",
+  "04712345678904": "jinjiweichang-60",
+  "04712345678905": "keqiqing-capsule",
 };
+export interface GtinDrugMatch {
+  drugSlug: string;
+  /** 目前唯一對照表是編造的 demo GTIN，不能被誤當成真實商品主檔。 */
+  demo: true;
+}
 
 /** GTIN-14 與 EAN-13 差在前導 0 —— 比對一律去掉前導 0。 */
-export function drugSlugForGtin(gtin: string): string | null {
+export function drugMatchForGtin(gtin: string): GtinDrugMatch | null {
   const norm = gtin.replace(/^0+/, "");
   for (const [g, slug] of Object.entries(SIM_GTIN_TO_DRUG)) {
-    if (g.replace(/^0+/, "") === norm) return slug;
+    if (g.replace(/^0+/, "") === norm) return { drugSlug: slug, demo: true };
   }
   return null;
 }
@@ -41,10 +46,15 @@ const SCAN_TTL = 30 * 24 * 3600;
 interface StoredScanSignal {
   at: string;
   kind: "receiving";
+  demo: boolean;
 }
 
-export async function recordReceivingScan(storeSlug: string, drugSlug: string): Promise<void> {
-  const signal: StoredScanSignal = { at: new Date().toISOString(), kind: "receiving" };
+export async function recordReceivingScan(
+  storeSlug: string,
+  drugSlug: string,
+  demo = false,
+): Promise<void> {
+  const signal: StoredScanSignal = { at: new Date().toISOString(), kind: "receiving", demo };
   await kv.set(`scan:${storeSlug}:${drugSlug}`, JSON.stringify(signal), SCAN_TTL);
 }
 
@@ -55,6 +65,7 @@ export interface ScanRow {
   daysSinceScan: number;
   badge: StockBadgeSpec;
   kind: "receiving";
+  demo: boolean;
 }
 
 /** console 用的現況總表。走 KEYS，不要放進消費者請求的路徑上。 */
@@ -65,13 +76,21 @@ export async function scanSummary(): Promise<ScanRow[]> {
     const raw = await kv.get(k).catch(() => null);
     if (!raw) continue;
     let signal: StoredScanSignal;
+    let hasExplicitDemo = false;
     try {
       const parsed = JSON.parse(raw) as Partial<StoredScanSignal>;
       if (!parsed.at || parsed.kind !== "receiving") continue;
-      signal = parsed as StoredScanSignal;
+      hasExplicitDemo = typeof parsed.demo === "boolean";
+      signal = {
+        at: parsed.at,
+        kind: "receiving",
+        // 舊資料沒有 demo 欄位；目前舊對照表只有假 GTIN，對到那些 slug 時
+        // 寧可標示範，不能把歷史 demo 誤升格成真實進貨。
+        demo: parsed.demo === true,
+      };
     } catch {
       // Existing local demo state stored only the ISO timestamp.
-      signal = { at: raw, kind: "receiving" };
+      signal = { at: raw, kind: "receiving", demo: true };
     }
     // key 形狀是 scan:<store>:<drug>，兩個 slug 本身都不含冒號
     const [, storeSlug, drugSlug] = k.split(":");
@@ -84,6 +103,9 @@ export async function scanSummary(): Promise<ScanRow[]> {
       daysSinceScan: days,
       badge: stockBadge(days),
       kind: "receiving",
+      // 在 demo 欄位加入之前，唯一可寫入目錄 slug 的 GTIN 對照就是假碼。
+      // 舊 `{at, kind}` 訊號一律保守標示範，避免歷史 demo 被誤升格成真實進貨。
+      demo: signal.demo || !hasExplicitDemo,
     });
   }
   return rows.sort((a, b) => b.lastScanAt.localeCompare(a.lastScanAt));
@@ -104,14 +126,26 @@ export interface ConsoleEvent {
   icon: string;
   msg: string;
   msgEn?: string;
+  demo?: true;
 }
 
 /**
  * fire-and-forget：console 流水斷了不能拖垮正事（預留、推播）。
  * 但失敗要出聲 —— 靜默吞錯誤這個坑踩過一次了。
  */
-export function logConsole(icon: string, msg: string, msgEn?: string): void {
-  const e: ConsoleEvent = { at: new Date().toISOString(), icon, msg, msgEn };
+export function logConsole(
+  icon: string,
+  msg: string,
+  msgEn?: string,
+  options: { demo?: boolean } = {},
+): void {
+  const e: ConsoleEvent = {
+    at: new Date().toISOString(),
+    icon,
+    msg,
+    msgEn,
+    ...(options.demo ? { demo: true as const } : {}),
+  };
   kv.append(LOG_KEY, JSON.stringify(e), LOG_KEEP).catch((err) =>
     console.error("[console] 流水寫入失敗", String(err).slice(0, 200)),
   );
