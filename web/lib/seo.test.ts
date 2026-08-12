@@ -55,6 +55,9 @@ describe("indexable paths", () => {
     expect(INDEXABLE_PATHS).toEqual(
       expect.arrayContaining([
         "/zh-tw/guides/ai-tools-pharmacy-inventory",
+        "/zh-tw/guides/find-medicine-nearby",
+        "/zh-tw/guides/medicine-out-of-stock",
+        "/zh-tw/guides/join-uyao",
         "/zh-tw/guides/pharmacy-expiry-management",
         "/zh-tw/guides/pharmacy-return-window",
         "/zh-tw/evidence",
