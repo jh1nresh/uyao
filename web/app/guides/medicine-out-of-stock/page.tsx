@@ -104,7 +104,7 @@ export default function MedicineOutOfStockGuidePage() {
           <p className="mb-5 mt-2 max-w-[40em] text-[15px] leading-[1.8] text-ink-2">
             uYao 目前不提供即時庫存保證。搜尋或留下需求後，請等待藥局或藥師確認。
           </p>
-          <a href={`${SHOP_URL}/zh-tw`} className="action-primary inline-flex px-7 py-3.5 text-[15px]">
+          <a href={`${SHOP_URL.replace(/\/$/, "")}/zh-tw`} className="action-primary inline-flex px-7 py-3.5 text-[15px]">
             前往 uYao 找藥
           </a>
         </section>

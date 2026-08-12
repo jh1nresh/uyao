@@ -108,7 +108,7 @@ export default function FindMedicineNearbyGuidePage() {
           <p className="mb-5 mt-2 max-w-[40em] text-[15px] leading-[1.8] text-ink-2">
             搜尋結果是下一步線索，不是即時庫存保證。供應與用藥問題仍由藥局或藥師確認。
           </p>
-          <a href={`${SHOP_URL}/zh-tw`} className="action-primary inline-flex px-7 py-3.5 text-[15px]">
+          <a href={`${SHOP_URL.replace(/\/$/, "")}/zh-tw`} className="action-primary inline-flex px-7 py-3.5 text-[15px]">
             前往 uYao 找藥
           </a>
         </section>

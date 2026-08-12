@@ -68,8 +68,9 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
 
 export function CompanyFooter({ locale }: { locale: "zh" | "en" }) {
   const copy = COPY[locale];
-  const shopUrl = `${SHOP_URL}${locale === "en" ? "/en" : "/zh-tw"}`;
+  const shopUrl = `${SHOP_URL.replace(/\/$/, "")}${locale === "en" ? "/en" : "/zh-tw"}`;
   const companyPrefix = locale === "en" ? "/en" : "/zh-tw";
+  const joinGuideUrl = locale === "en" ? "/en#how" : "/zh-tw/guides/join-uyao";
 
   return (
     <footer className="border-t border-line bg-paper">
@@ -90,7 +91,7 @@ export function CompanyFooter({ locale }: { locale: "zh" | "en" }) {
             </h2>
             <div className="mt-2 flex flex-col items-start">
               <FooterLink href={shopUrl}>{copy.medicineFinder}</FooterLink>
-              <FooterLink href="/zh-tw/guides/join-uyao">{copy.joinGuide}</FooterLink>
+              <FooterLink href={joinGuideUrl}>{copy.joinGuide}</FooterLink>
               <FooterLink href={`${companyPrefix}/pharmacy`}>{copy.pilot}</FooterLink>
             </div>
           </nav>

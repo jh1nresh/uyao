@@ -11,9 +11,12 @@ import { SHOP_URL } from "@/lib/shop";
  */
 export async function SiteFooter({ note }: { note?: string }) {
   const locale = await getRequestLocale();
-  const shopHome = `${SHOP_URL}${locale === "en" ? "/en" : "/zh-tw"}`;
+  const shopHome = `${SHOP_URL.replace(/\/$/, "")}${locale === "en" ? "/en" : "/zh-tw"}`;
   const companyHome = `${SITE_URL}${locale === "en" ? "/en" : "/zh-tw"}`;
   const companyPath = (path: string) => `${SITE_URL}${locale === "en" ? "/en" : "/zh-tw"}${path}`;
+  const joinGuideUrl = locale === "en"
+    ? `${SITE_URL}/en#how`
+    : `${SITE_URL}/zh-tw/guides/join-uyao`;
 
   return (
     <footer className="border-t border-line bg-paper text-[13px] leading-[1.75] text-muted">
@@ -38,7 +41,7 @@ export async function SiteFooter({ note }: { note?: string }) {
               <Link href={shopHome} className="inline-flex min-h-11 items-center text-forest hover:text-green">
                 {locale === "en" ? "Medicine finder" : "附近找藥"}
               </Link>
-              <a href={`${SITE_URL}/zh-tw/guides/join-uyao`} className="inline-flex min-h-11 items-center text-forest hover:text-green">
+              <a href={joinGuideUrl} className="inline-flex min-h-11 items-center text-forest hover:text-green">
                 {locale === "en" ? "How pharmacies join" : "藥局如何加入"}
               </a>
               <a href={companyPath("/pharmacy")} className="inline-flex min-h-11 items-center text-forest hover:text-green">
