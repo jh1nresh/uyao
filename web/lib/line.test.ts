@@ -51,8 +51,8 @@ describe("LINE webhook 簽章", () => {
 describe("預留卡片必須分得出真假", () => {
   const base = {
     code: "A-347",
-    drugName: "綠油精",
-    drugSpec: "10ml",
+    drugName: "護谷鈣素",
+    drugSpec: "100粒",
     priceTwd: 65,
     storeName: "中山藥局",
     contactKind: "phone" as const,

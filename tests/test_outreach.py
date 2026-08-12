@@ -192,8 +192,10 @@ class TestLabels:
         if not DATA_TS.exists():
             return
         labels = load_labels()
-        assert labels.get("salonpas-ae", "").startswith("撒隆巴斯")
-        assert labels.get("green-oil") == "綠油精"
+        assert labels.get("hugu-gaishu-100") == "護谷鈣素 100粒"
+        assert labels.get("huzhikang-60") == "護智康 60粒"
+        assert labels.get("huzhikang-150") == "護智康 150粒"
+        assert labels.get("keqiqing-capsule") == "克氣清咳嗽膠囊"
 
     def test_missing_file_is_not_fatal(self, tmp_path):
         assert load_labels(tmp_path / "nope.ts") == {}

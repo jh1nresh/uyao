@@ -124,16 +124,25 @@ def load_stores(path: Path = STORES_JSON) -> list[dict]:
 def load_labels(path: Path = DATA_TS) -> dict[str, str]:
     """slug → 中文名，**只用來顯示**。
 
-    直接從 `data.ts` 撈 slug/name 配對。從 Python 讀 TS 當然是脆的，但這裡
-    的失敗代價只是報表印出 `salonpas-ae` 而不是「撒隆巴斯®-愛涼 貼布」——
-    所以刻意不做成硬相依，撈不到就退回 slug 原樣。
+    直接從 `data.ts` 撈 slug/name/spec 配對。從 Python 讀 TS 當然是脆的，
+    但這裡的失敗代價只是報表印出 slug 而不是「護智康 60粒」——所以刻意
+    不做成硬相依，撈不到就退回 slug 原樣。
     真要穩，是等目錄搬進資料庫，不是在這裡寫 TS parser。
     """
     if not path.exists():
         return {}
     text = path.read_text(encoding="utf-8")
-    pairs = re.findall(r'slug:\s*"([^"]+)",\s*\n\s*name:\s*"([^"]+)"', text)
-    return dict(pairs)
+    if "const DRUGS" not in text:
+        return {}
+    catalog = text.split("const DRUGS", 1)[1].split("];", 1)[0]
+    rows = re.findall(
+        r'slug:\s*"([^"]+)",\s*\n\s*name:\s*"([^"]+)",[\s\S]*?\n\s*spec:\s*"([^"]+)"',
+        catalog,
+    )
+    return {
+        slug: name if spec == "規格待確認" else f"{name} {spec}"
+        for slug, name, spec in rows
+    }
 
 
 def aggregate(records: list[dict]) -> dict[str, AreaDemand]:

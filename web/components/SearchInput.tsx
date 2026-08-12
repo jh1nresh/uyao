@@ -6,15 +6,15 @@ import { localizedPath } from "@/lib/i18n";
 import type { AreaSlug } from "@/lib/types";
 
 const SEARCH_EXAMPLES_ZH = [
-  "搜尋藥品，如：曼秀雷敦",
-  "描述症狀，如：被蚊子咬",
-  "搜尋需求，如：痠痛、止癢",
+  "搜尋品項，如：護谷鈣素",
+  "搜尋品項，如：勝康寧 150粒",
+  "搜尋規格，如：護智康 60粒",
 ] as const;
 
 const SEARCH_EXAMPLES_EN = [
-  "Search a product, e.g. Mentholatum",
-  "Describe a need, e.g. insect bite",
-  "Search a symptom, e.g. soreness or itch",
+  "Search a partner-listed item",
+  "Search by product name",
+  "Search by package size",
 ] as const;
 
 /**
@@ -89,7 +89,7 @@ export function SearchInput({
         ⌕
       </span>
       <label className="sr-only" htmlFor={`q-${size}`}>
-        {locale === "en" ? "Search medicines" : "搜尋藥品"}
+        {locale === "en" ? "Search products" : "搜尋品項"}
       </label>
       <div className="group relative h-full min-w-0 flex-1">
         <input
@@ -98,7 +98,7 @@ export function SearchInput({
           type="search"
           autoFocus={autoFocus}
           defaultValue={defaultValue}
-          placeholder={large ? "" : locale === "en" ? "Search medicines" : "搜尋藥品"}
+          placeholder={large ? "" : locale === "en" ? "Search products" : "搜尋品項"}
           onChange={(event) => setHasValue(event.currentTarget.value.length > 0)}
           // h-full：讓整個框都是點擊區，不是只有文字那 20px
           className={`h-full w-full min-w-0 bg-transparent text-ink outline-none placeholder:text-muted-2 focus:outline-none focus-visible:outline-none ${
