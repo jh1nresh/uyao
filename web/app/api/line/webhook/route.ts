@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { logConsole } from "@/lib/box";
-import { allStores } from "@/lib/data";
+import { allStores, SERVICE_AREA_LABEL } from "@/lib/data";
 import {
   adminUserIds,
   approve,
@@ -11,6 +11,7 @@ import {
   storeForUser,
 } from "@/lib/bindings";
 import { confirmedFlex, isConfigured, push, reply, text, verifySignature } from "@/lib/line";
+import { partnersForAlias } from "@/lib/partners";
 import { appendRecord } from "@/lib/record";
 import { updateStatus } from "@/lib/reservations-store";
 
@@ -37,13 +38,15 @@ interface LineEvent {
   postback?: { data?: string };
 }
 
-/** 店家傳店名 → 在目前 5 家收錄店家裡找。綁錯等於把預留單推給別人。 */
+/** 店家傳店名 → 在目前收錄店家與人工確認別名裡找。綁錯等於把預留單推給別人。 */
 function matchStores(query: string) {
   const q = query.trim();
   if (q.length < 2) return [];
   const all = allStores();
   const exact = all.filter((s) => s.name === q);
   if (exact.length > 0) return exact;
+  const aliasSlugs = new Set<string>(partnersForAlias(q).map((partner) => partner.storeSlug));
+  if (aliasSlugs.size > 0) return all.filter((store) => aliasSlugs.has(store.slug));
   return all.filter((s) => s.name.includes(q) || q.includes(s.name));
 }
 
@@ -59,7 +62,7 @@ async function onBindRequest(userId: string, replyToken: string, query: string) 
     await reply(replyToken, [
       text(
         `找不到「${query}」。\n\n` +
-          "目前只開放大同、林口、新莊與中山區的首波收錄店家，請傳完整店名。" +
+          `目前只開放${SERVICE_AREA_LABEL}的首波收錄店家，請傳完整店名。` +
           "如果你的店不在名單裡，回覆「其他區」我們會記下來。",
       ),
     ]);

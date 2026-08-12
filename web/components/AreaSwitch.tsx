@@ -79,7 +79,7 @@ function AreaSwitchWithRoute({
             : "";
 
   return (
-    <div className="flex items-center gap-1.5 border border-line px-2.5 py-[5px] text-xs text-muted">
+    <div className="flex max-w-full items-center gap-1.5 overflow-x-auto whitespace-nowrap border border-line px-2.5 py-[5px] text-xs text-muted">
       {locatable && (
         <button
           type="button"
@@ -95,7 +95,7 @@ function AreaSwitchWithRoute({
       <span className="sr-only" aria-live="polite">
         {locationMessage}
       </span>
-      <div role="group" aria-label={locale === "en" ? "Choose service area" : "選擇服務區"} className="flex items-center gap-1">
+      <div role="group" aria-label={locale === "en" ? "Choose service area" : "選擇服務區"} className="flex flex-none items-center gap-1">
         {AREAS.map((a) => {
           const active = a.slug === area;
           return (
@@ -122,14 +122,14 @@ function AreaSwitchWithRoute({
 function AreaSwitchFallback({ area, locatable = false }: AreaSwitchProps) {
   const locale = useLocale();
   return (
-    <div className="flex items-center gap-1.5 border border-line px-2.5 py-[5px] text-xs text-muted">
+    <div className="flex max-w-full items-center gap-1.5 overflow-x-auto whitespace-nowrap border border-line px-2.5 py-[5px] text-xs text-muted">
       {locatable && (
         <span className="-my-3 inline-flex min-h-11 items-center gap-1 pr-1 text-muted-2">
           <span aria-hidden>◎</span>
           <span className="hidden sm:inline">{locale === "en" ? "Locate" : "定位"}</span>
         </span>
       )}
-      <div role="group" aria-label={locale === "en" ? "Choose service area" : "選擇服務區"} className="flex items-center gap-1">
+      <div role="group" aria-label={locale === "en" ? "Choose service area" : "選擇服務區"} className="flex flex-none items-center gap-1">
         {AREAS.map((candidate) => (
           <span
             key={candidate.slug}

@@ -24,7 +24,14 @@ export interface Category {
 }
 
 /** 目前開放的服務區 —— 跟藥局獲客名單（`data/prospects-*.csv`）的範圍一致。 */
-export type AreaSlug = "datong" | "linkou" | "xinzhuang" | "zhongshan" | "xinyi";
+export type AreaSlug =
+  | "datong"
+  | "linkou"
+  | "luzhou"
+  | "xinzhuang"
+  | "zhongshan"
+  | "xinyi"
+  | "xitun";
 
 export interface Area {
   slug: AreaSlug;

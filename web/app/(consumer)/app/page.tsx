@@ -7,6 +7,7 @@ import { SearchInput } from "@/components/SearchInput";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import {
+  AREAS,
   CATEGORIES,
   allStores,
   allDrugs,
@@ -17,6 +18,7 @@ import {
 } from "@/lib/data";
 import { areaCopy, categoryName, drugCopy, localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
+import { partnerForStore } from "@/lib/partners";
 import {
   CONSUMER_DESCRIPTION,
   SITE_URL,
@@ -91,7 +93,7 @@ export default async function HomePage({
   const locale = await getRequestLocale();
   const area = toAreaSlug(rawArea);
   const storeCount = storesInArea(area).length;
-  const partnerStores = allStores();
+  const listedStores = allStores();
   const drugs = allDrugs();
   const currentArea = areaCopy(getArea(area), locale);
   const steps = locale === "en" ? STEPS_EN : STEPS_ZH;
@@ -166,11 +168,11 @@ export default async function HomePage({
           <div className="mx-auto mt-6 w-full max-w-5xl">
             <dl className="grid grid-cols-3 border-y border-line py-4">
               <div>
-                <dt className="num text-[20px] font-semibold text-forest">4</dt>
+                <dt className="num text-[20px] font-semibold text-forest">{AREAS.length}</dt>
                 <dd className="mt-1 text-[12px] text-muted">{locale === "en" ? "service areas" : "服務區"}</dd>
               </div>
               <div className="border-l border-line pl-4 sm:pl-6">
-                <dt className="num text-[20px] font-semibold text-forest">{partnerStores.length}</dt>
+                <dt className="num text-[20px] font-semibold text-forest">{listedStores.length}</dt>
                 <dd className="mt-1 text-[12px] text-muted">{locale === "en" ? "listed stores" : "首波店家"}</dd>
               </div>
               <div className="border-l border-line pl-4 sm:pl-6">
@@ -193,17 +195,21 @@ export default async function HomePage({
           <p className="shop-kicker mb-3">FIRST PHARMACY NETWORK</p>
           <div className="mb-7 flex flex-wrap items-end justify-between gap-3">
             <h2 className="editorial-display m-0 text-[32px] leading-[1.25] sm:text-[40px]">{locale === "en" ? "Initial pharmacy network" : "首波收錄店家"}</h2>
-            <p className="m-0 text-[13px] text-muted">{locale === "en" ? `${partnerStores.length} listed · Live inventory not yet enabled` : `共 ${partnerStores.length} 家 · 即時庫存尚未啟用`}</p>
+            <p className="m-0 text-[13px] text-muted">{locale === "en" ? `${listedStores.length} listed · Live inventory not yet enabled` : `共 ${listedStores.length} 家 · 即時庫存尚未啟用`}</p>
           </div>
           <div className="grid border-l border-t border-line bg-ivory sm:grid-cols-2 lg:grid-cols-3">
-          {partnerStores.map((store) => (
+          {listedStores.map((store) => (
             <Link
               key={store.slug}
               href={localizedPath(`/store/${store.slug}`, locale)}
               className="history-link group flex min-h-[132px] flex-col justify-between border-b border-r border-line px-5 py-5 no-underline transition-colors hover:bg-surface-hover last:sm:col-span-2"
             >
-              <span className="flex items-center justify-between text-[12px] font-medium text-oxblood">
-                {locale === "en" ? areaCopy(getArea(store.area), locale).shortName : store.district}<span className="text-forest transition-transform group-hover:translate-x-1">→</span>
+              <span className="flex items-center justify-between gap-2 text-[12px] font-medium text-oxblood">
+                <span>
+                  {locale === "en" ? areaCopy(getArea(store.area), locale).shortName : store.district}
+                  {partnerForStore(store.slug) ? (locale === "en" ? " · Partner" : " · 合作藥局") : ""}
+                </span>
+                <span className="text-forest transition-transform group-hover:translate-x-1">→</span>
               </span>
               <span>
                 <span className="block text-[18px] font-bold text-ink">{store.name}</span>
@@ -213,7 +219,7 @@ export default async function HomePage({
           ))}
           </div>
           <p className="mb-0 mt-4 max-w-[760px] text-[13px] leading-[1.7] text-muted-2">
-            {locale === "en" ? "Listing does not mean partnership, installation, or live inventory. Call before visiting." : "收錄不代表已正式合作、已安裝設備或已有即時庫存；前往門市前請先電話確認。"}
+            {locale === "en" ? "Confirmed partners are labeled above; other stores are public listings. Partnership does not imply installed hardware or live inventory. Call before visiting." : "合作藥局已於上方標示；其餘為公開資料收錄。合作不代表已安裝設備或已有即時庫存；前往門市前請先電話確認。"}
           </p>
         </div>
       </section>

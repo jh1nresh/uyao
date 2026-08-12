@@ -18,8 +18,8 @@ import { CompanyFooter } from "@/components/landing/CompanyFooter";
  * 與 `/` 共用 HeroLoop／PilotCtaForm 與視覺系統，anchor（how/pilot）
  * 兩邊一致供語言切換保留位置。evidence ladder 2026-08-09 依 founder
  * 決定先下架（等有真實 pilot 進度再回來）。
- * WeStrong is a biotech partner; this does not imply a partner pharmacy,
- * live inventory, product availability, or medical endorsement.
+ * A partnership does not imply installed hardware, live inventory, product
+ * availability, or medical endorsement.
  */
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -123,7 +123,7 @@ const TIMELINE = [
   { label: "Outcome pending / verified", last: true },
 ] as const;
 
-const PILOT_AREAS = ["Datong", "Linkou", "Xinzhuang", "Zhongshan"] as const;
+const PILOT_AREAS = ["Datong", "Linkou", "Luzhou", "Xinzhuang", "Zhongshan", "Xitun"] as const;
 const EN_SHOP_URL = `${SHOP_URL.replace(/\/$/, "")}/en`;
 
 function Container({ children }: { children: React.ReactNode }) {
@@ -219,13 +219,13 @@ export default function EnglishLandingPage() {
           <div className="py-8 sm:py-10">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <h2 id="pilot-areas-heading" className="m-0 text-[17px] font-black">
-                First-wave pilot focus across four Greater Taipei districts
+                First-wave service and pilot coverage across six districts
               </h2>
               <p className="m-0 text-[13px] text-muted">
-                On-site workflow interviews and pilot-fit assessment are underway
+                Four partner pharmacy locations; workflow trials and recruitment continue
               </p>
             </div>
-            <div className="mt-5 grid border-l border-t border-line bg-paper sm:grid-cols-4">
+            <div className="mt-5 grid border-l border-t border-line bg-paper sm:grid-cols-3 lg:grid-cols-6">
               {PILOT_AREAS.map((area) => (
                 <div
                   key={area}
@@ -239,8 +239,8 @@ export default function EnglishLandingPage() {
               ))}
             </div>
             <p className="mb-0 mt-3 text-[12.5px] leading-[1.7] text-muted">
-              Area focus does not imply a formal partnership, installed hardware, or live
-              inventory.
+              Partnership does not imply installed hardware or live inventory; public
+              listings in other areas do not imply partnership.
             </p>
           </div>
         </Container>
