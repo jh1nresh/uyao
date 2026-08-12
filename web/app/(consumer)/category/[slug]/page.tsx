@@ -39,8 +39,8 @@ export async function generateMetadata({
   return {
     title: locale === "en" ? `${name} — early-access catalog` : `${name}｜試營運品項瀏覽`,
     description: locale === "en"
-      ? `Browse ${name.toLowerCase()} in the shop-uYao prototype catalog. Live inventory is not available; confirm products and supply with a pharmacist.`
-      : `瀏覽 shop-uYao 試營運目錄中的${name}。即時庫存尚未啟用，品項與供應狀態請向藥局或藥師確認。`,
+      ? `Browse ${name.toLowerCase()} in the uYao Medicine Finder prototype catalog. Live inventory is not available; confirm products and supply with a pharmacist.`
+      : `瀏覽 uYao 找藥試營運目錄中的${name}。即時庫存尚未啟用，品項與供應狀態請向藥局或藥師確認。`,
     // v1 category pages 目前只有品項連結，未通過獨特 editorial value gate。
     robots: { index: false, follow: true },
   };

@@ -14,8 +14,8 @@ export async function SiteFooter({ note }: { note?: string }) {
           : "本站提供試營運目錄與公開藥局資料，不代表即時庫存、不呈現藥品價格，也不提供線上交易；供應、預留、交付與用藥問題均由藥局或藥師確認。藥品廣告依藥事法第 66 條事前審查。")}
         <br />
         {locale === "en"
-          ? "shop-uYao · shop.uyaohealth.com · Medicine requests only, no online checkout"
-          : "shop-uYao · shop.uyaohealth.com · 僅協助找藥需求，不提供線上交易"}
+          ? "uYao Medicine Finder · Medicine requests only, no online checkout"
+          : "uYao 找藥 · 僅協助找藥需求，不提供線上交易"}
         <span className="ml-2"><LanguageSwitch /></span>
       </div>
     </footer>

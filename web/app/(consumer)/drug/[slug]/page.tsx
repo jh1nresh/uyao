@@ -43,7 +43,7 @@ export async function generateMetadata({
   return {
     title: locale === "en" ? `${displayDrug.name} ${drug.spec} — early-access record` : `${drug.name} ${drug.spec}｜找藥資料（試營運）`,
     description: locale === "en"
-      ? `${displayDrug.name} (${displayDrug.form} · ${drug.spec}) identification in the shop-uYao prototype catalog. Live supply is not available; confirm the product, supply, and pickup with a pharmacist.`
+      ? `${displayDrug.name} (${displayDrug.form} · ${drug.spec}) identification in the uYao Medicine Finder prototype catalog. Live supply is not available; confirm the product, supply, and pickup with a pharmacist.`
       : `${drug.name}（${drug.form} · ${drug.spec}）的試營運辨識資料。即時供應資料尚未上線，品項、供應與預留仍須由藥局或藥師確認。`,
     // 藥品 identity/source/freshness 尚未通過 Drug Page Admission Gate。
     robots: { index: false, follow: true },
