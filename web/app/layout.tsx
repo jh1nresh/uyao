@@ -57,9 +57,10 @@ export async function generateMetadata(): Promise<Metadata> {
     robots: { index: false, follow: false },
     verification: {
       google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
-      other: process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
-        ? { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION }
-        : undefined,
+      other: {
+        "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+          ?? "F95D60E665CD0E86D0952E5E21050752",
+      },
     },
   };
 }

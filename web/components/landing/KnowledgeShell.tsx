@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { BrandLogo } from "@/components/BrandLogo";
-import { CONTACT_EMAIL } from "@/lib/seo";
+import { CompanyFooter } from "@/components/landing/CompanyFooter";
 
 /**
  * SEO v1 知識頁（/evidence、/guides/*、/compare/*）共用外框
@@ -48,25 +48,7 @@ export function KnowledgeShell({
         {children}
       </main>
 
-      <footer className="border-t border-line bg-paper">
-        <div className="mx-auto flex max-w-[880px] flex-wrap items-start justify-between gap-6 px-5 py-10 sm:px-8">
-          <BrandLogo height={28} />
-          <div className="flex flex-wrap gap-x-6 text-[14px]">
-            <Link href="/zh-tw" className="inline-flex min-h-11 items-center text-forest hover:text-green">
-              公司介紹
-            </Link>
-            <Link href="/zh-tw/evidence" className="inline-flex min-h-11 items-center text-forest hover:text-green">
-              產品證據
-            </Link>
-            <a href={`mailto:${CONTACT_EMAIL}`} className="inline-flex min-h-11 items-center text-forest hover:text-green">
-              Contact
-            </a>
-          </div>
-          <p className="m-0 max-w-[36em] flex-[1_1_100%] text-[12.5px] leading-[1.8] text-muted">
-            uYao 不進行藥品網路販售，不提供醫療或用藥建議；消費者服務僅協助查詢、預留與到店取貨，實際交付由藥師完成。
-          </p>
-        </div>
-      </footer>
+      <CompanyFooter locale="zh" />
     </div>
   );
 }

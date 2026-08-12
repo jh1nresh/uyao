@@ -46,6 +46,9 @@ export const INDEXABLE_PATHS = [
   "/zh-tw/guides/ai-tools-pharmacy-inventory",
   "/zh-tw/guides/pharmacy-expiry-management",
   "/zh-tw/guides/pharmacy-return-window",
+  "/zh-tw/guides/find-medicine-nearby",
+  "/zh-tw/guides/medicine-out-of-stock",
+  "/zh-tw/guides/join-uyao",
   "/zh-tw/compare/uyao-vs-pos",
 ] as const;
 
@@ -64,6 +67,7 @@ export const CONSUMER_DESCRIPTION: Record<Locale, string> = {
 };
 
 export const CONTACT_EMAIL = "edwardhsieh0122@gmail.com";
+export const X_URL = "https://x.com/uyaohealth";
 
 // ---------------------------------------------------------------------------
 // JSON-LD builders。規則（spec §3）：不標 Pharmacy/MedicalOrganization、
@@ -81,6 +85,7 @@ export function organizationJsonLd(): JsonLd {
     url: `${SITE_URL}/zh-tw`,
     email: CONTACT_EMAIL,
     description: ENTITY_DESCRIPTION.zh,
+    sameAs: [X_URL],
   };
 }
 
@@ -181,6 +186,20 @@ export function articleJsonLd(input: {
     dateModified: input.dateModified,
     author: { "@type": "Organization", name: "uYao 團隊" },
     publisher: { "@id": `${SITE_URL}/#organization` },
+  };
+}
+
+export function faqPageJsonLd(items: { question: string; answer: string }[]): JsonLd {
+  return {
+    "@type": "FAQPage",
+    mainEntity: items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
+    })),
   };
 }
 
