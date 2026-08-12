@@ -27,7 +27,7 @@ const MESSAGES_EN: Record<string, string> = {
 /**
  * 定位開關。使用者按了才要權限 —— 見 LocationProvider 的說明。
  *
- * 服務區只涵蓋目前收錄店家的四區，所以定位成功後還要誠實告訴使用者他離這區
+ * 服務區只涵蓋目前收錄店家所在區域，所以定位成功後還要誠實告訴使用者他離這區
  * 多遠：人在板橋卻看到「距離你 8.2 km」的排序，比沒有定位更誤導。
  */
 export function LocateButton({ area }: { area: AreaSlug }) {
@@ -54,7 +54,7 @@ export function LocateButton({ area }: { area: AreaSlug }) {
           <span aria-hidden>◉</span> {locale === "en" ? "Located" : "已定位"}
         </span>
         {/* 距離就是精確的 —— 不加「僅供參考」這種會讓人不信任正確資料的字眼。
-            真正的限制是只涵蓋目前收錄店家的四區，該講的是那個。 */}
+            真正的限制是只涵蓋目前收錄店家所在區域，該講的是那個。 */}
         <span className="text-muted">
           {locale === "en" ? `From ${areaName} center ` : `距${areaName}中心 `}<span className="num">{formatDistance(away)}</span>
         </span>

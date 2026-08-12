@@ -234,6 +234,93 @@
         "健保特約"
       ],
       "status": "listed"
+    },
+    {
+      "slug": "萊康連鎖藥局",
+      "name": "萊康連鎖藥局",
+      "area": "luzhou",
+      "district": "蘆洲區",
+      "address": "新北市蘆洲區中正路126號1樓",
+      "phone": "02-8286-7383",
+      "owner": "郭洺愿",
+      "nhiCode": "5931142509",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=萊康連鎖藥局+新北市蘆洲區中正路126號1樓",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "萊康中華健保藥局",
+      "name": "萊康中華健保藥局",
+      "area": "luzhou",
+      "district": "蘆洲區",
+      "address": "新北市蘆洲區中華街45-1號1樓",
+      "phone": "02-2848-6787",
+      "owner": "徐博倫",
+      "nhiCode": "5931143051",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=萊康中華健保藥局+新北市蘆洲區中華街45-1號1樓",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "永遠藥師藥局",
+      "name": "永遠藥師藥局",
+      "area": "xitun",
+      "district": "西屯區",
+      "address": "臺中市西屯區西屯路二段28之2號1樓",
+      "phone": "04-2312-0858",
+      "owner": "蕭永良",
+      "nhiCode": "5903271648",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=永遠藥師藥局+臺中市西屯區西屯路二段28之2號1樓",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
     }
   ]
 }

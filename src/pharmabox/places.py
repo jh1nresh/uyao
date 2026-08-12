@@ -46,10 +46,10 @@ FIELD_MASK = ",".join([
     "places.regularOpeningHours.periods",
 ])
 
-# 大同、林口、新莊、中山四區的外框，用來避免撞到外縣市同名藥局。
+# 目前服務區（雙北到台中西屯）的外框，用來避免撞到範圍外的同名藥局。
 SERVICE_BIAS = {
-    "low": {"latitude": 25.020, "longitude": 121.370},
-    "high": {"latitude": 25.100, "longitude": 121.550},
+    "low": {"latitude": 24.150, "longitude": 120.600},
+    "high": {"latitude": 25.120, "longitude": 121.580},
 }
 
 

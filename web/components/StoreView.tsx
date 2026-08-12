@@ -11,6 +11,7 @@ import type { Store } from "@/lib/types";
 import { formatDistance } from "@/lib/format";
 import { areaCopy, localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
+import { partnerForStore } from "@/lib/partners";
 import { stockBadge } from "@/lib/stock";
 import {
   businessStatusWarning,
@@ -44,6 +45,7 @@ export async function StoreView({ store, preview }: { store: Store; preview: boo
 
   const statusWarning = businessStatusWarning(store, locale);
   const nhiNote = nhiTerminationNote(store, locale);
+  const partner = partnerForStore(store.slug);
 
   return (
     <>
@@ -60,6 +62,10 @@ export async function StoreView({ store, preview }: { store: Store; preview: boo
             {preview ? (
               <span className="border border-green-tint-line bg-green-tint px-2 py-0.5 text-[13px] font-bold text-green">
                 {locale === "en" ? "Pickup available" : "本店可預留"}
+              </span>
+            ) : partner ? (
+              <span className="border border-green-tint-line bg-green-tint px-2 py-0.5 text-[13px] font-bold text-green">
+                {locale === "en" ? "Partner pharmacy" : "合作藥局"}
               </span>
             ) : (
               <span className="border border-line-strong px-2 py-0.5 text-[13px] font-bold text-muted">
@@ -159,6 +165,46 @@ export async function StoreView({ store, preview }: { store: Store; preview: boo
           </div>
           {/* 示範是封閉世界：卡片不連到讀真庫存的 /drug/[slug]，預留直接在卡上 */}
           <PreviewShelf store={store} items={items} />
+          </div>
+        </section>
+      ) : partner && partner.confirmedProducts.length > 0 ? (
+        <section className="bg-paper">
+          <div className="shop-shell py-12 sm:py-16">
+            <p className="shop-kicker mb-3">PARTNER ASSORTMENT</p>
+            <h2 className="editorial-display mb-3 mt-0 text-[30px] sm:text-[38px]">
+              {locale === "en" ? "Partner assortment" : "合作販售品項"}
+            </h2>
+            <p className="mb-6 max-w-[760px] text-[15px] leading-[1.8] text-ink-2">
+              {locale === "en"
+                ? "This list was provided by the pharmacy and is not live inventory. Confirm current stock and price with the pharmacy before visiting."
+                : "以下品項由合作藥局提供，並非即時庫存。前往前請向門市確認目前庫存與價格。"}
+            </p>
+            <ul className="m-0 flex list-none flex-wrap gap-2.5 p-0">
+              {partner.confirmedProducts.map((product) => (
+                <li
+                  key={product}
+                  className="border border-line bg-ivory px-3.5 py-2 text-[14px] font-medium text-ink-2"
+                >
+                  {product}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      ) : partner ? (
+        <section className="bg-paper">
+          <div className="shop-shell py-12 sm:py-16">
+            <p className="shop-kicker mb-3">PARTNER ASSORTMENT</p>
+            <h2 className="editorial-display mb-6 mt-0 text-[30px] sm:text-[38px]">
+              {locale === "en" ? "Partner assortment" : "合作販售品項"}
+            </h2>
+            <div className="border border-line bg-ivory px-5 py-7 sm:px-7 sm:py-8">
+              <p className="max-w-[760px] text-[15px] leading-[1.8] text-ink-2">
+                {locale === "en"
+                  ? "Our partnership with this pharmacy is confirmed, but its product list and live inventory are not available yet. Please call before visiting."
+                  : "這家藥局的合作關係已確認，但目前尚無販售品項清單與即時庫存。前往前建議先電話確認。"}
+              </p>
+            </div>
           </div>
         </section>
       ) : (

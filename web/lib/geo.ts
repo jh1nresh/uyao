@@ -13,9 +13,11 @@ export interface LatLng {
 export const AREA_CENTER: Record<AreaSlug, LatLng> = {
   datong: { lat: 25.0633, lng: 121.513 },
   linkou: { lat: 25.0772, lng: 121.3916 },
+  luzhou: { lat: 25.0849, lng: 121.4737 },
   xinzhuang: { lat: 25.0359, lng: 121.4322 },
   zhongshan: { lat: 25.0637, lng: 121.5265 },
   xinyi: { lat: 25.033, lng: 121.5654 },
+  xitun: { lat: 24.1813, lng: 120.6466 },
 };
 
 const EARTH_RADIUS_M = 6371000;

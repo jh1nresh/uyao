@@ -17,8 +17,8 @@ const ZH_SHOP_URL = `${SHOP_URL.replace(/\/$/, "")}/zh-tw`;
  * 公司 landing（design: `uYao Landing.dc.html`，spec: company-landing-page.md
  * + company-landing-page-yc-en-adjustment.md）。
  * `/` 說清楚問題、閉環、證據與試點；Consumer Web 使用獨立 shop host。
- * 誠實原則：未驗證的一律標 prototype／示範資料；WeStrong 是生技公司
- * 合作夥伴，不代表已有合作藥局、即時庫存或商品供應。evidence ladder 2026-08-09 依
+ * 誠實原則：未驗證的一律標 prototype／示範資料；合作關係不代表設備已
+ * 安裝、已有即時庫存或商品供應。evidence ladder 2026-08-09 依
  * founder 決定先下架（等有真實 pilot 進度再回來）。
  */
 export async function generateMetadata(): Promise<Metadata> {
@@ -110,7 +110,7 @@ const TIMELINE = [
   { label: "outcome pending / verified", last: true },
 ] as const;
 
-const PILOT_AREAS = ["大同區", "林口區", "新莊區", "中山區"] as const;
+const PILOT_AREAS = ["大同區", "林口區", "蘆洲區", "新莊區", "中山區", "西屯區"] as const;
 
 function Container({ children }: { children: React.ReactNode }) {
   return <div className="mx-auto max-w-[1240px] px-5 sm:px-8">{children}</div>;
@@ -204,11 +204,11 @@ export default function CompanyLandingPage() {
           <div className="py-8 sm:py-10">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
               <h2 id="pilot-areas-heading" className="m-0 text-[17px] font-black">
-                首波試點聚焦雙北四區
+                首波服務與試點涵蓋六區
               </h2>
-              <p className="m-0 text-[13px] text-muted">正在進行現場流程與合作可行性訪談</p>
+              <p className="m-0 text-[13px] text-muted">4 個合作藥局據點；現場流程與試點招募持續進行</p>
             </div>
-            <div className="mt-5 grid border-l border-t border-line bg-paper sm:grid-cols-4">
+            <div className="mt-5 grid border-l border-t border-line bg-paper sm:grid-cols-3 lg:grid-cols-6">
               {PILOT_AREAS.map((area) => (
                 <div
                   key={area}
@@ -220,7 +220,7 @@ export default function CompanyLandingPage() {
               ))}
             </div>
             <p className="mb-0 mt-3 text-[12.5px] leading-[1.7] text-muted">
-              區域聚焦不代表已正式合作、已安裝設備或已有即時庫存。
+              合作不代表已安裝設備或已有即時庫存；其他區域的公開收錄也不代表合作。
             </p>
           </div>
         </Container>
