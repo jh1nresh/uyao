@@ -72,13 +72,13 @@ export default async function CategoryPage({
       <main className="min-h-[calc(100svh-11rem)]">
       <section className="shop-shell py-10 sm:py-14">
         <div className="mb-3 md:hidden">
-          <AreaSwitch area={area} preservePath locatable />
+          <AreaSwitch area={area} preservePath locatable compact />
         </div>
         <p className="shop-kicker mb-3">BROWSE BY CATEGORY</p>
         <div className="mb-7 flex flex-wrap items-end gap-3 border-b border-line pb-5">
           <h1 className="editorial-display m-0 text-[30px] leading-[1.25] sm:text-[40px]">{displayCategory}</h1>
           <p className="text-[13px] text-muted-2">
-            {locale === "en" ? `${results.length} listed nearby · ${areaCopy(getArea(area), locale).shortName}` : `${results.length} 項在附近有登錄 · ${getArea(area).shortName}`}
+            {locale === "en" ? `${results.length} catalog items · ${areaCopy(getArea(area), locale).shortName}` : `目錄共 ${results.length} 項 · ${getArea(area).shortName}`}
           </p>
           <div className="flex-1" />
           <p className="num text-[11px] tracking-[.04em] text-muted-2">{locale === "en" ? "SORT: FRESHNESS → DISTANCE" : "排序：庫存新鮮度 → 距離"}</p>

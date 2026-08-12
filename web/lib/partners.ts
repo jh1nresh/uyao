@@ -74,3 +74,10 @@ export function partnersForAlias(alias: string): PartnerPharmacy[] {
       partner.aliases.some((partnerAlias) => partnerAlias === candidate),
   );
 }
+
+/** 回傳曾把這個完整品項名稱／規格交給我們的合作藥局；不等於即時有貨。 */
+export function partnersForProduct(product: string): PartnerPharmacy[] {
+  return Object.values(PARTNER_PHARMACIES).filter((partner) =>
+    partner.confirmedProducts.some((confirmed) => confirmed === product),
+  );
+}

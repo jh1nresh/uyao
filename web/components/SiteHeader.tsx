@@ -64,7 +64,7 @@ export async function SiteHeader({
         <div className={showSearch ? "hidden flex-1 sm:block" : "flex-1"} />
 
         <div className="hidden md:block">
-          <AreaSwitch area={area} preservePath={preserveAreaPath} locatable={locatable} />
+          <AreaSwitch area={area} preservePath={preserveAreaPath} locatable={locatable} compact />
         </div>
         <LanguageSwitch />
         {/* 供給側入口。藥局端不需要後台帳號（預留確認走 LINE bot），

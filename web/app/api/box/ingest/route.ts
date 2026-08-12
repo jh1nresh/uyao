@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { drugSlugForGtin, logConsole, recordReceivingScan } from "@/lib/box";
+import { drugMatchForGtin, logConsole, recordReceivingScan } from "@/lib/box";
 import { getDrug, getStore } from "@/lib/data";
 import { drugCopy } from "@/lib/i18n";
 
@@ -111,17 +111,18 @@ export async function POST(request: Request) {
       continue;
     }
 
-    const drugSlug = drugSlugForGtin(gtin);
-    const drug = drugSlug ? getDrug(drugSlug) : undefined;
-    if (!drug || !drugSlug) {
+    const match = drugMatchForGtin(gtin);
+    const drug = match ? getDrug(match.drugSlug) : undefined;
+    if (!drug || !match) {
       // 目錄沒有的品項本身就是訊號：藥局在賣我們沒收錄的東西
       unknownGtin += 1;
       logConsole("❓", `${store.name} 掃到目錄外 GTIN ${gtin}（${kindLabel}）→ 待建檔`, `${store.name} scanned uncatalogued GTIN ${gtin} during ${kindLabelEn}; item setup is required`);
       continue;
     }
+    const { drugSlug } = match;
 
     if (kind === "receiving") {
-      await recordReceivingScan(storeSlug!, drugSlug).catch((err) =>
+      await recordReceivingScan(storeSlug!, drugSlug, match.demo).catch((err) =>
         console.error("[box] 進貨掃描狀態寫入失敗", String(err).slice(0, 200)),
       );
     }
@@ -130,11 +131,12 @@ export async function POST(request: Request) {
     logConsole(
       "🧠",
       kind === "receiving"
-        ? `${store.name} 掃到「${drug.name}」（進貨）→ 供應訊號更新：今日進貨掃描`
-        : `${store.name} 掃到「${drug.name}」（${kindLabel}）→ 記錄品項移動，不宣稱仍有庫存`,
+        ? `[示範] ${store.name} 掃到「${drug.name}」（進貨）→ 示範供應訊號更新：今日進貨掃描`
+        : `[示範] ${store.name} 掃到「${drug.name}」（${kindLabel}）→ 記錄示範品項移動，不宣稱仍有庫存`,
       kind === "receiving"
-        ? `${store.name} scanned “${drugNameEn}” during receiving → supply signal updated: received today`
-        : `${store.name} scanned “${drugNameEn}” during ${kind} → movement recorded; availability was not asserted`,
+        ? `[DEMO] ${store.name} scanned “${drugNameEn}” during receiving → demo supply signal updated: received today`
+        : `[DEMO] ${store.name} scanned “${drugNameEn}” during ${kind} → demo movement recorded; availability was not asserted`,
+      { demo: match.demo },
     );
   }
 

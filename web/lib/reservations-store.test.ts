@@ -23,9 +23,9 @@ function make(over: Partial<StoredReservation> = {}): StoredReservation {
   return {
     token: newToken(),
     code: "A-001",
-    drugSlug: "green-oil",
-    drugName: "綠油精",
-    drugSpec: "10ml",
+    drugSlug: "hugu-gaishu-100",
+    drugName: "護谷鈣素",
+    drugSpec: "100粒",
     storeSlug: "中山藥局",
     storeName: "中山藥局",
     storeAddress: "林森北路128號",

@@ -14,8 +14,8 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: locale === "en" ? "Search results" : "搜尋結果",
     description: locale === "en"
-      ? "Search the uYao Medicine Finder early-access catalog. Live inventory is not available; confirm supply and medicine questions with a pharmacy or pharmacist."
-      : "搜尋 uYao 找藥試營運藥品目錄；即時庫存尚未啟用，供應狀態與用藥問題請向藥局或藥師確認。",
+      ? "Search the uYao Medicine Finder partner-provided trial catalog. Live inventory is not available; confirm supply and medicine questions with a pharmacy or pharmacist."
+      : "搜尋 uYao 找藥合作藥局提供的試營運品項目錄；即時庫存尚未啟用，供應狀態與用藥問題請向藥局或藥師確認。",
     // 搜尋結果頁不做 SEO 入口（那是 /drug/[slug] 的工作），避免內容農場化。
     robots: { index: false, follow: true },
   };
@@ -42,16 +42,16 @@ export default async function SearchPage({
       <main className="min-h-[calc(100svh-11rem)]">
       <section className="shop-shell py-10 sm:py-14">
         <div className="mb-3 md:hidden">
-          <AreaSwitch area={area} preservePath locatable />
+          <AreaSwitch area={area} preservePath locatable compact />
         </div>
         <p className="shop-kicker mb-3">SEARCH RESULTS</p>
         <div className="mb-7 flex flex-wrap items-end gap-3 border-b border-line pb-5">
           <h1 className="editorial-display m-0 text-[30px] leading-[1.25] sm:text-[40px]">
-            {q ? (locale === "en" ? `Results for “${q}”` : `「${q}」的結果`) : (locale === "en" ? "Search medicines" : "搜尋藥品")}
+            {q ? (locale === "en" ? `Results for “${q}”` : `「${q}」的結果`) : (locale === "en" ? "Search products" : "搜尋品項")}
           </h1>
           <p className="text-[13px] text-muted-2">
             {!q
-              ? locale === "en" ? "Enter a product, ingredient, or symptom" : "輸入藥品名、主成分或症狀"
+              ? locale === "en" ? "Enter a product name or package size" : "輸入品項名稱或規格"
               : symptom?.kind === "refer"
                 ? locale === "en" ? "Ask a pharmacist first" : "建議先問藥師"
                 : `${results.length} ${locale === "en" ? "items" : "項"} · ${areaCopy(getArea(area), locale).shortName}`}
@@ -87,7 +87,7 @@ export default async function SearchPage({
           <DrugResults results={results} query={q} area={area} />
         ) : (
           <div className="border border-line px-4 py-8 text-center text-[15px] text-muted">
-            {locale === "en" ? "Enter a product or symptom above to start searching." : "上面輸入藥品名或症狀開始搜尋。"}
+            {locale === "en" ? "Enter a product name or package size above to start searching." : "上面輸入品項名稱或規格開始搜尋。"}
           </div>
         )}
       </section>

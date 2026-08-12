@@ -28,7 +28,7 @@ export async function DrugResults({
           {locale === "en" ? "No matching products nearby." : "附近沒有符合的品項。"}
           <br />
           <span className="text-[13px] text-muted-2">
-            {locale === "en" ? "Try an ingredient, symptom, or a different product name." : "試試主成分或症狀（如「痠痛」「止癢」），或換個品名寫法。"}
+            {locale === "en" ? "Try a different product name or package size." : "試試其他品名寫法，或輸入規格（例如「60粒」）。"}
           </span>
         </div>
         {query ? <NotifyMe kind="catalog_miss" query={query} area={area} /> : null}

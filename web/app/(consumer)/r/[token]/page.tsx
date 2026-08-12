@@ -164,7 +164,7 @@ export default async function PickupPage({
         {r.demo && (
           /* 示範單長得跟真單一樣的話，拿去店裡會很尷尬 —— 一定要標出來 */
           <div className="mb-3 border-2 border-green bg-green-tint px-3.5 py-2 text-[14px] leading-[1.6] text-ink">
-            <b className="font-bold">{locale === "en" ? "Demo reservation" : "示範預留"}</b> · {locale === "en" ? "This came from a demo preview. Catalog and prices are simulated; receiving freshness may come from the demo scan pipeline. Do not take it to the store." : "這筆來自藥局示範頁。商品與價格是模擬資料；進貨新鮮度可能來自 demo 掃描流程。請勿持此憑證前往門市。"}
+            <b className="font-bold">{locale === "en" ? "Demo reservation" : "示範預留"}</b> · {locale === "en" ? "This came from a demo preview. Product names come from the partner-provided catalog; availability and prices are simulated. Receiving freshness may come from the demo scan pipeline. Do not take it to the store." : "這筆來自藥局示範頁。品項名稱來自合作藥局提供的目錄；供應狀態與價格是模擬資料，進貨新鮮度可能來自 demo 掃描流程。請勿持此憑證前往門市。"}
           </div>
         )}
         <div className={`mb-3 border px-3.5 py-2 text-[14px] font-bold ${toneClass}`}>

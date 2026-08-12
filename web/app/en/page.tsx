@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 
 import { BrandLogo } from "@/components/BrandLogo";
@@ -444,19 +443,34 @@ export default function EnglishLandingPage() {
             <div className="min-w-0 lg:order-1">
               <div className="paper-elevation border border-line bg-paper p-3">
                 <div className="num mb-2 flex items-center justify-between gap-3 px-1 pt-1 text-[11px] font-medium tracking-[.06em] text-muted">
-                  <span>CONSUMER WEB · LIVE PRODUCT</span>
+                  <span>CONSUMER WEB · CURRENT CATALOG</span>
                   <span>shop.uyaohealth.com</span>
                 </div>
-                <Image
-                  src="/landing/consumer-web.png"
-                  alt="Live consumer product: a medicine search shows no verified stock nearby and offers a restock notification form"
-                  width={860}
-                  height={1536}
-                  className="mx-auto h-[400px] w-auto sm:h-[480px]"
-                />
+                <div className="border border-line bg-ivory px-5 py-7 sm:px-7 sm:py-9">
+                  <p className="num m-0 text-[11px] font-semibold tracking-[.1em] text-oxblood">
+                    PARTNER-LISTED ITEM
+                  </p>
+                  <h3 className="editorial-display mb-0 mt-3 text-[30px] leading-[1.2] text-forest">
+                    護谷鈣素 <span className="num text-[15px] font-medium text-muted">100 count</span>
+                  </h3>
+                  <div className="mt-5 grid border border-line bg-paper text-[13px] sm:grid-cols-2">
+                    <div className="border-b border-line px-4 py-3 sm:border-b-0 sm:border-r">
+                      <span className="block text-muted-2">Item source</span>
+                      <b className="mt-1 block text-ink">Provided by partner pharmacies</b>
+                    </div>
+                    <div className="px-4 py-3">
+                      <span className="block text-muted-2">Live inventory</span>
+                      <b className="mt-1 block text-ink">Awaiting store confirmation</b>
+                    </div>
+                  </div>
+                  <p className="mb-0 mt-4 text-[12.5px] leading-[1.7] text-muted">
+                    Only the name and package size are confirmed. Price, availability, classification,
+                    ingredients, and indications are not inferred.
+                  </p>
+                </div>
               </div>
               <div className="num mt-3.5 flex flex-wrap items-center gap-2 text-[12px] font-medium text-muted">
-                <span>Search by medicine or symptom</span>
+                <span>Search by product name or package size</span>
                 <span className="text-line-strong">→</span>
                 <span className="text-green">inventory_miss</span>
                 <span className="text-line-strong">→</span>

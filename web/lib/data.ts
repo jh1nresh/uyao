@@ -52,112 +52,86 @@ export function toAreaSlug(raw: string | undefined): AreaSlug {
 }
 
 export const CATEGORIES: Category[] = [
-  { slug: "patch", name: "痠痛貼布" },
-  { slug: "ointment", name: "軟膏／藥膏" },
-  { slug: "otc-staple", name: "常備成藥" },
+  { slug: "partner-item", name: "合作藥局品項" },
 ];
 
 const DRUGS: Drug[] = [
   {
-    slug: "salonpas-ae",
-    name: "撒隆巴斯®-愛涼 貼布",
-    nameEn: "SALONPAS-AE",
-    form: "貼布",
-    spec: "20 片/盒",
-    licenseNo: "",
-    drugClass: "甲類成藥",
-    category: "patch",
-    ingredients: ["水楊酸甲酯", "l-薄荷腦"],
-    indications: ["肌肉痠痛", "扭傷", "腰痛"],
-  },
-  {
-    slug: "golden-cross-patch",
-    name: "金十字酸痛貼布",
-    form: "貼布",
-    spec: "20 片/盒",
-    licenseNo: "",
-    drugClass: "甲類成藥",
-    category: "patch",
-    ingredients: ["水楊酸甲酯", "l-薄荷腦"],
-    indications: ["肌肉痠痛", "肩頸僵硬"],
-  },
-  {
-    slug: "cool-relief-patch",
-    name: "痠痛必貼 涼感貼布",
-    form: "貼布",
-    spec: "10 片/盒",
+    slug: "hugu-gaishu-100",
+    name: "護谷鈣素",
+    form: "劑型待確認",
+    spec: "100粒",
     licenseNo: "",
     drugClass: "待確認",
-    category: "patch",
-    ingredients: ["水楊酸甲酯", "l-薄荷腦"],
-    indications: ["肌肉痠痛", "運動後不適"],
+    category: "partner-item",
+    ingredients: [],
+    indications: [],
   },
   {
-    slug: "mentholatum-ad",
-    name: "曼秀雷敦 AD 軟膏",
-    nameEn: "MENTHOLATUM AD",
-    form: "軟膏",
-    spec: "90g",
-    licenseNo: "",
-    drugClass: "乙類成藥",
-    category: "ointment",
-    ingredients: ["尿囊素", "dl-樟腦"],
-    indications: ["皮膚乾癢", "止癢"],
-  },
-  {
-    slug: "jimu-spray",
-    name: "肌樂 涼感噴劑",
-    form: "噴劑",
-    spec: "130ml",
+    slug: "shengkangning-150",
+    name: "勝康寧",
+    form: "劑型待確認",
+    spec: "150粒",
     licenseNo: "",
     drugClass: "待確認",
-    category: "patch",
-    ingredients: ["水楊酸甲酯", "薄荷腦"],
-    indications: ["肌肉痠痛", "疲勞"],
+    category: "partner-item",
+    ingredients: [],
+    indications: [],
   },
   {
-    slug: "green-oil",
-    name: "綠油精",
-    form: "液劑",
-    spec: "10ml",
-    licenseNo: "",
-    drugClass: "乙類成藥",
-    category: "otc-staple",
-    ingredients: ["薄荷腦", "樟腦", "尤加利油"],
-    indications: ["頭痛", "暈車", "蚊蟲叮咬"],
-  },
-  {
-    slug: "white-flower-oil",
-    name: "白花油 5 號",
-    form: "液劑",
-    spec: "20ml",
-    licenseNo: "",
-    drugClass: "乙類成藥",
-    category: "otc-staple",
-    ingredients: ["薄荷腦", "水楊酸甲酯", "尤加利油"],
-    indications: ["頭痛", "蚊蟲叮咬"],
-  },
-  {
-    slug: "povidone-iodine",
-    name: "優碘軟膏",
-    form: "軟膏",
-    spec: "10g",
+    slug: "entineng-230",
+    name: "恩體能",
+    form: "劑型待確認",
+    spec: "230粒",
     licenseNo: "",
     drugClass: "待確認",
-    category: "ointment",
-    ingredients: ["聚維酮碘"],
-    indications: ["傷口消毒"],
+    category: "partner-item",
+    ingredients: [],
+    indications: [],
   },
   {
-    slug: "artificial-tears",
-    name: "護立康 人工淚液",
-    form: "點眼液",
-    spec: "15ml",
+    slug: "jinjiweichang-60",
+    name: "進磯為常",
+    form: "劑型待確認",
+    spec: "60粒",
     licenseNo: "",
-    drugClass: "非藥品",
-    category: "otc-staple",
-    ingredients: ["玻尿酸鈉"],
-    indications: ["眼睛乾澀"],
+    drugClass: "待確認",
+    category: "partner-item",
+    ingredients: [],
+    indications: [],
+  },
+  {
+    slug: "keqiqing-capsule",
+    name: "克氣清咳嗽膠囊",
+    form: "膠囊",
+    spec: "規格待確認",
+    licenseNo: "",
+    drugClass: "待確認",
+    category: "partner-item",
+    ingredients: [],
+    indications: [],
+  },
+  {
+    slug: "huzhikang-60",
+    name: "護智康",
+    form: "劑型待確認",
+    spec: "60粒",
+    licenseNo: "",
+    drugClass: "待確認",
+    category: "partner-item",
+    ingredients: [],
+    indications: [],
+  },
+  {
+    slug: "huzhikang-150",
+    name: "護智康",
+    form: "劑型待確認",
+    spec: "150粒",
+    licenseNo: "",
+    drugClass: "待確認",
+    category: "partner-item",
+    ingredients: [],
+    indications: [],
   },
 ];
 
@@ -185,15 +159,13 @@ function hash(s: string): number {
 }
 
 const PREVIEW_BASE_PRICE: Record<string, number> = {
-  "salonpas-ae": 129,
-  "golden-cross-patch": 115,
-  "cool-relief-patch": 99,
-  "mentholatum-ad": 180,
-  "jimu-spray": 210,
-  "green-oil": 75,
-  "white-flower-oil": 90,
-  "povidone-iodine": 65,
-  "artificial-tears": 120,
+  "hugu-gaishu-100": 120,
+  "shengkangning-150": 150,
+  "entineng-230": 230,
+  "jinjiweichang-60": 100,
+  "keqiqing-capsule": 120,
+  "huzhikang-60": 100,
+  "huzhikang-150": 150,
 };
 
 export function previewOffers(storeSlug: string): Offer[] {
@@ -205,7 +177,7 @@ export function previewOffers(storeSlug: string): Offer[] {
       drugSlug: d.slug,
       storeSlug,
       priceTwd: base + ((h >> 8) % 5) * 2 - 4,
-      // Preview catalog and price are synthetic, but availability starts unknown.
+      // Preview availability and price are synthetic, but availability starts unknown.
       // Only a receiving event from the demo pipeline may upgrade this signal.
       daysSinceScan: null,
     }];
@@ -323,11 +295,14 @@ export interface Alternative {
 /** 同成分替代品 — 沒貨時的出路。比對主成分集合完全相同的其他品項。 */
 export function alternativesFor(drugSlug: string, area?: AreaSlug): Alternative[] {
   const drug = getDrug(drugSlug);
-  if (!drug) return [];
+  if (!drug || drug.ingredients.length === 0) return [];
   const signature = [...drug.ingredients].sort().join("|");
 
   return DRUGS.filter(
-    (d) => d.slug !== drug.slug && [...d.ingredients].sort().join("|") === signature,
+    (d) =>
+      d.slug !== drug.slug &&
+      d.ingredients.length > 0 &&
+      [...d.ingredients].sort().join("|") === signature,
   )
     .flatMap((d) => {
       const rows = storesForDrug(d.slug, area);
@@ -368,33 +343,36 @@ export function nearbyInStock(area: AreaSlug = DEFAULT_AREA, limit = 6): DrugRow
     .slice(0, limit);
 }
 
-/** 搜尋：品名 / 英文名 / 成分 / 適應症 都吃。 */
+function normalizeSearchText(value: string): string {
+  return value.toLowerCase().replace(/\s+/g, "");
+}
+
+/** 搜尋：品名 / 英文名 / 規格 / 成分 / 適應症 都吃。 */
 function haystack(d: Drug): string {
   const en = drugCopy(d, "en");
-  return [
+  return normalizeSearchText([
     d.name,
+    `${d.name} ${d.spec}`,
     d.nameEn ?? "",
     d.form,
+    d.spec,
     ...d.ingredients,
     ...d.indications,
     en.name,
+    `${en.name} ${en.spec}`,
     en.form,
+    en.spec,
     ...en.ingredients,
     ...en.indications,
   ]
-    .join(" ")
-    .toLowerCase();
+    .join(" "));
 }
 
 /**
- * 搜尋：品名 / 英文名 / 成分 / 適應症 都吃。
+ * 搜尋：品名 / 英文名 / 規格 / 成分 / 適應症 都吃。空白不影響比對，讓店家
+ * 貼來的「護谷鈣素100粒」和畫面上的「護谷鈣素 100粒」都能找到同一項。
  *
- * 使用者打的常常是整句口語（「我今天被蚊子咬」），直接子字串比對一定落空 ——
- * 目錄裡寫的是「蚊蟲叮咬」。所以先過一次症狀對照表（`lib/symptoms.ts`），
- * 命中就改用它給的目錄詞去搜。
- *
- * `refer` 類（燙傷那種成藥自選不適當的）回空陣列 —— 由頁面顯示處置方向，
- * 不給商品。這是刻意的：對應到一支藥反而是給錯誤建議。
+ * `refer` 類回空陣列，由頁面顯示安全提醒，不自行對應商品。
  */
 export function searchDrugs(query: string): Drug[] {
   const raw = query.trim();
@@ -407,7 +385,7 @@ export function searchDrugs(query: string): Drug[] {
   const seen = new Set<string>();
   const out: Drug[] = [];
   for (const t of terms) {
-    const q = t.toLowerCase();
+    const q = normalizeSearchText(t);
     for (const d of DRUGS) {
       if (!seen.has(d.slug) && haystack(d).includes(q)) {
         seen.add(d.slug);

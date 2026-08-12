@@ -13,12 +13,14 @@ import {
   getArea,
   getCategory,
   getDrug,
+  getStore,
   storesForDrug,
   storesInArea,
   toAreaSlug,
 } from "@/lib/data";
 import { areaCopy, categoryName, drugCopy, localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
+import { partnersForProduct } from "@/lib/partners";
 import { SHOP_URL } from "@/lib/shop";
 
 export function generateStaticParams() {
@@ -40,11 +42,12 @@ export async function generateMetadata({
     };
   }
   const displayDrug = drugCopy(drug, locale);
+  const label = drug.spec === "規格待確認" ? displayDrug.name : `${displayDrug.name} ${displayDrug.spec}`;
   return {
-    title: locale === "en" ? `${displayDrug.name} ${drug.spec} — early-access record` : `${drug.name} ${drug.spec}｜找藥資料（試營運）`,
+    title: locale === "en" ? `${label} — partner-listed item` : `${label}｜合作藥局提供品項`,
     description: locale === "en"
-      ? `${displayDrug.name} (${displayDrug.form} · ${drug.spec}) identification in the uYao Medicine Finder prototype catalog. Live supply is not available; confirm the product, supply, and pickup with a pharmacist.`
-      : `${drug.name}（${drug.form} · ${drug.spec}）的試營運辨識資料。即時供應資料尚未上線，品項、供應與預留仍須由藥局或藥師確認。`,
+      ? `${label} was provided by a partner pharmacy for the uYao trial catalog. Classification, ingredients, indications, and live supply remain unverified.`
+      : `${label}由合作藥局提供並收錄於 uYao 試營運目錄；藥品分類、成分、適用資訊與即時供應仍未查證。`,
     // 藥品 identity/source/freshness 尚未通過 Drug Page Admission Gate。
     robots: { index: false, follow: true },
   };
@@ -64,6 +67,11 @@ export default async function DrugPage({
   const drug = getDrug(slug);
   if (!drug) notFound();
   const displayDrug = drugCopy(drug, locale);
+  const productLabel = drug.spec === "規格待確認" ? drug.name : `${drug.name} ${drug.spec}`;
+  const displayLabel = drug.spec === "規格待確認" ? displayDrug.name : `${displayDrug.name} ${displayDrug.spec}`;
+  const partnerStores = partnersForProduct(productLabel)
+    .map((partner) => getStore(partner.storeSlug))
+    .filter((store): store is NonNullable<typeof store> => store !== undefined);
 
   const rows = storesForDrug(drug.slug, area);
   const alternatives = alternativesFor(drug.slug, area);
@@ -74,7 +82,7 @@ export default async function DrugPage({
       <SiteHeader query={displayDrug.name} showTagline area={area} preserveAreaPath locatable />
 
       <div className="shop-shell pt-3 md:hidden">
-        <AreaSwitch area={area} preservePath locatable />
+        <AreaSwitch area={area} preservePath locatable compact />
       </div>
 
       <nav aria-label={locale === "en" ? "Breadcrumb" : "麵包屑"} className="shop-shell pt-6 text-xs text-muted-2">
@@ -100,7 +108,7 @@ export default async function DrugPage({
       <div className="shop-shell py-8 sm:py-10">
         <div className="flex max-w-[900px] flex-col gap-2 border-l-2 border-forest pl-4 sm:pl-6">
           <p className="num mb-1 text-[11px] font-semibold tracking-[.12em] text-green">
-            VERIFIED PRODUCT RECORD
+            PARTNER-LISTED ITEM
           </p>
           <h1 className="editorial-display m-0 text-[32px] leading-[1.2] sm:text-[44px]">
             {displayDrug.name}{" "}
@@ -110,7 +118,7 @@ export default async function DrugPage({
           </h1>
           <div className="flex flex-wrap items-center gap-2.5 text-[15px] text-ink-2">
             <span>
-              {displayDrug.form} · {drug.spec}
+              {displayDrug.form} · {displayDrug.spec}
             </span>
             {/* 許可證字號在行動端收起來 — 小螢幕先讓「規格 + 藥品分類」站穩 */}
             {drug.licenseNo && (
@@ -129,8 +137,24 @@ export default async function DrugPage({
             </span>
           </div>
           <p className="text-xs text-muted-2">
-            {locale === "en" ? "Active ingredients" : "主成分"}：{displayDrug.ingredients.join(locale === "en" ? ", " : "、")} · {locale === "en" ? "Used for" : "適用"}：{displayDrug.indications.join(locale === "en" ? ", " : "、")}
+            {locale === "en"
+              ? "Only the product name and supplied package size are confirmed. Classification, license, ingredients, and indications are pending verification. This is not live inventory."
+              : "目前只確認合作藥局提供的品項名稱與規格；藥品分類、許可證、成分與適用資訊尚待查證。這不是即時庫存。"}
           </p>
+          {partnerStores.length > 0 && (
+            <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-2">
+              <span>{locale === "en" ? "Provided by:" : "提供品項的合作藥局："}</span>
+              {partnerStores.map((store) => (
+                <Link
+                  key={store.slug}
+                  href={localizedPath(`/store/${store.slug}`, locale)}
+                  className="font-medium text-green"
+                >
+                  {store.name}
+                </Link>
+              ))}
+            </p>
+          )}
         </div>
       </div>
       </section>
@@ -142,7 +166,7 @@ export default async function DrugPage({
         />
       ) : (
         <NoInventoryYet
-          drugName={displayDrug.name}
+          drugName={displayLabel}
           drugSlug={drug.slug}
           area={area}
           areaLabel={areaCopy(getArea(area), locale).shortName}

@@ -16,7 +16,7 @@ export type DrugClass =
   | "非藥品"
   | "待確認";
 
-export type CategorySlug = "patch" | "ointment" | "otc-staple";
+export type CategorySlug = "partner-item";
 
 export interface Category {
   slug: CategorySlug;

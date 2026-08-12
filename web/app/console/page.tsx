@@ -115,7 +115,14 @@ export default async function ConsolePage({
                   >
                     <td className="py-2.5 pr-4">{storeName(r.storeSlug)}</td>
                     <td className="py-2.5 pr-4">
-                      {getDrug(r.drugSlug) ? drugCopy(getDrug(r.drugSlug)!, locale).name : r.drugSlug}
+                      <span className="flex flex-wrap items-center gap-1.5">
+                        {getDrug(r.drugSlug) ? drugCopy(getDrug(r.drugSlug)!, locale).name : r.drugSlug}
+                        {r.demo && (
+                          <span className="border border-oxblood/60 bg-oxblood-tint/40 px-1.5 py-px text-[10px] font-bold text-oxblood">
+                            {locale === "en" ? "DEMO" : "示範"}
+                          </span>
+                        )}
+                      </span>
                     </td>
                     <td className="num py-2.5 pr-4 text-muted">
                       {fmtDay(r.lastScanAt, locale)} {fmtTime(r.lastScanAt, locale)}
@@ -147,7 +154,14 @@ export default async function ConsolePage({
                   {fmtDay(e.at, locale)} {fmtTime(e.at, locale)}
                 </span>
                 <span className="shrink-0">{e.icon}</span>
-                <span className="text-ink">{locale === "en" ? e.msgEn ?? "Legacy event. Reset the demo to regenerate this trace in English." : e.msg}</span>
+                <span className="text-ink">
+                  {e.demo && (
+                    <span className="mr-1.5 inline-block border border-oxblood/60 bg-oxblood-tint/40 px-1.5 py-px text-[10px] font-bold text-oxblood">
+                      {locale === "en" ? "DEMO" : "示範"}
+                    </span>
+                  )}
+                  {locale === "en" ? e.msgEn ?? "Legacy event. Reset the demo to regenerate this trace in English." : e.msg}
+                </span>
               </li>
             ))}
           </ol>

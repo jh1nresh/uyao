@@ -52,7 +52,7 @@ deployment，正式上線後要在 Vercel dashboard → Domains 加成 project d
 | POS gap | comparison strip 3 rows；mobile 改 paired rows | `app/page.tsx` |
 | 閉環 | 01–05 不對稱流程（03 Action agent 加重 + VERIFY/RETURN/REDUCE/REORDER/RESERVE chips） | `app/page.tsx` |
 | Wedge | return-window timeline（退貨規則標「待確認供應商退貨規則」，不寫 30 天） | `app/page.tsx` |
-| Demand | copy + Consumer Web 真實截圖（綠油精 搜尋落空 → 到貨通知，`public/landing/consumer-web.png`，攝於 shop-uyao.vercel.app 2026-08-09） | `app/page.tsx` |
+| Demand | copy + 目前合作藥局目錄資料卡（只顯示已確認名稱與規格；庫存、價格、分類、成分與適用資訊不推測） | `app/page.tsx` |
 | LINE proof | RETURN REVIEW（規則待確認）+ REORDER REVIEW（示範資料）兩張卡 | `app/page.tsx` |
 | Evidence | ✓/○ ladder 8 項 + evidence date | `app/page.tsx` |
 | Pilot CTA | 深色 end-cap；表單 name*/area/contact* + 問題 chips（選填）→ POST /api/pilot（新增 problems 白名單欄位） | `components/landing/PilotCtaForm.tsx` |

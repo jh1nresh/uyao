@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 
 import { BrandLogo } from "@/components/BrandLogo";
@@ -422,20 +421,33 @@ export default function CompanyLandingPage() {
             <div className="min-w-0 lg:order-1">
               <div className="paper-elevation border border-line bg-paper p-3">
                 <div className="num mb-2 flex items-center justify-between gap-3 px-1 pt-1 text-[11px] font-medium tracking-[.06em] text-muted">
-                  <span>CONSUMER WEB · 實際畫面</span>
+                  <span>CONSUMER WEB · CURRENT CATALOG</span>
                   <span>shop.uyaohealth.com</span>
                 </div>
-                {/* 真實截圖：綠油精搜尋落空（查不到即時庫存）→ 到貨通知表單 */}
-                <Image
-                  src="/landing/consumer-web.png"
-                  alt="Consumer Web 實際畫面：搜尋綠油精，頁面顯示「目前查不到即時庫存」，並提供「有貨的時候通知我」的到貨通知表單"
-                  width={860}
-                  height={1536}
-                  className="mx-auto h-[400px] w-auto sm:h-[480px]"
-                />
+                <div className="border border-line bg-ivory px-5 py-7 sm:px-7 sm:py-9">
+                  <p className="num m-0 text-[11px] font-semibold tracking-[.1em] text-oxblood">
+                    PARTNER-LISTED ITEM
+                  </p>
+                  <h3 className="editorial-display mb-0 mt-3 text-[30px] leading-[1.2] text-forest">
+                    護谷鈣素 <span className="num text-[15px] font-medium text-muted">100粒</span>
+                  </h3>
+                  <div className="mt-5 grid border border-line bg-paper text-[13px] sm:grid-cols-2">
+                    <div className="border-b border-line px-4 py-3 sm:border-b-0 sm:border-r">
+                      <span className="block text-muted-2">品項來源</span>
+                      <b className="mt-1 block text-ink">合作藥局提供</b>
+                    </div>
+                    <div className="px-4 py-3">
+                      <span className="block text-muted-2">即時庫存</span>
+                      <b className="mt-1 block text-ink">待門市確認</b>
+                    </div>
+                  </div>
+                  <p className="mb-0 mt-4 text-[12.5px] leading-[1.7] text-muted">
+                    目前只確認名稱與規格；價格、庫存、分類、成分與適用資訊不自行推測。
+                  </p>
+                </div>
               </div>
               <div className="num mt-3.5 flex flex-wrap items-center gap-2 text-[12px] font-medium text-muted">
-                <span>搜尋藥名或症狀</span>
+                <span>搜尋品名或規格</span>
                 <span className="text-line-strong">→</span>
                 <span className="text-green">inventory_miss</span>
                 <span className="text-line-strong">→</span>
@@ -501,7 +513,7 @@ export default function CompanyLandingPage() {
                 </div>
                 <div className="p-[18px]">
                   <div className="num mb-4 text-[13px] font-medium leading-[1.9] text-ink-2">
-                    綠油精目前缺貨
+                    護谷鈣素 100粒需求待確認
                     <br />
                     附近需求：示範資料
                   </div>
