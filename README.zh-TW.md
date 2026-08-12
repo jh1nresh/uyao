@@ -4,8 +4,8 @@
 
 uYao 把藥局的庫存、效期與在地需求訊號，轉成由藥師核准的退貨、補貨與預留流程。系統接入藥局既有的掃描器與 POS 工作流程，不要求藥局整套更換。
 
-- 公司與試點：[uyao.vercel.app](https://uyao.vercel.app)
-- 消費端找藥：[shop-uyao.vercel.app](https://shop-uyao.vercel.app)
+- 公司與試點：[uyaohealth.com](https://uyaohealth.com)
+- 消費端找藥：[shop.uyaohealth.com](https://shop.uyaohealth.com)
 
 > uYao 目前是試點原型。未接上真實藥局掃描流時顯示的庫存皆為模擬資料，不代表藥局已確認的即時現貨。
 
