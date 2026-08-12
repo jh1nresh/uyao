@@ -13,6 +13,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const locale = await getRequestLocale();
   return {
     title: locale === "en" ? "Search results" : "搜尋結果",
+    description: locale === "en"
+      ? "Search the shop-uYao early-access catalog. Live inventory is not available; confirm supply and medicine questions with a pharmacy or pharmacist."
+      : "搜尋 shop-uYao 試營運藥品目錄；即時庫存尚未啟用，供應狀態與用藥問題請向藥局或藥師確認。",
     // 搜尋結果頁不做 SEO 入口（那是 /drug/[slug] 的工作），避免內容農場化。
     robots: { index: false, follow: true },
   };

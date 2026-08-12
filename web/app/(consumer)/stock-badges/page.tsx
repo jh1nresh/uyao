@@ -9,8 +9,16 @@ import { getRequestLocale } from "@/lib/locale-server";
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getRequestLocale();
   return locale === "en"
-    ? { title: "How availability signals work", description: "uYao shows receiving-scan freshness, never an invented exact quantity." }
-    : { title: "庫存徽章怎麼讀", description: "有藥的庫存狀態來自藥局店內掃描的新鮮度，誠實分級：今日掃描確認、N 天前確認、請預留確認。我們永遠不顯示確切數量。" };
+    ? {
+        title: "How future availability signals will work",
+        description: "An early-access explanation of receiving-scan freshness. Live inventory is not available, and uYao never invents an exact quantity.",
+        robots: { index: false, follow: true },
+      }
+    : {
+        title: "供應訊號怎麼讀（試營運）",
+        description: "試營運說明：未來以藥局進貨掃描新鮮度呈現供應訊號；即時庫存尚未啟用，也不顯示推測的確切數量。",
+        robots: { index: false, follow: true },
+      };
 }
 
 const TIERS = [

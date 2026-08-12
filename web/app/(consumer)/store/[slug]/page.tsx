@@ -17,12 +17,19 @@ export async function generateMetadata({
   const { slug } = await params;
   const locale = await getRequestLocale();
   const store = getStore(slug);
-  if (!store) return { title: locale === "en" ? "Pharmacy not found" : "找不到這家藥局" };
+  if (!store) {
+    return {
+      title: locale === "en" ? "Pharmacy not found" : "找不到這家藥局",
+      robots: { index: false, follow: false },
+    };
+  }
   return {
-    title: `${store.name} — ${store.address}`,
+    title: locale === "en" ? `${store.name} — public pharmacy record` : `${store.name}｜公開藥局資料（試營運）`,
     description: locale === "en"
-      ? `${store.name}, ${store.address}${store.phone ? `, ${store.phone}` : ""}. Pharmacy details and reported hours.`
-      : `${store.name}，${store.address}${store.phone ? `，${store.phone}` : ""}。${store.district}的社區藥局基本資料與營業時段。`,
+      ? `${store.name}, ${store.address}. This public listing does not mean a uYao partnership or live inventory; call the pharmacy to confirm before visiting.`
+      : `${store.name}，${store.address}。公開收錄不代表 uYao 合作或已有即時庫存；前往門市前請先向藥局確認。`,
+    // 合作/公開權限/freshness 尚未通過 Store Page Admission Gate。
+    robots: { index: false, follow: true },
   };
 }
 

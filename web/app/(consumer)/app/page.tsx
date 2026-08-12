@@ -22,8 +22,16 @@ import { getRequestLocale } from "@/lib/locale-server";
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getRequestLocale();
   return locale === "en"
-    ? { title: "Find medicine at a nearby pharmacy", description: "Search by product or symptom, reserve for pickup, and let the pharmacist confirm in store. No online checkout." }
-    : { title: "搜一個藥，看附近哪家藥局有貨", description: "搜藥品名或症狀，看附近藥局現在有沒有貨，按預留到店取。庫存來自藥局店內掃描，不做線上交易。" };
+    ? {
+        title: "Find medicine nearby — shop-uYao early access",
+        description: "Search the prototype catalog and nearby public pharmacy records, then leave a medicine request. Live inventory is not available; pharmacies must confirm supply, pickup, and medicine questions.",
+        robots: { index: false, follow: true },
+      }
+    : {
+        title: "附近藥局找藥｜shop-uYao 試營運",
+        description: "搜尋試營運藥品目錄與附近公開藥局資料，並留下找藥需求。即時庫存尚未啟用，供應、預留與用藥問題仍須由藥局或藥師確認。",
+        robots: { index: false, follow: true },
+      };
 }
 
 const STEPS_ZH = [

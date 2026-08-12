@@ -29,11 +29,20 @@ export async function generateMetadata({
   const { slug } = await params;
   const locale = await getRequestLocale();
   const category = getCategory(slug);
-  if (!category) return { title: locale === "en" ? "Category not found" : "找不到這個品類" };
+  if (!category) {
+    return {
+      title: locale === "en" ? "Category not found" : "找不到這個品類",
+      robots: { index: false, follow: false },
+    };
+  }
   const name = categoryName(category.slug, category.name, locale);
   return {
-    title: locale === "en" ? `${name} near you` : `${name} — 附近藥局現貨查詢`,
-    description: locale === "en" ? `Find ${name.toLowerCase()} at nearby pharmacies, sorted by receiving-scan freshness and distance.` : `${name}在附近藥局的庫存狀態，依店內掃描新鮮度排序。可線上預留，到店由藥師確認交付。`,
+    title: locale === "en" ? `${name} — early-access catalog` : `${name}｜試營運品項瀏覽`,
+    description: locale === "en"
+      ? `Browse ${name.toLowerCase()} in the shop-uYao prototype catalog. Live inventory is not available; confirm products and supply with a pharmacist.`
+      : `瀏覽 shop-uYao 試營運目錄中的${name}。即時庫存尚未啟用，品項與供應狀態請向藥局或藥師確認。`,
+    // v1 category pages 目前只有品項連結，未通過獨特 editorial value gate。
+    robots: { index: false, follow: true },
   };
 }
 
