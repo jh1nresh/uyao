@@ -80,9 +80,11 @@ const CATEGORY_EN: Record<string, string> = {
 const AREA_EN: Record<string, { name: string; shortName: string }> = {
   datong: { name: "Datong District, Taipei", shortName: "Datong" },
   linkou: { name: "Linkou District, New Taipei", shortName: "Linkou" },
+  luzhou: { name: "Luzhou District, New Taipei", shortName: "Luzhou" },
   xinzhuang: { name: "Xinzhuang District, New Taipei", shortName: "Xinzhuang" },
   zhongshan: { name: "Zhongshan District, Taipei", shortName: "Zhongshan" },
   xinyi: { name: "Xinyi District, Taipei", shortName: "Xinyi" },
+  xitun: { name: "Xitun District, Taichung", shortName: "Xitun" },
 };
 
 const CLASS_EN: Record<string, string> = {

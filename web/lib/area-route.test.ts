@@ -21,8 +21,10 @@ describe("GPS 選區", () => {
   it.each([
     [25.0633, 121.513, "datong"],
     [25.0772, 121.3916, "linkou"],
+    [25.0849, 121.4737, "luzhou"],
     [25.0359, 121.4322, "xinzhuang"],
     [25.0637, 121.5265, "zhongshan"],
+    [24.1813, 120.6466, "xitun"],
   ] as const)("選出距離最近的服務區", (lat, lng, area) => {
     expect(nearestServiceArea({ lat, lng })).toBe(area);
   });
