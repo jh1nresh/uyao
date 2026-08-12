@@ -44,10 +44,11 @@ export function drugCopy(drug: Drug, locale: Locale) {
   return {
     ...drug,
     name: translated?.name ?? drug.nameEn ?? drug.name,
-    form: translated?.form ?? (drug.form === "劑型待確認" ? "Form pending" : drug.form === "膠囊" ? "Capsule" : drug.form),
+    form: translated?.form ?? (drug.form === "劑型待確認" ? "Form pending" : drug.form === "軟膠囊" ? "Softgel" : drug.form === "膠囊" ? "Capsule" : drug.form),
     spec: drug.spec === "規格待確認" ? "Package size pending" : drug.spec.replace("粒", " count"),
     ingredients: translated?.ingredients ?? drug.ingredients,
     indications: translated?.indications ?? drug.indications,
+    nutritionFocus: drug.nutritionFocusEn,
     drugClass: CLASS_EN[drug.drugClass] ?? drug.drugClass,
   };
 }

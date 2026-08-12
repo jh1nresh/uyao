@@ -44,6 +44,8 @@ export interface Area {
 export interface Drug {
   slug: string;
   name: string;
+  /** 常見舊字、通路名或英文商品名；只用於搜尋，不取代畫面上的正式品名。 */
+  aliases: string[];
   /** 英文/商品代號，藥品頁 header 用 mono 呈現 */
   nameEn?: string;
   form: string;
@@ -56,7 +58,18 @@ export interface Drug {
   category: CategorySlug;
   /** 主成分；同成分替代品用這組字串比對 */
   ingredients: string[];
+  /** 藥品核准適應症。一般食品不得填入保健訴求，所以這批品項保持空陣列。 */
   indications: string[];
+  /** 一般食品的營養補充／日常保養定位，不是治療用途或核准適應症。 */
+  nutritionFocus: string;
+  nutritionFocusEn: string;
+  /** 供 deterministic search 使用的保養需求詞；不可放疾病或治療宣稱。 */
+  searchTerms: string[];
+  /** 用來核對品名、規格、成分或產品定位的公開頁面。 */
+  source: {
+    label: string;
+    url: string;
+  };
 }
 
 export interface OpeningHours {

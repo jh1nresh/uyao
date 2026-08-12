@@ -59,79 +59,135 @@ const DRUGS: Drug[] = [
   {
     slug: "hugu-gaishu-100",
     name: "護谷鈣素",
-    form: "劑型待確認",
+    aliases: ["轉谷護谷鈣素", "TRANSBONE", "GLUCALINE MCHC"],
+    form: "軟膠囊",
     spec: "100粒",
     licenseNo: "",
-    drugClass: "待確認",
+    drugClass: "非藥品",
     category: "partner-item",
-    ingredients: [],
+    ingredients: ["MCHC鈣", "葡萄糖胺", "軟骨膠原", "維生素D3", "磷", "鎂"],
     indications: [],
+    nutritionFocus: "骨骼與關節營養補給",
+    nutritionFocusEn: "Bone and joint nutrition",
+    searchTerms: ["骨骼保養", "關節保養", "補鈣", "行動力保養"],
+    source: {
+      label: "弘鎰貿易產品資料",
+      url: "https://horngda.com/products/",
+    },
   },
   {
     slug: "shengkangning-150",
     name: "勝康寧",
-    form: "劑型待確認",
+    aliases: ["GENTALIN", "勝康寧膠囊"],
+    form: "膠囊",
     spec: "150粒",
     licenseNo: "",
-    drugClass: "待確認",
+    drugClass: "非藥品",
     category: "partner-item",
-    ingredients: [],
+    ingredients: ["南瓜子油", "南瓜子粉", "油菜籽油花粉", "大豆卵磷脂", "芸香葉"],
     indications: [],
+    nutritionFocus: "男性日常保養與營養補給",
+    nutritionFocusEn: "Daily nutrition for men's wellness",
+    searchTerms: ["男性保養", "熟齡男性保養", "銀髮保養"],
+    source: {
+      label: "富康活力藥局商品資料",
+      url: "https://shop.fu-kang.com/product_detail?product_sn=2217",
+    },
   },
   {
     slug: "entineng-230",
     name: "恩體能",
-    form: "劑型待確認",
+    aliases: ["恩體能-GPH", "恩體能山楂膠囊", "ANTI-NEL GPH"],
+    form: "膠囊",
     spec: "230粒",
     licenseNo: "",
-    drugClass: "待確認",
+    drugClass: "非藥品",
     category: "partner-item",
-    ingredients: [],
+    ingredients: ["山楂萃取液"],
     indications: [],
+    nutritionFocus: "山楂配方的循環日常保養",
+    nutritionFocusEn: "Hawthorn-based daily circulation wellness",
+    searchTerms: ["循環保養", "心血管保養", "山楂營養補給"],
+    source: {
+      label: "大墩藥局商品資料",
+      url: "https://mall.iopenmall.tw/010419/index.php?action=product_detail&prod_no=P1041909447429",
+    },
   },
   {
     slug: "jinjiweichang-60",
-    name: "進磯為常",
-    form: "劑型待確認",
+    name: "進磯為常-D",
+    aliases: ["進磯為常", "進磯為常D", "松花青素酵素"],
+    form: "膠囊",
     spec: "60粒",
     licenseNo: "",
-    drugClass: "待確認",
+    drugClass: "非藥品",
     category: "partner-item",
-    ingredients: [],
+    ingredients: ["松花青素", "綜合酵素"],
     indications: [],
+    nutritionFocus: "綜合酵素營養補給",
+    nutritionFocusEn: "Mixed-enzyme nutrition supplement",
+    searchTerms: ["酵素補充", "綜合酵素", "日常營養補給"],
+    source: {
+      label: "康鈺藥局產品資料",
+      url: "https://www.pharmintw.com/product_cg369256.html",
+    },
   },
   {
     slug: "keqiqing-capsule",
-    name: "克氣清咳嗽膠囊",
-    form: "膠囊",
+    name: "克氣清膠囊",
+    aliases: ["克氣清咳嗽膠囊", "克氣清", "合氣清", "LAKALIN"],
+    form: "軟膠囊",
     spec: "規格待確認",
     licenseNo: "",
-    drugClass: "待確認",
+    drugClass: "非藥品",
     category: "partner-item",
-    ingredients: [],
+    ingredients: ["薄荷油", "甘草", "療肺草", "百里香萃取", "接骨木萃取", "鼠尾草萃取", "紫蘇葉"],
     indications: [],
+    nutritionFocus: "呼吸道日常保養",
+    nutritionFocusEn: "Daily respiratory wellness",
+    searchTerms: ["呼吸道保養", "換季保養", "粉塵環境保養"],
+    source: {
+      label: "麗登藥妝產品資料",
+      url: "https://www.citycare.com.tw/product/lakalin-sp02/",
+    },
   },
   {
     slug: "huzhikang-60",
-    name: "護智康",
-    form: "劑型待確認",
+    name: "護智慷",
+    aliases: ["護智康", "PROMETAN-G"],
+    form: "軟膠囊",
     spec: "60粒",
     licenseNo: "",
-    drugClass: "待確認",
+    drugClass: "非藥品",
     category: "partner-item",
-    ingredients: [],
+    ingredients: ["磷脂醯絲胺酸", "L-絲胺酸", "大豆油", "卵磷脂"],
     indications: [],
+    nutritionFocus: "PS 磷脂醯絲胺酸營養補給",
+    nutritionFocusEn: "Phosphatidylserine nutrition",
+    searchTerms: ["思緒保養", "腦部營養補給", "專注保養"],
+    source: {
+      label: "歐頤康實體藥局商品資料",
+      url: "https://www.rakuten.com.tw/shop/oecom/product/2064750/",
+    },
   },
   {
     slug: "huzhikang-150",
-    name: "護智康",
-    form: "劑型待確認",
+    name: "護智慷",
+    aliases: ["護智康", "PROMETAN-G"],
+    form: "軟膠囊",
     spec: "150粒",
     licenseNo: "",
-    drugClass: "待確認",
+    drugClass: "非藥品",
     category: "partner-item",
-    ingredients: [],
+    ingredients: ["磷脂醯絲胺酸", "L-絲胺酸", "大豆油", "卵磷脂"],
     indications: [],
+    nutritionFocus: "PS 磷脂醯絲胺酸營養補給",
+    nutritionFocusEn: "Phosphatidylserine nutrition",
+    searchTerms: ["思緒保養", "腦部營養補給", "專注保養"],
+    source: {
+      label: "歐頤康實體藥局商品資料",
+      url: "https://www.rakuten.com.tw/shop/oecom/product/2064750/",
+    },
   },
 ];
 
@@ -347,23 +403,46 @@ function normalizeSearchText(value: string): string {
   return value.toLowerCase().replace(/\s+/g, "");
 }
 
+/**
+ * 完整品名／別名優先於症狀詞分流。例：「克氣清咳嗽膠囊」是店家提供的
+ * 完整舊品名，不能因為字串裡有「咳嗽」就被誤判成只在描述症狀；單獨搜
+ * 「咳嗽」仍然會走安全分流。
+ */
+export function exactDrugMatches(query: string): Drug[] {
+  const q = normalizeSearchText(query.trim());
+  if (!q) return [];
+
+  return DRUGS.filter((drug) => {
+    const names = [drug.name, ...drug.aliases, drug.nameEn ?? ""];
+    return names.some((name) => {
+      if (!name) return false;
+      const normalizedName = normalizeSearchText(name);
+      return q === normalizedName || q === normalizeSearchText(`${name} ${drug.spec}`);
+    });
+  });
+}
+
 /** 搜尋：品名 / 英文名 / 規格 / 成分 / 適應症 都吃。 */
 function haystack(d: Drug): string {
   const en = drugCopy(d, "en");
   return normalizeSearchText([
     d.name,
     `${d.name} ${d.spec}`,
+    ...d.aliases,
     d.nameEn ?? "",
     d.form,
     d.spec,
     ...d.ingredients,
     ...d.indications,
+    d.nutritionFocus,
+    ...d.searchTerms,
     en.name,
     `${en.name} ${en.spec}`,
     en.form,
     en.spec,
     ...en.ingredients,
     ...en.indications,
+    d.nutritionFocusEn,
   ]
     .join(" "));
 }
@@ -377,6 +456,9 @@ function haystack(d: Drug): string {
 export function searchDrugs(query: string): Drug[] {
   const raw = query.trim();
   if (!raw) return [];
+
+  const exact = exactDrugMatches(raw);
+  if (exact.length > 0) return exact;
 
   const hit = matchSymptom(raw);
   if (hit?.kind === "refer") return [];
