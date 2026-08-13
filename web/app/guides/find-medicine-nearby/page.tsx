@@ -3,16 +3,19 @@ import Link from "next/link";
 
 import { JsonLd } from "@/components/JsonLd";
 import { KnowledgeShell, ProvenanceBox } from "@/components/landing/KnowledgeShell";
+import { AEO_PAGES } from "@/lib/aeo";
 import { SERVICE_AREA_LABEL } from "@/lib/data";
 import { articleJsonLd, breadcrumbJsonLd, faqPageJsonLd } from "@/lib/seo";
 import { indexablePageRobots } from "@/lib/seo-server";
 import { SHOP_URL } from "@/lib/shop";
 
-const PUBLISHED = "2026-08-12";
-const UPDATED = "2026-08-12";
-const TITLE = "附近藥局怎麼找藥？";
-const DESCRIPTION =
-  "先搜尋藥名、成分或症狀，選擇地區並查看附近公開藥局資料；如果沒有可確認的供應資訊，可以留下找藥需求，再由藥局或藥師確認。";
+const PAGE = AEO_PAGES.findMedicineNearby;
+const {
+  datePublished: PUBLISHED,
+  dateModified: UPDATED,
+  question: TITLE,
+  directAnswer: DESCRIPTION,
+} = PAGE;
 
 const FAQ = [
   {
@@ -35,7 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: { absolute: "附近藥局怎麼找藥？搜尋、確認與到店步驟｜uYao" },
     description: DESCRIPTION,
-    alternates: { canonical: "/zh-tw/guides/find-medicine-nearby" },
+    alternates: { canonical: PAGE.path },
     robots: await indexablePageRobots(),
   };
 }
@@ -48,14 +51,14 @@ export default function FindMedicineNearbyGuidePage() {
           articleJsonLd({
             headline: TITLE,
             description: DESCRIPTION,
-            path: "/zh-tw/guides/find-medicine-nearby",
+            path: PAGE.path,
             datePublished: PUBLISHED,
             dateModified: UPDATED,
           }),
           faqPageJsonLd([...FAQ]),
           breadcrumbJsonLd([
             { name: "uYao", path: "/zh-tw" },
-            { name: TITLE, path: "/zh-tw/guides/find-medicine-nearby" },
+            { name: TITLE, path: PAGE.path },
           ]),
         ]}
       />
