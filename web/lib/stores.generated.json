@@ -345,6 +345,63 @@
         "資料來源：合作藥局實地確認"
       ],
       "status": "listed"
+    },
+    {
+      "slug": "南興西藥房",
+      "name": "南興西藥房",
+      "area": "yilan",
+      "district": "宜蘭市",
+      "address": "宜蘭縣宜蘭市光復路130號（南館市場口）",
+      "phone": "03-932-2678",
+      "owner": "",
+      "nhiCode": null,
+      "nhiContracted": false,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=南興西藥房+宜蘭縣宜蘭市光復路130號（南館市場口）",
+      "hours": [
+        {
+          "label": "週一–週六",
+          "hours": "07:00–21:00"
+        },
+        {
+          "label": "週日",
+          "hours": "07:00–12:00"
+        }
+      ],
+      "hoursSource": "partner",
+      "notes": [
+        "資料來源：合作藥局提供；南館市場口，實際營業狀況建議先電話確認"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "大豐藥局",
+      "name": "大豐藥局",
+      "area": "datong",
+      "district": "大同區",
+      "address": "臺北市大同區昌吉街96號",
+      "phone": "02-2585-3880",
+      "owner": "",
+      "nhiCode": null,
+      "nhiContracted": false,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=大豐藥局+臺北市大同區昌吉街96號",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [
+        "資料來源：合作藥局提供"
+      ],
+      "status": "listed"
     }
   ]
 }
