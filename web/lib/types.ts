@@ -36,6 +36,8 @@ export type AreaSlug =
 
 export interface Area {
   slug: AreaSlug;
+  /** 縣市層級，如「臺北市」或「苗栗縣」，供跨區清單分組。 */
+  countyCity: string;
   /** 完整名稱，如「台北市中山區」 */
   name: string;
   /** 短名，chip 與列表用，如「中山區」 */
