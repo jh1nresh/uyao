@@ -3,15 +3,18 @@ import Link from "next/link";
 
 import { JsonLd } from "@/components/JsonLd";
 import { KnowledgeShell, ProvenanceBox } from "@/components/landing/KnowledgeShell";
+import { AEO_PAGES } from "@/lib/aeo";
 import { articleJsonLd, breadcrumbJsonLd, faqPageJsonLd } from "@/lib/seo";
 import { indexablePageRobots } from "@/lib/seo-server";
 import { SHOP_URL } from "@/lib/shop";
 
-const PUBLISHED = "2026-08-12";
-const UPDATED = "2026-08-12";
-const TITLE = "藥品缺貨時可以怎麼處理？";
-const DESCRIPTION =
-  "先請原藥局確認是否能調貨或由藥師判斷替代方案，也可以查詢附近公開藥局並逐店確認。不要自行更換處方藥、劑量或用法。";
+const PAGE = AEO_PAGES.medicineOutOfStock;
+const {
+  datePublished: PUBLISHED,
+  dateModified: UPDATED,
+  question: TITLE,
+  directAnswer: DESCRIPTION,
+} = PAGE;
 
 const FAQ = [
   { question: TITLE, answer: DESCRIPTION },
@@ -31,7 +34,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: { absolute: "藥品缺貨怎麼辦？調貨、替代與附近找藥｜uYao" },
     description: DESCRIPTION,
-    alternates: { canonical: "/zh-tw/guides/medicine-out-of-stock" },
+    alternates: { canonical: PAGE.path },
     robots: await indexablePageRobots(),
   };
 }
@@ -44,14 +47,14 @@ export default function MedicineOutOfStockGuidePage() {
           articleJsonLd({
             headline: TITLE,
             description: DESCRIPTION,
-            path: "/zh-tw/guides/medicine-out-of-stock",
+            path: PAGE.path,
             datePublished: PUBLISHED,
             dateModified: UPDATED,
           }),
           faqPageJsonLd([...FAQ]),
           breadcrumbJsonLd([
             { name: "uYao", path: "/zh-tw" },
-            { name: TITLE, path: "/zh-tw/guides/medicine-out-of-stock" },
+            { name: TITLE, path: PAGE.path },
           ]),
         ]}
       />

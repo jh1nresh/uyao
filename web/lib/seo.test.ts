@@ -51,7 +51,7 @@ describe("consumerIndexingAllowed", () => {
 });
 
 describe("indexable paths", () => {
-  it("includes the GEO benchmark answer pages", () => {
+  it("includes the GEO/AEO benchmark answer pages", () => {
     expect(INDEXABLE_PATHS).toEqual(
       expect.arrayContaining([
         "/zh-tw/guides/ai-tools-pharmacy-inventory",

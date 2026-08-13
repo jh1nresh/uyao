@@ -4,7 +4,7 @@ import { BrandLogo } from "@/components/BrandLogo";
 import { CompanyFooter } from "@/components/landing/CompanyFooter";
 
 /**
- * SEO v1 知識頁（/evidence、/guides/*、/compare/*）共用外框
+ * SEO/GEO/AEO 知識頁（/evidence、/guides/*、/compare/*）共用外框
  * （spec: company-landing-page-seo-geo-v1.md §4–5）。沿用公司 landing
  * 的視覺系統，不另起 design；主 CTA 固定一個：申請試點。
  */

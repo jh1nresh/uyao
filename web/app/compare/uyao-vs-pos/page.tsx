@@ -3,7 +3,8 @@ import Link from "next/link";
 
 import { JsonLd } from "@/components/JsonLd";
 import { KnowledgeCta, KnowledgeShell } from "@/components/landing/KnowledgeShell";
-import { ENTITY_DESCRIPTION, breadcrumbJsonLd, webPageJsonLd } from "@/lib/seo";
+import { AEO_PAGES } from "@/lib/aeo";
+import { breadcrumbJsonLd, webPageJsonLd } from "@/lib/seo";
 import { indexablePageRobots } from "@/lib/seo-server";
 
 /**
@@ -12,16 +13,18 @@ import { indexablePageRobots } from "@/lib/seo-server";
  * 效期、附近需求與後續工作；藥師保留批准。不貶低、不宣稱取代 POS。
  */
 
-const UPDATED = "2026-08-12";
-const TITLE = "uYao 與藥局 POS 有什麼不同？";
-const DESCRIPTION =
-  "POS 與健保申報系統記錄交易與申報；uYao 是接在它們旁邊的行動層，把庫存、效期與附近需求變成待批准的退貨、補貨與預留工作。兩者是互補，不是取代。";
+const PAGE = AEO_PAGES.uyaoVsPos;
+const {
+  dateModified: UPDATED,
+  question: TITLE,
+  directAnswer: DESCRIPTION,
+} = PAGE;
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: { absolute: TITLE },
     description: DESCRIPTION,
-    alternates: { canonical: "/zh-tw/compare/uyao-vs-pos" },
+    alternates: { canonical: PAGE.path },
     robots: await indexablePageRobots(),
   };
 }
@@ -60,12 +63,12 @@ export default function CompareUyaoVsPosPage() {
           webPageJsonLd({
             name: TITLE,
             description: DESCRIPTION,
-            path: "/zh-tw/compare/uyao-vs-pos",
+            path: PAGE.path,
             dateModified: UPDATED,
           }),
           breadcrumbJsonLd([
             { name: "uYao", path: "/zh-tw" },
-            { name: "uYao 與藥局 POS 的差異", path: "/zh-tw/compare/uyao-vs-pos" },
+            { name: "uYao 與藥局 POS 的差異", path: PAGE.path },
           ]),
         ]}
       />
@@ -76,7 +79,7 @@ export default function CompareUyaoVsPosPage() {
         </h1>
 
         <p className="mt-6 max-w-[38em] border-l-2 border-green pl-5 text-[17px] font-medium leading-[1.9] text-ink">
-          一句話：POS 記錄已經發生的交易；uYao 處理接下來該做的事。{ENTITY_DESCRIPTION.zh}
+          {DESCRIPTION}
         </p>
 
         <section className="mt-10">

@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { headers } from "next/headers";
 
+import { aeoLastModified } from "@/lib/aeo";
 import {
   INDEXABLE_PATHS,
   SHOP_CANONICAL_HOST,
@@ -20,8 +21,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = isShop ? SHOP_URL : SITE_URL;
   const paths = isShop ? SHOP_INDEXABLE_PATHS : INDEXABLE_PATHS;
 
-  return paths.map((path) => ({
-    url: `${baseUrl}${path}`,
-    changeFrequency: "monthly",
-  }));
+  return paths.map((path) => {
+    const lastModified = isShop ? undefined : aeoLastModified(path);
+
+    return {
+      url: `${baseUrl}${path}`,
+      changeFrequency: "monthly",
+      ...(lastModified ? { lastModified } : {}),
+    };
+  });
 }
