@@ -249,7 +249,7 @@ export default async function HomePage({
                 </span>
               </span>
               <span className="flex items-end justify-between gap-2 text-[12px] text-muted-2">
-                <span>{drug.spec} · {locale === "en" ? "Non-drug product" : "非藥品"}</span>
+                <span>{drug.spec} · {drug.drugClass}</span>
                 <span className="text-forest transition-transform group-hover:translate-x-1">→</span>
               </span>
             </Link>

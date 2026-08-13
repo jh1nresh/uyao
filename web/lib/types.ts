@@ -65,8 +65,8 @@ export interface Drug {
   nutritionFocusEn: string;
   /** 供 deterministic search 使用的保養需求詞；不可放疾病或治療宣稱。 */
   searchTerms: string[];
-  /** 用來核對品名、規格、成分或產品定位的公開頁面。 */
-  source: {
+  /** 用來核對品名、規格、成分或產品定位的公開頁面；未驗證時不填。 */
+  source?: {
     label: string;
     url: string;
   };

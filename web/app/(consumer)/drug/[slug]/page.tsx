@@ -45,9 +45,13 @@ export async function generateMetadata({
   const label = drug.spec === "規格待確認" ? displayDrug.name : `${displayDrug.name} ${displayDrug.spec}`;
   return {
     title: locale === "en" ? `${label} — partner-listed item` : `${label}｜合作藥局提供品項`,
-    description: locale === "en"
-      ? `${label} is a partner-listed non-drug product. See its sourced nutrition focus and ingredients; live supply still requires pharmacy confirmation.`
-      : `${label}由合作藥局提供並收錄於 uYao 試營運目錄；頁面列出有來源的營養補充方向與成分，即時供應仍待藥局確認。`,
+    description: drug.source
+      ? locale === "en"
+        ? `${label} is a partner-listed non-drug product. See its sourced nutrition focus and ingredients; live supply still requires pharmacy confirmation.`
+        : `${label}由合作藥局提供並收錄於 uYao 試營運目錄；頁面列出有來源的營養補充方向與成分，即時供應仍待藥局確認。`
+      : locale === "en"
+        ? `${label} is a partner-listed item whose product details still await public-source verification; live supply still requires pharmacy confirmation.`
+        : `${label}由合作藥局提供並收錄於 uYao 試營運目錄；產品資料來源仍待驗證，即時供應仍待藥局確認。`,
     // 藥品 identity/source/freshness 尚未通過 Drug Page Admission Gate。
     robots: { index: false, follow: true },
   };
@@ -137,9 +141,13 @@ export default async function DrugPage({
             </span>
           </div>
           <p className="text-xs text-muted-2">
-            {locale === "en"
-              ? "The public product source presents this as a food or nutrition supplement, not an approved medicine. Its nutrition focus is not a treatment indication. Live inventory still requires pharmacy confirmation."
-              : "公開商品資料將此品項列為食品類營養補充品，而非核准藥品；下方是營養補充／日常保養定位，不是治療用途或藥品適應症。即時庫存仍待藥局確認。"}
+            {drug.source
+              ? locale === "en"
+                ? "The public product source presents this as a food or nutrition supplement, not an approved medicine. Its nutrition focus is not a treatment indication. Live inventory still requires pharmacy confirmation."
+                : "公開商品資料將此品項列為食品類營養補充品，而非核准藥品；下方是營養補充／日常保養定位，不是治療用途或藥品適應症。即時庫存仍待藥局確認。"
+              : locale === "en"
+                ? "Product details are pending public-source verification. We only show the partner-confirmed item name and package size; live inventory still requires pharmacy confirmation."
+                : "產品資料來源仍待驗證；目前只顯示合作藥局確認的品名與規格，即時庫存仍待藥局確認。"}
           </p>
           {partnerStores.length > 0 && (
             <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-2">
@@ -163,46 +171,64 @@ export default async function DrugPage({
         <div className="shop-shell py-8 sm:py-10">
           <div className="grid max-w-[900px] gap-6 sm:grid-cols-[1.15fr_.85fr]">
             <div>
-              <p className="shop-kicker mb-2">NUTRITION FOCUS · NOT A TREATMENT CLAIM</p>
+              <p className="shop-kicker mb-2">{drug.source ? "NUTRITION FOCUS · NOT A TREATMENT CLAIM" : "PRODUCT DETAILS · PENDING VERIFICATION"}</p>
               <h2 id="nutrition-focus-heading" className="editorial-display m-0 text-[26px] leading-[1.3] sm:text-[32px]">
-                {locale === "en" ? "Nutrition and daily-wellness focus" : "營養補充／日常保養方向"}
+                {drug.source
+                  ? locale === "en" ? "Nutrition and daily-wellness focus" : "營養補充／日常保養方向"
+                  : locale === "en" ? "Product details pending verification" : "產品資料待驗證"}
               </h2>
               <p className="mb-0 mt-3 text-[16px] leading-[1.8] text-ink-2">
                 {displayDrug.nutritionFocus}
               </p>
             </div>
             <div className="border border-line bg-paper px-4 py-4">
-              <p className="m-0 text-[12px] font-bold tracking-[.04em] text-forest">
-                {locale === "en" ? "MAIN INGREDIENTS LISTED BY SOURCE" : "公開商品資料所列主要成分"}
-              </p>
-              <p className="mb-0 mt-2 text-[13px] leading-[1.75] text-muted">
-                {displayDrug.ingredients.join(locale === "en" ? ", " : "、")}
-              </p>
-              <p className="mb-0 mt-3 text-[12px] leading-[1.7] text-muted-2">
-                {locale === "en" ? "Product source: " : "產品資料來源："}
+              {drug.source ? (
+                <>
+                  <p className="m-0 text-[12px] font-bold tracking-[.04em] text-forest">
+                    {locale === "en" ? "MAIN INGREDIENTS LISTED BY SOURCE" : "公開商品資料所列主要成分"}
+                  </p>
+                  <p className="mb-0 mt-2 text-[13px] leading-[1.75] text-muted">
+                    {displayDrug.ingredients.join(locale === "en" ? ", " : "、")}
+                  </p>
+                  <p className="mb-0 mt-3 text-[12px] leading-[1.7] text-muted-2">
+                    {locale === "en" ? "Product source: " : "產品資料來源："}
+                    <a
+                      href={drug.source.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="font-medium text-green"
+                    >
+                      {drug.source.label} ↗
+                    </a>
+                  </p>
+                </>
+              ) : (
+                <p className="m-0 text-[13px] leading-[1.75] text-muted">
+                  {locale === "en"
+                    ? "No public product source has been verified for this package size."
+                    : "此規格尚未驗證公開產品資料來源。"}
+                </p>
+              )}
+            </div>
+          </div>
+          <p className="mb-0 mt-5 max-w-[900px] border-l-2 border-oxblood pl-3 text-[12.5px] leading-[1.75] text-muted">
+            {drug.source ? (
+              <>
+                {locale === "en"
+                  ? "Food and supplement positioning cannot be read as prevention or treatment of disease. If you have symptoms, take medicines, are pregnant, or have a chronic condition, ask a pharmacist or physician before choosing a product."
+                  : "食品與營養補充品的保養定位不能解讀為預防或治療疾病。若已有症狀、正在用藥、懷孕或有慢性病，選購前請先問藥師或醫師。"}{" "}
                 <a
-                  href={drug.source.url}
+                  href="https://www.fda.gov.tw/tc/siteContent.aspx?sid=1776"
                   target="_blank"
                   rel="noreferrer"
                   className="font-medium text-green"
                 >
-                  {drug.source.label} ↗
+                  {locale === "en" ? "TFDA guidance ↗" : "TFDA 食品標示與廣告說明 ↗"}
                 </a>
-              </p>
-            </div>
-          </div>
-          <p className="mb-0 mt-5 max-w-[900px] border-l-2 border-oxblood pl-3 text-[12.5px] leading-[1.75] text-muted">
-            {locale === "en"
-              ? "Food and supplement positioning cannot be read as prevention or treatment of disease. If you have symptoms, take medicines, are pregnant, or have a chronic condition, ask a pharmacist or physician before choosing a product."
-              : "食品與營養補充品的保養定位不能解讀為預防或治療疾病。若已有症狀、正在用藥、懷孕或有慢性病，選購前請先問藥師或醫師。"}{" "}
-            <a
-              href="https://www.fda.gov.tw/tc/siteContent.aspx?sid=1776"
-              target="_blank"
-              rel="noreferrer"
-              className="font-medium text-green"
-            >
-              {locale === "en" ? "TFDA guidance ↗" : "TFDA 食品標示與廣告說明 ↗"}
-            </a>
+              </>
+            ) : locale === "en"
+              ? "This package has no verified public product source. Do not infer its ingredients, food or supplement classification, or suitability; ask a pharmacist before choosing it."
+              : "此規格尚無已驗證的公開產品資料來源；請勿推定其成分、食品或營養補充品分類及適用性，選購前請先詢問藥師。"}
           </p>
         </div>
       </section>

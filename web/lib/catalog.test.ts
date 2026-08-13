@@ -9,6 +9,7 @@ import {
   searchDrugs,
   storesForDrug,
 } from "./data";
+import { drugCopy } from "./i18n";
 import { PARTNER_PHARMACIES } from "./partners";
 import { matchSymptom } from "./symptoms";
 
@@ -67,8 +68,8 @@ describe("合作藥局常見品項目錄", () => {
     );
   });
 
-  it("一般食品保留非藥品邊界，並附可核對的營養補充資料", () => {
-    for (const drug of allDrugs()) {
+  it("已驗證的一般食品保留非藥品邊界，並附可核對的營養補充資料", () => {
+    for (const drug of allDrugs().filter((drug) => drug.slug !== "huzhikang-60")) {
       expect(drug.nameEn).toBeUndefined();
       expect(drug.licenseNo).toBe("");
       expect(drug.drugClass).toBe("非藥品");
@@ -77,10 +78,29 @@ describe("合作藥局常見品項目錄", () => {
       expect(drug.nutritionFocus.length).toBeGreaterThan(0);
       expect(drug.nutritionFocusEn.length).toBeGreaterThan(0);
       expect(drug.searchTerms.length).toBeGreaterThan(0);
-      expect(drug.source.url).toMatch(/^https:\/\//);
+      expect(drug.source?.url).toMatch(/^https:\/\//);
       expect(alternativesFor(drug.slug)).toEqual([]);
       expect(storesForDrug(drug.slug)).toEqual([]);
     }
+  });
+
+  it("護智慷 60粒保留合作藥局確認的品名與規格，但不借用 150粒的來源或產品資料", () => {
+    const sixtyCount = getDrug("huzhikang-60");
+    const oneFiftyCount = getDrug("huzhikang-150");
+
+    expect(sixtyCount).toMatchObject({
+      name: "護智慷",
+      spec: "60粒",
+      form: "劑型待確認",
+      drugClass: "待確認",
+      ingredients: [],
+      nutritionFocus: "營養補充定位待確認",
+      searchTerms: [],
+    });
+    expect(sixtyCount?.source).toBeUndefined();
+    expect(drugCopy(sixtyCount!, "zh").drugClass).toBe("待確認");
+    expect(drugCopy(sixtyCount!, "en").drugClass).toBe("Classification pending");
+    expect(oneFiftyCount?.source?.url).toBe("https://www.rakuten.com.tw/shop/oecom/product/2064750/");
   });
 
   it.each(EXPECTED_CATALOG)("貼上完整名稱與規格可找到 $label", ({ slug, label }) => {
@@ -101,10 +121,7 @@ describe("合作藥局常見品項目錄", () => {
   it("低風險保養需求對應到營養定位，不對應疾病治療", () => {
     expect(searchDrugs("我想補鈣").map((drug) => drug.slug)).toEqual(["hugu-gaishu-100"]);
     expect(searchDrugs("呼吸道保養").map((drug) => drug.slug)).toEqual(["keqiqing-capsule"]);
-    expect(searchDrugs("腦部保養").map((drug) => drug.slug)).toEqual([
-      "huzhikang-60",
-      "huzhikang-150",
-    ]);
+    expect(searchDrugs("腦部保養").map((drug) => drug.slug)).toEqual(["huzhikang-150"]);
   });
 
   it("症狀與高風險描述只給安全分流，不回傳一般食品", () => {
@@ -115,6 +132,19 @@ describe("合作藥局常見品項目錄", () => {
     expect(matchSymptom("被蚊子咬")).toMatchObject({ kind: "refer", matched: "被蚊子咬" });
     expect(searchDrugs("痠痛")).toEqual([]);
     expect(searchDrugs("止癢")).toEqual([]);
+  });
+
+  it.each([
+    { query: "A mosquito bite", matched: "a mosquito bite" },
+    { query: "soreness", matched: "soreness" },
+    { query: "itching", matched: "itching" },
+    { query: "chest pain", matched: "chest pain" },
+    { query: "difficulty breathing", matched: "difficulty breathing" },
+    { query: "severe allergic reaction", matched: "severe allergic reaction" },
+    { query: "stroke-like weakness", matched: "stroke-like weakness" },
+  ])("英文症狀 $query 走安全分流，不成為 catalog miss", ({ query, matched }) => {
+    expect(matchSymptom(query)).toMatchObject({ kind: "refer", matched });
+    expect(searchDrugs(query)).toEqual([]);
   });
 
   it("舊樣品不再是公開品項或搜尋結果", () => {
