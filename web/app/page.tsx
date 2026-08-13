@@ -110,7 +110,7 @@ const TIMELINE = [
   { label: "outcome pending / verified", last: true },
 ] as const;
 
-const PILOT_AREAS = ["大同區", "林口區", "蘆洲區", "新莊區", "中山區", "西屯區"] as const;
+const PILOT_AREAS = ["大同區", "林口區", "蘆洲區", "新莊區", "中山區", "西屯區", "苗栗市"] as const;
 
 function Container({ children }: { children: React.ReactNode }) {
   return <div className="mx-auto max-w-[1240px] px-5 sm:px-8">{children}</div>;

@@ -128,14 +128,16 @@ export async function POST(request: Request) {
     }
     const drugNameEn = drugCopy(drug, "en").name;
     matched += 1;
+    const demoPrefix = match.demo ? "[示範] " : "";
+    const demoPrefixEn = match.demo ? "[DEMO] " : "";
     logConsole(
       "🧠",
       kind === "receiving"
-        ? `[示範] ${store.name} 掃到「${drug.name}」（進貨）→ 示範供應訊號更新：今日進貨掃描`
-        : `[示範] ${store.name} 掃到「${drug.name}」（${kindLabel}）→ 記錄示範品項移動，不宣稱仍有庫存`,
+        ? `${demoPrefix}${store.name} 掃到「${drug.name}」（進貨）→ ${match.demo ? "示範供應訊號" : "供應訊號"}更新：今日進貨掃描`
+        : `${demoPrefix}${store.name} 掃到「${drug.name}」（${kindLabel}）→ 記錄${match.demo ? "示範" : ""}品項移動，不宣稱仍有庫存`,
       kind === "receiving"
-        ? `[DEMO] ${store.name} scanned “${drugNameEn}” during receiving → demo supply signal updated: received today`
-        : `[DEMO] ${store.name} scanned “${drugNameEn}” during ${kind} → demo movement recorded; availability was not asserted`,
+        ? `${demoPrefixEn}${store.name} scanned “${drugNameEn}” during receiving → ${match.demo ? "demo supply signal" : "supply signal"} updated: received today`
+        : `${demoPrefixEn}${store.name} scanned “${drugNameEn}” during ${kind} → ${match.demo ? "demo " : ""}movement recorded; availability was not asserted`,
       { demo: match.demo },
     );
   }
