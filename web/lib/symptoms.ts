@@ -34,9 +34,18 @@ export interface SymptomRefer {
   matched: string;
   adviceZh: string;
   adviceEn: string;
+  /** 使用者主動選擇後才進入的日常保養搜尋，不是症狀推薦。 */
+  wellness?: WellnessAlternative;
 }
 
 export type SymptomMatch = SymptomExpand | SymptomRefer | null;
+
+export interface WellnessAlternative {
+  queryZh: string;
+  queryEn: string;
+  labelZh: string;
+  labelEn: string;
+}
 
 /**
  * 成藥自選不適當 —— 命中就不給商品，改給處置方向。
@@ -46,7 +55,22 @@ export type SymptomMatch = SymptomExpand | SymptomRefer | null;
 interface ReferralCopy {
   zh: string;
   en: string;
+  wellness?: WellnessAlternative;
 }
+
+const RESPIRATORY_WELLNESS: WellnessAlternative = {
+  queryZh: "呼吸道保養",
+  queryEn: "Daily respiratory wellness",
+  labelZh: "查看日常呼吸道保養資料",
+  labelEn: "View daily respiratory wellness information",
+};
+
+const JOINT_WELLNESS: WellnessAlternative = {
+  queryZh: "關節保養",
+  queryEn: "Bone and joint nutrition",
+  labelZh: "查看日常關節營養資料",
+  labelEn: "View daily joint nutrition information",
+};
 
 const REFERRAL = {
   burn: {
@@ -97,6 +121,11 @@ const REFERRAL = {
     zh: "這個咳嗽描述需要先由藥師或醫師評估，不顯示關聯品項；若持續、惡化、咳血，或合併胸痛、喘、昏厥、嘴唇發紫，請儘快就醫。",
     en: "This cough description needs pharmacist or medical assessment, so related items are not shown. Seek prompt care if it persists, worsens, involves blood, chest pain, breathing trouble, fainting, or blue lips.",
   },
+  coughWithWellness: {
+    zh: "咳嗽或喉嚨不適有不同原因，請先詢問藥師；症狀持續、惡化，或合併發燒、胸痛、呼吸困難等警訊時請就醫。",
+    en: "Cough or throat discomfort can have different causes. Ask a pharmacist first; seek care if it persists, worsens, or comes with fever, chest pain, or breathing trouble.",
+    wellness: RESPIRATORY_WELLNESS,
+  },
   coughMedicine: {
     zh: "目前目錄沒有止咳藥；請先詢問藥師，不要把呼吸道日常保養品當成治療用藥。",
     en: "This catalog does not list a cough medicine. Ask a pharmacist and do not treat a daily-wellness item as medicine.",
@@ -112,6 +141,19 @@ const REFERRAL = {
   emergencyWeakness: {
     zh: "突然無力或類似中風的症狀需要緊急醫療評估，請立即就醫。",
     en: "Sudden or stroke-like weakness needs emergency medical care. Seek help immediately.",
+  },
+  fainting: {
+    zh: "突然暈倒、昏倒或昏厥需要緊急醫療評估，請立即就醫。",
+    en: "Fainting or passing out needs urgent medical assessment. Seek medical care immediately.",
+  },
+  joint: {
+    zh: "膝蓋或關節疼痛、腫脹、無法活動，或外傷後不適，請由藥師或醫師評估，不要透過搜尋自行選品。",
+    en: "Knee or joint pain, swelling, limited movement, or symptoms after an injury need pharmacist or medical assessment. Do not self-select a product through search.",
+  },
+  jointWithWellness: {
+    zh: "膝蓋或關節不適有不同原因，uYao 不會依症狀推薦保健品。請先詢問藥師；若疼痛、腫脹、無法活動、外傷後不適或持續惡化，請就醫。",
+    en: "Knee or joint discomfort can have different causes, so uYao does not recommend a supplement from symptoms. Ask a pharmacist; seek care for pain, swelling, limited movement, injury, or worsening symptoms.",
+    wellness: JOINT_WELLNESS,
   },
 } as const satisfies Record<string, ReferralCopy>;
 
@@ -154,6 +196,25 @@ const REFER: Record<string, ReferralCopy> = {
   排尿困難: REFERRAL.generalAssessment,
   記憶力突然變差: REFERRAL.generalAssessment,
   "stroke-like weakness": REFERRAL.emergencyWeakness,
+  膝蓋不舒服: REFERRAL.jointWithWellness,
+  關節不舒服: REFERRAL.jointWithWellness,
+  "knee discomfort": REFERRAL.jointWithWellness,
+  "joint discomfort": REFERRAL.jointWithWellness,
+  膝蓋無法活動: REFERRAL.joint,
+  關節無法活動: REFERRAL.joint,
+  膝蓋痛: REFERRAL.joint,
+  關節痛: REFERRAL.joint,
+  膝蓋腫: REFERRAL.joint,
+  關節腫: REFERRAL.joint,
+  "knee pain": REFERRAL.joint,
+  "joint pain": REFERRAL.joint,
+  "knee swelling": REFERRAL.joint,
+  "joint swelling": REFERRAL.joint,
+  暈倒: REFERRAL.fainting,
+  昏倒: REFERRAL.fainting,
+  昏厥: REFERRAL.fainting,
+  fainting: REFERRAL.fainting,
+  "passed out": REFERRAL.fainting,
 };
 
 /**
@@ -212,6 +273,7 @@ function referral(matched: string, copy: ReferralCopy): SymptomRefer {
     matched,
     adviceZh: copy.zh,
     adviceEn: copy.en,
+    ...(copy.wellness ? { wellness: copy.wellness } : {}),
   };
 }
 
@@ -220,46 +282,30 @@ function compactChinese(query: string): string {
 }
 
 /**
- * 症狀詞只允許少數明確、短而低風險的句型進入品項關聯搜尋。
- * 其他含咳嗽／喉嚨的描述一律在下方回到安全分流，避免用黑名單猜漏病程或警訊。
+ * 少數明確、短而低風險的句型可以附上「主動查看日常保養資料」選項，
+ * 但本身仍然走安全分流、不直接顯示品項。其他咳嗽／喉嚨描述只給分流，
+ * 避免用黑名單猜漏病程或警訊。
  */
-function lowRiskSymptom(query: string): SymptomExpand | null {
-  const zh = compactChinese(query);
+function wellnessOptInSymptom(raw: string, normalized: string): SymptomRefer | null {
+  const zh = compactChinese(normalized);
 
   if (/^(?:我)?(?:今天)?(?:咳嗽|咳)(?:一下)?$/.test(zh)) {
-    return {
-      kind: "expand",
-      matched: zh.includes("咳嗽") ? "咳嗽" : "咳",
-      terms: ["呼吸道日常保養"],
-    };
+    return referral(raw, REFERRAL.coughWithWellness);
   }
   if (/^(?:我)?(?:今天)?喉嚨(?:乾癢|乾|不舒服)$/.test(zh)) {
-    const matched = zh.endsWith("乾癢")
-      ? "喉嚨乾癢"
-      : zh.endsWith("不舒服")
-        ? "喉嚨不舒服"
-        : "喉嚨乾";
-    return { kind: "expand", matched, terms: ["呼吸道日常保養"] };
+    return referral(raw, REFERRAL.coughWithWellness);
   }
 
-  const en = query.trim().replace(/[.!?]+$/g, "").replace(/\s+/g, " ");
+  const en = normalized.trim().replace(/[.!?]+$/g, "").replace(/\s+/g, " ");
   if (
     /^(?:(?:a )?(?:mild |little )?cough|(?:i have |i have got |i've got )(?:a )?(?:mild |little )?cough|(?:i'm |i am )?coughing)$/.test(en)
   ) {
-    return {
-      kind: "expand",
-      matched: en.endsWith("coughing") ? "coughing" : "cough",
-      terms: ["Daily respiratory wellness"],
-    };
+    return referral(raw, REFERRAL.coughWithWellness);
   }
   if (
     /^(?:(?:a |my )?dry throat|throat discomfort|my throat (?:is|feels) dry)$/.test(en)
   ) {
-    return {
-      kind: "expand",
-      matched: en === "throat discomfort" ? "throat discomfort" : "dry throat",
-      terms: ["Daily respiratory wellness"],
-    };
+    return referral(raw, REFERRAL.coughWithWellness);
   }
 
   return null;
@@ -288,8 +334,8 @@ export function matchSymptom(query: string): SymptomMatch {
     }
   }
 
-  const lowRisk = lowRiskSymptom(q);
-  if (lowRisk) return lowRisk;
+  const wellnessOptIn = wellnessOptInSymptom(raw, q);
+  if (wellnessOptIn) return wellnessOptIn;
 
   // 完整品名會由 data.ts 的 exactDrugMatches 先處理；走到這裡的其他咳嗽／喉嚨句子保守分流。
   if (containsCough(q)) return referral(raw, REFERRAL.cough);
