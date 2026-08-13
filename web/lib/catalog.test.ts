@@ -6,6 +6,7 @@ import {
   alternativesFor,
   getDrug,
   previewOffers,
+  searchDrugHits,
   searchDrugs,
   storesForDrug,
 } from "./data";
@@ -219,23 +220,85 @@ describe("合作藥局常見品項目錄", () => {
   });
 
   it.each([
-    { query: "咳嗽", matched: "咳嗽", wellnessQueryZh: "呼吸道保養" },
-    { query: "我今天有點咳", matched: "我今天有點咳", wellnessQueryZh: "呼吸道保養" },
-    { query: "喉嚨乾癢", matched: "喉嚨乾癢", wellnessQueryZh: "呼吸道保養" },
-    { query: "喉嚨不舒服", matched: "喉嚨不舒服", wellnessQueryZh: "呼吸道保養" },
-    {
-      query: "我最近膝蓋不舒服，想找保養的東西",
-      matched: "膝蓋不舒服",
-      wellnessQueryZh: "關節保養",
-    },
-  ])("低風險症狀 $query 可在安全提醒下直接顯示保養資料", ({ query, matched, wellnessQueryZh }) => {
-    expect(matchSymptom(query)).toMatchObject({
-      kind: "refer",
-      matched,
-      wellness: { queryZh: wellnessQueryZh },
-    });
+    { query: "咳嗽", matched: "咳嗽" },
+    { query: "我今天有點咳", matched: "我今天有點咳" },
+    { query: "喉嚨乾癢", matched: "喉嚨乾癢" },
+    { query: "喉嚨不舒服", matched: "喉嚨不舒服" },
+    { query: "我最近膝蓋不舒服，想找保養的東西", matched: "膝蓋不舒服" },
+  ])("症狀 $query 只顯示安全分流，不自動帶保養品", ({ query, matched }) => {
+    const symptom = matchSymptom(query);
+    expect(symptom).toMatchObject({ kind: "refer", matched });
+    expect(symptom).not.toHaveProperty("wellness");
     expect(searchDrugs(query)).toEqual([]);
-    expect(searchDrugs(wellnessQueryZh).length).toBeGreaterThan(0);
+  });
+
+  it.each([
+    "眼睛乾澀",
+    "眼睛乾",
+    "眼乾",
+    "乾眼",
+    "dry eyes",
+    "dry eye",
+    "dry-eye",
+    "eye dryness",
+    "my eyes are dry",
+    "eyes are dry",
+  ])(
+    "眼睛不適 $query 只顯示安全分流，不連結視覺營養品",
+    (query) => {
+      const symptom = matchSymptom(query);
+      expect(symptom).toMatchObject({ kind: "refer" });
+      expect(symptom).not.toHaveProperty("wellness");
+      expect(searchDrugs(query)).toEqual([]);
+    },
+  );
+
+  it.each(["視力突然模糊", "突然看不清楚", "眼睛劇痛", "sudden blurred vision", "severe eye pain"])(
+    "眼睛警訊 $query 優先進入就醫分流",
+    (query) => {
+      const symptom = matchSymptom(query);
+      expect(symptom).toMatchObject({ kind: "refer" });
+      expect(symptom).not.toHaveProperty("wellness");
+      expect(searchDrugs(query)).toEqual([]);
+    },
+  );
+
+  it("中性品名與成分查詢仍可找到視清，且保留實際比對依據", () => {
+    expect(searchDrugHits("視清")).toEqual([
+      expect.objectContaining({
+        drug: expect.objectContaining({ slug: "wewell-vision-softgel" }),
+        match: expect.objectContaining({ kind: "name", value: expect.stringContaining("視清") }),
+      }),
+    ]);
+    expect(searchDrugHits("小視清")).toEqual([
+      expect.objectContaining({
+        drug: expect.objectContaining({ slug: "wewell-vision-softgel" }),
+        match: { kind: "alias", value: "小視清" },
+      }),
+    ]);
+
+    for (const query of ["葉黃素", "維生素 A"]) {
+      expect(searchDrugHits(query)).toContainEqual(
+        expect.objectContaining({
+          drug: expect.objectContaining({ slug: "wewell-vision-softgel" }),
+          match: expect.objectContaining({ kind: "ingredient", value: expect.stringContaining(query.replace(" ", "")) }),
+        }),
+      );
+    }
+  });
+
+  it("搜尋依品名、別名、成分、營養方向、目錄詞的證據優先順序穩定排序", () => {
+    const priority = ["name", "alias", "ingredient", "nutritionFocus", "searchTerm", "details"];
+    const hits = searchDrugHits("魚油");
+    expect(hits.length).toBeGreaterThan(1);
+    expect(hits.map((hit) => priority.indexOf(hit.match.kind))).toEqual(
+      [...hits].map((hit) => priority.indexOf(hit.match.kind)).sort((a, b) => a - b),
+    );
+    expect(searchDrugHits("骨骼與關節營養補給")[0]?.match.kind).toBe("nutritionFocus");
+    expect(searchDrugHits("粉塵環境保養")[0]?.match).toEqual({
+      kind: "searchTerm",
+      value: "粉塵環境保養",
+    });
   });
 
   it.each([
@@ -292,19 +355,16 @@ describe("合作藥局常見品項目錄", () => {
   });
 
   it.each([
-    { query: "cough", matched: "cough", wellnessQueryEn: "Daily respiratory wellness" },
-    { query: "coughing", matched: "coughing", wellnessQueryEn: "Daily respiratory wellness" },
-    { query: "dry throat", matched: "dry throat", wellnessQueryEn: "Daily respiratory wellness" },
-    { query: "throat discomfort", matched: "throat discomfort", wellnessQueryEn: "Daily respiratory wellness" },
-    { query: "knee discomfort", matched: "knee discomfort", wellnessQueryEn: "Bone and joint nutrition" },
-  ])("英文低風險症狀 $query 可在安全提醒下直接顯示保養資料", ({ query, matched, wellnessQueryEn }) => {
-    expect(matchSymptom(query)).toMatchObject({
-      kind: "refer",
-      matched,
-      wellness: { queryEn: wellnessQueryEn },
-    });
+    { query: "cough", matched: "cough" },
+    { query: "coughing", matched: "coughing" },
+    { query: "dry throat", matched: "dry throat" },
+    { query: "throat discomfort", matched: "throat discomfort" },
+    { query: "knee discomfort", matched: "knee discomfort" },
+  ])("英文症狀 $query 只顯示安全分流，不自動帶保養品", ({ query, matched }) => {
+    const symptom = matchSymptom(query);
+    expect(symptom).toMatchObject({ kind: "refer", matched });
+    expect(symptom).not.toHaveProperty("wellness");
     expect(searchDrugs(query)).toEqual([]);
-    expect(searchDrugs(wellnessQueryEn).length).toBeGreaterThan(0);
   });
 
   it.each([
