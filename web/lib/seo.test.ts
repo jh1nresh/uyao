@@ -11,6 +11,7 @@ import {
   SHOP_CANONICAL_HOST,
   SHOP_INDEXABLE_PATHS,
   SITE_URL,
+  SOCIAL_PREVIEW_IMAGES,
   X_URL,
   articleJsonLd,
   breadcrumbJsonLd,
@@ -21,10 +22,45 @@ import {
   indexingAllowed,
   jsonLdGraph,
   organizationJsonLd,
+  socialPreviewImages,
   softwareApplicationJsonLd,
   webSiteJsonLd,
   webPageJsonLd,
 } from "./seo";
+
+describe("social preview metadata", () => {
+  it("uses versioned locale images on the correct audience host", () => {
+    for (const locale of ["zh", "en"] as const) {
+      expect(SOCIAL_PREVIEW_IMAGES.company[locale].url).toBe(
+        `${SITE_URL}/brand/social/uyao-company-${locale}-v1.png`,
+      );
+      expect(SOCIAL_PREVIEW_IMAGES.shop[locale].url).toBe(
+        `https://${SHOP_CANONICAL_HOST}/brand/social/uyao-shop-${locale}-v1.png`,
+      );
+      expect(SOCIAL_PREVIEW_IMAGES.company[locale].url).not.toBe(
+        SOCIAL_PREVIEW_IMAGES.shop[locale].url,
+      );
+    }
+  });
+
+  it("publishes complete Open Graph descriptors and matching Twitter images", () => {
+    for (const audience of ["company", "shop"] as const) {
+      for (const locale of ["zh", "en"] as const) {
+        const image = SOCIAL_PREVIEW_IMAGES[audience][locale];
+        const metadata = socialPreviewImages(audience, locale);
+        expect(image).toMatchObject({
+          width: 1200,
+          height: 630,
+          type: "image/png",
+        });
+        expect(image.alt).not.toBe("");
+        expect(metadata.openGraph).toEqual([image]);
+        expect(metadata.twitter).toEqual([{ url: image.url, alt: image.alt }]);
+        expect(JSON.stringify(metadata)).not.toContain("opengraph-image.png");
+      }
+    }
+  });
+});
 
 describe("indexingAllowed", () => {
   it("allows only the canonical host on production", () => {
