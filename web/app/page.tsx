@@ -158,7 +158,7 @@ export default function CompanyLandingPage() {
       </nav>
 
       {/* Hero：先賣結果，visual 是一條真實 action loop */}
-      <header className="border-b border-line bg-ivory">
+      <header className="bg-ivory">
         <Container>
           <div className="grid items-center gap-14 py-16 sm:py-24 lg:min-h-[740px] lg:grid-cols-[1.08fr_.92fr] lg:gap-20 lg:py-24">
             <div>
