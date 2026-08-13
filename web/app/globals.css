@@ -255,7 +255,8 @@ body {
     row-gap: 0.75rem;
   }
 
-  .partner-marquee-duplicate {
+  .partner-marquee-duplicate,
+  .partner-marquee-edge {
     display: none;
   }
 }

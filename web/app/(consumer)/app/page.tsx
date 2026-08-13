@@ -6,6 +6,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { SearchInput } from "@/components/SearchInput";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { PartnerMarquee } from "@/components/landing/PartnerMarquee";
 import {
   AREAS,
   CATEGORIES,
@@ -19,6 +20,7 @@ import {
 } from "@/lib/data";
 import { areaCopy, categoryName, drugCopy, localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
+import { PARTNER_STORE_ITEMS } from "@/lib/partner-stores";
 import { partnerForStore } from "@/lib/partners";
 import {
   CONSUMER_DESCRIPTION,
@@ -112,7 +114,7 @@ export default async function HomePage({
         第一印象「這是藥局名錄」，而名錄 Google Maps 做得更好。
         藥局家數留下來當可信度證據，但收成一行字。
       */}
-      <section className="border-b border-line bg-ivory">
+      <section className="bg-ivory">
         <div className="shop-shell flex flex-col pb-14 pt-12 sm:pb-20 sm:pt-16 lg:pb-24 lg:pt-20">
           <div className="mx-auto w-full max-w-[1120px] text-center">
             <p className="shop-kicker mb-5 mt-0">NEARBY SEARCH · REQUEST · PHARMACY CONFIRMATION</p>
@@ -192,6 +194,12 @@ export default async function HomePage({
         </div>
       </section>
 
+      <PartnerMarquee
+        items={PARTNER_STORE_ITEMS}
+        locale={locale}
+        evidenceHref={`${SITE_URL}${locale === "en" ? "/en" : "/zh-tw"}/evidence#partners`}
+      />
+
       <section id="pharmacies" className="scroll-mt-24 bg-paper">
         <div className="shop-shell py-14 sm:py-20">
           <p className="shop-kicker mb-3">FIRST PHARMACY NETWORK</p>
@@ -243,7 +251,7 @@ export default async function HomePage({
             })}
           </div>
           <p className="mb-0 mt-4 max-w-[760px] text-[13px] leading-[1.7] text-muted-2">
-            {locale === "en" ? "Confirmed partners are labeled above; other stores are public listings. Partnership does not imply installed hardware or live inventory. Call before visiting." : "合作藥局已於上方標示；其餘為公開資料收錄。合作不代表已安裝設備或已有即時庫存；前往門市前請先電話確認。"}
+            {locale === "en" ? "Confirmed partners are labeled above; other stores are public listings. Call before visiting." : "合作藥局已於上方標示；其餘為公開資料收錄。前往門市前請先電話確認。"}
           </p>
         </div>
       </section>
@@ -373,7 +381,7 @@ export default async function HomePage({
           <p className="num m-0 text-[11px] font-semibold tracking-[.14em] text-[#A9B5AA]">FOR PHARMACIES</p>
           <h2 className="editorial-display mb-0 mt-3 text-[34px] sm:text-[44px]">{locale === "en" ? "Run an independent pharmacy?" : "開藥局的？"}</h2>
           <p className="mt-3 text-[15px] leading-[1.8] text-[#C4CEC7]">
-            {locale === "en" ? "A small box connects to your existing scanner, captures batch and expiry evidence during receiving, and sends the next action in LINE without changing the in-store workflow." : "一個小盒子串在你現有的條碼掃描器上，自動記下每批藥的效期。快過退貨期限就用 LINE 提醒你 —— 店內流程一個字都不用改。"}
+            {locale === "en" ? "A small box connects to your existing scanner, captures batch and expiry evidence during receiving, and sends the next action in LINE without changing the in-store workflow." : "一個小盒子串在你現有的條碼掃描器上，自動記下每批藥的效期。快過退貨期限就用 LINE 提醒你，店內流程一個字都不用改。"}
           </p>
           <Link
             href={localizedPath("/pharmacy", locale)}

@@ -10,14 +10,11 @@ const COPY = {
     headingSuffix: "家合作藥局據點",
     evidence: "查看合作與證據 →",
     ariaLabel: "合作藥局據點",
-    notice: "合作不代表已安裝設備或已有即時庫存；其他公開收錄店家也不代表合作。",
   },
   en: {
     headingSuffix: "partner pharmacy locations",
     evidence: "Partnership evidence →",
     ariaLabel: "Partner pharmacy locations",
-    notice:
-      "Partnership does not imply installed hardware or live inventory; other public listings do not imply partnership.",
   },
 } as const;
 
@@ -30,17 +27,21 @@ function MarqueeList({
 }) {
   return (
     <ul
-      className={`partner-marquee-group m-0 flex shrink-0 list-none items-center gap-10 p-0 pr-10 ${
+      className={`partner-marquee-group m-0 flex shrink-0 list-none items-center gap-12 p-0 pr-12 ${
         duplicate ? "partner-marquee-duplicate" : ""
       }`}
       aria-hidden={duplicate || undefined}
     >
       {items.map((item) => (
-        <li key={item.name} className="flex shrink-0 items-baseline gap-2 whitespace-nowrap">
-          <span className="text-base font-bold text-ink">{item.name}</span>
-          <span className="num text-xs font-medium text-muted">{item.district}</span>
-          <span className="ml-8 text-oxblood" aria-hidden>
-            ＋
+        <li
+          key={item.name}
+          className="flex shrink-0 items-center gap-3 whitespace-nowrap border-l-2 border-green pl-4"
+        >
+          <span className="text-[18px] font-black tracking-[-.015em] text-forest sm:text-[19px]">
+            {item.name}
+          </span>
+          <span className="num text-[11px] font-semibold tracking-[.06em] text-muted">
+            {item.district}
           </span>
         </li>
       ))}
@@ -51,9 +52,11 @@ function MarqueeList({
 export function PartnerMarquee({
   items,
   locale,
+  evidenceHref = "/zh-tw/evidence#partners",
 }: {
   items: readonly PartnerStoreItem[];
   locale: keyof typeof COPY;
+  evidenceHref?: string;
 }) {
   const sectionRef = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(true);
@@ -80,11 +83,11 @@ export function PartnerMarquee({
     >
       <div className="mx-auto max-w-[1240px] px-5 py-5 sm:px-8 sm:py-6">
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1">
-          <h2 id={`partner-marquee-heading-${locale}`} className="m-0 text-[17px] font-black">
+          <h2 id={`partner-marquee-heading-${locale}`} className="m-0 text-[18px] font-black">
             <span className="num text-oxblood">{items.length}</span> {copy.headingSuffix}
           </h2>
           <Link
-            href="/zh-tw/evidence#partners"
+            href={evidenceHref}
             className="inline-flex min-h-11 items-center text-xs font-semibold text-forest no-underline hover:text-green"
           >
             {copy.evidence}
@@ -92,16 +95,22 @@ export function PartnerMarquee({
         </div>
 
         <div
-          className="partner-marquee-viewport mt-2 overflow-hidden py-3"
+          className="partner-marquee-viewport relative mt-2 overflow-hidden py-4"
           aria-label={copy.ariaLabel}
         >
           <div className="partner-marquee-track flex w-max">
             <MarqueeList items={items} />
             <MarqueeList items={items} duplicate />
           </div>
+          <span
+            className="partner-marquee-edge pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-ivory to-transparent sm:w-12"
+            aria-hidden
+          />
+          <span
+            className="partner-marquee-edge pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-ivory to-transparent sm:w-12"
+            aria-hidden
+          />
         </div>
-
-        <p className="mb-0 mt-2 text-xs leading-5 text-muted">{copy.notice}</p>
       </div>
     </section>
   );
