@@ -40,7 +40,7 @@ function MarqueeList({
           <span className="text-[18px] font-black tracking-[-.015em] text-forest sm:text-[19px]">
             {item.name}
           </span>
-          <span className="num text-[11px] font-semibold tracking-[.06em] text-muted">
+          <span className="num text-[12.5px] font-semibold tracking-[.04em] text-muted">
             {item.district}
           </span>
         </li>

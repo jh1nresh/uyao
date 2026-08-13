@@ -23,6 +23,8 @@ export const CATALOG_GROUPS: CatalogGroup[] = [
   { slug: "botanical-blends", name: "植物與複方", nameEn: "Botanical blends" },
 ];
 
+export const CATALOG_PAGE_SIZE = 12;
+
 const GROUP_BY_DRUG_SLUG: Record<string, Exclude<CatalogGroupSlug, "all">> = {
   "hugu-gaishu-100": "joint",
   "guanlihu-60": "joint",
@@ -115,4 +117,23 @@ export function filterCatalogDrugs(
     ];
     return searchable.some((value) => normalizeCatalogText(value).includes(normalizedQuery));
   });
+}
+
+export function paginateCatalogDrugs(
+  drugs: Drug[],
+  rawPage: string | undefined,
+  pageSize = CATALOG_PAGE_SIZE,
+): { drugs: Drug[]; page: number; pageCount: number } {
+  const parsedPage = Number.parseInt(rawPage ?? "", 10);
+  const pageCount = Math.max(1, Math.ceil(drugs.length / pageSize));
+  const page = Number.isFinite(parsedPage)
+    ? Math.min(Math.max(parsedPage, 1), pageCount)
+    : 1;
+  const start = (page - 1) * pageSize;
+
+  return {
+    drugs: drugs.slice(start, start + pageSize),
+    page,
+    pageCount,
+  };
 }

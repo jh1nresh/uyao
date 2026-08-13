@@ -49,12 +49,11 @@ export default async function SearchPage({
         <div className="mb-3 md:hidden">
           <AreaSwitch area={area} preservePath locatable compact />
         </div>
-        <p className="shop-kicker mb-3">SEARCH RESULTS</p>
-        <div className="mb-7 flex flex-col items-start gap-2 border-b border-line pb-5 sm:flex-row sm:flex-wrap sm:items-end sm:gap-3">
+        <div className="mb-7 flex max-w-[960px] flex-col items-start gap-2 sm:flex-row sm:flex-wrap sm:items-end sm:gap-3">
           <h1 className="editorial-display m-0 text-[30px] leading-[1.25] sm:text-[40px]">
             {q ? (locale === "en" ? `Results for “${q}”` : `「${q}」的結果`) : (locale === "en" ? "Search products" : "搜尋品項")}
           </h1>
-          <p className="w-full text-[13px] text-muted-2 sm:w-auto">
+          <p className="w-full text-[14px] leading-[1.6] text-muted-2 sm:w-auto">
             {!q
               ? locale === "en" ? "Enter a product, ingredient, symptom, or wellness need" : "輸入品名、成分、症狀或保養需求"
               : symptom?.kind === "refer"
@@ -65,15 +64,11 @@ export default async function SearchPage({
                   ? `${results.length} catalog items · supply in ${areaCopy(getArea(area), locale).shortName} pending`
                   : `${results.length} 項目錄資料 · ${areaCopy(getArea(area), locale).shortName}供應待確認`}
           </p>
-          <div className="hidden flex-1 sm:block" />
-          {q && symptom?.kind !== "refer" && results.length > 0 && (
-            <p className="num w-full text-[11px] tracking-[.04em] text-muted-2 sm:w-auto">{locale === "en" ? "SORT: MATCH BASIS" : "排序：比對依據"}</p>
-          )}
         </div>
 
         {/* 保養需求的對照只說明目錄關聯，不把品項寫成症狀治療。 */}
         {q && symptom?.kind === "expand" && (
-          <p className="mb-2.5 border border-line-strong bg-surface px-3.5 py-2.5 text-[13px] leading-[1.7] text-muted">
+          <p className="mb-3 max-w-[960px] bg-surface px-4 py-3 text-[14px] leading-[1.7] text-muted">
             {locale === "en"
               ? <>“{symptom.matched}” is related to the catalog focus <b className="font-bold text-ink">{symptom.terms.join(", ")}</b>. These are related daily-wellness items, not treatment recommendations. Ask a pharmacist; seek medical care if symptoms persist, worsen, or come with a red flag.</>
               : <>「{symptom.matched}」可搜尋到目錄中與<b className="font-bold text-ink">{symptom.terms.join("、")}</b>資料相關的品項。<br />這是品項資料的關聯搜尋，不是治療或用藥推薦；症狀持續、惡化或合併發燒、胸痛、呼吸困難等警訊時，請就醫。</>}
@@ -95,7 +90,7 @@ export default async function SearchPage({
               <p className="mt-1.5 text-[15px] leading-[1.8] text-ink-2">
                 {locale === "en" ? symptom.adviceEn : symptom.adviceZh}
               </p>
-              <p className="mt-2.5 text-[13px] leading-[1.7] text-muted">
+              <p className="mt-2.5 text-[14px] leading-[1.7] text-muted">
                 {locale === "en"
                   ? "Products are intentionally not shown for a symptom query. This is a safety route, not an empty catalog result."
                   : "症狀查詢不直接列出商品。這是安全分流，不是目錄查無品項。"}
@@ -113,7 +108,7 @@ export default async function SearchPage({
         ) : q ? (
           <DrugResults results={results} query={q} area={area} />
         ) : (
-          <div className="border border-line px-4 py-8 text-center text-[15px] text-muted">
+          <div className="max-w-[960px] bg-surface px-4 py-8 text-center text-[15px] text-muted">
             {locale === "en" ? "Enter a product, ingredient, symptom, or wellness need above to start searching." : "上面輸入品名、成分、症狀或保養需求開始搜尋。"}
           </div>
         )}

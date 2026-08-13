@@ -10,6 +10,7 @@ import {
   CATALOG_GROUPS,
   filterCatalogDrugs,
   isCatalogGroupSlug,
+  paginateCatalogDrugs,
 } from "@/lib/catalog-groups";
 import {
   CATEGORIES,
@@ -55,10 +56,10 @@ export default async function CategoryPage({
   searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ area?: string; group?: string; q?: string }>;
+  searchParams: Promise<{ area?: string; group?: string; q?: string; page?: string }>;
 }) {
   const { slug } = await params;
-  const { area: rawArea, group: rawGroup, q: rawQuery } = await searchParams;
+  const { area: rawArea, group: rawGroup, q: rawQuery, page: rawPage } = await searchParams;
   const locale = await getRequestLocale();
   const area = toAreaSlug(rawArea);
   const group = isCatalogGroupSlug(rawGroup) ? rawGroup : "all";
@@ -68,9 +69,16 @@ export default async function CategoryPage({
   const displayCategory = categoryName(category.slug, category.name, locale);
   const allCatalogDrugs = allDrugs();
   const results = filterCatalogDrugs(allCatalogDrugs, { query, group });
+  const catalogPage = paginateCatalogDrugs(results, rawPage);
 
   function groupHref(nextGroup: string): string {
     const queryParams = new URLSearchParams({ area, group: nextGroup });
+    if (query) queryParams.set("q", query);
+    return `${localizedPath("/category/partner-item", locale)}?${queryParams.toString()}`;
+  }
+
+  function pageHref(nextPage: number): string {
+    const queryParams = new URLSearchParams({ area, group, page: String(nextPage) });
     if (query) queryParams.set("q", query);
     return `${localizedPath("/category/partner-item", locale)}?${queryParams.toString()}`;
   }
@@ -98,10 +106,10 @@ export default async function CategoryPage({
           <form action={localizedPath("/category/partner-item", locale)} className="mt-8 border-y border-line py-5">
             <input type="hidden" name="area" value={area} />
             <input type="hidden" name="group" value={group} />
-            <label htmlFor="catalog-query" className="block text-[13px] font-bold text-ink">
+            <label htmlFor="catalog-query" className="block text-[14px] font-bold text-ink">
               {locale === "en" ? "Search catalog items" : "搜尋目錄品項"}
             </label>
-            <p id="catalog-query-help" className="mb-3 mt-1 text-[12px] leading-[1.6] text-muted">
+            <p id="catalog-query-help" className="mb-3 mt-1 text-[14px] leading-[1.6] text-muted">
               {locale === "en" ? "Use a product name, ingredient, manufacturer, or product detail." : "可輸入品名、成分、廠商或產品資料。"}
             </p>
             <div className="grid gap-2 sm:grid-cols-[minmax(0,1fr)_auto]">
@@ -128,7 +136,7 @@ export default async function CategoryPage({
                   key={item.slug}
                   href={groupHref(item.slug)}
                   aria-current={active ? "page" : undefined}
-                  className={`inline-flex min-h-11 items-center border px-3.5 text-[12.5px] font-semibold no-underline transition-colors ${
+                  className={`inline-flex min-h-11 items-center border px-3.5 text-[14px] font-semibold no-underline transition-colors ${
                     active
                       ? "border-forest bg-forest text-paper"
                       : "border-line-strong bg-paper text-forest hover:border-forest hover:bg-surface-hover"
@@ -140,18 +148,41 @@ export default async function CategoryPage({
             })}
           </nav>
 
-          <div className="mb-4 mt-7 flex flex-wrap items-end justify-between gap-2 border-b border-line pb-3">
-            <p className="m-0 text-[13px] font-bold text-ink">
+          <div className="mb-4 mt-8 flex flex-wrap items-end justify-between gap-2">
+            <p className="m-0 text-[14px] font-bold text-ink">
               {locale === "en" ? `${results.length} results` : `${results.length} 項結果`}
             </p>
-            <p className="m-0 text-[12px] text-muted-2">
+            <p className="m-0 text-[14px] text-muted-2">
               {locale === "en"
-                ? `${allCatalogDrugs.length} total · ${areaCopy(getArea(area), locale).shortName}`
-                : `全部 ${allCatalogDrugs.length} 項 · ${getArea(area).shortName}`}
+                ? `Page ${catalogPage.page} of ${catalogPage.pageCount} · ${areaCopy(getArea(area), locale).shortName}`
+                : `第 ${catalogPage.page}／${catalogPage.pageCount} 頁 · ${getArea(area).shortName}`}
             </p>
           </div>
 
-          <CatalogItemGrid drugs={results} area={area} locale={locale} />
+          <CatalogItemGrid drugs={catalogPage.drugs} area={area} locale={locale} />
+
+          {catalogPage.pageCount > 1 && (
+            <nav
+              aria-label={locale === "en" ? "Catalog pages" : "目錄分頁"}
+              className="mt-8 grid grid-cols-[1fr_auto_1fr] items-center gap-4"
+            >
+              {catalogPage.page > 1 ? (
+                <Link href={pageHref(catalogPage.page - 1)} className="action-secondary justify-self-start text-[14px]">
+                  {locale === "en" ? "Previous" : "上一頁"}
+                </Link>
+              ) : <span aria-hidden />}
+              <span className="text-[14px] text-muted">
+                {locale === "en"
+                  ? `${catalogPage.page} / ${catalogPage.pageCount}`
+                  : `${catalogPage.page}／${catalogPage.pageCount}`}
+              </span>
+              {catalogPage.page < catalogPage.pageCount ? (
+                <Link href={pageHref(catalogPage.page + 1)} className="action-primary justify-self-end text-[14px]">
+                  {locale === "en" ? "Next" : "下一頁"}
+                </Link>
+              ) : <span aria-hidden />}
+            </nav>
+          )}
         </section>
       </main>
 

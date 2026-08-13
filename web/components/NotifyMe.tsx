@@ -97,12 +97,12 @@ export function NotifyMe({
       <p className="text-[14px] font-bold text-ink">{locale === "en" ? "Notify me when available" : "有貨的時候通知我"}</p>
       {/* 沒有庫存流可以觸發通知，所以不能寫「有貨就通知」——
           只能承諾「有藥局裝上盒子而且有貨時」。 */}
-      <p className="mt-0.5 text-[13px] leading-[1.6] text-muted">
+      <p className="mt-0.5 text-[14px] leading-[1.6] text-muted">
         {locale === "en" ? `Leave a contact. We will notify you when a participating pharmacy in this area confirms ${what}.` : <>留個聯絡方式。這一區有藥局裝上盒子、而且{what}有貨時第一時間通知你。</>}
       </p>
 
       <div className="mt-2.5 flex flex-col gap-2 sm:flex-row sm:items-end">
-        <label className="grid gap-1 text-[12px] font-medium text-muted" htmlFor="notify-area">
+        <label className="grid gap-1 text-[14px] font-medium text-muted" htmlFor="notify-area">
           <span>{locale === "en" ? "Your area" : "你在哪一區"}</span>
           <select
             id="notify-area"
@@ -118,12 +118,13 @@ export function NotifyMe({
           </select>
         </label>
 
-        <label className="grid min-w-0 flex-1 gap-1 text-[12px] font-medium text-muted" htmlFor="notify-contact">
+        <label className="grid min-w-0 flex-1 gap-1 text-[14px] font-medium text-muted" htmlFor="notify-contact">
           <span>Email 或 LINE ID</span>
           <input
             id="notify-contact"
             value={contact}
             onChange={(e) => setContact(e.target.value)}
+            required
             placeholder="例如 name@example.com"
             className={INPUT}
           />
@@ -139,7 +140,7 @@ export function NotifyMe({
       </div>
 
       {error && (
-        <p role="alert" className="mt-2 text-[13px] text-ink">
+        <p role="alert" className="mt-2 text-[14px] text-ink">
           {error}
         </p>
       )}

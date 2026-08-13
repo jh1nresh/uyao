@@ -63,31 +63,31 @@ export function AreaStores({
                 className="history-link -my-2.5 flex min-h-11 min-w-0 flex-1 flex-col justify-center py-2.5 no-underline"
               >
                 <span className="block text-[15px] font-medium text-ink">{s.name}</span>
-                <span className="block text-[13px] text-muted">{s.address}</span>
+                <span className="block text-[14px] text-muted">{s.address}</span>
               </Link>
               {d !== null && (
-                <span className="num flex-none text-[13px] text-ink-2">{formatDistance(d)}</span>
+                <span className="num flex-none text-[14px] text-ink-2">{formatDistance(d)}</span>
               )}
-              <span className="hidden flex-none text-[13px] text-muted-2 sm:block">
+              <span className="hidden flex-none text-[14px] text-muted-2 sm:block">
                 {hoursSummary(s, locale)}
               </span>
               {showPhone &&
                 (s.phone ? (
                   <a
                     href={`tel:${s.phone.split("、")[0].replace(/-/g, "")}`}
-                    className="num inline-flex min-h-11 flex-none items-center border border-forest px-3 text-[13px] font-bold text-forest no-underline hover:bg-surface"
+                    className="num inline-flex min-h-11 flex-none items-center border border-forest px-3 text-[14px] font-bold text-forest no-underline hover:bg-surface"
                   >
                     {s.phone.split("、")[0]}
                   </a>
                 ) : (
-                  <span className="flex-none text-[13px] text-muted-2">{locale === "en" ? "No phone listed" : "未提供電話"}</span>
+                  <span className="flex-none text-[14px] text-muted-2">{locale === "en" ? "No phone listed" : "未提供電話"}</span>
                 ))}
             </div>
           );
         })}
       </div>
 
-      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-muted-2">
+      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[14px] text-muted-2">
         <span>
           {position ? (locale === "en" ? "Distance from you" : "距離你") : (locale === "en" ? `From ${areaLabel} center` : `距${areaLabel}中心`)} ·{" "}
           {position ? (locale === "en" ? "Sorted using your location" : "已依你的位置重新排序") : (locale === "en" ? "Use the location button for actual distance" : "按上面的定位鈕改用實際距離")}
