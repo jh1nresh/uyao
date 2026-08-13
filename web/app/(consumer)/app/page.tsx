@@ -13,6 +13,7 @@ import {
   allDrugs,
   drugsInCategory,
   getArea,
+  storeGroupsByCountyCity,
   storesInArea,
   toAreaSlug,
 } from "@/lib/data";
@@ -94,6 +95,7 @@ export default async function HomePage({
   const area = toAreaSlug(rawArea);
   const storeCount = storesInArea(area).length;
   const listedStores = allStores();
+  const pharmacyGroups = storeGroupsByCountyCity();
   const drugs = allDrugs();
   const currentArea = areaCopy(getArea(area), locale);
   const steps = locale === "en" ? STEPS_EN : STEPS_ZH;
@@ -197,26 +199,48 @@ export default async function HomePage({
             <h2 className="editorial-display m-0 text-[32px] leading-[1.25] sm:text-[40px]">{locale === "en" ? "Initial pharmacy network" : "首波收錄店家"}</h2>
             <p className="m-0 text-[13px] text-muted">{locale === "en" ? `${listedStores.length} listed · Live inventory not yet enabled` : `共 ${listedStores.length} 家 · 即時庫存尚未啟用`}</p>
           </div>
-          <div className="grid border-l border-t border-line bg-ivory sm:grid-cols-2 lg:grid-cols-3">
-          {listedStores.map((store) => (
-            <Link
-              key={store.slug}
-              href={localizedPath(`/store/${store.slug}`, locale)}
-              className="history-link group flex min-h-[132px] flex-col justify-between border-b border-r border-line px-5 py-5 no-underline transition-colors hover:bg-surface-hover last:sm:col-span-2"
-            >
-              <span className="flex items-center justify-between gap-2 text-[12px] font-medium text-oxblood">
-                <span>
-                  {locale === "en" ? areaCopy(getArea(store.area), locale).shortName : store.district}
-                  {partnerForStore(store.slug) ? (locale === "en" ? " · Partner" : " · 合作藥局") : ""}
-                </span>
-                <span className="text-forest transition-transform group-hover:translate-x-1">→</span>
-              </span>
-              <span>
-                <span className="block text-[18px] font-bold text-ink">{store.name}</span>
-                <span className="mt-1 block text-[13px] leading-[1.55] text-muted">{store.address}</span>
-              </span>
-            </Link>
-          ))}
+          <div className="grid gap-7 sm:gap-9">
+            {pharmacyGroups.map((group) => {
+              const countyCity = areaCopy(group.areas[0].area, locale).countyCity;
+              const countyStoreCount = group.areas.reduce((sum, entry) => sum + entry.stores.length, 0);
+              return (
+                <section key={group.countyCity} aria-labelledby={`pharmacy-county-${group.areas[0].area.slug}`}>
+                  <div className="flex items-baseline justify-between gap-4 border-t border-forest py-3">
+                    <h3 id={`pharmacy-county-${group.areas[0].area.slug}`} className="m-0 text-[16px] font-bold text-forest sm:text-[17px]">
+                      {countyCity}
+                    </h3>
+                    <span className="num text-[12px] text-muted">
+                      {locale === "en" ? `${countyStoreCount} listed` : `${countyStoreCount} 家`}
+                    </span>
+                  </div>
+
+                  <div className="grid border-l border-t border-line bg-ivory sm:grid-cols-2 lg:grid-cols-3">
+                    {group.areas.flatMap(({ area: listedArea, stores }) => {
+                      const displayArea = areaCopy(listedArea, locale);
+                      return stores.map((store) => (
+                        <Link
+                          key={store.slug}
+                          href={localizedPath(`/store/${store.slug}`, locale)}
+                          className="history-link group flex min-h-[132px] flex-col justify-between border-b border-r border-line px-5 py-5 no-underline transition-colors hover:bg-surface-hover"
+                        >
+                          <span className="flex items-center justify-between gap-2 text-[12px] font-medium text-oxblood">
+                            <span>
+                              {displayArea.shortName}
+                              {partnerForStore(store.slug) ? (locale === "en" ? " · Partner" : " · 合作藥局") : ""}
+                            </span>
+                            <span className="text-forest transition-transform group-hover:translate-x-1">→</span>
+                          </span>
+                          <span>
+                            <span className="block text-[18px] font-bold text-ink">{store.name}</span>
+                            <span className="mt-1 block text-[13px] leading-[1.55] text-muted">{store.address}</span>
+                          </span>
+                        </Link>
+                      ));
+                    })}
+                  </div>
+                </section>
+              );
+            })}
           </div>
           <p className="mb-0 mt-4 max-w-[760px] text-[13px] leading-[1.7] text-muted-2">
             {locale === "en" ? "Confirmed partners are labeled above; other stores are public listings. Partnership does not imply installed hardware or live inventory. Call before visiting." : "合作藥局已於上方標示；其餘為公開資料收錄。合作不代表已安裝設備或已有即時庫存；前往門市前請先電話確認。"}

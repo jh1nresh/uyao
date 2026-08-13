@@ -29,13 +29,13 @@ import type {
  * 合作，都不代表已安裝盒子或已有即時庫存。
  */
 export const AREAS: Area[] = [
-  { slug: "datong", name: "台北市大同區", shortName: "大同區" },
-  { slug: "linkou", name: "新北市林口區", shortName: "林口區" },
-  { slug: "luzhou", name: "新北市蘆洲區", shortName: "蘆洲區" },
-  { slug: "xinzhuang", name: "新北市新莊區", shortName: "新莊區" },
-  { slug: "zhongshan", name: "台北市中山區", shortName: "中山區" },
-  { slug: "xitun", name: "台中市西屯區", shortName: "西屯區" },
-  { slug: "miaoli", name: "苗栗縣苗栗市", shortName: "苗栗市" },
+  { slug: "datong", countyCity: "臺北市", name: "臺北市大同區", shortName: "大同區" },
+  { slug: "linkou", countyCity: "新北市", name: "新北市林口區", shortName: "林口區" },
+  { slug: "luzhou", countyCity: "新北市", name: "新北市蘆洲區", shortName: "蘆洲區" },
+  { slug: "xinzhuang", countyCity: "新北市", name: "新北市新莊區", shortName: "新莊區" },
+  { slug: "zhongshan", countyCity: "臺北市", name: "臺北市中山區", shortName: "中山區" },
+  { slug: "xitun", countyCity: "臺中市", name: "臺中市西屯區", shortName: "西屯區" },
+  { slug: "miaoli", countyCity: "苗栗縣", name: "苗栗縣苗栗市", shortName: "苗栗市" },
 ];
 
 export const DEFAULT_AREA: AreaSlug = "datong";
@@ -421,6 +421,30 @@ export function storesInArea(area: AreaSlug): Store[] {
   return STORES.filter((s) => s.area === area).sort(
     (a, b) => (a.distanceM ?? Infinity) - (b.distanceM ?? Infinity),
   );
+}
+
+export interface StoreCountyCityGroup {
+  countyCity: string;
+  areas: Array<{ area: Area; stores: Store[] }>;
+}
+
+/** 首波店家依縣市、服務區分組；順序跟 AREAS 一致，避免畫面隨資料輸入順序漂移。 */
+export function storeGroupsByCountyCity(): StoreCountyCityGroup[] {
+  const groups: StoreCountyCityGroup[] = [];
+
+  for (const area of AREAS) {
+    const stores = storesInArea(area.slug);
+    if (stores.length === 0) continue;
+
+    const current = groups.find((group) => group.countyCity === area.countyCity);
+    if (current) {
+      current.areas.push({ area, stores });
+    } else {
+      groups.push({ countyCity: area.countyCity, areas: [{ area, stores }] });
+    }
+  }
+
+  return groups;
 }
 
 export function storeCount(): number {
