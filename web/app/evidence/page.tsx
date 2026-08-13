@@ -3,6 +3,8 @@ import Link from "next/link";
 
 import { JsonLd } from "@/components/JsonLd";
 import { KnowledgeShell } from "@/components/landing/KnowledgeShell";
+import { allStores } from "@/lib/data";
+import { PARTNER_PHARMACY_COUNT, partnerForStore } from "@/lib/partners";
 import { ENTITY_DESCRIPTION, breadcrumbJsonLd, webPageJsonLd } from "@/lib/seo";
 import { indexablePageRobots } from "@/lib/seo-server";
 import { SHOP_URL } from "@/lib/shop";
@@ -14,6 +16,7 @@ import { SHOP_URL } from "@/lib/shop";
  */
 
 const EVIDENCE_DATE = "2026-08-12";
+const PARTNER_LOCATIONS = allStores().filter((store) => partnerForStore(store.slug));
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -166,13 +169,12 @@ export default function EvidencePage() {
       <section className="mt-12">
         <h2 className="editorial-display mb-4 mt-0 text-[26px] leading-[1.4]">目前試點進度</h2>
         <p className="m-0 max-w-[38em] text-[15px] leading-[1.85] text-ink-2">
-          目前已確認 <b className="text-ink">4 個合作藥局據點</b>：
+          目前已確認 <b className="text-ink">{PARTNER_PHARMACY_COUNT} 個合作藥局據點</b>：
         </p>
         <ul className="mb-0 mt-3 grid max-w-[42em] gap-2 pl-5 text-[15px] leading-[1.8] text-ink-2">
-          <li>建利西藥房（台北市大同區重慶北路1段85之3號1樓）</li>
-          <li>萊康連鎖藥局（新北市蘆洲區中正路126號1樓）</li>
-          <li>萊康中華健保藥局（新北市蘆洲區中華街45-1號1樓）</li>
-          <li>永遠藥師藥局（台中市西屯區西屯路二段28之2號1樓）</li>
+          {PARTNER_LOCATIONS.map((store) => (
+            <li key={store.slug}>{store.name}（{store.address}）</li>
+          ))}
         </ul>
         <p className="mb-0 mt-3 max-w-[42em] text-[15px] leading-[1.85] text-ink-2">
           合作關係與店家提供的品項清單已分開標示；現場設備安裝、即時庫存與完整退貨閉環仍待驗證。
@@ -191,7 +193,7 @@ export default function EvidencePage() {
       <section className="mt-12">
         <h2 className="editorial-display mb-4 mt-0 text-[26px] leading-[1.4]">Changelog</h2>
         <p className="num m-0 text-[14px] leading-[1.8] text-ink-2">
-          {EVIDENCE_DATE} — evidence ladder 與試點狀態同步；新增 4 個合作藥局據點，並保留設備安裝與即時庫存的未驗證狀態。
+          {EVIDENCE_DATE} — evidence ladder 與試點狀態同步；合作藥局據點更新為 {PARTNER_PHARMACY_COUNT} 個，並保留設備安裝與即時庫存的未驗證狀態。
         </p>
       </section>
 

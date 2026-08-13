@@ -28,7 +28,7 @@ export async function DrugResults({
           {locale === "en" ? "No matching products nearby." : "附近沒有符合的品項。"}
           <br />
           <span className="text-[13px] text-muted-2">
-            {locale === "en" ? "Try a different product name or package size." : "試試其他品名寫法，或輸入規格（例如「60粒」）。"}
+            {locale === "en" ? "Try an ingredient, symptom, wellness need, or a different product name." : "試試主要成分或保養需求，或換個品名寫法；症狀也可以直接描述。"}
           </span>
         </div>
         {query ? <NotifyMe kind="catalog_miss" query={query} area={area} /> : null}
@@ -47,8 +47,13 @@ export async function DrugResults({
           className="history-link block border-b border-line-soft no-underline last:border-b-0 hover:bg-surface-hover"
         >
           <div className="hidden min-h-[72px] grid-cols-[1fr_260px_120px_150px] items-center gap-x-4 px-5 py-4 text-[15px] lg:grid">
-            <span className="text-[17px] font-bold text-ink">
-              {drug.name} {drug.spec}
+            <span>
+              <span className="block text-[17px] font-bold text-ink">
+                {drug.name} {drug.spec}
+              </span>
+              <span className="mt-1 block text-[12px] leading-[1.5] text-muted">
+                {drug.nutritionFocus}
+              </span>
             </span>
             <span className="text-xs text-muted">
               {r.nearestStore
@@ -75,6 +80,7 @@ export async function DrugResults({
               </span>
             </div>
             <div className="flex items-center gap-2 text-[13px] text-muted">
+              <span className="min-w-0 truncate">{drug.nutritionFocus}</span>
               {locale === "en" ? `${r.storeCount} pharmacies` : `${r.storeCount} 家藥局`}
               <div className="flex-1" />
               <StockBadge badge={r.bestBadge} short />

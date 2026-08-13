@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { BrandLogo } from "@/components/BrandLogo";
 import { JsonLd } from "@/components/JsonLd";
+import { PARTNER_PHARMACY_COUNT } from "@/lib/partners";
 import { SHOP_URL } from "@/lib/shop";
 import { organizationJsonLd, softwareApplicationJsonLd, webSiteJsonLd } from "@/lib/seo";
 import { indexablePageRobots } from "@/lib/seo-server";
@@ -205,7 +206,7 @@ export default function CompanyLandingPage() {
               <h2 id="pilot-areas-heading" className="m-0 text-[17px] font-black">
                 首波服務與試點涵蓋六區
               </h2>
-              <p className="m-0 text-[13px] text-muted">4 個合作藥局據點；現場流程與試點招募持續進行</p>
+              <p className="m-0 text-[13px] text-muted">{PARTNER_PHARMACY_COUNT} 個合作藥局據點；現場流程與試點招募持續進行</p>
             </div>
             <div className="mt-5 grid border-l border-t border-line bg-paper sm:grid-cols-3 lg:grid-cols-6">
               {PILOT_AREAS.map((area) => (
@@ -442,12 +443,12 @@ export default function CompanyLandingPage() {
                     </div>
                   </div>
                   <p className="mb-0 mt-4 text-[12.5px] leading-[1.7] text-muted">
-                    目前只確認名稱與規格；價格、庫存、分類、成分與適用資訊不自行推測。
+                    品名、規格與營養補充方向有公開商品資料可核對；價格、庫存與是否適合使用仍待藥局確認。
                   </p>
                 </div>
               </div>
               <div className="num mt-3.5 flex flex-wrap items-center gap-2 text-[12px] font-medium text-muted">
-                <span>搜尋品名或規格</span>
+                <span>搜尋品名、成分或症狀</span>
                 <span className="text-line-strong">→</span>
                 <span className="text-green">inventory_miss</span>
                 <span className="text-line-strong">→</span>

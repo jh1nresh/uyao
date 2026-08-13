@@ -4,7 +4,7 @@ import { AreaSwitch } from "@/components/AreaSwitch";
 import { DrugResults } from "@/components/DrugResults";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { drugSummary, getArea, searchDrugs, toAreaSlug } from "@/lib/data";
+import { drugSummary, exactDrugMatches, getArea, searchDrugs, toAreaSlug } from "@/lib/data";
 import { matchSymptom } from "@/lib/symptoms";
 import { areaCopy } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
@@ -30,8 +30,9 @@ export default async function SearchPage({
   const locale = await getRequestLocale();
   const q = (rawQ ?? "").trim();
   const area = toAreaSlug(rawArea);
-  const symptom = matchSymptom(q);
-  const results = searchDrugs(q)
+  const exactMatches = exactDrugMatches(q);
+  const symptom = exactMatches.length > 0 ? null : matchSymptom(q);
+  const results = (exactMatches.length > 0 ? exactMatches : searchDrugs(q))
     .map((d) => drugSummary(d.slug, area))
     .filter((s): s is NonNullable<typeof s> => s !== undefined);
 
@@ -47,11 +48,11 @@ export default async function SearchPage({
         <p className="shop-kicker mb-3">SEARCH RESULTS</p>
         <div className="mb-7 flex flex-wrap items-end gap-3 border-b border-line pb-5">
           <h1 className="editorial-display m-0 text-[30px] leading-[1.25] sm:text-[40px]">
-            {q ? (locale === "en" ? `Results for “${q}”` : `「${q}」的結果`) : (locale === "en" ? "Search products" : "搜尋品項")}
+            {q ? (locale === "en" ? `Results for “${q}”` : `「${q}」的結果`) : (locale === "en" ? "Search medicines" : "搜尋藥品")}
           </h1>
           <p className="text-[13px] text-muted-2">
             {!q
-              ? locale === "en" ? "Enter a product name or package size" : "輸入品項名稱或規格"
+              ? locale === "en" ? "Enter a product, ingredient, symptom, or wellness need" : "輸入品名、成分、症狀或保養需求"
               : symptom?.kind === "refer"
                 ? locale === "en" ? "Ask a pharmacist first" : "建議先問藥師"
                 : `${results.length} ${locale === "en" ? "items" : "項"} · ${areaCopy(getArea(area), locale).shortName}`}
@@ -63,7 +64,7 @@ export default async function SearchPage({
         {/* 症狀類查詢要交代兩件事：為什麼是這些結果，以及我們不是在給醫療建議 */}
         {q && symptom?.kind === "expand" && (
           <p className="mb-2.5 border border-line-strong bg-surface px-3.5 py-2.5 text-[13px] leading-[1.7] text-muted">
-            {locale === "en" ? "These are search matches, not medicine advice. Ask a pharmacist if you are unsure which product is appropriate." : <>「{symptom.matched}」對應到<b className="font-bold text-ink">{symptom.terms.join("、")}</b>，以下是含這些適應症的品項。<br />這是搜尋結果不是用藥建議 —— 不確定該用哪一種，到店問藥師。</>}
+            {locale === "en" ? "These items match a nutrition or daily-wellness focus. They are not treatments for a symptom. Ask a pharmacist if you are unsure what is appropriate." : <>「{symptom.matched}」對應到<b className="font-bold text-ink">{symptom.terms.join("、")}</b>，以下是營養補充／日常保養定位相符的品項。<br />這不代表能治療症狀；不舒服或不確定是否適合，請先問藥師或就醫。</>}
           </p>
         )}
 
@@ -87,7 +88,7 @@ export default async function SearchPage({
           <DrugResults results={results} query={q} area={area} />
         ) : (
           <div className="border border-line px-4 py-8 text-center text-[15px] text-muted">
-            {locale === "en" ? "Enter a product name or package size above to start searching." : "上面輸入品項名稱或規格開始搜尋。"}
+            {locale === "en" ? "Enter a product, ingredient, symptom, or wellness need above to start searching." : "上面輸入品名、成分、症狀或保養需求開始搜尋。"}
           </div>
         )}
       </section>

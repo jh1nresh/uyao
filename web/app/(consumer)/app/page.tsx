@@ -73,13 +73,13 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const STEPS_ZH = [
-  { title: "搜尋", body: "輸入品項名稱或規格，查看合作藥局提供的試營運目錄。" },
+  { title: "搜尋", body: "輸入品名、成分、症狀或保養需求，查看試營運目錄與附近公開藥局資料。" },
   { title: "留下需求", body: "送出找藥或預留需求，等待藥局確認是否能供應。" },
   { title: "依回覆前往", body: "藥局確認後再依回覆前往；到店付款並由藥師交付。" },
 ];
 
 const STEPS_EN = [
-  { title: "Search", body: "Enter a product name or package size to check the partner-provided trial catalog." },
+  { title: "Search", body: "Enter a name, ingredient, symptom, or wellness need to check the trial catalog and nearby pharmacy listings." },
   { title: "Leave a request", body: "Send a medicine or pickup request and wait for a pharmacy to confirm supply." },
   { title: "Follow the reply", body: "Travel only after confirmation; pay in store and receive the item from a pharmacist." },
 ];
@@ -115,10 +115,10 @@ export default async function HomePage({
           <div className="mx-auto w-full max-w-[1120px] text-center">
             <p className="shop-kicker mb-5 mt-0">NEARBY SEARCH · REQUEST · PHARMACY CONFIRMATION</p>
             <h1 className="editorial-display m-0 text-[clamp(40px,4.4vw,62px)] leading-[1.08]">
-              {locale === "en" ? "Start with a product name or package size." : "先輸入品項名稱或規格。"}
+              {locale === "en" ? "Start with a symptom, not a product name." : "不用先知道藥名。從症狀開始找。"}
             </h1>
             <p className="mx-auto mt-5 max-w-[620px] text-[15px] leading-[1.8] text-ink-2 sm:text-[16px]">
-              {locale === "en" ? "The catalog currently contains names and package sizes provided by partner pharmacies. Supply and suitability still require pharmacy confirmation." : "目前先收錄合作藥局提供的品項名稱與規格；實際供應與是否適合使用，仍由藥局或藥師確認。"}
+              {locale === "en" ? "Describe what feels wrong or what kind of daily wellness support you need. We organize relevant partner-listed items and nearby pharmacies; a pharmacist still confirms what is appropriate." : "輸入哪裡不舒服或想保養的方向，我們整理相關品項與附近藥局；食品只作營養補充，症狀與用藥仍由藥師確認。"}
             </p>
           </div>
 
@@ -129,11 +129,11 @@ export default async function HomePage({
                   {currentArea.shortName} · PHARMACY SEARCH
                 </p>
                 <h2 className="editorial-display mb-0 mt-2 text-[25px] leading-[1.25] text-forest sm:text-[30px]">
-                  {locale === "en" ? "Which product are you looking for?" : "今天要找哪個品項？"}
+                  {locale === "en" ? "What do you need today?" : "今天哪裡不舒服？"}
                 </h2>
               </div>
               <p className="m-0 max-w-[360px] text-[13px] leading-[1.7] text-muted">
-                {locale === "en" ? "Search by product name or package size." : "可輸入品名或規格，例如「護智康 60粒」。"}
+                {locale === "en" ? "You can also search by product name, ingredient, or package size." : "也可以直接輸入品名、主要成分或規格。"}
               </p>
             </div>
 
@@ -159,7 +159,7 @@ export default async function HomePage({
             </div>
 
             <div className="search-hero-steps mt-5 grid border-y border-line py-4 text-[12px] leading-[1.65] text-muted sm:grid-cols-3">
-              <span><b className="num mr-2 text-oxblood">01</b>{locale === "en" ? "Search a name or package size" : "輸入品名或規格"}</span>
+              <span><b className="num mr-2 text-oxblood">01</b>{locale === "en" ? "Search a product, symptom, or need" : "輸入品名、症狀或需求"}</span>
               <span className="mt-2 sm:mt-0"><b className="num mr-2 text-oxblood">02</b>{locale === "en" ? "Review the data source and status" : "查看資料來源與狀態"}</span>
               <span className="mt-2 sm:mt-0"><b className="num mr-2 text-oxblood">03</b>{locale === "en" ? "Leave a request and wait for confirmation" : "留下需求，等待藥局確認"}</span>
             </div>
@@ -240,11 +240,16 @@ export default async function HomePage({
             <Link
               key={d.slug}
               href={`${localizedPath(`/drug/${d.slug}`, locale)}?area=${area}`}
-              className="history-link group flex min-h-[112px] flex-col justify-between border-b border-r border-line bg-paper px-4 py-4 no-underline transition-colors hover:bg-surface-hover"
+              className="history-link group flex min-h-[138px] flex-col justify-between border-b border-r border-line bg-paper px-4 py-4 no-underline transition-colors hover:bg-surface-hover"
             >
-              <span className="text-[16px] font-bold text-ink">{drug.name}</span>
+              <span>
+                <span className="block text-[16px] font-bold text-ink">{drug.name}</span>
+                <span className="mt-2 block text-[12.5px] leading-[1.55] text-muted">
+                  {locale === "en" ? d.nutritionFocusEn : d.nutritionFocus}
+                </span>
+              </span>
               <span className="flex items-end justify-between gap-2 text-[12px] text-muted-2">
-                <span>{drug.spec} · {locale === "en" ? "Partner-provided" : "合作藥局提供"}</span>
+                <span>{drug.spec} · {locale === "en" ? "Non-drug product" : "非藥品"}</span>
                 <span className="text-forest transition-transform group-hover:translate-x-1">→</span>
               </span>
             </Link>

@@ -125,7 +125,7 @@ def load_labels(path: Path = DATA_TS) -> dict[str, str]:
     """slug → 中文名，**只用來顯示**。
 
     直接從 `data.ts` 撈 slug/name/spec 配對。從 Python 讀 TS 當然是脆的，
-    但這裡的失敗代價只是報表印出 slug 而不是「護智康 60粒」——所以刻意
+    但這裡的失敗代價只是報表印出 slug 而不是「護智慷 60粒」——所以刻意
     不做成硬相依，撈不到就退回 slug 原樣。
     真要穩，是等目錄搬進資料庫，不是在這裡寫 TS parser。
     """

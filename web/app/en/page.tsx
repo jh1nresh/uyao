@@ -4,6 +4,7 @@ import Link from "next/link";
 import { BrandLogo } from "@/components/BrandLogo";
 import { BrandMark } from "@/components/BrandMark";
 import { JsonLd } from "@/components/JsonLd";
+import { PARTNER_PHARMACY_COUNT } from "@/lib/partners";
 import { SHOP_URL } from "@/lib/shop";
 import { organizationJsonLd, softwareApplicationJsonLd, webSiteJsonLd } from "@/lib/seo";
 import { indexablePageRobots } from "@/lib/seo-server";
@@ -221,7 +222,7 @@ export default function EnglishLandingPage() {
                 First-wave service and pilot coverage across six districts
               </h2>
               <p className="m-0 text-[13px] text-muted">
-                Four partner pharmacy locations; workflow trials and recruitment continue
+                {PARTNER_PHARMACY_COUNT} partner pharmacy locations; workflow trials and recruitment continue
               </p>
             </div>
             <div className="mt-5 grid border-l border-t border-line bg-paper sm:grid-cols-3 lg:grid-cols-6">
@@ -464,13 +465,13 @@ export default function EnglishLandingPage() {
                     </div>
                   </div>
                   <p className="mb-0 mt-4 text-[12.5px] leading-[1.7] text-muted">
-                    Only the name and package size are confirmed. Price, availability, classification,
-                    ingredients, and indications are not inferred.
+                    Public product sources support the name, package size, and nutrition focus. Price,
+                    availability, and suitability still require pharmacy confirmation.
                   </p>
                 </div>
               </div>
               <div className="num mt-3.5 flex flex-wrap items-center gap-2 text-[12px] font-medium text-muted">
-                <span>Search by product name or package size</span>
+                <span>Search by product, ingredient, or symptom</span>
                 <span className="text-line-strong">→</span>
                 <span className="text-green">inventory_miss</span>
                 <span className="text-line-strong">→</span>

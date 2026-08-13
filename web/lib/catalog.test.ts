@@ -10,15 +10,16 @@ import {
   storesForDrug,
 } from "./data";
 import { PARTNER_PHARMACIES } from "./partners";
+import { matchSymptom } from "./symptoms";
 
 const EXPECTED_CATALOG = [
   { slug: "hugu-gaishu-100", label: "護谷鈣素 100粒" },
   { slug: "shengkangning-150", label: "勝康寧 150粒" },
   { slug: "entineng-230", label: "恩體能 230粒" },
-  { slug: "jinjiweichang-60", label: "進磯為常 60粒" },
-  { slug: "keqiqing-capsule", label: "克氣清咳嗽膠囊" },
-  { slug: "huzhikang-60", label: "護智康 60粒" },
-  { slug: "huzhikang-150", label: "護智康 150粒" },
+  { slug: "jinjiweichang-60", label: "進磯為常-D 60粒" },
+  { slug: "keqiqing-capsule", label: "克氣清膠囊" },
+  { slug: "huzhikang-60", label: "護智慷 60粒" },
+  { slug: "huzhikang-150", label: "護智慷 150粒" },
 ] as const;
 
 const OLD_SAMPLE_SLUGS = [
@@ -66,13 +67,17 @@ describe("合作藥局常見品項目錄", () => {
     );
   });
 
-  it("未提供的醫療主檔欄位保持空白或待確認", () => {
+  it("一般食品保留非藥品邊界，並附可核對的營養補充資料", () => {
     for (const drug of allDrugs()) {
       expect(drug.nameEn).toBeUndefined();
       expect(drug.licenseNo).toBe("");
-      expect(drug.drugClass).toBe("待確認");
-      expect(drug.ingredients).toEqual([]);
+      expect(drug.drugClass).toBe("非藥品");
+      expect(drug.ingredients.length).toBeGreaterThan(0);
       expect(drug.indications).toEqual([]);
+      expect(drug.nutritionFocus.length).toBeGreaterThan(0);
+      expect(drug.nutritionFocusEn.length).toBeGreaterThan(0);
+      expect(drug.searchTerms.length).toBeGreaterThan(0);
+      expect(drug.source.url).toMatch(/^https:\/\//);
       expect(alternativesFor(drug.slug)).toEqual([]);
       expect(storesForDrug(drug.slug)).toEqual([]);
     }
@@ -83,9 +88,33 @@ describe("合作藥局常見品項目錄", () => {
     expect(searchDrugs(label.replaceAll(" ", "")).map((drug) => drug.slug)).toEqual([slug]);
   });
 
-  it("護智康名稱搜尋保留兩種規格，完整規格只回對應一筆", () => {
+  it("店家提供的護智康舊字仍可找到護智慷兩種規格", () => {
     expect(searchDrugs("護智康").map((drug) => drug.spec)).toEqual(["60粒", "150粒"]);
     expect(searchDrugs("護智康150粒").map((drug) => drug.slug)).toEqual(["huzhikang-150"]);
+  });
+
+  it("店家提供的舊品名與省略符號寫法仍可搜尋", () => {
+    expect(searchDrugs("進磯為常60粒").map((drug) => drug.slug)).toEqual(["jinjiweichang-60"]);
+    expect(searchDrugs("克氣清咳嗽膠囊").map((drug) => drug.slug)).toEqual(["keqiqing-capsule"]);
+  });
+
+  it("低風險保養需求對應到營養定位，不對應疾病治療", () => {
+    expect(searchDrugs("我想補鈣").map((drug) => drug.slug)).toEqual(["hugu-gaishu-100"]);
+    expect(searchDrugs("呼吸道保養").map((drug) => drug.slug)).toEqual(["keqiqing-capsule"]);
+    expect(searchDrugs("腦部保養").map((drug) => drug.slug)).toEqual([
+      "huzhikang-60",
+      "huzhikang-150",
+    ]);
+  });
+
+  it("症狀與高風險描述只給安全分流，不回傳一般食品", () => {
+    expect(matchSymptom("咳嗽")).toMatchObject({ kind: "refer", matched: "咳嗽" });
+    expect(searchDrugs("咳嗽")).toEqual([]);
+    expect(matchSymptom("胸痛")).toMatchObject({ kind: "refer", matched: "胸痛" });
+    expect(searchDrugs("胸痛")).toEqual([]);
+    expect(matchSymptom("被蚊子咬")).toMatchObject({ kind: "refer", matched: "被蚊子咬" });
+    expect(searchDrugs("痠痛")).toEqual([]);
+    expect(searchDrugs("止癢")).toEqual([]);
   });
 
   it("舊樣品不再是公開品項或搜尋結果", () => {
