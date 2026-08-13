@@ -13,7 +13,9 @@ const config: Config = {
         forest: "#17392C",
         "ink-2": "#3E4B44",
         muted: "#59665F",
-        "muted-2": "#76837A",
+        // Secondary copy is still visually quieter than `muted`, but remains
+        // readable at 4.71:1 on the primary ivory background.
+        "muted-2": "#606D66",
         stale: "#68766D",
         green: "#087B43",
         "green-hover": "#066737",
@@ -36,7 +38,7 @@ const config: Config = {
       // 基準字級整體上調：原本全站最常用的是 11px，對「找藥的人」太小。
       // xs/sm 是 token（用了 48 次），在這裡改一次就全站生效。
       fontSize: {
-        xs: ["13px", { lineHeight: "1.5" }],
+        xs: ["14px", { lineHeight: "1.55" }],
         sm: ["15px", { lineHeight: "1.6" }],
       },
       fontFamily: {

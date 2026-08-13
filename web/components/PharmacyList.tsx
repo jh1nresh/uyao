@@ -33,17 +33,16 @@ export function PharmacyList({
     <>
       <section className="bg-paper">
       <div className="shop-shell py-10 sm:py-14">
-      <p className="shop-kicker mb-3">NEARBY PHARMACIES</p>
       <div className="mb-6 flex flex-wrap items-end gap-3">
         <h2 className="editorial-display m-0 text-[28px] sm:text-[34px]">{locale === "en" ? `${rows.length} nearby pharmacies` : `附近 ${rows.length} 家藥局`}</h2>
         <div className="flex-1" />
-        <p className="text-[13px] text-muted-2">{locale === "en" ? "Sorted by: freshness → distance" : "排序：庫存新鮮度 → 距離"}</p>
+        <p className="text-[14px] text-muted-2">{locale === "en" ? "Sorted by: freshness → distance" : "排序：庫存新鮮度 → 距離"}</p>
       </div>
 
       <div className="mb-1.5 border border-line bg-ivory">
           {/* Desktop: 資料密表格 */}
           <div
-            className={`hidden ${COLS} items-center gap-x-3 border-b border-line bg-surface px-3.5 py-2 text-[13px] font-bold text-muted lg:grid`}
+            className={`hidden ${COLS} items-center gap-x-3 border-b border-line bg-surface px-3.5 py-2 text-[14px] font-bold text-muted lg:grid`}
           >
             <div>{locale === "en" ? "Pharmacy" : "店家"}</div>
             <div className="text-right">{locale === "en" ? "Distance" : "距離"}</div>
@@ -59,7 +58,7 @@ export function PharmacyList({
               >
                 <Link href={localizedPath(`/store/${r.store.slug}`, locale)} className="history-link font-medium text-ink no-underline hover:text-green">
                   {r.store.name}
-                  <span className="ml-1.5 text-[13px] font-normal text-muted-2">
+                  <span className="ml-1.5 text-[14px] font-normal text-muted-2">
                     {areaCopy(getArea(r.store.area), locale).shortName}
                   </span>
                 </Link>
@@ -81,14 +80,14 @@ export function PharmacyList({
                     >
                       {r.store.name}
                     </Link>
-                    <span className="text-[13px] text-muted-2">
+                    <span className="text-[14px] text-muted-2">
                       {areaCopy(getArea(r.store.area), locale).shortName}
                     </span>
-                    <span className="num text-[13px] text-ink-2">
+                    <span className="num text-[14px] text-ink-2">
                       {formatDistance(r.store.distanceM)}
                     </span>
                   </div>
-                  <div className="flex flex-wrap items-center gap-2 text-[13px]">
+                  <div className="flex flex-wrap items-center gap-2 text-[14px]">
                     <span className="text-muted">{hoursSummary(r.store, locale)}</span>
                     <StockBadge badge={r.badge} />
                   </div>
@@ -99,7 +98,7 @@ export function PharmacyList({
           ))}
       </div>
 
-      <p className="pt-3 text-[13px] leading-[1.6] text-muted-2">
+      <p className="pt-3 text-[14px] leading-[1.65] text-muted-2">
         {locale === "en" ? "? = no recent receiving scan. Reserve to ask the pharmacy to confirm · Prices and medicine guidance are provided in store · No online checkout" : "？＝該店尚無近期掃描紀錄，按「預留」由藥局確認 · 價格與用藥說明由藥師於門市提供 · 本服務僅供預留，不提供線上交易"}
       </p>
       </div>
