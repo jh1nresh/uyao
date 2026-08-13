@@ -8,16 +8,12 @@ import type { PartnerStoreItem } from "@/lib/partner-stores";
 const COPY = {
   zh: {
     headingSuffix: "家合作藥局據點",
-    pause: "暫停移動",
-    resume: "繼續移動",
     evidence: "查看合作與證據 →",
     ariaLabel: "合作藥局據點",
     notice: "合作不代表已安裝設備或已有即時庫存；其他公開收錄店家也不代表合作。",
   },
   en: {
     headingSuffix: "partner pharmacy locations",
-    pause: "Pause movement",
-    resume: "Resume movement",
     evidence: "Partnership evidence →",
     ariaLabel: "Partner pharmacy locations",
     notice:
@@ -60,7 +56,6 @@ export function PartnerMarquee({
   locale: keyof typeof COPY;
 }) {
   const sectionRef = useRef<HTMLElement>(null);
-  const [paused, setPaused] = useState(false);
   const [visible, setVisible] = useState(true);
   const copy = COPY[locale];
 
@@ -79,35 +74,25 @@ export function PartnerMarquee({
   return (
     <section
       ref={sectionRef}
-      className="partner-marquee border-b border-line bg-paper"
-      data-paused={paused || !visible}
+      className="partner-marquee bg-ivory"
+      data-paused={!visible}
       aria-labelledby={`partner-marquee-heading-${locale}`}
     >
-      <div className="mx-auto max-w-[1240px] px-5 py-6 sm:px-8 sm:py-7">
+      <div className="mx-auto max-w-[1240px] px-5 py-5 sm:px-8 sm:py-6">
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1">
           <h2 id={`partner-marquee-heading-${locale}`} className="m-0 text-[17px] font-black">
             <span className="num text-oxblood">{items.length}</span> {copy.headingSuffix}
           </h2>
-          <div className="flex items-center gap-5 text-xs font-semibold">
-            <button
-              type="button"
-              className="partner-marquee-control inline-flex min-h-11 items-center border-0 bg-transparent p-0 text-muted underline decoration-line-strong underline-offset-4 hover:text-forest"
-              aria-pressed={paused}
-              onClick={() => setPaused((current) => !current)}
-            >
-              {paused ? copy.resume : copy.pause}
-            </button>
-            <Link
-              href="/zh-tw/evidence#partners"
-              className="inline-flex min-h-11 items-center text-forest no-underline hover:text-green"
-            >
-              {copy.evidence}
-            </Link>
-          </div>
+          <Link
+            href="/zh-tw/evidence#partners"
+            className="inline-flex min-h-11 items-center text-xs font-semibold text-forest no-underline hover:text-green"
+          >
+            {copy.evidence}
+          </Link>
         </div>
 
         <div
-          className="partner-marquee-viewport mt-2 overflow-hidden border-y border-line-strong py-4"
+          className="partner-marquee-viewport mt-2 overflow-hidden py-3"
           aria-label={copy.ariaLabel}
         >
           <div className="partner-marquee-track flex w-max">

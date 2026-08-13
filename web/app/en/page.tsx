@@ -173,7 +173,7 @@ export default function EnglishLandingPage() {
       </nav>
 
       {/* Hero — category 先講清楚，visual 用同一條 action loop */}
-      <header className="border-b border-line bg-ivory">
+      <header className="bg-ivory">
         <Container>
           <div className="grid items-center gap-14 py-16 sm:py-24 lg:min-h-[740px] lg:grid-cols-[1.08fr_.92fr] lg:gap-20 lg:py-24">
             <div>
