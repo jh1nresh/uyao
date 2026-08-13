@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { JsonLd } from "@/components/JsonLd";
 import { KnowledgeCta, KnowledgeShell, ProvenanceBox } from "@/components/landing/KnowledgeShell";
+import { AEO_PAGES } from "@/lib/aeo";
 import { articleJsonLd, breadcrumbJsonLd } from "@/lib/seo";
 import { indexablePageRobots } from "@/lib/seo-server";
 
@@ -12,17 +13,19 @@ import { indexablePageRobots } from "@/lib/seo-server";
  * 不寫固定天數或通則，全篇明示「依供應商、品項與契約而異」。
  */
 
-const PUBLISHED = "2026-08-12";
-const UPDATED = "2026-08-12";
-const TITLE = "藥局向供應商辦理藥品退貨前，應該先確認哪些事？";
-const DESCRIPTION =
-  "藥品退貨沒有全國統一的天數規則。辦退貨前先確認供應商的退貨窗口、可退條件、單據需求、退款方式與聯絡窗口；本文整理應逐項確認的欄位清單。";
+const PAGE = AEO_PAGES.pharmacyReturnWindow;
+const {
+  datePublished: PUBLISHED,
+  dateModified: UPDATED,
+  question: TITLE,
+  directAnswer: DESCRIPTION,
+} = PAGE;
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: { absolute: "藥品退貨前要確認的事：窗口、條件與單據｜uYao 藥局營運指南" },
     description: DESCRIPTION,
-    alternates: { canonical: "/zh-tw/guides/pharmacy-return-window" },
+    alternates: { canonical: PAGE.path },
     robots: await indexablePageRobots(),
   };
 }
@@ -62,13 +65,13 @@ export default function ReturnWindowGuidePage() {
           articleJsonLd({
             headline: TITLE,
             description: DESCRIPTION,
-            path: "/zh-tw/guides/pharmacy-return-window",
+            path: PAGE.path,
             datePublished: PUBLISHED,
             dateModified: UPDATED,
           }),
           breadcrumbJsonLd([
             { name: "uYao", path: "/zh-tw" },
-            { name: "藥品退貨管理", path: "/zh-tw/guides/pharmacy-return-window" },
+            { name: "藥品退貨管理", path: PAGE.path },
           ]),
         ]}
       />
@@ -79,7 +82,7 @@ export default function ReturnWindowGuidePage() {
         </h1>
 
         <p className="mt-6 max-w-[38em] border-l-2 border-green pl-5 text-[17px] font-medium leading-[1.9] text-ink">
-          藥品退貨沒有全國統一的天數規則；能不能退、怎麼退，取決於各供應商的契約與品項條件。辦退貨前，先逐項確認退貨窗口、可退條件、單據需求、退款方式與聯絡窗口。
+          {DESCRIPTION}
         </p>
 
         <section className="mt-9">

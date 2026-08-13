@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { JsonLd } from "@/components/JsonLd";
 import { KnowledgeCta, KnowledgeShell, ProvenanceBox } from "@/components/landing/KnowledgeShell";
+import { AEO_PAGES } from "@/lib/aeo";
 import { articleJsonLd, breadcrumbJsonLd } from "@/lib/seo";
 import { indexablePageRobots } from "@/lib/seo-server";
 
@@ -13,17 +14,19 @@ import { indexablePageRobots } from "@/lib/seo-server";
  * 不碰病患用藥建議（high-trust red line）。
  */
 
-const PUBLISHED = "2026-08-12";
-const UPDATED = "2026-08-12";
-const TITLE = "藥局如何管理藥品效期，才不會累積報廢成本？";
-const DESCRIPTION =
-  "獨立藥局效期管理的可執行做法：進貨時記錄批號與效期、依剩餘效期分層盤點、在供應商退貨窗口關閉前決定退貨或減量，並記錄每批結果。";
+const PAGE = AEO_PAGES.pharmacyExpiryManagement;
+const {
+  datePublished: PUBLISHED,
+  dateModified: UPDATED,
+  question: TITLE,
+  directAnswer: DESCRIPTION,
+} = PAGE;
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: { absolute: "藥品效期管理：從批號記錄到退貨窗口｜uYao 藥局營運指南" },
     description: DESCRIPTION,
-    alternates: { canonical: "/zh-tw/guides/pharmacy-expiry-management" },
+    alternates: { canonical: PAGE.path },
     robots: await indexablePageRobots(),
   };
 }
@@ -67,13 +70,13 @@ export default function ExpiryGuidePage() {
           articleJsonLd({
             headline: TITLE,
             description: DESCRIPTION,
-            path: "/zh-tw/guides/pharmacy-expiry-management",
+            path: PAGE.path,
             datePublished: PUBLISHED,
             dateModified: UPDATED,
           }),
           breadcrumbJsonLd([
             { name: "uYao", path: "/zh-tw" },
-            { name: "藥品效期管理", path: "/zh-tw/guides/pharmacy-expiry-management" },
+            { name: "藥品效期管理", path: PAGE.path },
           ]),
         ]}
       />
@@ -84,7 +87,7 @@ export default function ExpiryGuidePage() {
         </h1>
 
         <p className="mt-6 max-w-[38em] border-l-2 border-green pl-5 text-[17px] font-medium leading-[1.9] text-ink">
-          關鍵是在進貨當下記錄批號與效期，依剩餘效期分層盤點，並在供應商退貨窗口關閉前決定退貨、減量或加速流動，最後記錄每批實際結果。
+          {DESCRIPTION}
         </p>
 
         <section className="mt-9">

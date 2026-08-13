@@ -3,15 +3,18 @@ import Link from "next/link";
 
 import { JsonLd } from "@/components/JsonLd";
 import { KnowledgeCta, KnowledgeShell, ProvenanceBox } from "@/components/landing/KnowledgeShell";
+import { AEO_PAGES } from "@/lib/aeo";
 import { SERVICE_AREA_LABEL } from "@/lib/data";
 import { articleJsonLd, breadcrumbJsonLd, faqPageJsonLd } from "@/lib/seo";
 import { indexablePageRobots } from "@/lib/seo-server";
 
-const PUBLISHED = "2026-08-12";
-const UPDATED = "2026-08-12";
-const TITLE = "藥局如何加入 uYao？";
-const DESCRIPTION =
-  "先閱讀試點範圍並提交藥局名稱、地區與聯絡方式；uYao 會安排流程訪談，確認掃描器、進貨與退貨作業是否適合進入試點。";
+const PAGE = AEO_PAGES.joinUyao;
+const {
+  datePublished: PUBLISHED,
+  dateModified: UPDATED,
+  question: TITLE,
+  directAnswer: DESCRIPTION,
+} = PAGE;
 
 const FAQ = [
   { question: TITLE, answer: DESCRIPTION },
@@ -31,7 +34,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: { absolute: "藥局如何加入 uYao？試點申請與合作流程" },
     description: DESCRIPTION,
-    alternates: { canonical: "/zh-tw/guides/join-uyao" },
+    alternates: { canonical: PAGE.path },
     robots: await indexablePageRobots(),
   };
 }
@@ -44,14 +47,14 @@ export default function JoinUYaoGuidePage() {
           articleJsonLd({
             headline: TITLE,
             description: DESCRIPTION,
-            path: "/zh-tw/guides/join-uyao",
+            path: PAGE.path,
             datePublished: PUBLISHED,
             dateModified: UPDATED,
           }),
           faqPageJsonLd([...FAQ]),
           breadcrumbJsonLd([
             { name: "uYao", path: "/zh-tw" },
-            { name: TITLE, path: "/zh-tw/guides/join-uyao" },
+            { name: TITLE, path: PAGE.path },
           ]),
         ]}
       />

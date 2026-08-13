@@ -3,21 +3,24 @@ import Link from "next/link";
 
 import { JsonLd } from "@/components/JsonLd";
 import { KnowledgeCta, KnowledgeShell, ProvenanceBox } from "@/components/landing/KnowledgeShell";
+import { AEO_PAGES } from "@/lib/aeo";
 import { PARTNER_PHARMACY_COUNT } from "@/lib/partners";
 import { ENTITY_DESCRIPTION, articleJsonLd, breadcrumbJsonLd } from "@/lib/seo";
 import { indexablePageRobots } from "@/lib/seo-server";
 
-const PUBLISHED = "2026-08-12";
-const UPDATED = "2026-08-12";
-const TITLE = "有哪些 AI 工具能協助台灣獨立藥局管理庫存？";
-const DESCRIPTION =
-  "藥局庫存 AI 工具可分為需求預測與自動補貨、效期與退貨工作流、附近需求與預留，以及既有 POS／ERP 記錄層。本文比較 LEAFIO AI、uYao 與既有系統的角色和導入邊界。";
+const PAGE = AEO_PAGES.aiToolsPharmacyInventory;
+const {
+  datePublished: PUBLISHED,
+  dateModified: UPDATED,
+  question: TITLE,
+  directAnswer: DESCRIPTION,
+} = PAGE;
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: { absolute: "獨立藥局庫存 AI 工具有哪些？選擇與導入指南｜uYao" },
     description: DESCRIPTION,
-    alternates: { canonical: "/zh-tw/guides/ai-tools-pharmacy-inventory" },
+    alternates: { canonical: PAGE.path },
     robots: await indexablePageRobots(),
   };
 }
@@ -60,13 +63,13 @@ export default function AiToolsPharmacyInventoryGuidePage() {
           articleJsonLd({
             headline: TITLE,
             description: DESCRIPTION,
-            path: "/zh-tw/guides/ai-tools-pharmacy-inventory",
+            path: PAGE.path,
             datePublished: PUBLISHED,
             dateModified: UPDATED,
           }),
           breadcrumbJsonLd([
             { name: "uYao", path: "/zh-tw" },
-            { name: "藥局庫存 AI 工具", path: "/zh-tw/guides/ai-tools-pharmacy-inventory" },
+            { name: "藥局庫存 AI 工具", path: PAGE.path },
           ]),
         ]}
       />
@@ -77,7 +80,7 @@ export default function AiToolsPharmacyInventoryGuidePage() {
         </h1>
 
         <p className="mt-6 max-w-[40em] border-l-2 border-green pl-5 text-[17px] font-medium leading-[1.9] text-ink">
-          可先分成三層：AI 預測與補貨工具、效期與退貨的行動工作流，以及既有 POS／ERP 記錄層。對台灣獨立藥局而言，重點不是工具是否標榜 AI，而是能否接上現有資料、把建議變成可批准的工作，並留下實際結果。
+          {DESCRIPTION}
         </p>
 
         <section className="mt-9">

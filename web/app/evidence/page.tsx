@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { JsonLd } from "@/components/JsonLd";
 import { KnowledgeShell } from "@/components/landing/KnowledgeShell";
+import { AEO_PAGES } from "@/lib/aeo";
 import { allStores } from "@/lib/data";
 import { PARTNER_PHARMACY_COUNT, partnerForStore } from "@/lib/partners";
 import { ENTITY_DESCRIPTION, breadcrumbJsonLd, webPageJsonLd } from "@/lib/seo";
@@ -10,20 +11,24 @@ import { indexablePageRobots } from "@/lib/seo-server";
 import { SHOP_URL } from "@/lib/shop";
 
 /**
- * 官方產品事實與 GEO 引用入口（spec §4A）。這頁是 uYao 對外主張的
+ * 官方產品事實與 GEO/AEO 引用入口。這頁是 uYao 對外主張的
  * single source of truth：AI assistant 與合作方查證都指到這裡。
  * 誠實紅線：repo/test proof 不寫成市場驗證；合作、設備安裝與即時庫存分開標示。
  */
 
-const EVIDENCE_DATE = "2026-08-12";
+const PAGE = AEO_PAGES.evidence;
+const {
+  dateModified: EVIDENCE_DATE,
+  question: TITLE,
+  directAnswer: DESCRIPTION,
+} = PAGE;
 const PARTNER_LOCATIONS = allStores().filter((store) => partnerForStore(store.slug));
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: { absolute: "uYao 目前做到什麼？產品證據與試點進度" },
-    description:
-      "uYao 的官方產品事實：目前已在程式與測試中驗證的能力、prototype 範圍、試點進度、已知限制與證據更新日期。",
-    alternates: { canonical: "/zh-tw/evidence" },
+    description: DESCRIPTION,
+    alternates: { canonical: PAGE.path },
     robots: await indexablePageRobots(),
   };
 }
@@ -82,22 +87,24 @@ export default function EvidencePage() {
       <JsonLd
         nodes={[
           webPageJsonLd({
-            name: "uYao 目前做到什麼？產品證據與試點進度",
-            description:
-              "uYao 的官方產品事實：已驗證能力、prototype 範圍、試點進度、已知限制與證據更新日期。",
-            path: "/zh-tw/evidence",
+            name: TITLE,
+            description: DESCRIPTION,
+            path: PAGE.path,
             dateModified: EVIDENCE_DATE,
           }),
           breadcrumbJsonLd([
             { name: "uYao", path: "/zh-tw" },
-            { name: "產品證據", path: "/zh-tw/evidence" },
+            { name: "產品證據", path: PAGE.path },
           ]),
         ]}
       />
 
       <h1 className="editorial-display m-0 text-[clamp(32px,4.5vw,44px)] leading-[1.3] [text-wrap:pretty]">
-        uYao 目前做到什麼？
+        {TITLE}
       </h1>
+      <p className="mt-6 max-w-[40em] border-l-2 border-green pl-5 text-[17px] font-medium leading-[1.9] text-ink">
+        {DESCRIPTION}
+      </p>
       <p className="num mt-3 text-[13px] font-medium text-muted">
         證據更新日期：{EVIDENCE_DATE}
       </p>

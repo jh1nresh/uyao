@@ -2,7 +2,7 @@ import type { Locale } from "./i18n";
 import { SHOP_URL } from "./shop";
 
 /**
- * SEO/GEO v1（spec: company-landing-page-seo-geo-v1.md）。
+ * SEO/GEO foundation with the AEO v1 answer contract in aeo.ts.
  *
  * Canonical host 走 env；fallback 也是已驗證的正式 owned domain，避免
  * 本機 build 或漏設 preview env 時重新產生舊 Vercel canonical。
@@ -51,6 +51,8 @@ export const INDEXABLE_PATHS = [
   "/zh-tw/guides/join-uyao",
   "/zh-tw/compare/uyao-vs-pos",
 ] as const;
+
+export type IndexablePath = (typeof INDEXABLE_PATHS)[number];
 
 /** Consumer v1 先只開首頁；drug/store/category 仍須逐頁通過 admission gate。 */
 export const SHOP_INDEXABLE_PATHS = ["/zh-tw", "/en"] as const;
