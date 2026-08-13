@@ -89,7 +89,7 @@ describe("合作藥局常見品項目錄", () => {
     }
   });
 
-  it.each(["huzhikang-60", "guanlihu-60", "kimura-tiancheng-60"])(
+  it.each(["huzhikang-60"])(
     "%s 沒有公開產品來源前只收品名與規格",
     (slug) => {
       expect(getDrug(slug)).toMatchObject({
@@ -101,6 +101,35 @@ describe("合作藥局常見品項目錄", () => {
       expect(getDrug(slug)?.source).toBeUndefined();
     },
   );
+
+  it.each([
+    {
+      slug: "guanlihu-60",
+      form: "錠",
+      ingredients: ["葡萄糖胺鹽酸鹽", "軟骨素", "第二型膠原蛋白", "MSM（甲基硫醯基甲烷）"],
+      query: "第二型膠原蛋白",
+    },
+    {
+      slug: "kimura-tiancheng-60",
+      form: "膠囊",
+      ingredients: ["南瓜子油", "葡萄子油", "杜松子油", "葡萄糖酸鋅", "維生素E"],
+      query: "南瓜子油",
+    },
+  ])("$slug 保留門市包裝可核對的食品資料", ({ slug, form, ingredients, query }) => {
+    const drug = getDrug(slug);
+
+    expect(drug).toMatchObject({
+      form,
+      drugClass: "非藥品",
+      licenseNo: "",
+      indications: [],
+    });
+    expect(drug?.ingredients).toEqual(expect.arrayContaining(ingredients));
+    expect(drug?.nutritionFocus).not.toContain("待確認");
+    expect(drug?.searchTerms.length).toBeGreaterThan(0);
+    expect(drug?.source).toBeUndefined();
+    expect(searchDrugs(query).map((item) => item.slug)).toContain(slug);
+  });
 
   it("護智慷 60粒保留合作藥局確認的品名與規格，但不借用 150粒的來源或產品資料", () => {
     const sixtyCount = getDrug("huzhikang-60");
