@@ -4,7 +4,8 @@ import Link from "next/link";
 import { BrandLogo } from "@/components/BrandLogo";
 import { BrandMark } from "@/components/BrandMark";
 import { JsonLd } from "@/components/JsonLd";
-import { PARTNER_PHARMACY_COUNT } from "@/lib/partners";
+import { PartnerMarquee } from "@/components/landing/PartnerMarquee";
+import { PARTNER_STORE_ITEMS } from "@/lib/partner-stores";
 import { SHOP_URL } from "@/lib/shop";
 import { organizationJsonLd, softwareApplicationJsonLd, webSiteJsonLd } from "@/lib/seo";
 import { indexablePageRobots } from "@/lib/seo-server";
@@ -123,7 +124,6 @@ const TIMELINE = [
   { label: "Outcome pending / verified", last: true },
 ] as const;
 
-const PILOT_AREAS = ["Datong", "Linkou", "Luzhou", "Xinzhuang", "Zhongshan", "Xitun", "Miaoli"] as const;
 const EN_SHOP_URL = `${SHOP_URL.replace(/\/$/, "")}/en`;
 
 function Container({ children }: { children: React.ReactNode }) {
@@ -211,40 +211,7 @@ export default function EnglishLandingPage() {
         </Container>
       </header>
 
-      <section
-        className="border-b border-line bg-paper"
-        aria-labelledby="pilot-areas-heading"
-      >
-        <Container>
-          <div className="py-8 sm:py-10">
-            <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <h2 id="pilot-areas-heading" className="m-0 text-[17px] font-black">
-                First-wave service and pilot coverage across six districts
-              </h2>
-              <p className="m-0 text-[13px] text-muted">
-                {PARTNER_PHARMACY_COUNT} partner pharmacy locations; workflow trials and recruitment continue
-              </p>
-            </div>
-            <div className="mt-5 grid border-l border-t border-line bg-paper sm:grid-cols-3 lg:grid-cols-6">
-              {PILOT_AREAS.map((area) => (
-                <div
-                  key={area}
-                  className="flex min-h-[70px] items-center border-b border-r border-line-strong px-4 py-3 text-[15px] font-bold text-ink"
-                >
-                  <span className="mr-2 text-oxblood" aria-hidden>
-                    ＋
-                  </span>
-                  {area}
-                </div>
-              ))}
-            </div>
-            <p className="mb-0 mt-3 text-[12.5px] leading-[1.7] text-muted">
-              Partnership does not imply installed hardware or live inventory; public
-              listings in other areas do not imply partnership.
-            </p>
-          </div>
-        </Container>
-      </section>
+      <PartnerMarquee items={PARTNER_STORE_ITEMS} locale="en" />
 
       <section className="border-b border-line bg-ivory" aria-labelledby="partner-heading-en">
         <Container>
