@@ -14,6 +14,12 @@ export const SITE_URL = (
 export const CANONICAL_HOST = new URL(SITE_URL).host;
 export const SHOP_CANONICAL_HOST = new URL(SHOP_URL).host;
 
+/** Canonical public identity. Keep these values aligned with visible homepage copy. */
+export const BRAND_NAME = "uYao 有藥";
+export const BRAND_SHORT_NAME = "uYao";
+export const BRAND_ALTERNATE_NAMES = [BRAND_SHORT_NAME, "有藥"] as const;
+export const ORGANIZATION_LOGO_URL = `${SITE_URL}/brand/uyao-logo-640x640.png`;
+
 /**
  * Index 三重閘門：production deployment、canonical host、route 白名單。
  * Vercel preview、deployment URL 與非 company canonical host 一律拿不到 index。
@@ -60,7 +66,7 @@ export const SHOP_INDEXABLE_PATHS = ["/zh-tw", "/en"] as const;
 
 /** Spec §3 的 stable entity description —— 全站與 schema 共用，不得改寫成 marketplace／POS／電商。 */
 export const ENTITY_DESCRIPTION: Record<Locale, string> = {
-  zh: "uYao 是台灣獨立藥局的 AI Operating System，將庫存、效期與附近需求轉成退貨、減量、補貨與預留工作，並由藥師批准關鍵決策。",
+  zh: "uYao 有藥是台灣獨立藥局的 AI Operating System，將庫存、效期與附近需求轉成退貨、減量、補貨與預留工作，並由藥師批准關鍵決策。",
   en: "uYao is the AI operating system for independent pharmacies. It turns inventory, expiry, and local demand into return, reorder, and reservation workflows, with pharmacists approving critical decisions.",
 };
 
@@ -83,9 +89,10 @@ export function organizationJsonLd(): JsonLd {
   return {
     "@type": "Organization",
     "@id": `${SITE_URL}/#organization`,
-    name: "uYao",
-    alternateName: "有藥",
-    url: `${SITE_URL}/zh-tw`,
+    name: BRAND_NAME,
+    alternateName: BRAND_ALTERNATE_NAMES,
+    url: `${SITE_URL}/`,
+    logo: ORGANIZATION_LOGO_URL,
     email: CONTACT_EMAIL,
     description: ENTITY_DESCRIPTION.zh,
     sameAs: [X_URL],
@@ -96,8 +103,9 @@ export function webSiteJsonLd(locale: Locale): JsonLd {
   return {
     "@type": "WebSite",
     "@id": `${SITE_URL}/#website`,
-    name: locale === "en" ? "uYao" : "uYao 有藥",
-    url: `${SITE_URL}${locale === "en" ? "/en" : "/zh-tw"}`,
+    name: BRAND_NAME,
+    alternateName: [...BRAND_ALTERNATE_NAMES, CANONICAL_HOST],
+    url: `${SITE_URL}/`,
     inLanguage: locale === "en" ? "en" : "zh-Hant-TW",
     publisher: { "@id": `${SITE_URL}/#organization` },
   };

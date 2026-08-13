@@ -5,7 +5,7 @@ import localFont from "next/font/local";
 import { MotionSystem } from "@/components/MotionSystem";
 import { LocaleProvider } from "@/components/LocaleProvider";
 import { getRequestLocale } from "@/lib/locale-server";
-import { SITE_URL } from "@/lib/seo";
+import { BRAND_NAME, SITE_URL } from "@/lib/seo";
 
 import "./globals.css";
 
@@ -42,12 +42,12 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(SITE_URL),
     title: locale === "en"
       ? { default: "uYao — AI operating system for independent pharmacies", template: "%s · uYao" }
-      : { default: "uYao 有藥 — 獨立藥局的供需庫存 Agent", template: "%s · 有藥" },
+      : { default: `${BRAND_NAME} — 獨立藥局的供需庫存 Agent`, template: `%s · ${BRAND_NAME}` },
     description: locale === "en"
       ? "uYao turns pharmacy supply and local demand signals into pharmacist-approved actions in LINE and records the outcome."
-      : "uYao 從店內掃描與附近搜尋取得供需訊號，在 LINE 提出退貨、減量、補貨與預留行動，由藥師批准並記錄實際結果。",
+      : `${BRAND_NAME}從店內掃描與附近搜尋取得供需訊號，在 LINE 提出退貨、減量、補貨與預留行動，由藥師批准並記錄實際結果。`,
     openGraph: {
-      siteName: locale === "en" ? "uYao" : "有藥",
+      siteName: BRAND_NAME,
       locale: locale === "en" ? "en_US" : "zh_TW",
       type: "website",
     },

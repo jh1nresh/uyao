@@ -6,13 +6,21 @@ import { JsonLd } from "@/components/JsonLd";
 import { PartnerMarquee } from "@/components/landing/PartnerMarquee";
 import { PARTNER_STORE_ITEMS } from "@/lib/partner-stores";
 import { SHOP_URL } from "@/lib/shop";
-import { organizationJsonLd, softwareApplicationJsonLd, webSiteJsonLd } from "@/lib/seo";
+import {
+  BRAND_NAME,
+  organizationJsonLd,
+  softwareApplicationJsonLd,
+  webSiteJsonLd,
+} from "@/lib/seo";
 import { indexablePageRobots } from "@/lib/seo-server";
 import { HeroLoop, type HeroLoopCopy } from "@/components/landing/HeroLoop";
 import { PilotCtaForm, type PilotFormCopy } from "@/components/landing/PilotCtaForm";
 import { CompanyFooter } from "@/components/landing/CompanyFooter";
 
 const ZH_SHOP_URL = `${SHOP_URL.replace(/\/$/, "")}/zh-tw`;
+const ZH_TITLE = `${BRAND_NAME}｜台灣獨立藥局的 AI Operating System`;
+const ZH_DESCRIPTION =
+  `${BRAND_NAME}主動處理獨立藥局的庫存、效期與附近需求，只把必要決策交給藥師批准。`;
 
 /**
  * 公司 landing（design: `uYao Landing.dc.html`，spec: company-landing-page.md
@@ -24,18 +32,18 @@ const ZH_SHOP_URL = `${SHOP_URL.replace(/\/$/, "")}/zh-tw`;
  */
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: { absolute: "uYao｜台灣獨立藥局的 AI Operating System" },
-    description:
-      "uYao 主動處理獨立藥局的庫存、效期與附近需求，只把必要決策交給藥師批准。",
+    title: { absolute: ZH_TITLE },
+    description: ZH_DESCRIPTION,
     alternates: {
       canonical: "/zh-tw",
       languages: { "zh-TW": "/zh-tw", en: "/en", "x-default": "/zh-tw" },
     },
     openGraph: {
-      title: "uYao｜台灣獨立藥局的 AI Operating System",
-      description:
-        "uYao 主動處理獨立藥局的庫存、效期與附近需求，只把必要決策交給藥師批准。",
+      title: ZH_TITLE,
+      description: ZH_DESCRIPTION,
+      siteName: BRAND_NAME,
       locale: "zh_TW",
+      type: "website",
       url: "/zh-tw",
     },
     robots: await indexablePageRobots(),
@@ -171,7 +179,7 @@ export default function CompanyLandingPage() {
                 讓每一盒庫存跟附近需求連起來。
               </h1>
               <p className="mb-0 mt-8 max-w-[35em] text-[17px] leading-[1.85] text-ink-2">
-                uYao
+                {BRAND_NAME}
                 連接店內庫存、效期與附近需求，主動準備並推進退貨、補貨與預留工作，只把必要決策交給藥師批准。
               </p>
               <div className="mt-10 flex flex-wrap items-center gap-x-7 gap-y-4">

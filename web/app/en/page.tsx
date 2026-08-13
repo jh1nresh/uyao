@@ -7,7 +7,12 @@ import { JsonLd } from "@/components/JsonLd";
 import { PartnerMarquee } from "@/components/landing/PartnerMarquee";
 import { PARTNER_STORE_ITEMS } from "@/lib/partner-stores";
 import { SHOP_URL } from "@/lib/shop";
-import { organizationJsonLd, softwareApplicationJsonLd, webSiteJsonLd } from "@/lib/seo";
+import {
+  BRAND_NAME,
+  organizationJsonLd,
+  softwareApplicationJsonLd,
+  webSiteJsonLd,
+} from "@/lib/seo";
 import { indexablePageRobots } from "@/lib/seo-server";
 import { HeroLoop, type HeroLoopCopy } from "@/components/landing/HeroLoop";
 import { PilotCtaForm, type PilotFormCopy } from "@/components/landing/PilotCtaForm";
@@ -35,7 +40,9 @@ export async function generateMetadata(): Promise<Metadata> {
       title: "uYao | The AI Operating System for Independent Pharmacies",
       description:
         "uYao turns inventory, expiry, and local demand into pharmacist-approved return, reorder, and reservation workflows.",
+      siteName: BRAND_NAME,
       locale: "en_US",
+      type: "website",
       url: "/en",
     },
     robots: await indexablePageRobots(),
