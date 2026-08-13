@@ -124,14 +124,114 @@ describe("合作藥局常見品項目錄", () => {
     expect(searchDrugs("腦部保養").map((drug) => drug.slug)).toEqual(["huzhikang-150"]);
   });
 
-  it("症狀與高風險描述只給安全分流，不回傳一般食品", () => {
-    expect(matchSymptom("咳嗽")).toMatchObject({ kind: "refer", matched: "咳嗽" });
-    expect(searchDrugs("咳嗽")).toEqual([]);
+  it.each([
+    { query: "咳嗽", matched: "咳嗽" },
+    { query: "我今天有點咳", matched: "咳" },
+    { query: "喉嚨乾癢", matched: "喉嚨乾癢" },
+    { query: "喉嚨不舒服", matched: "喉嚨不舒服" },
+  ])("低風險症狀 $query 可找到有來源的相關保養品項", ({ query, matched }) => {
+    expect(matchSymptom(query)).toMatchObject({
+      kind: "expand",
+      matched,
+      terms: ["呼吸道日常保養"],
+    });
+    expect(searchDrugs(query).map((drug) => drug.slug)).toEqual(["keqiqing-capsule"]);
+  });
+
+  it.each([
+    "咳血",
+    "一直咳",
+    "持續咳嗽",
+    "咳嗽胸痛",
+    "咳嗽又呼吸困難",
+    "咳嗽發燒",
+    "我要止咳藥",
+    "喉嚨痛",
+    "咳了兩週",
+    "咳嗽一個月了",
+    "咳到無法呼吸",
+    "咳到吸不到氣",
+    "咳出血",
+    "咳嗽兩個禮拜了",
+    "咳一陣子了",
+    "斷斷續續咳",
+    "咳咳停停",
+    "咳嗽越來越嚴重",
+    "咳到快昏倒",
+    "咳到嘴唇發紫",
+    "有什麼咳藥",
+    "咳嗽要吃什麼藥",
+  ])("高風險或持續症狀 $query 只給安全分流", (query) => {
+    expect(matchSymptom(query)).toMatchObject({ kind: "refer" });
+    expect(searchDrugs(query)).toEqual([]);
+  });
+
+  it("目前沒有相關目錄品項的症狀只給安全分流", () => {
     expect(matchSymptom("胸痛")).toMatchObject({ kind: "refer", matched: "胸痛" });
     expect(searchDrugs("胸痛")).toEqual([]);
     expect(matchSymptom("被蚊子咬")).toMatchObject({ kind: "refer", matched: "被蚊子咬" });
     expect(searchDrugs("痠痛")).toEqual([]);
     expect(searchDrugs("止癢")).toEqual([]);
+  });
+
+  it.each([
+    { query: "cough", matched: "cough" },
+    { query: "coughing", matched: "coughing" },
+    { query: "dry throat", matched: "dry throat" },
+    { query: "throat discomfort", matched: "throat discomfort" },
+  ])("英文低風險症狀 $query 可找到相關保養品項", ({ query, matched }) => {
+    expect(matchSymptom(query)).toMatchObject({
+      kind: "expand",
+      matched,
+      terms: ["Daily respiratory wellness"],
+    });
+    expect(searchDrugs(query).map((drug) => drug.slug)).toEqual(["keqiqing-capsule"]);
+  });
+
+  it.each([
+    "persistent cough",
+    "cough won't stop",
+    "coughing up blood",
+    "cough with chest pain",
+    "cough with difficulty breathing",
+    "cough with fever",
+    "cough medicine",
+    "sore throat",
+    "I've been coughing for weeks",
+    "cough for a month",
+    "cough and can't breathe",
+    "cough with wheezing",
+    "coughing blood",
+    "coughing nonstop",
+    "a cough that keeps coming back",
+    "cough is getting worse",
+    "severe cough",
+    "cough with fainting",
+    "cough with blue lips",
+    "medicine for cough",
+    "something for my cough",
+    "what can I take for a cough",
+  ])("英文高風險或持續症狀 $query 只給安全分流", (query) => {
+    expect(matchSymptom(query)).toMatchObject({ kind: "refer" });
+    expect(searchDrugs(query)).toEqual([]);
+  });
+
+  it("安全分流同時保留中英文可直接顯示的具體處置文字", () => {
+    expect(matchSymptom("difficulty breathing")).toMatchObject({
+      kind: "refer",
+      adviceZh: expect.stringContaining("緊急醫療評估"),
+      adviceEn: expect.stringContaining("urgent medical care"),
+    });
+    expect(matchSymptom("胸痛")).toMatchObject({
+      kind: "refer",
+      adviceZh: expect.stringContaining("可能是急症"),
+      adviceEn: expect.stringContaining("emergency"),
+    });
+    expect(matchSymptom("cough and can't breathe")).toMatchObject({
+      kind: "refer",
+      adviceZh: expect.stringContaining("需要先由藥師或醫師評估"),
+      adviceEn: expect.stringContaining("prompt care"),
+    });
   });
 
   it.each([
