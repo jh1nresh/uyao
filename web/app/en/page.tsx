@@ -10,6 +10,7 @@ import { SHOP_URL } from "@/lib/shop";
 import {
   BRAND_NAME,
   organizationJsonLd,
+  socialPreviewImages,
   softwareApplicationJsonLd,
   webSiteJsonLd,
 } from "@/lib/seo";
@@ -28,22 +29,31 @@ import { CompanyFooter } from "@/components/landing/CompanyFooter";
  * availability, or medical endorsement.
  */
 export async function generateMetadata(): Promise<Metadata> {
+  const title = "uYao | The AI Operating System for Independent Pharmacies";
+  const description =
+    "uYao turns inventory, expiry, and local demand into pharmacist-approved return, reorder, and reservation workflows.";
+  const images = socialPreviewImages("company", "en");
   return {
-    title: { absolute: "uYao | The AI Operating System for Independent Pharmacies" },
-    description:
-      "uYao turns inventory, expiry, and local demand into pharmacist-approved return, reorder, and reservation workflows.",
+    title: { absolute: title },
+    description,
     alternates: {
       canonical: "/en",
       languages: { "zh-TW": "/zh-tw", en: "/en", "x-default": "/zh-tw" },
     },
     openGraph: {
-      title: "uYao | The AI Operating System for Independent Pharmacies",
-      description:
-        "uYao turns inventory, expiry, and local demand into pharmacist-approved return, reorder, and reservation workflows.",
+      title,
+      description,
       siteName: BRAND_NAME,
       locale: "en_US",
       type: "website",
       url: "/en",
+      images: images.openGraph,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: images.twitter,
     },
     robots: await indexablePageRobots(),
   };

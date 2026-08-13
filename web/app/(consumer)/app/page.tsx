@@ -27,6 +27,7 @@ import {
   SITE_URL,
   consumerWebPageJsonLd,
   consumerWebSiteJsonLd,
+  socialPreviewImages,
 } from "@/lib/seo";
 import { consumerIndexablePageRobots } from "@/lib/seo-server";
 import { SHOP_URL } from "@/lib/shop";
@@ -42,6 +43,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const title = locale === "en"
     ? "Find medicine nearby and leave a request | uYao Medicine Finder"
     : "附近藥局找藥與到貨通知｜uYao 找藥";
+  const images = socialPreviewImages("shop", locale);
   return locale === "en"
     ? {
         title: { absolute: title },
@@ -54,8 +56,19 @@ export async function generateMetadata(): Promise<Metadata> {
             "x-default": `${SHOP_URL}/zh-tw`,
           },
         },
-        openGraph: { title, description: CONSUMER_DESCRIPTION.en, locale: "en_US", url: canonical },
-        twitter: { card: "summary_large_image", title, description: CONSUMER_DESCRIPTION.en },
+        openGraph: {
+          title,
+          description: CONSUMER_DESCRIPTION.en,
+          locale: "en_US",
+          url: canonical,
+          images: images.openGraph,
+        },
+        twitter: {
+          card: "summary_large_image",
+          title,
+          description: CONSUMER_DESCRIPTION.en,
+          images: images.twitter,
+        },
         robots,
       }
     : {
@@ -69,8 +82,19 @@ export async function generateMetadata(): Promise<Metadata> {
             "x-default": `${SHOP_URL}/zh-tw`,
           },
         },
-        openGraph: { title, description: CONSUMER_DESCRIPTION.zh, locale: "zh_TW", url: canonical },
-        twitter: { card: "summary_large_image", title, description: CONSUMER_DESCRIPTION.zh },
+        openGraph: {
+          title,
+          description: CONSUMER_DESCRIPTION.zh,
+          locale: "zh_TW",
+          url: canonical,
+          images: images.openGraph,
+        },
+        twitter: {
+          card: "summary_large_image",
+          title,
+          description: CONSUMER_DESCRIPTION.zh,
+          images: images.twitter,
+        },
         robots,
       };
 }
