@@ -53,10 +53,12 @@ export function PartnerMarquee({
   items,
   locale,
   evidenceHref = "/zh-tw/evidence#partners",
+  id,
 }: {
   items: readonly PartnerStoreItem[];
   locale: keyof typeof COPY;
   evidenceHref?: string;
+  id?: string;
 }) {
   const sectionRef = useRef<HTMLElement>(null);
   const [visible, setVisible] = useState(true);
@@ -76,8 +78,9 @@ export function PartnerMarquee({
 
   return (
     <section
+      id={id}
       ref={sectionRef}
-      className="partner-marquee bg-ivory"
+      className="partner-marquee scroll-mt-24 bg-ivory"
       data-paused={!visible}
       aria-labelledby={`partner-marquee-heading-${locale}`}
     >

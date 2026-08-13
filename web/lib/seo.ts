@@ -43,6 +43,7 @@ export const INDEXABLE_PATHS = [
   "/zh-tw/pharmacy",
   "/en/pharmacy",
   "/zh-tw/evidence",
+  "/en/evidence",
   "/zh-tw/guides/ai-tools-pharmacy-inventory",
   "/zh-tw/guides/pharmacy-expiry-management",
   "/zh-tw/guides/pharmacy-return-window",
@@ -158,13 +159,14 @@ export function webPageJsonLd(input: {
   description: string;
   path: string;
   dateModified: string;
+  inLanguage?: "zh-Hant-TW" | "en";
 }): JsonLd {
   return {
     "@type": "WebPage",
     name: input.name,
     description: input.description,
     url: `${SITE_URL}${input.path}`,
-    inLanguage: "zh-Hant-TW",
+    inLanguage: input.inLanguage ?? "zh-Hant-TW",
     dateModified: input.dateModified,
     publisher: { "@id": `${SITE_URL}/#organization` },
   };
