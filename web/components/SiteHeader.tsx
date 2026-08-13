@@ -9,7 +9,6 @@ import { DEFAULT_AREA } from "@/lib/data";
 import { localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
 import { SITE_URL } from "@/lib/seo";
-import { SHOP_URL } from "@/lib/shop";
 import type { AreaSlug } from "@/lib/types";
 
 export async function SiteHeader({
@@ -32,10 +31,10 @@ export async function SiteHeader({
   return (
     <header className="sticky top-0 z-40 border-b border-line-strong bg-ivory/95 backdrop-blur-sm">
       <div className="shop-shell flex h-[68px] items-center gap-3 sm:h-[72px]">
-        {/* 消費端 chrome 的 logo 一律回 shop canonical，不落到 company host。 */}
+        {/* 品牌 logo 回到 company landing；地區狀態只留在找藥流程。 */}
         <Link
-          href={`${SHOP_URL}${localizedPath("/", locale)}?area=${area}`}
-          aria-label={locale === "en" ? "Back to medicine search" : "回到找藥首頁"}
+          href={`${SITE_URL}${localizedPath("/", locale)}`}
+          aria-label={locale === "en" ? "Back to uYao homepage" : "回到 uYao 首頁"}
           className="flex min-h-11 flex-none items-center gap-2 no-underline"
         >
           {showSearch ? (
