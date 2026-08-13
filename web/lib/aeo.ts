@@ -109,5 +109,6 @@ const AEO_PAGE_BY_PATH = new Map<string, AeoAnswerPage>(
 );
 
 export function aeoLastModified(path: string): IsoDate | undefined {
+  if (path === "/en/evidence") return AEO_PAGES.evidence.dateModified;
   return AEO_PAGE_BY_PATH.get(path)?.dateModified;
 }
