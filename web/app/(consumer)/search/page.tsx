@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 
 import { AreaSwitch } from "@/components/AreaSwitch";
 import { DrugResults } from "@/components/DrugResults";
@@ -6,7 +7,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { drugSummary, exactDrugMatches, getArea, searchDrugs, toAreaSlug } from "@/lib/data";
 import { matchSymptom } from "@/lib/symptoms";
-import { areaCopy } from "@/lib/i18n";
+import { areaCopy, localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -35,6 +36,9 @@ export default async function SearchPage({
   const results = (exactMatches.length > 0 ? exactMatches : searchDrugs(q))
     .map((d) => drugSummary(d.slug, area))
     .filter((s): s is NonNullable<typeof s> => s !== undefined);
+  const wellnessQuery = symptom?.kind === "refer" && symptom.wellness
+    ? locale === "en" ? symptom.wellness.queryEn : symptom.wellness.queryZh
+    : null;
 
   return (
     <>
@@ -87,6 +91,29 @@ export default async function SearchPage({
             <p className="mt-2.5 text-[13px] leading-[1.7] text-muted">
               {locale === "en" ? "No OTC products are listed because self-selection may be inappropriate." : "我們沒有為這個狀況列出成藥 —— 不是查不到，是自行選藥不合適。"}
             </p>
+            <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+              <Link
+                href={`${localizedPath("/", locale)}?area=${area}#pharmacies`}
+                className="action-primary text-[14px]"
+              >
+                {locale === "en" ? "Find a nearby pharmacist" : "找附近藥師"}
+              </Link>
+              {symptom.wellness && wellnessQuery && (
+                <Link
+                  href={`${localizedPath("/search", locale)}?q=${encodeURIComponent(wellnessQuery)}&area=${area}`}
+                  className="action-secondary text-[14px]"
+                >
+                  {locale === "en" ? symptom.wellness.labelEn : symptom.wellness.labelZh}
+                </Link>
+              )}
+            </div>
+            {symptom.wellness && (
+              <p className="mt-2.5 text-[12px] leading-[1.7] text-muted-2">
+                {locale === "en"
+                  ? "The wellness option opens sourced nutrition information only. It is not a treatment recommendation for your symptom."
+                  : "日常保養選項只會開啟有來源的營養資料，不代表能治療你描述的症狀。"}
+              </p>
+            )}
           </div>
         ) : q ? (
           <DrugResults results={results} query={q} area={area} />
