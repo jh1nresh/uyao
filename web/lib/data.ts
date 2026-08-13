@@ -876,29 +876,76 @@ export function exactDrugMatches(query: string): Drug[] {
   });
 }
 
-/** 搜尋：品名 / 英文名 / 規格 / 成分 / 適應症 都吃。 */
-function haystack(d: Drug): string {
-  const en = drugCopy(d, "en");
-  return normalizeSearchText([
-    d.name,
-    `${d.name} ${d.spec}`,
-    ...d.aliases,
-    d.nameEn ?? "",
-    d.form,
-    d.spec,
-    ...d.ingredients,
-    ...d.indications,
-    d.nutritionFocus,
-    ...d.searchTerms,
+export type DrugSearchMatchKind =
+  | "name"
+  | "alias"
+  | "ingredient"
+  | "nutritionFocus"
+  | "searchTerm"
+  | "details";
+
+export interface DrugSearchMatch {
+  kind: DrugSearchMatchKind;
+  /** 實際命中的原始欄位值；卡片用它解釋為什麼顯示，不生成相似度分數。 */
+  value: string;
+}
+
+export interface DrugSearchHit {
+  drug: Drug;
+  match: DrugSearchMatch;
+}
+
+interface RankedDrugSearchMatch extends DrugSearchMatch {
+  rank: number;
+}
+
+function findExact(values: string[], query: string): string | undefined {
+  return values.find((value) => value && normalizeSearchText(value) === query);
+}
+
+function findIncluded(values: string[], query: string): string | undefined {
+  return values.find((value) => value && normalizeSearchText(value).includes(query));
+}
+
+/** 回傳這個品項最直接、可在畫面上說明的命中欄位。 */
+function searchMatch(drug: Drug, query: string): RankedDrugSearchMatch | null {
+  const en = drugCopy(drug, "en");
+  const names = [
+    drug.name,
+    `${drug.name} ${drug.spec}`,
+    drug.nameEn ?? "",
     en.name,
     `${en.name} ${en.spec}`,
-    en.form,
-    en.spec,
-    ...en.ingredients,
-    ...en.indications,
-    d.nutritionFocusEn,
-  ]
-    .join(" "));
+  ];
+
+  // 完整別名要先於品名內的局部字串。例如「小視清」是別名，不是假造的相關度。
+  const exactName = findExact(names, query);
+  if (exactName) return { kind: "name", value: exactName, rank: 0 };
+  const exactAlias = findExact(drug.aliases, query);
+  if (exactAlias) return { kind: "alias", value: exactAlias, rank: 1 };
+
+  const groups: Array<{
+    kind: DrugSearchMatchKind;
+    rank: number;
+    values: string[];
+  }> = [
+    { kind: "name", rank: 0, values: names },
+    { kind: "alias", rank: 1, values: drug.aliases },
+    { kind: "ingredient", rank: 2, values: [...drug.ingredients, ...en.ingredients] },
+    { kind: "nutritionFocus", rank: 3, values: [drug.nutritionFocus, drug.nutritionFocusEn] },
+    { kind: "searchTerm", rank: 4, values: drug.searchTerms },
+    {
+      kind: "details",
+      rank: 5,
+      values: [drug.form, drug.spec, ...drug.indications, en.form, en.spec, ...en.indications],
+    },
+  ];
+
+  for (const group of groups) {
+    const value = findIncluded(group.values, query);
+    if (value) return { kind: group.kind, value, rank: group.rank };
+  }
+  return null;
 }
 
 /**
@@ -907,29 +954,54 @@ function haystack(d: Drug): string {
  *
  * `refer` 類回空陣列，由頁面顯示安全提醒，不自行對應商品。
  */
-export function searchDrugs(query: string): Drug[] {
+export function searchDrugHits(query: string): DrugSearchHit[] {
   const raw = query.trim();
   if (!raw) return [];
+  const normalized = normalizeSearchText(raw);
 
   const exact = exactDrugMatches(raw);
-  if (exact.length > 0) return exact;
+  if (exact.length > 0) {
+    return exact
+      .map((drug, catalogIndex) => ({
+        drug,
+        match: searchMatch(drug, normalized) ?? { kind: "name" as const, value: drug.name, rank: 0 },
+        catalogIndex,
+      }))
+      .sort((a, b) => a.match.rank - b.match.rank || a.catalogIndex - b.catalogIndex)
+      .map(({ drug, match }) => ({
+        drug,
+        match: { kind: match.kind, value: match.value },
+      }));
+  }
 
   const hit = matchSymptom(raw);
   if (hit?.kind === "refer") return [];
 
   const terms = hit?.kind === "expand" ? hit.terms : [raw];
-  const seen = new Set<string>();
-  const out: Drug[] = [];
+  const matches = new Map<string, { drug: Drug; match: RankedDrugSearchMatch; catalogIndex: number }>();
   for (const t of terms) {
     const q = normalizeSearchText(t);
-    for (const d of DRUGS) {
-      if (!seen.has(d.slug) && haystack(d).includes(q)) {
-        seen.add(d.slug);
-        out.push(d);
+    for (const [catalogIndex, drug] of DRUGS.entries()) {
+      const match = searchMatch(drug, q);
+      if (!match) continue;
+      const current = matches.get(drug.slug);
+      if (!current || match.rank < current.match.rank) {
+        matches.set(drug.slug, { drug, match, catalogIndex });
       }
     }
   }
-  return out;
+
+  return [...matches.values()]
+    .sort((a, b) => a.match.rank - b.match.rank || a.catalogIndex - b.catalogIndex)
+    .map(({ drug, match }) => ({
+      drug,
+      match: { kind: match.kind, value: match.value },
+    }));
+}
+
+/** 向後相容的純品項結果；新 UI 應使用 searchDrugHits 保留比對依據。 */
+export function searchDrugs(query: string): Drug[] {
+  return searchDrugHits(query).map((hit) => hit.drug);
 }
 
 export function drugsInCategory(slug: CategorySlug): Drug[] {

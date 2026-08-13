@@ -34,16 +34,9 @@ export interface SymptomRefer {
   matched: string;
   adviceZh: string;
   adviceEn: string;
-  /** 可在安全提醒下直接顯示的日常保養搜尋，不是症狀推薦。 */
-  wellness?: WellnessAlternative;
 }
 
 export type SymptomMatch = SymptomExpand | SymptomRefer | null;
-
-export interface WellnessAlternative {
-  queryZh: string;
-  queryEn: string;
-}
 
 /**
  * 成藥自選不適當 —— 命中就不給商品，改給處置方向。
@@ -53,18 +46,7 @@ export interface WellnessAlternative {
 interface ReferralCopy {
   zh: string;
   en: string;
-  wellness?: WellnessAlternative;
 }
-
-const RESPIRATORY_WELLNESS: WellnessAlternative = {
-  queryZh: "呼吸道保養",
-  queryEn: "Daily respiratory wellness",
-};
-
-const JOINT_WELLNESS: WellnessAlternative = {
-  queryZh: "關節保養",
-  queryEn: "Bone and joint nutrition",
-};
 
 const REFERRAL = {
   burn: {
@@ -115,10 +97,9 @@ const REFERRAL = {
     zh: "這個咳嗽描述需要先由藥師或醫師評估，不顯示關聯品項；若持續、惡化、咳血，或合併胸痛、喘、昏厥、嘴唇發紫，請儘快就醫。",
     en: "This cough description needs pharmacist or medical assessment, so related items are not shown. Seek prompt care if it persists, worsens, involves blood, chest pain, breathing trouble, fainting, or blue lips.",
   },
-  coughWithWellness: {
-    zh: "咳嗽或喉嚨不適有不同原因，以下品項不是治療建議；症狀持續、惡化，或合併發燒、胸痛、呼吸困難等警訊時，請詢問藥師或就醫。",
-    en: "Cough or throat discomfort can have different causes. The items below are not treatment recommendations; ask a pharmacist or seek care if symptoms persist, worsen, or come with fever, chest pain, or breathing trouble.",
-    wellness: RESPIRATORY_WELLNESS,
+  respiratoryDiscomfort: {
+    zh: "咳嗽或喉嚨不適有不同原因，我們不會依症狀顯示食品或營養補充品。請先詢問藥師或醫師；若持續、惡化，或合併發燒、胸痛、呼吸困難等警訊，請儘快就醫。",
+    en: "Cough or throat discomfort can have different causes, so food and supplements are not shown based on the symptom. Ask a pharmacist or clinician; seek prompt care if it persists, worsens, or comes with fever, chest pain, or breathing trouble.",
   },
   coughMedicine: {
     zh: "目前目錄沒有止咳藥；請先詢問藥師，不要把呼吸道日常保養品當成治療用藥。",
@@ -144,10 +125,17 @@ const REFERRAL = {
     zh: "膝蓋或關節疼痛、腫脹、無法活動，或外傷後不適，請由藥師或醫師評估，不要透過搜尋自行選品。",
     en: "Knee or joint pain, swelling, limited movement, or symptoms after an injury need pharmacist or medical assessment. Do not self-select a product through search.",
   },
-  jointWithWellness: {
-    zh: "膝蓋或關節不適有不同原因，以下只列日常營養補充資料，不是依症狀推薦保健品；若疼痛、腫脹、無法活動、外傷後不適或持續惡化，請詢問藥師或就醫。",
-    en: "Knee or joint discomfort can have different causes. The items below are daily nutrition information, not supplement recommendations based on symptoms; ask a pharmacist or seek care for pain, swelling, limited movement, injury, or worsening symptoms.",
-    wellness: JOINT_WELLNESS,
+  jointDiscomfort: {
+    zh: "膝蓋或關節不適有不同原因，我們不會依症狀顯示食品或營養補充品。請先詢問藥師或醫師；若疼痛、腫脹、無法活動、外傷後不適或持續惡化，請儘快就醫。",
+    en: "Knee or joint discomfort can have different causes, so food and supplements are not shown based on the symptom. Ask a pharmacist or clinician; seek prompt care for pain, swelling, limited movement, injury, or worsening symptoms.",
+  },
+  eyeDiscomfort: {
+    zh: "眼睛乾澀或乾眼有不同原因，我們不會依症狀顯示食品或營養補充品。請先詢問藥師或眼科醫師；若持續、惡化、明顯疼痛或視力改變，請儘快就醫。",
+    en: "Dry-eye symptoms can have different causes, so food and supplements are not shown based on the symptom. Ask a pharmacist or eye-care clinician; seek prompt care if symptoms persist, worsen, become painful, or affect vision.",
+  },
+  eyeUrgent: {
+    zh: "突發視力改變或明顯眼痛需要儘快由眼科或急診評估，請直接就醫，不要透過搜尋自行選品。",
+    en: "Sudden vision changes or severe eye pain need prompt eye or emergency assessment. Seek medical care rather than self-selecting a product through search.",
   },
 } as const satisfies Record<string, ReferralCopy>;
 
@@ -174,6 +162,26 @@ const REFER: Record<string, ReferralCopy> = {
   止癢: REFERRAL.itching,
   itching: REFERRAL.itching,
   眼睛受傷: REFERRAL.injury,
+  視力突然模糊: REFERRAL.eyeUrgent,
+  突然視力模糊: REFERRAL.eyeUrgent,
+  視力突然下降: REFERRAL.eyeUrgent,
+  突然看不清楚: REFERRAL.eyeUrgent,
+  突然看不到: REFERRAL.eyeUrgent,
+  眼睛劇痛: REFERRAL.eyeUrgent,
+  嚴重眼痛: REFERRAL.eyeUrgent,
+  "sudden blurred vision": REFERRAL.eyeUrgent,
+  "sudden vision loss": REFERRAL.eyeUrgent,
+  "severe eye pain": REFERRAL.eyeUrgent,
+  眼睛乾澀: REFERRAL.eyeDiscomfort,
+  眼睛乾: REFERRAL.eyeDiscomfort,
+  眼乾: REFERRAL.eyeDiscomfort,
+  乾眼: REFERRAL.eyeDiscomfort,
+  "eye dryness": REFERRAL.eyeDiscomfort,
+  "my eyes are dry": REFERRAL.eyeDiscomfort,
+  "eyes are dry": REFERRAL.eyeDiscomfort,
+  "dry-eye": REFERRAL.eyeDiscomfort,
+  "dry eyes": REFERRAL.eyeDiscomfort,
+  "dry eye": REFERRAL.eyeDiscomfort,
   傷口很深: REFERRAL.injury,
   咳血: REFERRAL.cough,
   止咳藥: REFERRAL.coughMedicine,
@@ -190,10 +198,10 @@ const REFER: Record<string, ReferralCopy> = {
   排尿困難: REFERRAL.generalAssessment,
   記憶力突然變差: REFERRAL.generalAssessment,
   "stroke-like weakness": REFERRAL.emergencyWeakness,
-  膝蓋不舒服: REFERRAL.jointWithWellness,
-  關節不舒服: REFERRAL.jointWithWellness,
-  "knee discomfort": REFERRAL.jointWithWellness,
-  "joint discomfort": REFERRAL.jointWithWellness,
+  膝蓋不舒服: REFERRAL.jointDiscomfort,
+  關節不舒服: REFERRAL.jointDiscomfort,
+  "knee discomfort": REFERRAL.jointDiscomfort,
+  "joint discomfort": REFERRAL.jointDiscomfort,
   膝蓋無法活動: REFERRAL.joint,
   關節無法活動: REFERRAL.joint,
   膝蓋痛: REFERRAL.joint,
@@ -267,7 +275,6 @@ function referral(matched: string, copy: ReferralCopy): SymptomRefer {
     matched,
     adviceZh: copy.zh,
     adviceEn: copy.en,
-    ...(copy.wellness ? { wellness: copy.wellness } : {}),
   };
 }
 
@@ -276,30 +283,29 @@ function compactChinese(query: string): string {
 }
 
 /**
- * 少數明確、短而低風險的句型可以在安全提醒下直接顯示日常保養資料。
- * 其他咳嗽／喉嚨描述只給分流，
- * 避免用黑名單猜漏病程或警訊。
+ * 短句也只做安全分流。這裡保留原句作為 matched，讓畫面能清楚說明
+ * 為什麼沒有進入商品結果；不因語氣看似輕微就自動帶保養品。
  */
-function mildWellnessSymptom(raw: string, normalized: string): SymptomRefer | null {
+function mildRespiratorySymptom(raw: string, normalized: string): SymptomRefer | null {
   const zh = compactChinese(normalized);
 
   if (/^(?:我)?(?:今天)?(?:咳嗽|咳)(?:一下)?$/.test(zh)) {
-    return referral(raw, REFERRAL.coughWithWellness);
+    return referral(raw, REFERRAL.respiratoryDiscomfort);
   }
   if (/^(?:我)?(?:今天)?喉嚨(?:乾癢|乾|不舒服)$/.test(zh)) {
-    return referral(raw, REFERRAL.coughWithWellness);
+    return referral(raw, REFERRAL.respiratoryDiscomfort);
   }
 
   const en = normalized.trim().replace(/[.!?]+$/g, "").replace(/\s+/g, " ");
   if (
     /^(?:(?:a )?(?:mild |little )?cough|(?:i have |i have got |i've got )(?:a )?(?:mild |little )?cough|(?:i'm |i am )?coughing)$/.test(en)
   ) {
-    return referral(raw, REFERRAL.coughWithWellness);
+    return referral(raw, REFERRAL.respiratoryDiscomfort);
   }
   if (
     /^(?:(?:a |my )?dry throat|throat discomfort|my throat (?:is|feels) dry)$/.test(en)
   ) {
-    return referral(raw, REFERRAL.coughWithWellness);
+    return referral(raw, REFERRAL.respiratoryDiscomfort);
   }
 
   return null;
@@ -328,8 +334,8 @@ export function matchSymptom(query: string): SymptomMatch {
     }
   }
 
-  const mildWellness = mildWellnessSymptom(raw, q);
-  if (mildWellness) return mildWellness;
+  const mildRespiratory = mildRespiratorySymptom(raw, q);
+  if (mildRespiratory) return mildRespiratory;
 
   // 完整品名會由 data.ts 的 exactDrugMatches 先處理；走到這裡的其他咳嗽／喉嚨句子保守分流。
   if (containsCough(q)) return referral(raw, REFERRAL.cough);
