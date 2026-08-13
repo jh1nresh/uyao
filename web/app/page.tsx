@@ -3,7 +3,8 @@ import Link from "next/link";
 
 import { BrandLogo } from "@/components/BrandLogo";
 import { JsonLd } from "@/components/JsonLd";
-import { PARTNER_PHARMACY_COUNT } from "@/lib/partners";
+import { PartnerMarquee } from "@/components/landing/PartnerMarquee";
+import { PARTNER_STORE_ITEMS } from "@/lib/partner-stores";
 import { SHOP_URL } from "@/lib/shop";
 import { organizationJsonLd, softwareApplicationJsonLd, webSiteJsonLd } from "@/lib/seo";
 import { indexablePageRobots } from "@/lib/seo-server";
@@ -110,8 +111,6 @@ const TIMELINE = [
   { label: "outcome pending / verified", last: true },
 ] as const;
 
-const PILOT_AREAS = ["大同區", "林口區", "蘆洲區", "新莊區", "中山區", "西屯區", "苗栗市"] as const;
-
 function Container({ children }: { children: React.ReactNode }) {
   return <div className="mx-auto max-w-[1240px] px-5 sm:px-8">{children}</div>;
 }
@@ -199,32 +198,7 @@ export default function CompanyLandingPage() {
         </Container>
       </header>
 
-      <section className="border-b border-line bg-paper" aria-labelledby="pilot-areas-heading">
-        <Container>
-          <div className="py-8 sm:py-10">
-            <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <h2 id="pilot-areas-heading" className="m-0 text-[17px] font-black">
-                首波服務與試點涵蓋六區
-              </h2>
-              <p className="m-0 text-[13px] text-muted">{PARTNER_PHARMACY_COUNT} 個合作藥局據點；現場流程與試點招募持續進行</p>
-            </div>
-            <div className="mt-5 grid border-l border-t border-line bg-paper sm:grid-cols-3 lg:grid-cols-6">
-              {PILOT_AREAS.map((area) => (
-                <div
-                  key={area}
-                  className="flex min-h-[70px] items-center border-b border-r border-line-strong px-4 py-3 text-[15px] font-bold text-ink"
-                >
-                  <span className="mr-2 text-oxblood" aria-hidden>＋</span>
-                  {area}
-                </div>
-              ))}
-            </div>
-            <p className="mb-0 mt-3 text-[12.5px] leading-[1.7] text-muted">
-              合作不代表已安裝設備或已有即時庫存；其他區域的公開收錄也不代表合作。
-            </p>
-          </div>
-        </Container>
-      </section>
+      <PartnerMarquee items={PARTNER_STORE_ITEMS} locale="zh" />
 
       <section className="border-b border-line bg-ivory" aria-labelledby="partner-heading">
         <Container>

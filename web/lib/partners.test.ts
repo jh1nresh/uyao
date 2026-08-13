@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { allStores } from "./data";
+import { PARTNER_STORE_ITEMS } from "./partner-stores";
 import {
   PARTNER_PHARMACIES,
   PARTNER_PHARMACY_COUNT,
@@ -75,6 +76,20 @@ describe("合作藥局人工確認資料", () => {
       Object.keys(EXPECTED_PRODUCTS),
     );
     expect(PARTNER_PHARMACY_COUNT).toBe(9);
+  });
+
+  it("首頁合作藥局列沿用正式店名與行政區", () => {
+    expect(PARTNER_STORE_ITEMS).toEqual([
+      { name: "建利西藥房", district: "大同區" },
+      { name: "美得心藥局", district: "林口區" },
+      { name: "樂活健保藥局", district: "新莊區" },
+      { name: "祥好大藥局", district: "新莊區" },
+      { name: "中山藥局", district: "中山區" },
+      { name: "萊康連鎖藥局", district: "蘆洲區" },
+      { name: "萊康中華健保藥局", district: "蘆洲區" },
+      { name: "永遠藥師藥局", district: "西屯區" },
+      { name: "發元藥局", district: "苗栗市" },
+    ]);
   });
 
   it.each(PARTNER_LOCATIONS)(
