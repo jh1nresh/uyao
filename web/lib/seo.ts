@@ -20,6 +20,67 @@ export const BRAND_SHORT_NAME = "uYao";
 export const BRAND_ALTERNATE_NAMES = [BRAND_SHORT_NAME, "有藥"] as const;
 export const ORGANIZATION_LOGO_URL = `${SITE_URL}/brand/uyao-logo-640x640.png`;
 
+type SocialPreviewAudience = "company" | "shop";
+
+export type SocialPreviewLocale = "zh" | "en";
+
+type SocialPreviewImage = {
+  url: string;
+  width: 1200;
+  height: 630;
+  type: "image/png";
+  alt: string;
+};
+
+export const SOCIAL_PREVIEW_IMAGES = {
+  company: {
+    zh: {
+      url: `${SITE_URL}/brand/social/uyao-company-zh-v1.png`,
+      width: 1200,
+      height: 630,
+      type: "image/png",
+      alt: "uYao 有藥，台灣獨立藥局的 AI Operating System",
+    },
+    en: {
+      url: `${SITE_URL}/brand/social/uyao-company-en-v1.png`,
+      width: 1200,
+      height: 630,
+      type: "image/png",
+      alt: "uYao, the AI operating system for independent pharmacies",
+    },
+  },
+  shop: {
+    zh: {
+      url: `${SHOP_URL}/brand/social/uyao-shop-zh-v1.png`,
+      width: 1200,
+      height: 630,
+      type: "image/png",
+      alt: "uYao 找藥，搜尋附近公開藥局資料並留下找藥需求",
+    },
+    en: {
+      url: `${SHOP_URL}/brand/social/uyao-shop-en-v1.png`,
+      width: 1200,
+      height: 630,
+      type: "image/png",
+      alt: "uYao Medicine Finder, search nearby public pharmacy records and leave a medicine request",
+    },
+  },
+} as const satisfies Record<
+  SocialPreviewAudience,
+  Record<SocialPreviewLocale, SocialPreviewImage>
+>;
+
+export function socialPreviewImages(
+  audience: SocialPreviewAudience,
+  locale: SocialPreviewLocale,
+) {
+  const image = SOCIAL_PREVIEW_IMAGES[audience][locale];
+  return {
+    openGraph: [image],
+    twitter: [{ url: image.url, alt: image.alt }],
+  };
+}
+
 /**
  * Index 三重閘門：production deployment、canonical host、route 白名單。
  * Vercel preview、deployment URL 與非 company canonical host 一律拿不到 index。

@@ -9,6 +9,7 @@ import { SHOP_URL } from "@/lib/shop";
 import {
   BRAND_NAME,
   organizationJsonLd,
+  socialPreviewImages,
   softwareApplicationJsonLd,
   webSiteJsonLd,
 } from "@/lib/seo";
@@ -31,6 +32,7 @@ const ZH_DESCRIPTION =
  * founder 決定先下架（等有真實 pilot 進度再回來）。
  */
 export async function generateMetadata(): Promise<Metadata> {
+  const images = socialPreviewImages("company", "zh");
   return {
     title: { absolute: ZH_TITLE },
     description: ZH_DESCRIPTION,
@@ -45,6 +47,13 @@ export async function generateMetadata(): Promise<Metadata> {
       locale: "zh_TW",
       type: "website",
       url: "/zh-tw",
+      images: images.openGraph,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: ZH_TITLE,
+      description: ZH_DESCRIPTION,
+      images: images.twitter,
     },
     robots: await indexablePageRobots(),
   };
