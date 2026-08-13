@@ -7,13 +7,13 @@ import type { AreaSlug } from "@/lib/types";
 
 const SEARCH_EXAMPLES_ZH = [
   "搜尋品項，如：護谷鈣素",
-  "描述症狀，如：咳嗽、喉嚨乾",
+  "描述狀況，如：膝蓋不舒服",
   "搜尋需求，如：呼吸道保養、補鈣",
 ] as const;
 
 const SEARCH_EXAMPLES_EN = [
   "Search a product, e.g. Glucaline",
-  "Describe a symptom, e.g. a cough or dry throat",
+  "Describe a symptom, e.g. knee discomfort",
   "Search a need, e.g. respiratory wellness or calcium",
 ] as const;
 

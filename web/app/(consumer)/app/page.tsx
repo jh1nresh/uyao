@@ -73,13 +73,13 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const STEPS_ZH = [
-  { title: "搜尋", body: "輸入品名、成分、症狀或保養需求，查看試營運目錄與附近公開藥局資料。" },
+  { title: "搜尋", body: "輸入品名、成分或保養需求；若描述症狀，我們會先協助分流。" },
   { title: "留下需求", body: "送出找藥或預留需求，等待藥局確認是否能供應。" },
   { title: "依回覆前往", body: "藥局確認後再依回覆前往；到店付款並由藥師交付。" },
 ];
 
 const STEPS_EN = [
-  { title: "Search", body: "Enter a name, ingredient, symptom, or wellness need to check the trial catalog and nearby pharmacy listings." },
+  { title: "Search", body: "Enter a name, ingredient, or wellness need. Symptom descriptions are routed to a safer next step first." },
   { title: "Leave a request", body: "Send a medicine or pickup request and wait for a pharmacy to confirm supply." },
   { title: "Follow the reply", body: "Travel only after confirmation; pay in store and receive the item from a pharmacist." },
 ];
@@ -115,10 +115,10 @@ export default async function HomePage({
           <div className="mx-auto w-full max-w-[1120px] text-center">
             <p className="shop-kicker mb-5 mt-0">NEARBY SEARCH · REQUEST · PHARMACY CONFIRMATION</p>
             <h1 className="editorial-display m-0 text-[clamp(40px,4.4vw,62px)] leading-[1.08]">
-              {locale === "en" ? "Start with a symptom, not a product name." : "不用先知道藥名。從症狀開始找。"}
+              {locale === "en" ? "You do not need to know the product name." : "不用先知道品名。描述需求就能開始。"}
             </h1>
             <p className="mx-auto mt-5 max-w-[620px] text-[15px] leading-[1.8] text-ink-2 sm:text-[16px]">
-              {locale === "en" ? "Describe what feels wrong or what kind of daily wellness support you need. We organize relevant partner-listed items and nearby pharmacies; a pharmacist still confirms what is appropriate." : "輸入哪裡不舒服或想保養的方向，我們整理相關品項與附近藥局；食品只作營養補充，症狀與用藥仍由藥師確認。"}
+              {locale === "en" ? "Search by product, ingredient, or daily-wellness need. If you describe a symptom, we show a safer next step before any optional wellness information." : "可輸入品名、成分或日常保養方向；若描述症狀，我們會先提供安全分流，再由你決定是否查看保養資料。"}
             </p>
           </div>
 
@@ -190,7 +190,7 @@ export default async function HomePage({
         </div>
       </section>
 
-      <section className="bg-paper">
+      <section id="pharmacies" className="scroll-mt-24 bg-paper">
         <div className="shop-shell py-14 sm:py-20">
           <p className="shop-kicker mb-3">FIRST PHARMACY NETWORK</p>
           <div className="mb-7 flex flex-wrap items-end justify-between gap-3">
