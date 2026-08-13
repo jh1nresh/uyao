@@ -12,10 +12,16 @@ import type { StockBadgeSpec } from "./types";
 
 // ── GTIN → 藥品 ─────────────────────────────────────────────────────
 //
+// 真實對照只收「藥局提供包裝 + 可讀且通過 checksum 的條碼」。沒有清楚
+// 條碼的品項即使已進公開目錄，也留在待建檔，不從相似商品或內部編號猜。
+const REAL_GTIN_TO_DRUG: Record<string, string> = {
+  "4718000681797": "top-fish-oil-60",
+  "4710937984477": "shuwei-600-fish-oil-60",
+  "4562298391322": "baiyi-capsule-60",
+};
+
 // 示範用對照表。這些 GTIN 是**編出來的測試碼**（04712345678901 這種連號
-// 一眼假），只給模擬掃描用 —— 目錄裡的 Drug 不放 gtin 欄位，理由跟
-// licenseNo 一樣：那是可查證的識別碼，寧缺勿假。真實對照要靠試點藥局
-// 第一次掃到時人工建檔（掃描器打出來的 GTIN + 藥師說這是哪支藥）。
+// 一眼假），只給模擬掃描用。真實與示範表分開，避免 demo 訊號被升格。
 const SIM_GTIN_TO_DRUG: Record<string, string> = {
   "04712345678901": "hugu-gaishu-100",
   "04712345678902": "shengkangning-150",
@@ -25,13 +31,15 @@ const SIM_GTIN_TO_DRUG: Record<string, string> = {
 };
 export interface GtinDrugMatch {
   drugSlug: string;
-  /** 目前唯一對照表是編造的 demo GTIN，不能被誤當成真實商品主檔。 */
-  demo: true;
+  demo: boolean;
 }
 
 /** GTIN-14 與 EAN-13 差在前導 0 —— 比對一律去掉前導 0。 */
 export function drugMatchForGtin(gtin: string): GtinDrugMatch | null {
   const norm = gtin.replace(/^0+/, "");
+  for (const [g, slug] of Object.entries(REAL_GTIN_TO_DRUG)) {
+    if (g.replace(/^0+/, "") === norm) return { drugSlug: slug, demo: false };
+  }
   for (const [g, slug] of Object.entries(SIM_GTIN_TO_DRUG)) {
     if (g.replace(/^0+/, "") === norm) return { drugSlug: slug, demo: true };
   }

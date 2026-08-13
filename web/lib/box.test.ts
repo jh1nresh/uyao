@@ -26,6 +26,14 @@ describe("drugMatchForGtin", () => {
     expect(drugMatchForGtin("004712345678901")?.drugSlug).toBe("hugu-gaishu-100");
   });
 
+  it.each([
+    ["4718000681797", "top-fish-oil-60"],
+    ["4710937984477", "shuwei-600-fish-oil-60"],
+    ["4562298391322", "baiyi-capsule-60"],
+  ])("藥局包裝條碼 %s 對到真實品項", (gtin, drugSlug) => {
+    expect(drugMatchForGtin(gtin)).toEqual({ drugSlug, demo: false });
+  });
+
   it("目錄外回 null，不硬配", () => {
     expect(drugMatchForGtin("09999999999999")).toBeNull();
   });
@@ -89,6 +97,34 @@ describe("scan state", () => {
     });
     await new Promise((resolve) => setTimeout(resolve, 10));
     expect((await recentEvents())[0]).toMatchObject({ demo: true });
+  });
+
+  it("發元藥局的真實 GTIN 經 ingest 後不會被標成示範", async () => {
+    const response = await ingestScans(new Request("http://localhost/api/box/ingest", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        ...(process.env.BOX_API_KEY
+          ? { authorization: `Bearer ${process.env.BOX_API_KEY}` }
+          : {}),
+      },
+      body: JSON.stringify({
+        device_id: "發元藥局",
+        events: [{ kind: "receiving", payload: { gtin: "4718000681797" } }],
+      }),
+    }));
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({ matched: 1 });
+    expect((await scanSummary())[0]).toMatchObject({
+      storeSlug: "發元藥局",
+      drugSlug: "top-fish-oil-60",
+      demo: false,
+    });
+    await new Promise((resolve) => setTimeout(resolve, 10));
+    const event = (await recentEvents())[0];
+    expect(event.demo).toBeUndefined();
+    expect(event.msg).not.toContain("示範");
   });
 });
 
