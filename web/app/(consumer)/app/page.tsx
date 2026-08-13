@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AreaSwitch } from "@/components/AreaSwitch";
+import { CatalogItemGrid } from "@/components/CatalogItemGrid";
 import { JsonLd } from "@/components/JsonLd";
 import { SearchInput } from "@/components/SearchInput";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -17,7 +18,8 @@ import {
   storesInArea,
   toAreaSlug,
 } from "@/lib/data";
-import { areaCopy, categoryName, drugCopy, localizedPath } from "@/lib/i18n";
+import { CATALOG_GROUPS, featuredCatalogDrugs } from "@/lib/catalog-groups";
+import { areaCopy, categoryName, localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
 import { PARTNER_STORE_ITEMS } from "@/lib/partner-stores";
 import {
@@ -96,6 +98,7 @@ export default async function HomePage({
   const storeCount = storesInArea(area).length;
   const listedStores = allStores();
   const drugs = allDrugs();
+  const featuredDrugs = featuredCatalogDrugs(drugs);
   const currentArea = areaCopy(getArea(area), locale);
   const steps = locale === "en" ? STEPS_EN : STEPS_ZH;
 
@@ -198,36 +201,36 @@ export default async function HomePage({
         evidenceHref={`${SITE_URL}${locale === "en" ? "/en" : "/zh-tw"}/evidence#partners`}
       />
 
-      {/* 陳列「藥品」而不是「藥局」：藥品才是產品的單位（搜一個藥 → 誰有貨），
-          而且點進去就是 SEO 入口頁。 */}
+      {/* 首頁只放固定精選；完整目錄交給可搜尋、可分類的列表頁。 */}
       <section className="border-t border-line bg-ivory">
         <div className="shop-shell py-14 sm:py-20">
-          <p className="shop-kicker mb-3">COMMON ITEMS</p>
-          <div className="mb-7 flex flex-wrap items-end justify-between gap-3">
-            <h2 className="editorial-display m-0 text-[32px] leading-[1.25] sm:text-[40px]">{locale === "en" ? "Common products" : "常見品項"}</h2>
-            <p className="m-0 text-[13px] text-muted">{locale === "en" ? "Names and package sizes provided by partner pharmacies · Not live inventory" : "名稱與規格由合作藥局提供 · 並非即時庫存"}</p>
+          <div className="mb-6 max-w-[720px]">
+            <h2 className="editorial-display m-0 text-[32px] leading-[1.25] sm:text-[40px]">
+              {locale === "en" ? "Items provided by partner pharmacies" : "合作藥局提供品項"}
+            </h2>
+            <p className="mb-0 mt-3 text-[13px] leading-[1.7] text-muted">
+              {locale === "en" ? "Browse verified catalog records. Supply and pickup still require pharmacy confirmation." : "先瀏覽已整理的品項資料；是否供應與到店安排，仍需由藥局確認。"}
+            </p>
           </div>
-          <div className="grid grid-cols-2 border-l border-t border-line sm:grid-cols-3 lg:grid-cols-5">
-          {drugs.map((d) => {
-            const drug = drugCopy(d, locale);
-            return (
+          <nav aria-label={locale === "en" ? "Catalog categories" : "品項分類"} className="mb-7 flex flex-wrap gap-2">
+            {CATALOG_GROUPS.map((group) => (
+              <Link
+                key={group.slug}
+                href={`${localizedPath("/category/partner-item", locale)}?area=${area}&group=${group.slug}`}
+                className="inline-flex min-h-11 items-center border border-line-strong bg-paper px-3.5 text-[12.5px] font-semibold text-forest no-underline transition-colors hover:border-forest hover:bg-surface-hover"
+              >
+                {locale === "en" ? group.nameEn : group.name}
+              </Link>
+            ))}
+          </nav>
+          <CatalogItemGrid drugs={featuredDrugs} area={area} locale={locale} featured />
+          <div className="mt-6 flex justify-end">
             <Link
-              key={d.slug}
-              href={`${localizedPath(`/drug/${d.slug}`, locale)}?area=${area}`}
-              className="history-link group flex min-h-[138px] flex-col justify-between border-b border-r border-line bg-paper px-4 py-4 no-underline transition-colors hover:bg-surface-hover"
+              href={`${localizedPath("/category/partner-item", locale)}?area=${area}`}
+              className="inline-flex min-h-11 items-center border-b border-forest text-[14px] font-bold text-forest no-underline hover:border-green hover:text-green"
             >
-              <span>
-                <span className="block text-[16px] font-bold text-ink">{drug.name}</span>
-                <span className="mt-2 block text-[12.5px] leading-[1.55] text-muted">
-                  {locale === "en" ? d.nutritionFocusEn : d.nutritionFocus}
-                </span>
-              </span>
-              <span className="flex items-end justify-between gap-2 text-[12px] text-muted-2">
-                <span>{drug.spec} · {drug.drugClass}</span>
-                <span className="text-forest transition-transform group-hover:translate-x-1">→</span>
-              </span>
+              {locale === "en" ? `View all ${drugs.length} items →` : `查看全部 ${drugs.length} 項 →`}
             </Link>
-          );})}
           </div>
         </div>
       </section>

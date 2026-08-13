@@ -1,0 +1,118 @@
+import type { Drug } from "@/lib/types";
+
+export type CatalogGroupSlug =
+  | "all"
+  | "joint"
+  | "fish-vision"
+  | "vitamins-minerals"
+  | "probiotics-digestion"
+  | "botanical-blends";
+
+export interface CatalogGroup {
+  slug: CatalogGroupSlug;
+  name: string;
+  nameEn: string;
+}
+
+export const CATALOG_GROUPS: CatalogGroup[] = [
+  { slug: "all", name: "全部", nameEn: "All" },
+  { slug: "joint", name: "關節營養", nameEn: "Joint nutrition" },
+  { slug: "fish-vision", name: "魚油與視力", nameEn: "Fish oil & vision" },
+  { slug: "vitamins-minerals", name: "維生素與礦物質", nameEn: "Vitamins & minerals" },
+  { slug: "probiotics-digestion", name: "益生菌與消化", nameEn: "Probiotics & digestion" },
+  { slug: "botanical-blends", name: "植物與複方", nameEn: "Botanical blends" },
+];
+
+const GROUP_BY_DRUG_SLUG: Record<string, Exclude<CatalogGroupSlug, "all">> = {
+  "hugu-gaishu-100": "joint",
+  "guanlihu-60": "joint",
+  "cm-jinguguanjian-sr": "joint",
+  "rending-gujieyou": "joint",
+  "greenplus-discpower": "joint",
+  "greenplus-elgucare": "joint",
+  "yingkai-guguanjian-ucii": "joint",
+  "top-fish-oil-60": "fish-vision",
+  "shuwei-600-fish-oil-60": "fish-vision",
+  "baiyi-capsule-60": "fish-vision",
+  "wewell-vision-softgel": "fish-vision",
+  "likuo-fish-oil-30": "fish-vision",
+  "jixiang-jishukang": "fish-vision",
+  "bio-stand-calcium-softgel": "vitamins-minerals",
+  "youquan-super-magnesium": "vitamins-minerals",
+  "jingcui-huxinan": "vitamins-minerals",
+  "toyo-cukang-b": "vitamins-minerals",
+  "jinjiweichang-60": "probiotics-digestion",
+  "hongren-riqingsheng-lm": "probiotics-digestion",
+  "chung-jih-youweining": "probiotics-digestion",
+  "luhsin-l-glutamine": "probiotics-digestion",
+  "shengkangning-150": "botanical-blends",
+  "entineng-230": "botanical-blends",
+  "keqiqing-capsule": "botanical-blends",
+  "huzhikang-60": "botanical-blends",
+  "huzhikang-150": "botanical-blends",
+  "kimura-tiancheng-60": "botanical-blends",
+  "cm-sheliwei-softgel": "botanical-blends",
+  "tianxia-yangshen-jingqu": "botanical-blends",
+  "cm-guer-gan-150mg": "botanical-blends",
+  "gude-yishengning-p": "botanical-blends",
+  "icheng-meileshi": "botanical-blends",
+  "icheng-siyunmeng": "botanical-blends",
+  "ouye-jingyong": "botanical-blends",
+  "greenplus-vasopower": "botanical-blends",
+  "puda-grape-seed": "botanical-blends",
+  "puda-green-tea-compound": "botanical-blends",
+};
+
+const FEATURED_CATALOG_SLUGS = [
+  "hugu-gaishu-100",
+  "top-fish-oil-60",
+  "bio-stand-calcium-softgel",
+  "hongren-riqingsheng-lm",
+  "cm-sheliwei-softgel",
+  "chung-jih-youweining",
+  "wewell-vision-softgel",
+  "yingkai-guguanjian-ucii",
+] as const;
+
+function normalizeCatalogText(value: string): string {
+  return value.normalize("NFKC").toLocaleLowerCase().replace(/\s+/g, "");
+}
+
+export function isCatalogGroupSlug(value: string | undefined): value is CatalogGroupSlug {
+  return CATALOG_GROUPS.some((group) => group.slug === value);
+}
+
+export function catalogGroupForDrug(drug: Drug): Exclude<CatalogGroupSlug, "all"> | undefined {
+  return GROUP_BY_DRUG_SLUG[drug.slug];
+}
+
+export function featuredCatalogDrugs(drugs: Drug[]): Drug[] {
+  const bySlug = new Map(drugs.map((drug) => [drug.slug, drug]));
+  return FEATURED_CATALOG_SLUGS.flatMap((slug) => {
+    const drug = bySlug.get(slug);
+    return drug ? [drug] : [];
+  });
+}
+
+export function filterCatalogDrugs(
+  drugs: Drug[],
+  { query = "", group = "all" }: { query?: string; group?: CatalogGroupSlug },
+): Drug[] {
+  const normalizedQuery = normalizeCatalogText(query.trim());
+
+  return drugs.filter((drug) => {
+    if (group !== "all" && catalogGroupForDrug(drug) !== group) return false;
+    if (!normalizedQuery) return true;
+
+    const searchable = [
+      drug.name,
+      ...drug.aliases,
+      ...drug.ingredients,
+      drug.nutritionFocus,
+      ...drug.searchTerms,
+      drug.manufacturer ?? "",
+      drug.origin ?? "",
+    ];
+    return searchable.some((value) => normalizeCatalogText(value).includes(normalizedQuery));
+  });
+}
