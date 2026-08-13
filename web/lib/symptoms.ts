@@ -52,6 +52,13 @@ const REFER: Record<string, string> = {
   流血不止: "請直接就醫或前往急診。",
   誤食: "請立即就醫，並保留誤食物品的包裝供醫師判斷。",
   過敏: "過敏反應的成因與嚴重度差異很大，請由藥師或醫師判斷；出現喘、臉部腫脹請直接就醫。",
+  "a mosquito bite": "A mosquito bite can need pharmacist assessment; seek urgent care for widespread hives, facial swelling, or breathing trouble.",
+  soreness: "Soreness has different causes. This catalog does not list pain medicines; ask a pharmacist before self-selecting treatment.",
+  itching: "Itching has many causes. This catalog does not list anti-itch medicines; ask a pharmacist before self-selecting treatment.",
+  "chest pain": "Chest pain can be an emergency. Seek medical care now rather than self-selecting a product.",
+  "difficulty breathing": "Difficulty breathing needs urgent medical care. Do not self-select a product through search.",
+  "severe allergic reaction": "A severe allergic reaction needs urgent medical care. Do not self-select a product through search.",
+  "stroke-like weakness": "Stroke-like weakness needs emergency medical care. Do not self-select a product through search.",
   眼睛受傷: "眼睛外傷請直接就醫，不要自行點藥。",
   傷口很深: "深部傷口需要清創與評估是否縫合，請就醫。",
   咳血: "咳血需要由醫師評估原因，請儘快就醫；若同時呼吸困難、胸痛或大量出血，請直接前往急診。",
@@ -96,7 +103,7 @@ const EXPAND: Record<string, string[]> = {
 const INTENSIFIERS = /[好很超挺蠻滿]|有點|有些|非常|十分|一直|老是|總是/g;
 
 function normalize(q: string): string {
-  return q.replace(INTENSIFIERS, "");
+  return q.replace(INTENSIFIERS, "").toLowerCase();
 }
 
 /**
