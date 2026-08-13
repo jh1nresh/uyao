@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { JsonLd } from "@/components/JsonLd";
 import { KnowledgeCta, KnowledgeShell, ProvenanceBox } from "@/components/landing/KnowledgeShell";
+import { PARTNER_PHARMACY_COUNT } from "@/lib/partners";
 import { ENTITY_DESCRIPTION, articleJsonLd, breadcrumbJsonLd } from "@/lib/seo";
 import { indexablePageRobots } from "@/lib/seo-server";
 
@@ -32,7 +33,7 @@ const TOOL_ROWS = [
     name: "uYao",
     category: "效期、退貨與附近需求的行動層",
     fit: "為台灣獨立藥局設計，把庫存、效期與附近需求整理成退貨、減量、補貨與預留工作，再交給藥師批准。",
-    boundary: "目前是 prototype；已有 4 個確認合作藥局據點，但尚無設備安裝、真實節省金額或完整現場閉環證據。",
+    boundary: `目前是 prototype；已有 ${PARTNER_PHARMACY_COUNT} 個確認合作藥局據點，但尚無設備安裝、真實節省金額或完整現場閉環證據。`,
   },
   {
     name: "既有 POS／ERP／健保申報系統",

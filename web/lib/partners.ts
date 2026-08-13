@@ -6,6 +6,10 @@
  */
 export type PartnerStoreSlug =
   | "建利西藥房"
+  | "美得心藥局"
+  | "樂活健保藥局"
+  | "祥好大藥局"
+  | "中山藥局"
   | "萊康連鎖藥局"
   | "萊康中華健保藥局"
   | "永遠藥師藥局";
@@ -24,16 +28,36 @@ export const PARTNER_PHARMACIES = {
       "護谷鈣素 100粒",
       "勝康寧 150粒",
       "恩體能 230粒",
-      "進磯為常 60粒",
+      "進磯為常-D 60粒",
     ],
+  },
+  美得心藥局: {
+    storeSlug: "美得心藥局",
+    aliases: ["美得心藥局"],
+    confirmedProducts: [],
+  },
+  樂活健保藥局: {
+    storeSlug: "樂活健保藥局",
+    aliases: ["樂活健保藥局"],
+    confirmedProducts: [],
+  },
+  祥好大藥局: {
+    storeSlug: "祥好大藥局",
+    aliases: ["祥好大藥局"],
+    confirmedProducts: [],
+  },
+  中山藥局: {
+    storeSlug: "中山藥局",
+    aliases: ["中山藥局"],
+    confirmedProducts: [],
   },
   萊康連鎖藥局: {
     storeSlug: "萊康連鎖藥局",
     aliases: ["萊康藥局", "來康", "來康藥局", "萊康中正店", "萊康連鎖藥局中正店"],
     confirmedProducts: [
-      "克氣清咳嗽膠囊",
-      "護智康 60粒",
-      "護智康 150粒",
+      "克氣清膠囊",
+      "護智慷 60粒",
+      "護智慷 150粒",
       "護谷鈣素 100粒",
       "勝康寧 150粒",
       "恩體能 230粒",
@@ -43,9 +67,9 @@ export const PARTNER_PHARMACIES = {
     storeSlug: "萊康中華健保藥局",
     aliases: ["萊康藥局", "來康", "來康藥局", "萊康中華", "萊康中華店"],
     confirmedProducts: [
-      "克氣清咳嗽膠囊",
-      "護智康 60粒",
-      "護智康 150粒",
+      "克氣清膠囊",
+      "護智慷 60粒",
+      "護智慷 150粒",
       "護谷鈣素 100粒",
       "勝康寧 150粒",
       "恩體能 230粒",
@@ -57,6 +81,8 @@ export const PARTNER_PHARMACIES = {
     confirmedProducts: [],
   },
 } as const satisfies Record<PartnerStoreSlug, PartnerPharmacy>;
+
+export const PARTNER_PHARMACY_COUNT = Object.keys(PARTNER_PHARMACIES).length;
 
 export function partnerForStore(storeSlug: string): PartnerPharmacy | undefined {
   return PARTNER_PHARMACIES[storeSlug as PartnerStoreSlug];
