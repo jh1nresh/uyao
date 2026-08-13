@@ -73,13 +73,13 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const STEPS_ZH = [
-  { title: "搜尋", body: "輸入品名、成分或保養需求；若描述症狀，我們會先協助分流。" },
+  { title: "搜尋", body: "輸入品名、成分或保養需求；輕微不適會同頁顯示安全提醒與相關保養資料。" },
   { title: "留下需求", body: "送出找藥或預留需求，等待藥局確認是否能供應。" },
   { title: "依回覆前往", body: "藥局確認後再依回覆前往；到店付款並由藥師交付。" },
 ];
 
 const STEPS_EN = [
-  { title: "Search", body: "Enter a name, ingredient, or wellness need. Symptom descriptions are routed to a safer next step first." },
+  { title: "Search", body: "Enter a name, ingredient, or wellness need. Mild symptom descriptions show safety guidance and related wellness information together." },
   { title: "Leave a request", body: "Send a medicine or pickup request and wait for a pharmacy to confirm supply." },
   { title: "Follow the reply", body: "Travel only after confirmation; pay in store and receive the item from a pharmacist." },
 ];
@@ -118,7 +118,7 @@ export default async function HomePage({
               {locale === "en" ? "You do not need to know the product name." : "不用先知道品名。描述需求就能開始。"}
             </h1>
             <p className="mx-auto mt-5 max-w-[620px] text-[15px] leading-[1.8] text-ink-2 sm:text-[16px]">
-              {locale === "en" ? "Search by product, ingredient, or daily-wellness need. If you describe a symptom, we show a safer next step before any optional wellness information." : "可輸入品名、成分或日常保養方向；若描述症狀，我們會先提供安全分流，再由你決定是否查看保養資料。"}
+              {locale === "en" ? "Search by product, ingredient, or daily-wellness need. For a mild symptom description, safety guidance and related wellness information appear together." : "可輸入品名、成分或日常保養方向；若描述輕微不適，安全提醒與相關日常保養資料會在同一頁呈現。"}
             </p>
           </div>
 

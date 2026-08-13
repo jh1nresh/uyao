@@ -135,7 +135,7 @@ describe("合作藥局常見品項目錄", () => {
       matched: "膝蓋不舒服",
       wellnessQueryZh: "關節保養",
     },
-  ])("主動症狀 $query 先分流，只有明確選擇後才查看保養資料", ({ query, matched, wellnessQueryZh }) => {
+  ])("低風險症狀 $query 可在安全提醒下直接顯示保養資料", ({ query, matched, wellnessQueryZh }) => {
     expect(matchSymptom(query)).toMatchObject({
       kind: "refer",
       matched,
@@ -204,7 +204,7 @@ describe("合作藥局常見品項目錄", () => {
     { query: "dry throat", matched: "dry throat", wellnessQueryEn: "Daily respiratory wellness" },
     { query: "throat discomfort", matched: "throat discomfort", wellnessQueryEn: "Daily respiratory wellness" },
     { query: "knee discomfort", matched: "knee discomfort", wellnessQueryEn: "Bone and joint nutrition" },
-  ])("英文主動症狀 $query 先分流，只有明確選擇後才查看保養資料", ({ query, matched, wellnessQueryEn }) => {
+  ])("英文低風險症狀 $query 可在安全提醒下直接顯示保養資料", ({ query, matched, wellnessQueryEn }) => {
     expect(matchSymptom(query)).toMatchObject({
       kind: "refer",
       matched,

@@ -34,7 +34,7 @@ export interface SymptomRefer {
   matched: string;
   adviceZh: string;
   adviceEn: string;
-  /** 使用者主動選擇後才進入的日常保養搜尋，不是症狀推薦。 */
+  /** 可在安全提醒下直接顯示的日常保養搜尋，不是症狀推薦。 */
   wellness?: WellnessAlternative;
 }
 
@@ -43,8 +43,6 @@ export type SymptomMatch = SymptomExpand | SymptomRefer | null;
 export interface WellnessAlternative {
   queryZh: string;
   queryEn: string;
-  labelZh: string;
-  labelEn: string;
 }
 
 /**
@@ -61,15 +59,11 @@ interface ReferralCopy {
 const RESPIRATORY_WELLNESS: WellnessAlternative = {
   queryZh: "呼吸道保養",
   queryEn: "Daily respiratory wellness",
-  labelZh: "查看日常呼吸道保養資料",
-  labelEn: "View daily respiratory wellness information",
 };
 
 const JOINT_WELLNESS: WellnessAlternative = {
   queryZh: "關節保養",
   queryEn: "Bone and joint nutrition",
-  labelZh: "查看日常關節營養資料",
-  labelEn: "View daily joint nutrition information",
 };
 
 const REFERRAL = {
@@ -122,8 +116,8 @@ const REFERRAL = {
     en: "This cough description needs pharmacist or medical assessment, so related items are not shown. Seek prompt care if it persists, worsens, involves blood, chest pain, breathing trouble, fainting, or blue lips.",
   },
   coughWithWellness: {
-    zh: "咳嗽或喉嚨不適有不同原因，請先詢問藥師；症狀持續、惡化，或合併發燒、胸痛、呼吸困難等警訊時請就醫。",
-    en: "Cough or throat discomfort can have different causes. Ask a pharmacist first; seek care if it persists, worsens, or comes with fever, chest pain, or breathing trouble.",
+    zh: "咳嗽或喉嚨不適有不同原因，以下品項不是治療建議；症狀持續、惡化，或合併發燒、胸痛、呼吸困難等警訊時，請詢問藥師或就醫。",
+    en: "Cough or throat discomfort can have different causes. The items below are not treatment recommendations; ask a pharmacist or seek care if symptoms persist, worsen, or come with fever, chest pain, or breathing trouble.",
     wellness: RESPIRATORY_WELLNESS,
   },
   coughMedicine: {
@@ -151,8 +145,8 @@ const REFERRAL = {
     en: "Knee or joint pain, swelling, limited movement, or symptoms after an injury need pharmacist or medical assessment. Do not self-select a product through search.",
   },
   jointWithWellness: {
-    zh: "膝蓋或關節不適有不同原因，uYao 不會依症狀推薦保健品。請先詢問藥師；若疼痛、腫脹、無法活動、外傷後不適或持續惡化，請就醫。",
-    en: "Knee or joint discomfort can have different causes, so uYao does not recommend a supplement from symptoms. Ask a pharmacist; seek care for pain, swelling, limited movement, injury, or worsening symptoms.",
+    zh: "膝蓋或關節不適有不同原因，以下只列日常營養補充資料，不是依症狀推薦保健品；若疼痛、腫脹、無法活動、外傷後不適或持續惡化，請詢問藥師或就醫。",
+    en: "Knee or joint discomfort can have different causes. The items below are daily nutrition information, not supplement recommendations based on symptoms; ask a pharmacist or seek care for pain, swelling, limited movement, injury, or worsening symptoms.",
     wellness: JOINT_WELLNESS,
   },
 } as const satisfies Record<string, ReferralCopy>;
@@ -282,11 +276,11 @@ function compactChinese(query: string): string {
 }
 
 /**
- * 少數明確、短而低風險的句型可以附上「主動查看日常保養資料」選項，
- * 但本身仍然走安全分流、不直接顯示品項。其他咳嗽／喉嚨描述只給分流，
+ * 少數明確、短而低風險的句型可以在安全提醒下直接顯示日常保養資料。
+ * 其他咳嗽／喉嚨描述只給分流，
  * 避免用黑名單猜漏病程或警訊。
  */
-function wellnessOptInSymptom(raw: string, normalized: string): SymptomRefer | null {
+function mildWellnessSymptom(raw: string, normalized: string): SymptomRefer | null {
   const zh = compactChinese(normalized);
 
   if (/^(?:我)?(?:今天)?(?:咳嗽|咳)(?:一下)?$/.test(zh)) {
@@ -334,8 +328,8 @@ export function matchSymptom(query: string): SymptomMatch {
     }
   }
 
-  const wellnessOptIn = wellnessOptInSymptom(raw, q);
-  if (wellnessOptIn) return wellnessOptIn;
+  const mildWellness = mildWellnessSymptom(raw, q);
+  if (mildWellness) return mildWellness;
 
   // 完整品名會由 data.ts 的 exactDrugMatches 先處理；走到這裡的其他咳嗽／喉嚨句子保守分流。
   if (containsCough(q)) return referral(raw, REFERRAL.cough);
