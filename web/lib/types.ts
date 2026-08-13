@@ -32,7 +32,8 @@ export type AreaSlug =
   | "zhongshan"
   | "xinyi"
   | "xitun"
-  | "miaoli";
+  | "miaoli"
+  | "yilan";
 
 export interface Area {
   slug: AreaSlug;
@@ -68,10 +69,15 @@ export interface Drug {
   nutritionFocusEn: string;
   /** 供 deterministic search 使用的保養需求詞；不可放疾病或治療宣稱。 */
   searchTerms: string[];
-  /** 用來核對品名、規格、成分或產品定位的公開頁面；未驗證時不填。 */
+  /** 合作藥局提供的品牌／製造／供應資訊；未提供時不猜。 */
+  manufacturer?: string;
+  /** 成品產地文字照資料來源保留；原料來源不得改寫成成品產地。 */
+  origin?: string;
+  /** 公開核對頁面，或合作藥局提供資料的來源標記。 */
   source?: {
     label: string;
-    url: string;
+    url?: string;
+    kind?: "public" | "partner";
   };
 }
 
@@ -93,7 +99,7 @@ export type StoreStatus = "live" | "listed";
  *              門市通常開得更久，所以標題不能寫「營業時間」。
  * - `none`   → 兩邊都沒有
  */
-export type HoursSource = "google" | "nhi" | "none";
+export type HoursSource = "google" | "nhi" | "partner" | "none";
 
 export interface Store {
   slug: string;
