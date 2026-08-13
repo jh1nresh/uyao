@@ -20,15 +20,15 @@ const CATEGORY_EN: Record<string, string> = {
   "partner-item": "Partner-listed items",
 };
 
-const AREA_EN: Record<string, { name: string; shortName: string }> = {
-  datong: { name: "Datong District, Taipei", shortName: "Datong" },
-  linkou: { name: "Linkou District, New Taipei", shortName: "Linkou" },
-  luzhou: { name: "Luzhou District, New Taipei", shortName: "Luzhou" },
-  xinzhuang: { name: "Xinzhuang District, New Taipei", shortName: "Xinzhuang" },
-  zhongshan: { name: "Zhongshan District, Taipei", shortName: "Zhongshan" },
-  xinyi: { name: "Xinyi District, Taipei", shortName: "Xinyi" },
-  xitun: { name: "Xitun District, Taichung", shortName: "Xitun" },
-  miaoli: { name: "Miaoli City, Miaoli", shortName: "Miaoli" },
+const AREA_EN: Record<string, { countyCity: string; name: string; shortName: string }> = {
+  datong: { countyCity: "Taipei", name: "Datong District, Taipei", shortName: "Datong" },
+  linkou: { countyCity: "New Taipei", name: "Linkou District, New Taipei", shortName: "Linkou" },
+  luzhou: { countyCity: "New Taipei", name: "Luzhou District, New Taipei", shortName: "Luzhou" },
+  xinzhuang: { countyCity: "New Taipei", name: "Xinzhuang District, New Taipei", shortName: "Xinzhuang" },
+  zhongshan: { countyCity: "Taipei", name: "Zhongshan District, Taipei", shortName: "Zhongshan" },
+  xinyi: { countyCity: "Taipei", name: "Xinyi District, Taipei", shortName: "Xinyi" },
+  xitun: { countyCity: "Taichung", name: "Xitun District, Taichung", shortName: "Xitun" },
+  miaoli: { countyCity: "Miaoli County", name: "Miaoli City, Miaoli", shortName: "Miaoli" },
 };
 
 const CLASS_EN: Record<string, string> = {
