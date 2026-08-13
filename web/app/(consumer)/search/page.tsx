@@ -33,12 +33,14 @@ export default async function SearchPage({
   const area = toAreaSlug(rawArea);
   const exactMatches = exactDrugMatches(q);
   const symptom = exactMatches.length > 0 ? null : matchSymptom(q);
-  const results = (exactMatches.length > 0 ? exactMatches : searchDrugs(q))
-    .map((d) => drugSummary(d.slug, area))
-    .filter((s): s is NonNullable<typeof s> => s !== undefined);
   const wellnessQuery = symptom?.kind === "refer" && symptom.wellness
     ? locale === "en" ? symptom.wellness.queryEn : symptom.wellness.queryZh
     : null;
+  const results = (wellnessQuery
+    ? searchDrugs(wellnessQuery)
+    : exactMatches.length > 0 ? exactMatches : searchDrugs(q))
+    .map((d) => drugSummary(d.slug, area))
+    .filter((s): s is NonNullable<typeof s> => s !== undefined);
 
   return (
     <>
@@ -57,7 +59,7 @@ export default async function SearchPage({
           <p className="text-[13px] text-muted-2">
             {!q
               ? locale === "en" ? "Enter a product, ingredient, symptom, or wellness need" : "輸入品名、成分、症狀或保養需求"
-              : symptom?.kind === "refer"
+              : symptom?.kind === "refer" && !wellnessQuery
                 ? locale === "en" ? "Ask a pharmacist first" : "建議先問藥師"
                 : `${results.length} ${locale === "en" ? "items" : "項"} · ${areaCopy(getArea(area), locale).shortName}`}
           </p>
@@ -75,46 +77,43 @@ export default async function SearchPage({
         )}
 
         {/*
-          refer 走這條，不進 `DrugResults` —— 除了畫面，也是為了資料乾淨：
+          沒有 wellness 對應的 refer 不進 `DrugResults` —— 除了畫面，也是為了資料乾淨：
           `DrugResults` 在零結果時會掛 `NotifyMe kind="catalog_miss"`，
           而「燙傷」不是目錄缺這支藥，是我們刻意不列。記進去的話，
           demand 報表會反過來叫我們去補燙傷藥。
         */}
         {q && symptom?.kind === "refer" ? (
-          <div className="border-2 border-green bg-green-tint px-4 py-4">
-            <p className="text-[15px] font-bold text-ink">
-              {locale === "en" ? "Ask a pharmacist or seek medical care first" : `「${symptom.matched}」建議先問藥師或就醫`}
-            </p>
-            <p className="mt-1.5 text-[15px] leading-[1.8] text-ink-2">
-              {locale === "en" ? symptom.adviceEn : symptom.adviceZh}
-            </p>
-            <p className="mt-2.5 text-[13px] leading-[1.7] text-muted">
-              {locale === "en" ? "No OTC products are listed because self-selection may be inappropriate." : "我們沒有為這個狀況列出成藥 —— 不是查不到，是自行選藥不合適。"}
-            </p>
-            <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-              <Link
-                href={`${localizedPath("/", locale)}?area=${area}#pharmacies`}
-                className="action-primary text-[14px]"
-              >
-                {locale === "en" ? "Find a nearby pharmacist" : "找附近藥師"}
-              </Link>
-              {symptom.wellness && wellnessQuery && (
-                <Link
-                  href={`${localizedPath("/search", locale)}?q=${encodeURIComponent(wellnessQuery)}&area=${area}`}
-                  className="action-secondary text-[14px]"
-                >
-                  {locale === "en" ? symptom.wellness.labelEn : symptom.wellness.labelZh}
-                </Link>
-              )}
-            </div>
-            {symptom.wellness && (
-              <p className="mt-2.5 text-[12px] leading-[1.7] text-muted-2">
-                {locale === "en"
-                  ? "The wellness option opens sourced nutrition information only. It is not a treatment recommendation for your symptom."
-                  : "日常保養選項只會開啟有來源的營養資料，不代表能治療你描述的症狀。"}
+          <>
+            <div className="border-2 border-green bg-green-tint px-4 py-4">
+              <p className="text-[15px] font-bold text-ink">
+                {wellnessQuery
+                  ? locale === "en" ? `“${symptom.matched}”: review the symptom, then compare daily wellness` : `「${symptom.matched}」先留意症狀，也可比較日常保養`
+                  : locale === "en" ? "Ask a pharmacist or seek medical care first" : `「${symptom.matched}」建議先問藥師或就醫`}
               </p>
+              <p className="mt-1.5 text-[15px] leading-[1.8] text-ink-2">
+                {locale === "en" ? symptom.adviceEn : symptom.adviceZh}
+              </p>
+              <p className="mt-2.5 text-[13px] leading-[1.7] text-muted">
+                {wellnessQuery
+                  ? locale === "en" ? "Related sourced daily-wellness information is shown below. It is not treatment for the symptom you described." : "下方直接列出有來源的日常保養資料，不代表能治療你描述的症狀。"
+                  : locale === "en" ? "No OTC products are listed because self-selection may be inappropriate." : "我們沒有為這個狀況列出成藥 —— 不是查不到，是自行選藥不合適。"}
+              </p>
+              <div className="mt-4 flex flex-col gap-2 sm:flex-row">
+                <Link
+                  href={`${localizedPath("/", locale)}?area=${area}#pharmacies`}
+                  className="action-primary text-[14px]"
+                >
+                  {locale === "en" ? "Find a nearby pharmacist" : "找附近藥師"}
+                </Link>
+              </div>
+            </div>
+            {wellnessQuery && (
+              <div className="mt-5">
+                <p className="shop-kicker mb-2.5">{locale === "en" ? "RELATED DAILY WELLNESS" : "相關日常保養品項"}</p>
+                <DrugResults results={results} query={wellnessQuery} area={area} />
+              </div>
             )}
-          </div>
+          </>
         ) : q ? (
           <DrugResults results={results} query={q} area={area} />
         ) : (
