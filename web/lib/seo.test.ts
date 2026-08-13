@@ -19,6 +19,7 @@ import {
   jsonLdGraph,
   organizationJsonLd,
   softwareApplicationJsonLd,
+  webPageJsonLd,
 } from "./seo";
 
 describe("indexingAllowed", () => {
@@ -61,6 +62,7 @@ describe("indexable paths", () => {
         "/zh-tw/guides/pharmacy-expiry-management",
         "/zh-tw/guides/pharmacy-return-window",
         "/zh-tw/evidence",
+        "/en/evidence",
         "/zh-tw/compare/uyao-vs-pos",
       ]),
     );
@@ -101,6 +103,18 @@ describe("json-ld", () => {
 
   it("links the organization to the official uYao X account", () => {
     expect(organizationJsonLd()).toMatchObject({ sameAs: [X_URL] });
+  });
+
+  it("labels English evidence schema with the correct language", () => {
+    expect(
+      webPageJsonLd({
+        name: "Evidence",
+        description: "Verified product evidence",
+        path: "/en/evidence",
+        dateModified: "2026-08-12",
+        inLanguage: "en",
+      }),
+    ).toMatchObject({ inLanguage: "en" });
   });
 
   it("builds absolute breadcrumb urls on the canonical site", () => {

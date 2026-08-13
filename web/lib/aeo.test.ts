@@ -61,6 +61,7 @@ describe("AEO answer contract", () => {
       expect(page.dateModified >= page.datePublished).toBe(true);
       expect(aeoLastModified(page.path)).toBe(page.dateModified);
     }
+    expect(aeoLastModified("/en/evidence")).toBe(AEO_PAGES.evidence.dateModified);
     expect(aeoLastModified("/zh-tw")).toBeUndefined();
   });
 
@@ -73,8 +74,13 @@ describe("AEO answer contract", () => {
       expect(source).toContain("directAnswer: DESCRIPTION");
       expect(source).toContain("canonical: PAGE.path");
       expect(source).toContain("path: PAGE.path");
-      expect(source).toContain("{TITLE}");
-      expect(source).toContain("{DESCRIPTION}");
+      if (key === "evidence") {
+        expect(source).toContain("title: TITLE");
+        expect(source).toContain("description: DESCRIPTION");
+      } else {
+        expect(source).toContain("{TITLE}");
+        expect(source).toContain("{DESCRIPTION}");
+      }
     }
   });
 });

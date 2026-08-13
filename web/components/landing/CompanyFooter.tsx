@@ -101,8 +101,8 @@ export function CompanyFooter({ locale }: { locale: "zh" | "en" }) {
               {copy.trustHeading}
             </h2>
             <div className="mt-2 flex flex-col items-start">
-              <FooterLink href="/zh-tw/evidence">{copy.evidence}</FooterLink>
-              <FooterLink href="/zh-tw/evidence#partners">{copy.partnership}</FooterLink>
+              <FooterLink href={`${companyPrefix}/evidence`}>{copy.evidence}</FooterLink>
+              <FooterLink href={`${companyPrefix}/evidence#partners`}>{copy.partnership}</FooterLink>
             </div>
           </nav>
 

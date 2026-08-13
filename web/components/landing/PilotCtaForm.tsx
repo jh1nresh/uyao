@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-/** 問題選項的 canonical value（中文）— 與 /api/pilot 的白名單同步，改一邊記得改另一邊。 */
+/** 問題選項的 canonical value（中文），與 /api/pilot 的白名單同步，改一邊記得改另一邊。 */
 export interface PilotFormCopy {
   locale: "zh" | "en";
   nameLabel: string;
@@ -148,7 +148,7 @@ export function PilotCtaForm({ copy }: { copy: PilotFormCopy }) {
       <button
         type="submit"
         disabled={status === "loading"}
-        className="action-primary min-h-12 justify-self-start px-8 py-[15px] text-[16px]"
+        className="action-primary min-h-12 justify-self-start border border-paper bg-paper px-8 py-[15px] text-[16px] text-forest shadow-none hover:bg-white hover:text-forest focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-paper"
       >
         {status === "loading" ? copy.submitting : copy.submit}
       </button>
