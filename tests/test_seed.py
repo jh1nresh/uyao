@@ -20,8 +20,9 @@ def test_partner_store_scope_is_the_current_public_list():
         ("萊康連鎖藥局", "新北市", "蘆洲區"),
         ("萊康中華健保藥局", "新北市", "蘆洲區"),
         ("永遠藥師藥局", "臺中市", "西屯區"),
+        ("發元藥局", "苗栗縣", "苗栗市"),
     )
-    assert DEFAULT_SCOPES == "臺北市:大同區,中山區;新北市:林口區,新莊區,蘆洲區;臺中市:西屯區"
+    assert DEFAULT_SCOPES == "臺北市:大同區,中山區;新北市:林口區,新莊區,蘆洲區;臺中市:西屯區;苗栗縣:苗栗市"
 
 
 class TestSlug:

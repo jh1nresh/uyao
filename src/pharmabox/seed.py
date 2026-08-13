@@ -38,6 +38,7 @@ AREA_BY_DISTRICT = {
     "蘆洲區": "luzhou",
     "新莊區": "xinzhuang",
     "西屯區": "xitun",
+    "苗栗市": "miaoli",
 }
 
 # 各區中心點，用來算「距離」。v1 沒有真的定位，距離一律是「距區中心」，
@@ -50,6 +51,7 @@ AREA_CENTER = {
     "luzhou": (25.0849, 121.4737),
     "xinzhuang": (25.0359, 121.4322),
     "xitun": (24.1813, 120.6466),
+    "miaoli": (24.566667, 120.816444),
 }
 
 # 目前首波收錄的店。洽談狀態不進公開資料，也不等於已安裝盒子。
@@ -63,6 +65,7 @@ LISTED_STORES = (
     ("萊康連鎖藥局", "新北市", "蘆洲區"),
     ("萊康中華健保藥局", "新北市", "蘆洲區"),
     ("永遠藥師藥局", "臺中市", "西屯區"),
+    ("發元藥局", "苗栗縣", "苗栗市"),
 )
 
 # 食藥署「藥局基本資料」不含一般西藥房。建利仍有有效的西藥零售商業登記，
@@ -77,10 +80,23 @@ MANUAL_STORES = (
         phone="02-25556484",
         nhi_contracted=False,
     ),
+    prospects_mod.Pharmacy(
+        name="發元藥局",
+        city="苗栗縣",
+        district="苗栗市",
+        address="中正路908號",
+        owner="",
+        phone="037-320285",
+        nhi_contracted=False,
+    ),
 )
 MANUAL_STORE_NAMES = {store.name for store in MANUAL_STORES}
+MANUAL_STORE_NOTES = {
+    "建利西藥房": "資料來源：臺北市商業登記",
+    "發元藥局": "資料來源：合作藥局實地確認",
+}
 
-DEFAULT_SCOPES = "臺北市:大同區,中山區;新北市:林口區,新莊區,蘆洲區;臺中市:西屯區"
+DEFAULT_SCOPES = "臺北市:大同區,中山區;新北市:林口區,新莊區,蘆洲區;臺中市:西屯區;苗栗縣:苗栗市"
 DEFAULT_STORE_NAMES = ",".join(name for name, _, _ in LISTED_STORES)
 
 WEEKDAY_LABEL = {
@@ -301,7 +317,7 @@ def build(
         if p.nhi_contracted:
             notes.append("健保特約")
         if p.name in MANUAL_STORE_NAMES:
-            notes.append("資料來源：臺北市商業登記")
+            notes.append(MANUAL_STORE_NOTES[p.name])
 
         out.append({
             "slug": slug,
@@ -393,7 +409,7 @@ def main(argv: list[str] | None = None) -> int:
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(
         json.dumps({
-            "generatedFrom": "FDA + NHI + Google Places + 臺北市商業登記",
+            "generatedFrom": "FDA + NHI + Google Places + 人工查核店家",
             "stores": stores,
         },
                    ensure_ascii=False, indent=2) + "\n",

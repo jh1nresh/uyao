@@ -1,5 +1,5 @@
 {
-  "generatedFrom": "FDA + NHI + Google Places + 臺北市商業登記",
+  "generatedFrom": "FDA + NHI + Google Places + 人工查核店家",
   "stores": [
     {
       "slug": "建利西藥房",
@@ -319,6 +319,30 @@
       "hoursSource": "nhi",
       "notes": [
         "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "發元藥局",
+      "name": "發元藥局",
+      "area": "miaoli",
+      "district": "苗栗市",
+      "address": "苗栗縣苗栗市中正路908號",
+      "phone": "037-320-285",
+      "owner": "",
+      "nhiCode": null,
+      "nhiContracted": false,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=發元藥局+苗栗縣苗栗市中正路908號",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [
+        "資料來源：合作藥局實地確認"
       ],
       "status": "listed"
     }

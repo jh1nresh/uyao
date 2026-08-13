@@ -21,6 +21,11 @@ const EXPECTED_CATALOG = [
   { slug: "keqiqing-capsule", label: "克氣清膠囊" },
   { slug: "huzhikang-60", label: "護智慷 60粒" },
   { slug: "huzhikang-150", label: "護智慷 150粒" },
+  { slug: "top-fish-oil-60", label: "TOP高單位頂級魚油軟膠囊 60顆" },
+  { slug: "guanlihu-60", label: "關立護 60錠" },
+  { slug: "kimura-tiancheng-60", label: "木村 添誠膠囊食品 60粒" },
+  { slug: "shuwei-600-fish-oil-60", label: "舒維-600魚油 60粒" },
+  { slug: "baiyi-capsule-60", label: "百益膠囊食品 60粒" },
 ] as const;
 
 const OLD_SAMPLE_SLUGS = [
@@ -52,7 +57,7 @@ function catalogLabel(drug: ReturnType<typeof allDrugs>[number]): string {
 }
 
 describe("合作藥局常見品項目錄", () => {
-  it("公開目錄剛好只有店家確認的七個品項", () => {
+  it("公開目錄剛好只有店家確認的十二個品項", () => {
     expect(allDrugs().map((drug) => ({ slug: drug.slug, label: catalogLabel(drug) }))).toEqual(
       EXPECTED_CATALOG,
     );
@@ -69,7 +74,7 @@ describe("合作藥局常見品項目錄", () => {
   });
 
   it("已驗證的一般食品保留非藥品邊界，並附可核對的營養補充資料", () => {
-    for (const drug of allDrugs().filter((drug) => drug.slug !== "huzhikang-60")) {
+    for (const drug of allDrugs().filter((drug) => drug.source)) {
       expect(drug.nameEn).toBeUndefined();
       expect(drug.licenseNo).toBe("");
       expect(drug.drugClass).toBe("非藥品");
@@ -83,6 +88,19 @@ describe("合作藥局常見品項目錄", () => {
       expect(storesForDrug(drug.slug)).toEqual([]);
     }
   });
+
+  it.each(["huzhikang-60", "guanlihu-60", "kimura-tiancheng-60"])(
+    "%s 沒有公開產品來源前只收品名與規格",
+    (slug) => {
+      expect(getDrug(slug)).toMatchObject({
+        drugClass: "待確認",
+        ingredients: [],
+        nutritionFocus: "營養補充定位待確認",
+        searchTerms: [],
+      });
+      expect(getDrug(slug)?.source).toBeUndefined();
+    },
+  );
 
   it("護智慷 60粒保留合作藥局確認的品名與規格，但不借用 150粒的來源或產品資料", () => {
     const sixtyCount = getDrug("huzhikang-60");

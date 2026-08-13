@@ -36,6 +36,13 @@ const EXPECTED_PRODUCTS = {
     "恩體能 230粒",
   ],
   永遠藥師藥局: [],
+  發元藥局: [
+    "TOP高單位頂級魚油軟膠囊 60顆",
+    "關立護 60錠",
+    "木村 添誠膠囊食品 60粒",
+    "舒維-600魚油 60粒",
+    "百益膠囊食品 60粒",
+  ],
 } as const;
 
 const REQUIRED_ALIASES = {
@@ -47,6 +54,7 @@ const REQUIRED_ALIASES = {
   萊康連鎖藥局: ["萊康藥局", "來康", "來康藥局", "萊康中正店", "萊康連鎖藥局中正店"],
   萊康中華健保藥局: ["萊康藥局", "來康", "來康藥局", "萊康中華", "萊康中華店"],
   永遠藥師藥局: ["永遠大藥局", "永遠藥局"],
+  發元藥局: ["發元藥局", "發元西藥房", "發元藥房"],
 } as const;
 
 const PARTNER_LOCATIONS = [
@@ -58,14 +66,15 @@ const PARTNER_LOCATIONS = [
   ["萊康連鎖藥局", "luzhou", "新北市蘆洲區中正路126號1樓", "5931142509"],
   ["萊康中華健保藥局", "luzhou", "新北市蘆洲區中華街45-1號1樓", "5931143051"],
   ["永遠藥師藥局", "xitun", "臺中市西屯區西屯路二段28之2號1樓", "5903271648"],
+  ["發元藥局", "miaoli", "苗栗縣苗栗市中正路908號", null],
 ] as const;
 
 describe("合作藥局人工確認資料", () => {
-  it("收錄八個已確認合作的正式藥局 slug", () => {
+  it("收錄九個已確認合作的正式藥局 slug", () => {
     expect(Object.keys(PARTNER_PHARMACIES)).toEqual(
       Object.keys(EXPECTED_PRODUCTS),
     );
-    expect(PARTNER_PHARMACY_COUNT).toBe(8);
+    expect(PARTNER_PHARMACY_COUNT).toBe(9);
   });
 
   it.each(PARTNER_LOCATIONS)(

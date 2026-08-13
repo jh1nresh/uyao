@@ -12,7 +12,8 @@ export type PartnerStoreSlug =
   | "中山藥局"
   | "萊康連鎖藥局"
   | "萊康中華健保藥局"
-  | "永遠藥師藥局";
+  | "永遠藥師藥局"
+  | "發元藥局";
 
 export interface PartnerPharmacy {
   readonly storeSlug: PartnerStoreSlug;
@@ -79,6 +80,17 @@ export const PARTNER_PHARMACIES = {
     storeSlug: "永遠藥師藥局",
     aliases: ["永遠大藥局", "永遠藥局"],
     confirmedProducts: [],
+  },
+  發元藥局: {
+    storeSlug: "發元藥局",
+    aliases: ["發元藥局", "發元西藥房", "發元藥房"],
+    confirmedProducts: [
+      "TOP高單位頂級魚油軟膠囊 60顆",
+      "關立護 60錠",
+      "木村 添誠膠囊食品 60粒",
+      "舒維-600魚油 60粒",
+      "百益膠囊食品 60粒",
+    ],
   },
 } as const satisfies Record<PartnerStoreSlug, PartnerPharmacy>;
 

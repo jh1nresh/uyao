@@ -123,7 +123,7 @@ const TIMELINE = [
   { label: "Outcome pending / verified", last: true },
 ] as const;
 
-const PILOT_AREAS = ["Datong", "Linkou", "Luzhou", "Xinzhuang", "Zhongshan", "Xitun"] as const;
+const PILOT_AREAS = ["Datong", "Linkou", "Luzhou", "Xinzhuang", "Zhongshan", "Xitun", "Miaoli"] as const;
 const EN_SHOP_URL = `${SHOP_URL.replace(/\/$/, "")}/en`;
 
 function Container({ children }: { children: React.ReactNode }) {

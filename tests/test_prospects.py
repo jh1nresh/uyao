@@ -43,6 +43,9 @@ class TestDial:
         assert mk(phone="02-27774628").dials == ["02-2777-4628"]
         assert mk(phone="(02)2708-5566").dials == ["02-2708-5566"]
 
+    def test_three_digit_area_code_uses_pharmacy_city(self):
+        assert mk(phone="037-320285", city="苗栗縣").dials == ["037-320-285"]
+
     def test_blank_phone_yields_nothing(self):
         assert mk(phone="").dials == []
         assert mk(phone="   ").dials == []

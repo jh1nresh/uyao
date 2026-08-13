@@ -127,9 +127,13 @@ class Pharmacy:
             if not d.startswith("0") or len(d) < 9:
                 out.append(chunk.strip())  # 補不回來就留原樣，不要偽造號碼
                 continue
-            head = 2 if d[:2] in ("02", "03", "04", "06", "07", "08") and len(d) >= 9 else 3
+            area_code = AREA_CODES.get(self.city, "")
+            head = len(area_code) if area_code and d.startswith(area_code) else 2
             rest = d[head:]
-            out.append(f"{d[:head]}-{rest[:-4]}-{rest[-4:]}")
+            if len(rest) == 6:
+                out.append(f"{d[:head]}-{rest[:3]}-{rest[3:]}")
+            else:
+                out.append(f"{d[:head]}-{rest[:-4]}-{rest[-4:]}")
         return out
 
     @property
