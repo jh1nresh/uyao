@@ -64,7 +64,9 @@ export default async function SearchPage({
         {/* 症狀類查詢要交代兩件事：為什麼是這些結果，以及我們不是在給醫療建議 */}
         {q && symptom?.kind === "expand" && (
           <p className="mb-2.5 border border-line-strong bg-surface px-3.5 py-2.5 text-[13px] leading-[1.7] text-muted">
-            {locale === "en" ? "These items match a nutrition or daily-wellness focus. They are not treatments for a symptom. Ask a pharmacist if you are unsure what is appropriate." : <>「{symptom.matched}」對應到<b className="font-bold text-ink">{symptom.terms.join("、")}</b>，以下是營養補充／日常保養定位相符的品項。<br />這不代表能治療症狀；不舒服或不確定是否適合，請先問藥師或就醫。</>}
+            {locale === "en"
+              ? <>“{symptom.matched}” is related to the catalog focus <b className="font-bold text-ink">{symptom.terms.join(", ")}</b>. These are related daily-wellness items, not treatment recommendations. Ask a pharmacist; seek medical care if symptoms persist, worsen, or come with a red flag.</>
+              : <>「{symptom.matched}」可搜尋到目錄中與<b className="font-bold text-ink">{symptom.terms.join("、")}</b>資料相關的品項。<br />這是品項資料的關聯搜尋，不是治療或用藥推薦；症狀持續、惡化或合併發燒、胸痛、呼吸困難等警訊時，請就醫。</>}
           </p>
         )}
 
@@ -79,7 +81,9 @@ export default async function SearchPage({
             <p className="text-[15px] font-bold text-ink">
               {locale === "en" ? "Ask a pharmacist or seek medical care first" : `「${symptom.matched}」建議先問藥師或就醫`}
             </p>
-            <p className="mt-1.5 text-[15px] leading-[1.8] text-ink-2">{locale === "en" ? "This situation is not suitable for self-selecting an OTC product through search." : symptom.advice}</p>
+            <p className="mt-1.5 text-[15px] leading-[1.8] text-ink-2">
+              {locale === "en" ? symptom.adviceEn : symptom.adviceZh}
+            </p>
             <p className="mt-2.5 text-[13px] leading-[1.7] text-muted">
               {locale === "en" ? "No OTC products are listed because self-selection may be inappropriate." : "我們沒有為這個狀況列出成藥 —— 不是查不到，是自行選藥不合適。"}
             </p>
