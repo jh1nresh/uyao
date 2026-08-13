@@ -1,10 +1,13 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  BRAND_ALTERNATE_NAMES,
+  BRAND_NAME,
   CANONICAL_HOST,
   CONSUMER_DESCRIPTION,
   ENTITY_DESCRIPTION,
   INDEXABLE_PATHS,
+  ORGANIZATION_LOGO_URL,
   SHOP_CANONICAL_HOST,
   SHOP_INDEXABLE_PATHS,
   SITE_URL,
@@ -19,6 +22,7 @@ import {
   jsonLdGraph,
   organizationJsonLd,
   softwareApplicationJsonLd,
+  webSiteJsonLd,
   webPageJsonLd,
 } from "./seo";
 
@@ -103,6 +107,25 @@ describe("json-ld", () => {
 
   it("links the organization to the official uYao X account", () => {
     expect(organizationJsonLd()).toMatchObject({ sameAs: [X_URL] });
+  });
+
+  it("publishes one canonical organization identity with an owned logo", () => {
+    expect(organizationJsonLd()).toMatchObject({
+      name: BRAND_NAME,
+      alternateName: BRAND_ALTERNATE_NAMES,
+      url: `${SITE_URL}/`,
+      logo: ORGANIZATION_LOGO_URL,
+    });
+  });
+
+  it("keeps the website name and aliases stable across locales", () => {
+    for (const locale of ["zh", "en"] as const) {
+      expect(webSiteJsonLd(locale)).toMatchObject({
+        name: BRAND_NAME,
+        alternateName: [...BRAND_ALTERNATE_NAMES, CANONICAL_HOST],
+        url: `${SITE_URL}/`,
+      });
+    }
   });
 
   it("labels English evidence schema with the correct language", () => {
