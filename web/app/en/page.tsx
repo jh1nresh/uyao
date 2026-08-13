@@ -182,11 +182,8 @@ export default function EnglishLandingPage() {
       {/* Hero — category 先講清楚，visual 用同一條 action loop */}
       <header className="bg-ivory">
         <Container>
-          <div className="grid items-center gap-14 py-16 sm:py-24 lg:min-h-[740px] lg:grid-cols-[1.08fr_.92fr] lg:gap-20 lg:py-24">
+          <div className="grid min-w-0 items-center gap-12 py-14 sm:py-20 lg:min-h-[680px] lg:grid-cols-[1.08fr_.92fr] lg:gap-20 lg:py-20">
             <div>
-              <p className="num mb-6 mt-0 text-[12px] font-semibold tracking-[.14em] text-oxblood">
-                AI OPERATING SYSTEM FOR INDEPENDENT PHARMACIES
-              </p>
               <h1 className="editorial-display m-0 max-w-[12em] text-[clamp(46px,5.4vw,74px)] leading-[1.08] [text-wrap:balance]">
                 Turn every inventory signal into completed work.
               </h1>
@@ -208,7 +205,7 @@ export default function EnglishLandingPage() {
                   See the consumer product →
                 </a>
               </div>
-              <p className="mb-0 mt-12 flex items-center gap-2.5 text-[13.5px] text-muted">
+              <p className="mb-0 mt-10 flex items-center gap-2.5 text-[14px] text-muted">
                 <span className="h-2 w-2 flex-none rounded-full bg-green" aria-hidden />
                 We’re recruiting independent pharmacies to validate the first end-to-end workflow.
               </p>
@@ -220,25 +217,18 @@ export default function EnglishLandingPage() {
 
       <PartnerMarquee items={PARTNER_STORE_ITEMS} locale="en" />
 
-      <section className="border-b border-line bg-ivory" aria-labelledby="partner-heading-en">
+      <section className="border-b border-line bg-ivory" aria-label="Biotech partnership">
         <Container>
-          <div className="grid gap-6 py-10 sm:grid-cols-[.8fr,1.2fr] sm:items-start sm:py-14">
-            <div>
-              <p className="num mb-3 mt-0 text-[11px] font-semibold tracking-[.14em] text-oxblood">
-                BIOTECH PARTNER
+          <details className="group my-6 bg-paper px-5 py-4 sm:my-8 sm:px-6">
+            <summary className="cursor-pointer text-[15px] font-semibold text-ink marker:text-green">
+              Biotech partner: WE STRONG CO., LTD.
+              <span className="ml-2 font-normal text-muted">View the relationship and evidence</span>
+            </summary>
+            <div className="mt-4 border-l-2 border-green pl-4 sm:pl-6">
+              <p className="m-0 max-w-[48em] text-[14.5px] leading-[1.8] text-ink-2">
+                uYao and WE STRONG CO., LTD. (維淳有限公司 / WeStrong) have established a partnership. This public statement confirms the relationship only; it does not mean that any WE STRONG product is in stock, sold through uYao, or medically endorsed.
               </p>
-              <h2 id="partner-heading-en" className="editorial-display m-0 text-[30px] leading-[1.3] sm:text-[38px]">
-                Partnership
-              </h2>
-            </div>
-            <div className="border-l-2 border-green pl-5 sm:pl-7">
-              <p className="m-0 text-[18px] font-bold text-ink">
-                WE STRONG CO., LTD.（維淳有限公司／WeStrong）
-              </p>
-              <p className="mb-0 mt-3 max-w-[44em] text-[14.5px] leading-[1.8] text-ink-2">
-                uYao and WE STRONG CO., LTD. have established a partnership. This public statement confirms the relationship only; it does not mean that any WE STRONG product is in stock, sold through uYao, or medically endorsed.
-              </p>
-              <p className="mb-0 mt-3 text-[13px] text-muted">
+              <p className="mb-0 mt-3 text-[14px] leading-[1.7] text-muted">
                 Taiwan company ID: 16816971 ·{" "}
                 <Link href="/zh-tw/evidence#partners" className="text-forest underline underline-offset-2 hover:text-green">
                   Partnership evidence
@@ -249,7 +239,7 @@ export default function EnglishLandingPage() {
                 </a>
               </p>
             </div>
-          </div>
+          </details>
         </Container>
       </section>
 
@@ -260,30 +250,25 @@ export default function EnglishLandingPage() {
             <h2 className="editorial-display mb-10 mt-0 text-[clamp(30px,3.4vw,42px)] leading-[1.25] [text-wrap:pretty]">
               POS records transactions. uYao runs the next workflow.
             </h2>
-            <div className="border border-line bg-paper">
-              <div className="hidden border-b border-line sm:grid sm:grid-cols-[1fr,1.2fr]">
-                <div className="num border-r border-line bg-surface px-6 py-3.5 text-[12px] font-medium tracking-[.08em] text-muted">
+            <div className="grid gap-2">
+              <div className="hidden gap-2 sm:grid sm:grid-cols-[1fr,1.2fr]">
+                <div className="num bg-paper px-6 py-3.5 text-[13.5px] font-medium tracking-[.04em] text-muted">
                   Existing systems see
                 </div>
-                <div className="num bg-sage px-6 py-3.5 text-[12px] font-semibold tracking-[.08em] text-forest">
+                <div className="num bg-sage px-6 py-3.5 text-[13.5px] font-semibold tracking-[.04em] text-forest">
                   uYao adds
                 </div>
               </div>
-              {POS_ROWS.map((row, i) => (
-                <div
-                  key={row.pos}
-                  className={`grid sm:grid-cols-[1fr,1.2fr] ${
-                    i < POS_ROWS.length - 1 ? "border-b border-line" : ""
-                  }`}
-                >
-                  <div className="bg-surface px-6 pb-3 pt-4 text-[16px] text-muted sm:border-r sm:border-line sm:py-[22px]">
-                    <span className="num mb-1 block text-[11px] font-medium tracking-[.08em] sm:hidden">
+              {POS_ROWS.map((row) => (
+                <div key={row.pos} className="grid gap-2 sm:grid-cols-[1fr,1.2fr]">
+                  <div className="bg-paper px-6 pb-3 pt-4 text-[16px] text-muted sm:py-[22px]">
+                    <span className="num mb-1 block text-[13.5px] font-medium tracking-[.04em] sm:hidden">
                       Existing systems see
                     </span>
                     {row.pos}
                   </div>
                   <div className="bg-green-tint px-6 pb-4 pt-3 text-[16px] leading-[1.7] sm:py-[22px]">
-                    <span className="num mb-1 block text-[11px] font-semibold tracking-[.08em] text-forest sm:hidden">
+                    <span className="num mb-1 block text-[13.5px] font-semibold tracking-[.04em] text-forest sm:hidden">
                       uYao adds
                     </span>
                     <span className="mr-2 font-bold text-green" aria-hidden>
@@ -309,16 +294,14 @@ export default function EnglishLandingPage() {
             <h2 className="editorial-display mb-10 mt-0 text-[clamp(30px,3.4vw,42px)] leading-[1.25] [text-wrap:pretty] sm:mb-14">
               One operating loop from signal to outcome.
             </h2>
-            <div className="grid border-t-2 border-ink lg:grid-cols-[1fr,1fr,1.5fr,1fr,1fr]">
-              {FLOW.map((step, i) => (
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-[1fr,1fr,1.5fr,1fr,1fr]">
+              {FLOW.map((step) => (
                 <div
                   key={step.n}
                   className={
                     step.hot
-                      ? "-mt-0.5 border-t-2 border-oxblood bg-oxblood-tint/35 p-6 lg:border-r lg:border-r-line lg:py-7"
-                      : `border-b border-line px-6 py-6 last:border-b-0 lg:border-b-0 lg:py-7 ${
-                          i < FLOW.length - 1 ? "lg:border-r lg:border-r-line" : ""
-                        } ${i === 0 ? "lg:pl-0" : ""} ${i === FLOW.length - 1 ? "lg:pr-0" : ""}`
+                      ? "border-l-2 border-oxblood bg-oxblood-tint/35 p-6 lg:py-7"
+                      : "bg-paper p-6 lg:py-7"
                   }
                 >
                   <div
@@ -333,7 +316,7 @@ export default function EnglishLandingPage() {
                       {ACTION_CHIPS.map((chip) => (
                         <span
                           key={chip}
-                          className="num border border-oxblood px-2 py-[3px] text-[11.5px] font-medium text-oxblood"
+                          className="num bg-paper px-2.5 py-1 text-[12.5px] font-medium text-oxblood"
                         >
                           {chip}
                         </span>
@@ -517,15 +500,15 @@ export default function EnglishLandingPage() {
         </Container>
       </section>
 
-      {/* Pilot CTA — 深色 end-cap */}
-      <section id="pilot" className="scroll-mt-20 bg-forest text-white">
+      {/* Pilot CTA */}
+      <section id="pilot" className="scroll-mt-20 bg-sage text-ink">
         <Container>
           <div className="grid gap-12 py-16 sm:py-24 lg:grid-cols-2 lg:gap-16">
             <div>
               <h2 className="editorial-display mb-5 mt-0 text-[clamp(32px,3.6vw,44px)] leading-[1.2] [text-wrap:pretty]">
                 Start with one pharmacy and one return workflow.
               </h2>
-              <p className="m-0 max-w-[30em] text-[16.5px] leading-[1.85] text-[#A9B5AA]">
+              <p className="m-0 max-w-[30em] text-[16.5px] leading-[1.85] text-ink-2">
                 We’re looking for independent pharmacies to validate scanning, return windows,
                 and pharmacist-approved LINE actions without replacing the POS.
               </p>

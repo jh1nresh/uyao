@@ -5,6 +5,7 @@ import {
   catalogGroupForDrug,
   featuredCatalogDrugs,
   filterCatalogDrugs,
+  paginateCatalogDrugs,
 } from "./catalog-groups";
 import { allDrugs } from "./data";
 
@@ -34,5 +35,16 @@ describe("合作藥局品項瀏覽", () => {
       ]));
     expect(filterCatalogDrugs(allDrugs(), { query: "中美醫藥" }))
       .toEqual(expect.arrayContaining([expect.objectContaining({ slug: "cm-sheliwei-softgel" })]));
+  });
+
+  it("完整目錄每頁最多十二項，超出範圍時落在有效頁", () => {
+    const drugs = allDrugs();
+    const firstPage = paginateCatalogDrugs(drugs, undefined);
+    const lastPage = paginateCatalogDrugs(drugs, "99");
+
+    expect(firstPage).toMatchObject({ page: 1, pageCount: 4 });
+    expect(firstPage.drugs).toHaveLength(12);
+    expect(lastPage).toMatchObject({ page: 4, pageCount: 4 });
+    expect(lastPage.drugs).toHaveLength(1);
   });
 });

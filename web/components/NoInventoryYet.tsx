@@ -31,10 +31,9 @@ export async function NoInventoryYet({
   const locale = await getRequestLocale();
   return (
     <section className="shop-shell py-10 sm:py-14">
-      <p className="shop-kicker mb-3">INVENTORY STATUS</p>
-      <div className="border border-line-strong bg-surface px-5 py-5 sm:px-6">
+      <div className="bg-surface px-5 py-5 sm:px-6">
         <p className="text-[18px] font-bold text-ink">{locale === "en" ? "No live availability yet" : "目前查不到即時庫存"}</p>
-        <p className="mt-1 text-[13px] leading-[1.7] text-muted">
+        <p className="mt-1 text-[14.5px] leading-[1.7] text-muted">
           {locale === "en" ? `Availability comes from in-store scanners. No pharmacy in ${areaLabel} has installed the box yet. Call a pharmacy below to ask for “${drugName}”.` : <>庫存來自藥局店內掃描器，{areaLabel}還沒有藥局裝上盒子。下面是這一區的藥局，可以直接打電話問有沒有「{drugName}」。</>}
         </p>
       </div>
@@ -48,8 +47,8 @@ export async function NoInventoryYet({
       />
 
       <div className="mt-2.5 flex flex-wrap items-baseline gap-2.5">
-        <h2 className="text-sm font-black">{locale === "en" ? `Pharmacies in ${areaLabel}` : `${areaLabel}的藥局`}</h2>
-        <p className="text-[13px] text-muted-2">{locale === "en" ? `${stores.length} stores · Check hours before calling` : `${stores.length} 家 · 打電話前先看營業時段`}</p>
+        <h2 className="text-[17px] font-black">{locale === "en" ? `Pharmacies in ${areaLabel}` : `${areaLabel}的藥局`}</h2>
+        <p className="text-[14px] text-muted-2">{locale === "en" ? `${stores.length} stores · Check hours before calling` : `${stores.length} 家 · 打電話前先看營業時段`}</p>
       </div>
 
       <div className="mt-2">
@@ -62,7 +61,7 @@ export async function NoInventoryYet({
         />
       </div>
 
-      <p className="mt-3 text-[13px] leading-[1.6] text-muted-2">
+      <p className="mt-3 text-[14px] leading-[1.6] text-muted-2">
         {locale === "en" ? "Run a pharmacy?" : "開藥局的？"}
         <Link href={localizedPath("/pharmacy", locale)} className="-my-3 ml-1 inline-flex min-h-11 items-center text-green">
           {locale === "en" ? "Install the box and make your inventory visible →" : "裝上盒子，你的庫存就會出現在這裡 →"}

@@ -117,8 +117,8 @@ export default async function DrugPage({
       <section className="border-b border-line bg-paper">
       <div className="shop-shell py-8 sm:py-10">
         <div className="flex max-w-[900px] flex-col gap-2 border-l-2 border-forest pl-4 sm:pl-6">
-          <p className="num mb-1 text-[11px] font-semibold tracking-[.12em] text-green">
-            PARTNER-LISTED ITEM
+          <p className="mb-1 text-[14px] font-bold text-forest">
+            {locale === "en" ? "Partner-listed item" : "合作藥局提供品項"}
           </p>
           <h1 className="editorial-display m-0 text-[32px] leading-[1.2] sm:text-[44px]">
             {displayDrug.name}{" "}
@@ -142,7 +142,7 @@ export default async function DrugPage({
             <span className="text-line-strong" aria-hidden>
               |
             </span>
-            <span className="border border-green px-[7px] py-px text-[13px] font-bold text-green">
+            <span className="border border-green px-[7px] py-px text-[14px] font-bold text-green">
               {displayDrug.drugClass}
             </span>
           </div>
@@ -177,11 +177,25 @@ export default async function DrugPage({
       </div>
       </section>
 
+      {rows.length > 0 ? (
+        <PharmacyList
+          drug={{ slug: drug.slug, name: displayDrug.name, spec: drug.spec }}
+          rows={rows}
+        />
+      ) : (
+        <NoInventoryYet
+          drugName={displayLabel}
+          drugSlug={drug.slug}
+          area={area}
+          areaLabel={areaCopy(getArea(area), locale).shortName}
+          stores={storesInArea(area)}
+        />
+      )}
+
       <section className="border-b border-line bg-ivory" aria-labelledby="nutrition-focus-heading">
         <div className="shop-shell py-8 sm:py-10">
           <div className="grid max-w-[900px] gap-6 sm:grid-cols-[1.15fr_.85fr]">
             <div>
-              <p className="shop-kicker mb-2">{partnerProvidedDetails ? "PARTNER-PROVIDED PRODUCT DETAILS" : drug.source ? "NUTRITION FOCUS · NOT A TREATMENT CLAIM" : "PRODUCT DETAILS · PENDING VERIFICATION"}</p>
               <h2 id="nutrition-focus-heading" className="editorial-display m-0 text-[26px] leading-[1.3] sm:text-[32px]">
                 {partnerProvidedDetails
                   ? locale === "en" ? "Product composition provided by the pharmacy" : "合作藥局提供的產品組成"
@@ -196,15 +210,15 @@ export default async function DrugPage({
             <div className="border border-line bg-paper px-4 py-4">
               {drug.source ? (
                 <>
-                  <p className="m-0 text-[12px] font-bold tracking-[.04em] text-forest">
+                  <p className="m-0 text-[14px] font-bold text-forest">
                     {partnerProvidedDetails
                       ? locale === "en" ? "INGREDIENTS PROVIDED BY THE PHARMACY" : "合作藥局提供的成分"
                       : locale === "en" ? "MAIN INGREDIENTS LISTED BY SOURCE" : "公開商品資料所列主要成分"}
                   </p>
-                  <p className="mb-0 mt-2 text-[13px] leading-[1.75] text-muted">
+                  <p className="mb-0 mt-2 text-[14.5px] leading-[1.75] text-muted">
                     {displayDrug.ingredients.join(locale === "en" ? ", " : "、")}
                   </p>
-                  <p className="mb-0 mt-3 text-[12px] leading-[1.7] text-muted-2">
+                  <p className="mb-0 mt-3 text-[14px] leading-[1.7] text-muted-2">
                     {locale === "en" ? "Product source: " : "產品資料來源："}
                     {drug.source.url ? (
                       <a
@@ -220,7 +234,7 @@ export default async function DrugPage({
                     )}
                   </p>
                   {(drug.manufacturer || drug.origin) && (
-                    <dl className="mb-0 mt-3 grid grid-cols-[max-content_1fr] gap-x-3 gap-y-1 border-t border-line-soft pt-3 text-[12px] leading-[1.7] text-muted-2">
+                    <dl className="mb-0 mt-3 grid grid-cols-[max-content_1fr] gap-x-3 gap-y-1 pt-3 text-[14px] leading-[1.7] text-muted-2">
                       {drug.manufacturer && (
                         <>
                           <dt>{locale === "en" ? "Company" : "廠商／供應資訊"}</dt>
@@ -237,7 +251,7 @@ export default async function DrugPage({
                   )}
                 </>
               ) : (
-                <p className="m-0 text-[13px] leading-[1.75] text-muted">
+                <p className="m-0 text-[14px] leading-[1.75] text-muted">
                   {locale === "en"
                     ? "No public product source has been verified for this package size."
                     : "此規格尚未驗證公開產品資料來源。"}
@@ -245,7 +259,7 @@ export default async function DrugPage({
               )}
             </div>
           </div>
-          <p className="mb-0 mt-5 max-w-[900px] border-l-2 border-oxblood pl-3 text-[12.5px] leading-[1.75] text-muted">
+          <p className="mb-0 mt-5 max-w-[900px] border-l-2 border-oxblood pl-3 text-[14px] leading-[1.75] text-muted">
             {partnerProvidedDetails ? (
               locale === "en"
                 ? "Partner-provided product details must be checked against the actual package and confirmed with a pharmacist. Ingredient or wellness wording cannot be interpreted as prevention or treatment of disease."
@@ -271,28 +285,12 @@ export default async function DrugPage({
         </div>
       </section>
 
-      {rows.length > 0 ? (
-        <PharmacyList
-          drug={{ slug: drug.slug, name: displayDrug.name, spec: drug.spec }}
-          rows={rows}
-        />
-      ) : (
-        <NoInventoryYet
-          drugName={displayLabel}
-          drugSlug={drug.slug}
-          area={area}
-          areaLabel={areaCopy(getArea(area), locale).shortName}
-          stores={storesInArea(area)}
-        />
-      )}
-
       {alternatives.length > 0 && (
         <section className="bg-ivory">
           <div className="shop-shell py-10 sm:py-14">
-          <p className="shop-kicker mb-3">ALTERNATIVES</p>
           <div className="mb-6 flex flex-wrap items-end gap-2">
             <h2 className="editorial-display m-0 text-[28px] sm:text-[34px]">{locale === "en" ? "Same-ingredient alternatives" : "同成分替代品"}</h2>
-            <p className="text-[13px] font-normal text-muted-2">
+            <p className="text-[14px] font-normal text-muted-2">
               {displayDrug.ingredients.join(locale === "en" ? " + " : "＋")} · {locale === "en" ? "options when unavailable" : "沒貨時的出路"}
             </p>
           </div>
@@ -305,7 +303,7 @@ export default async function DrugPage({
                 <Link href={`${localizedPath(`/drug/${a.drug.slug}`, locale)}?area=${area}`} className="font-medium text-ink no-underline hover:text-green">
                   {drugCopy(a.drug, locale).name} {a.drug.spec}
                 </Link>
-                <span className="text-[13px] text-muted-2">{drugCopy(a.drug, locale).form}</span>
+                <span className="text-[14px] text-muted-2">{drugCopy(a.drug, locale).form}</span>
                 <div className="flex-1" />
                 <span className="text-xs font-medium text-green">
                   <span className="num" aria-hidden>

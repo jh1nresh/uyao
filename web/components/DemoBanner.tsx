@@ -13,15 +13,22 @@ import { getRequestLocale } from "@/lib/locale-server";
 export async function DemoBanner() {
   const locale = await getRequestLocale();
   return (
-    <div className="border-b border-green-tint-line bg-sage/70 text-[12.5px] leading-[1.65] text-muted">
-      <div className="shop-shell py-2">
-        <b className="mr-2 inline-flex border border-green-tint-line bg-green-tint px-2 py-0.5 font-bold text-forest">
-          {locale === "en" ? "EARLY ACCESS" : "試營運"}
-        </b>
-        {locale === "en"
-          ? "Store records come from government open data. Live inventory is not yet available; call before visiting. Pharmacists provide prices and medicine guidance in store."
-          : "店家資料來自政府開放資料；即時庫存尚未開始，前往門市前請先電話確認。售價與用藥說明由藥師於門市提供。"}
-      </div>
+    <div className="border-b border-green-tint-line bg-sage/70 text-muted">
+      <details className="group shop-shell">
+        <summary className="cursor-pointer py-3 text-[14px] font-medium leading-[1.55] marker:text-green">
+          <b className="mr-2 inline-flex bg-green-tint px-2 py-0.5 font-bold text-forest">
+            {locale === "en" ? "EARLY ACCESS" : "試營運"}
+          </b>
+          {locale === "en"
+            ? "Public pharmacy records; live supply still requires confirmation."
+            : "公開藥局資料；即時供應仍待藥局確認。"}
+        </summary>
+        <p className="m-0 pb-3 text-[14px] leading-[1.7] text-muted">
+          {locale === "en"
+            ? "Store records come from government open data. Live inventory is not yet available; call before visiting. Pharmacists provide prices and medicine guidance in store."
+            : "店家資料來自政府開放資料；即時庫存尚未開始，前往門市前請先電話確認。售價與用藥說明由藥師於門市提供。"}
+        </p>
+      </details>
     </div>
   );
 }

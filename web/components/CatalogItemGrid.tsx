@@ -30,7 +30,7 @@ export function CatalogItemGrid({
         <p className="m-0 text-[16px] font-bold text-ink">
           {locale === "en" ? "No matching catalog items" : "目前沒有符合的品項"}
         </p>
-        <p className="mx-auto mb-0 mt-2 max-w-[460px] text-[13px] leading-[1.7] text-muted">
+        <p className="mx-auto mb-0 mt-2 max-w-[460px] text-[14px] leading-[1.7] text-muted">
           {locale === "en"
             ? "Try a product name, ingredient, manufacturer, or a different category."
             : "可改用品名、成分、廠商名稱搜尋，或切換其他分類。"}
@@ -40,28 +40,25 @@ export function CatalogItemGrid({
   }
 
   return (
-    <div className={`grid border-l border-t border-line bg-paper sm:grid-cols-2 ${featured ? "lg:grid-cols-4" : ""}`}>
-      {drugs.map((item, index) => {
+    <div className={`grid gap-3 sm:grid-cols-2 ${featured ? "lg:grid-cols-4" : "lg:grid-cols-3"}`}>
+      {drugs.map((item) => {
         const drug = drugCopy(item, locale);
         return (
           <Link
             key={item.slug}
             href={`${localizedPath(`/drug/${item.slug}`, locale)}?area=${area}`}
-            className={`history-link group min-h-[132px] min-w-0 flex-col justify-between border-b border-r border-line px-4 py-4 no-underline transition-colors hover:bg-surface-hover sm:px-5 ${featured && index >= 6 ? "hidden sm:flex" : "flex"}`}
+            className="history-link group flex min-h-[136px] min-w-0 flex-col justify-between bg-paper px-5 py-5 no-underline transition-[background-color,transform] hover:-translate-y-px hover:bg-surface-hover"
           >
             <span>
               <span className="block text-[16px] font-bold leading-[1.45] text-ink sm:text-[17px]">
                 {drug.name}
               </span>
-              <span className="mt-2 block truncate text-[12.5px] text-muted">
+              <span className="mt-2 block text-[14px] leading-[1.55] text-muted">
                 {locale === "en" ? item.nutritionFocusEn : item.nutritionFocus}
               </span>
             </span>
-            <span className="mt-4 flex items-end justify-between gap-3 text-[11.5px] leading-[1.45] text-muted-2">
-              <span>
-                <span className="block text-forest">{catalogSourceStatus(item, locale)}</span>
-                <span className="mt-0.5 block">{drug.spec}</span>
-              </span>
+            <span className="mt-4 flex items-center justify-between gap-3 text-[14px] leading-[1.5] text-muted-2">
+              <span className="text-forest">{catalogSourceStatus(item, locale)}</span>
               <span className="text-[15px] text-forest transition-transform group-hover:translate-x-1" aria-hidden>
                 →
               </span>

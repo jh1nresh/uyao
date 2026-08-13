@@ -86,7 +86,7 @@ export function CompanyFooter({ locale }: { locale: "zh" | "en" }) {
           </div>
 
           <nav aria-label={copy.serviceHeading}>
-            <h2 className="num m-0 text-[11px] font-semibold tracking-[.12em] text-oxblood">
+            <h2 className="m-0 text-[14px] font-bold text-oxblood">
               {copy.serviceHeading}
             </h2>
             <div className="mt-2 flex flex-col items-start">
@@ -97,7 +97,7 @@ export function CompanyFooter({ locale }: { locale: "zh" | "en" }) {
           </nav>
 
           <nav aria-label={copy.trustHeading}>
-            <h2 className="num m-0 text-[11px] font-semibold tracking-[.12em] text-oxblood">
+            <h2 className="m-0 text-[14px] font-bold text-oxblood">
               {copy.trustHeading}
             </h2>
             <div className="mt-2 flex flex-col items-start">
@@ -107,7 +107,7 @@ export function CompanyFooter({ locale }: { locale: "zh" | "en" }) {
           </nav>
 
           <nav aria-label={copy.contactHeading}>
-            <h2 className="num m-0 text-[11px] font-semibold tracking-[.12em] text-oxblood">
+            <h2 className="m-0 text-[14px] font-bold text-oxblood">
               {copy.contactHeading}
             </h2>
             <div className="mt-2 flex flex-col items-start">
@@ -118,7 +118,7 @@ export function CompanyFooter({ locale }: { locale: "zh" | "en" }) {
         </div>
 
         <div className="mt-10 border-t border-line pt-6">
-          <p className="m-0 max-w-[72em] text-[12.5px] leading-[1.8] text-muted">
+          <p className="m-0 max-w-[72em] text-[14px] leading-[1.8] text-muted">
             {copy.disclaimer}
           </p>
         </div>

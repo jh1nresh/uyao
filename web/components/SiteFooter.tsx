@@ -19,14 +19,14 @@ export async function SiteFooter({ note }: { note?: string }) {
     : `${SITE_URL}/zh-tw/guides/join-uyao`;
 
   return (
-    <footer className="border-t border-line bg-paper text-[13px] leading-[1.75] text-muted">
+    <footer className="border-t border-line bg-paper text-[14px] leading-[1.75] text-muted">
       <div className="shop-shell py-10 sm:py-12">
         <div className="grid gap-9 sm:grid-cols-2 lg:grid-cols-[1.4fr_1fr_1fr_1fr] lg:gap-8">
           <div>
             <Link href={shopHome} className="inline-flex min-h-11 items-center no-underline">
               <BrandLogo height={30} />
             </Link>
-            <p className="mb-0 mt-2 max-w-[30em] text-[13.5px] leading-[1.75]">
+            <p className="mb-0 mt-2 max-w-[30em] text-[14.5px] leading-[1.75]">
               {locale === "en"
                 ? "Search public pharmacy listings and leave a medicine request for a pharmacy to confirm."
                 : "搜尋公開藥局資料並留下找藥需求，再由藥局或藥師確認供應與領取方式。"}
@@ -34,7 +34,7 @@ export async function SiteFooter({ note }: { note?: string }) {
           </div>
 
           <nav aria-label={locale === "en" ? "Services" : "服務"}>
-            <h2 className="num m-0 text-[11px] font-semibold tracking-[.12em] text-oxblood">
+            <h2 className="m-0 text-[14px] font-bold text-oxblood">
               {locale === "en" ? "SERVICES" : "服務"}
             </h2>
             <div className="mt-2 flex flex-col items-start">
@@ -51,7 +51,7 @@ export async function SiteFooter({ note }: { note?: string }) {
           </nav>
 
           <nav aria-label={locale === "en" ? "Trust and evidence" : "信任與證據"}>
-            <h2 className="num m-0 text-[11px] font-semibold tracking-[.12em] text-oxblood">
+            <h2 className="m-0 text-[14px] font-bold text-oxblood">
               {locale === "en" ? "TRUST" : "信任與證據"}
             </h2>
             <div className="mt-2 flex flex-col items-start">
@@ -65,7 +65,7 @@ export async function SiteFooter({ note }: { note?: string }) {
           </nav>
 
           <nav aria-label={locale === "en" ? "Social and contact" : "社群與聯絡"}>
-            <h2 className="num m-0 text-[11px] font-semibold tracking-[.12em] text-oxblood">
+            <h2 className="m-0 text-[14px] font-bold text-oxblood">
               {locale === "en" ? "CONTACT" : "社群與聯絡"}
             </h2>
             <div className="mt-2 flex flex-col items-start">
@@ -83,7 +83,7 @@ export async function SiteFooter({ note }: { note?: string }) {
         </div>
 
         <div className="mt-9 border-t border-line pt-6">
-          <p className="m-0 max-w-[76em] text-[12.5px] leading-[1.8] text-muted-2">
+          <p className="m-0 max-w-[76em] text-[14px] leading-[1.8] text-muted-2">
             {note ?? (locale === "en"
               ? "This service provides trial catalog and public pharmacy information. It does not claim live stock or offer online medicine sales; pharmacies and pharmacists confirm supply, pickup, and medicine questions."
               : "本站提供試營運目錄與公開藥局資料，不代表即時庫存、不呈現藥品價格，也不提供線上交易；供應、預留、交付與用藥問題均由藥局或藥師確認。藥品廣告依藥事法第 66 條事前審查。")}

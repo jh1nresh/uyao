@@ -41,12 +41,12 @@ export function HeroLoop({ copy }: { copy: HeroLoopCopy }) {
   }, []);
 
   return (
-    <div className="min-w-0">
-      <div className="mb-3.5 flex items-center justify-between gap-3 px-1">
-        <span className="num text-[12px] font-medium tracking-[.08em] text-muted">
+    <div className="w-full min-w-0">
+      <div className="mb-3.5 flex min-w-0 flex-wrap items-center justify-between gap-3 px-1">
+        <span className="num text-[13px] font-medium tracking-[.05em] text-muted">
           {copy.flowLabel}
         </span>
-        <span className="num rounded-full bg-sage px-3 py-1.5 text-[11px] font-semibold tracking-[.04em] text-forest">
+        <span className="num max-w-full bg-sage px-3 py-1.5 text-[12px] font-semibold text-forest">
           {copy.badge}
         </span>
       </div>
@@ -60,14 +60,14 @@ export function HeroLoop({ copy }: { copy: HeroLoopCopy }) {
         </div>
 
         <div className="border-b border-line pb-5">
-          <div className="num mb-3 text-[11.5px] font-semibold tracking-[.08em] text-muted">
+          <div className="num mb-3 text-[12.5px] font-semibold tracking-[.05em] text-muted">
             {copy.scanTitle}
           </div>
-          <div className="num grid grid-cols-[auto,1fr] gap-x-5 text-[13px] font-semibold leading-[1.9] text-ink">
-            <span className="text-muted">GTIN</span><span>04713243990117</span>
-            <span className="text-muted">LOT</span><span>TW881</span>
-            <span className="text-muted">EXP</span><span>2026-11</span>
-            <span className="text-muted">TS</span><span>2026-08-09 14:32:07</span>
+          <div className="num grid min-w-0 grid-cols-[3rem_minmax(0,1fr)] gap-x-3 text-[14px] font-semibold leading-[1.85] text-ink">
+            <span className="text-muted">GTIN</span><span className="min-w-0 break-all">04713243990117</span>
+            <span className="text-muted">LOT</span><span className="min-w-0 break-all">TW881</span>
+            <span className="text-muted">EXP</span><span className="min-w-0 break-all">2026-11</span>
+            <span className="text-muted">TS</span><span className="min-w-0 break-all">2026-08-09 14:32:07</span>
           </div>
         </div>
 
@@ -75,12 +75,12 @@ export function HeroLoop({ copy }: { copy: HeroLoopCopy }) {
           <div className="flex items-center gap-2">
             <BrandMark size={18} />
             <span className="text-[13px] font-bold">uYao</span>
-            <span className="num ml-auto text-[11px] font-medium text-muted">
+            <span className="num ml-auto min-w-0 text-right text-[12px] font-medium text-muted">
               {copy.lineHeader}
             </span>
           </div>
           <p className="mb-0 mt-5 text-[17px] font-bold leading-[1.6]">{copy.cardTitle}</p>
-          <div className="num mb-4 mt-2 text-[12.5px] font-medium leading-[1.9] text-muted">
+          <div className="num mb-4 mt-2 text-[13.5px] font-medium leading-[1.8] text-muted">
             {copy.cardMetaLines.map((line) => <div key={line}>{line}</div>)}
           </div>
           <div className="grid gap-2">
@@ -93,7 +93,7 @@ export function HeroLoop({ copy }: { copy: HeroLoopCopy }) {
             </span>
             <div className="grid gap-2 sm:grid-cols-2">
               {copy.secondaryBtns.map((label) => (
-                <span key={label} className="border border-line px-3 py-2.5 text-center text-[13px] text-ink">
+                <span key={label} className="border border-line px-3 py-2.5 text-center text-[14px] text-ink">
                   {label}
                 </span>
               ))}
@@ -101,7 +101,7 @@ export function HeroLoop({ copy }: { copy: HeroLoopCopy }) {
           </div>
         </div>
 
-        <div className="num relative border-t border-dashed border-line pt-4 text-[12px] font-medium leading-[1.9]">
+        <div className="num relative border-t border-dashed border-line pt-4 text-[13px] font-medium leading-[1.8]">
           <span
             aria-hidden
             className={`hero-loop-result absolute right-0 top-4 h-2 w-2 rounded-full bg-green transition-[opacity,transform] duration-300 ${
