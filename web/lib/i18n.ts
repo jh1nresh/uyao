@@ -29,6 +29,7 @@ const AREA_EN: Record<string, { countyCity: string; name: string; shortName: str
   xinyi: { countyCity: "Taipei", name: "Xinyi District, Taipei", shortName: "Xinyi" },
   xitun: { countyCity: "Taichung", name: "Xitun District, Taichung", shortName: "Xitun" },
   miaoli: { countyCity: "Miaoli County", name: "Miaoli City, Miaoli", shortName: "Miaoli" },
+  yilan: { countyCity: "Yilan County", name: "Yilan City, Yilan", shortName: "Yilan" },
 };
 
 const CLASS_EN: Record<string, string> = {

@@ -27,6 +27,7 @@ describe("GPS 選區", () => {
     [25.0637, 121.5265, "zhongshan"],
     [24.1813, 120.6466, "xitun"],
     [24.566667, 120.816444, "miaoli"],
+    [24.7570, 121.7533, "yilan"],
   ] as const)("選出距離最近的服務區", (lat, lng, area) => {
     expect(nearestServiceArea({ lat, lng })).toBe(area);
   });
@@ -46,7 +47,7 @@ describe("首波店家縣市與行政區分組", () => {
       {
         countyCity: "臺北市",
         areas: [
-          { area: "大同區", stores: ["建利西藥房"] },
+          { area: "大同區", stores: ["建利西藥房", "大豐藥局"] },
           { area: "中山區", stores: ["中山藥局"] },
         ],
       },
@@ -60,8 +61,9 @@ describe("首波店家縣市與行政區分組", () => {
       },
       { countyCity: "臺中市", areas: [{ area: "西屯區", stores: ["永遠藥師藥局"] }] },
       { countyCity: "苗栗縣", areas: [{ area: "苗栗市", stores: ["發元藥局"] }] },
+      { countyCity: "宜蘭縣", areas: [{ area: "宜蘭市", stores: ["南興西藥房"] }] },
     ]);
 
-    expect(groups.flatMap((group) => group.areas).flatMap((entry) => entry.stores)).toHaveLength(9);
+    expect(groups.flatMap((group) => group.areas).flatMap((entry) => entry.stores)).toHaveLength(11);
   });
 });

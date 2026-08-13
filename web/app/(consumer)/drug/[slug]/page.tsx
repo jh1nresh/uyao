@@ -43,9 +43,14 @@ export async function generateMetadata({
   }
   const displayDrug = drugCopy(drug, locale);
   const label = drug.spec === "規格待確認" ? displayDrug.name : `${displayDrug.name} ${displayDrug.spec}`;
+  const partnerProvidedDetails = drug.source?.kind === "partner";
   return {
     title: locale === "en" ? `${label} — partner-listed item` : `${label}｜合作藥局提供品項`,
-    description: drug.source
+    description: partnerProvidedDetails
+      ? locale === "en"
+        ? `${label} is listed from information provided by a partner pharmacy. Product classification, details, and live supply still require confirmation.`
+        : `${label}由合作藥局提供並收錄於 uYao 試營運目錄；成分、產地與供應資訊仍應以實際包裝及藥師確認為準。`
+      : drug.source
       ? locale === "en"
         ? `${label} is a partner-listed non-drug product. See its sourced nutrition focus and ingredients; live supply still requires pharmacy confirmation.`
         : `${label}由合作藥局提供並收錄於 uYao 試營運目錄；頁面列出有來源的營養補充方向與成分，即時供應仍待藥局確認。`
@@ -73,6 +78,7 @@ export default async function DrugPage({
   const displayDrug = drugCopy(drug, locale);
   const productLabel = drug.spec === "規格待確認" ? drug.name : `${drug.name} ${drug.spec}`;
   const displayLabel = drug.spec === "規格待確認" ? displayDrug.name : `${displayDrug.name} ${displayDrug.spec}`;
+  const partnerProvidedDetails = drug.source?.kind === "partner";
   const partnerStores = partnersForProduct(productLabel)
     .map((partner) => getStore(partner.storeSlug))
     .filter((store): store is NonNullable<typeof store> => store !== undefined);
@@ -141,7 +147,11 @@ export default async function DrugPage({
             </span>
           </div>
           <p className="text-xs text-muted-2">
-            {drug.source
+            {partnerProvidedDetails
+              ? locale === "en"
+                ? "The product name, ingredients, origin, and supplier details below were provided by a partner pharmacy and have not been independently verified against a public source. They do not establish live stock, approved medicine classification, or treatment efficacy."
+                : "下方品名、成分、產地與供應資訊由合作藥局提供，尚未以公開來源獨立驗證；不代表即時庫存、核准藥品分類或療效。"
+              : drug.source
               ? locale === "en"
                 ? "The public product source presents this as a food or nutrition supplement, not an approved medicine. Its nutrition focus is not a treatment indication. Live inventory still requires pharmacy confirmation."
                 : "公開商品資料將此品項列為食品類營養補充品，而非核准藥品；下方是營養補充／日常保養定位，不是治療用途或藥品適應症。即時庫存仍待藥局確認。"
@@ -171,9 +181,11 @@ export default async function DrugPage({
         <div className="shop-shell py-8 sm:py-10">
           <div className="grid max-w-[900px] gap-6 sm:grid-cols-[1.15fr_.85fr]">
             <div>
-              <p className="shop-kicker mb-2">{drug.source ? "NUTRITION FOCUS · NOT A TREATMENT CLAIM" : "PRODUCT DETAILS · PENDING VERIFICATION"}</p>
+              <p className="shop-kicker mb-2">{partnerProvidedDetails ? "PARTNER-PROVIDED PRODUCT DETAILS" : drug.source ? "NUTRITION FOCUS · NOT A TREATMENT CLAIM" : "PRODUCT DETAILS · PENDING VERIFICATION"}</p>
               <h2 id="nutrition-focus-heading" className="editorial-display m-0 text-[26px] leading-[1.3] sm:text-[32px]">
-                {drug.source
+                {partnerProvidedDetails
+                  ? locale === "en" ? "Product composition provided by the pharmacy" : "合作藥局提供的產品組成"
+                  : drug.source
                   ? locale === "en" ? "Nutrition and daily-wellness focus" : "營養補充／日常保養方向"
                   : locale === "en" ? "Product details pending verification" : "產品資料待驗證"}
               </h2>
@@ -185,22 +197,44 @@ export default async function DrugPage({
               {drug.source ? (
                 <>
                   <p className="m-0 text-[12px] font-bold tracking-[.04em] text-forest">
-                    {locale === "en" ? "MAIN INGREDIENTS LISTED BY SOURCE" : "公開商品資料所列主要成分"}
+                    {partnerProvidedDetails
+                      ? locale === "en" ? "INGREDIENTS PROVIDED BY THE PHARMACY" : "合作藥局提供的成分"
+                      : locale === "en" ? "MAIN INGREDIENTS LISTED BY SOURCE" : "公開商品資料所列主要成分"}
                   </p>
                   <p className="mb-0 mt-2 text-[13px] leading-[1.75] text-muted">
                     {displayDrug.ingredients.join(locale === "en" ? ", " : "、")}
                   </p>
                   <p className="mb-0 mt-3 text-[12px] leading-[1.7] text-muted-2">
                     {locale === "en" ? "Product source: " : "產品資料來源："}
-                    <a
-                      href={drug.source.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="font-medium text-green"
-                    >
-                      {drug.source.label} ↗
-                    </a>
+                    {drug.source.url ? (
+                      <a
+                        href={drug.source.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="font-medium text-green"
+                      >
+                        {drug.source.label} ↗
+                      </a>
+                    ) : (
+                      <span className="font-medium text-ink-2">{drug.source.label}</span>
+                    )}
                   </p>
+                  {(drug.manufacturer || drug.origin) && (
+                    <dl className="mb-0 mt-3 grid grid-cols-[max-content_1fr] gap-x-3 gap-y-1 border-t border-line-soft pt-3 text-[12px] leading-[1.7] text-muted-2">
+                      {drug.manufacturer && (
+                        <>
+                          <dt>{locale === "en" ? "Company" : "廠商／供應資訊"}</dt>
+                          <dd className="m-0 text-ink-2">{drug.manufacturer}</dd>
+                        </>
+                      )}
+                      {drug.origin && (
+                        <>
+                          <dt>{locale === "en" ? "Origin" : "產地"}</dt>
+                          <dd className="m-0 text-ink-2">{drug.origin}</dd>
+                        </>
+                      )}
+                    </dl>
+                  )}
                 </>
               ) : (
                 <p className="m-0 text-[13px] leading-[1.75] text-muted">
@@ -212,7 +246,11 @@ export default async function DrugPage({
             </div>
           </div>
           <p className="mb-0 mt-5 max-w-[900px] border-l-2 border-oxblood pl-3 text-[12.5px] leading-[1.75] text-muted">
-            {drug.source ? (
+            {partnerProvidedDetails ? (
+              locale === "en"
+                ? "Partner-provided product details must be checked against the actual package and confirmed with a pharmacist. Ingredient or wellness wording cannot be interpreted as prevention or treatment of disease."
+                : "合作藥局提供的產品資料仍須以實際包裝並向藥師確認；成分或保養文字不能解讀為預防或治療疾病。"
+            ) : drug.source ? (
               <>
                 {locale === "en"
                   ? "Food and supplement positioning cannot be read as prevention or treatment of disease. If you have symptoms, take medicines, are pregnant, or have a chronic condition, ask a pharmacist or physician before choosing a product."

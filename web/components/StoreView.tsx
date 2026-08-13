@@ -183,7 +183,7 @@ export async function StoreView({ store, preview }: { store: Store; preview: boo
               {partner.confirmedProducts.map((product) => (
                 <li
                   key={product}
-                  className="border border-line bg-ivory px-3.5 py-2 text-[14px] font-medium text-ink-2"
+                  className="max-w-full break-words border border-line bg-ivory px-3.5 py-2 text-[14px] font-medium text-ink-2"
                 >
                   {product}
                 </li>

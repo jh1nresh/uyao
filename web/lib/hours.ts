@@ -50,6 +50,11 @@ export function hoursNote(source: HoursSource, locale: Locale = "zh"): string | 
       : "來源：健保署特約資料。這是藥師可調劑健保處方的時段，門市實際營業時間通常更長。";
   }
   if (source === "google") return locale === "en" ? "Source: Google Business Profile." : "來源：Google 商家資訊。";
+  if (source === "partner") {
+    return locale === "en"
+      ? "Source: information provided by the partner pharmacy. Call ahead to confirm current hours."
+      : "來源：合作藥局提供。實際營業狀況建議先電話確認。";
+  }
   return null;
 }
 

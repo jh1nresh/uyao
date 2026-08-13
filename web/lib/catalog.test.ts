@@ -26,6 +26,31 @@ const EXPECTED_CATALOG = [
   { slug: "kimura-tiancheng-60", label: "木村 添誠膠囊食品 60粒" },
   { slug: "shuwei-600-fish-oil-60", label: "舒維-600魚油 60粒" },
   { slug: "baiyi-capsule-60", label: "百益膠囊食品 60粒" },
+  { slug: "cm-sheliwei-softgel", label: "中美 攝利威軟膠囊" },
+  { slug: "wewell-vision-softgel", label: "維維樂 視清／小視清軟膠囊" },
+  { slug: "cm-jinguguanjian-sr", label: "中美 金固關健緩釋錠" },
+  { slug: "likuo-fish-oil-30", label: "立國 精粹魚油膠囊 30粒" },
+  { slug: "tianxia-yangshen-jingqu", label: "天下生物科技 養身景麴膠囊" },
+  { slug: "hongren-riqingsheng-lm", label: "鴻仁 日清勝 LM機能益生菌" },
+  { slug: "cm-guer-gan-150mg", label: "中美 顧爾肝膠囊 150 mg" },
+  { slug: "gude-yishengning-p", label: "益聖寧-P軟膠囊" },
+  { slug: "jingcui-huxinan", label: "護欣胺微粒膠囊" },
+  { slug: "toyo-cukang-b", label: "醋康B膠囊" },
+  { slug: "icheng-meileshi", label: "美樂適素食膠囊" },
+  { slug: "icheng-siyunmeng", label: "思韻蒙軟膠囊" },
+  { slug: "jixiang-jishukang", label: "吉舒康軟膠囊" },
+  { slug: "bio-stand-calcium-softgel", label: "Bio-Stand 挺液鈣軟膠囊" },
+  { slug: "rending-gujieyou", label: "固捷優" },
+  { slug: "ouye-jingyong", label: "勁勇軟膠囊" },
+  { slug: "greenplus-vasopower", label: "舒絡寶 Vasopower" },
+  { slug: "greenplus-discpower", label: "龍固寶 DiscPower" },
+  { slug: "greenplus-elgucare", label: "益固康 Elgucare" },
+  { slug: "puda-grape-seed", label: "安格雅葡萄籽膠囊" },
+  { slug: "puda-green-tea-compound", label: "普大綠茶複方膠囊" },
+  { slug: "yingkai-guguanjian-ucii", label: "固關鍵 UC II" },
+  { slug: "youquan-super-magnesium", label: "新優力超級鎂" },
+  { slug: "chung-jih-youweining", label: "佑衛寧 高麗菜濃縮複方膠囊" },
+  { slug: "luhsin-l-glutamine", label: "賜利康療養素－左旋麩醯胺酸" },
 ] as const;
 
 const OLD_SAMPLE_SLUGS = [
@@ -57,7 +82,7 @@ function catalogLabel(drug: ReturnType<typeof allDrugs>[number]): string {
 }
 
 describe("合作藥局常見品項目錄", () => {
-  it("公開目錄剛好只有店家確認的十二個品項", () => {
+  it("公開目錄剛好只有店家確認的三十七個品項", () => {
     expect(allDrugs().map((drug) => ({ slug: drug.slug, label: catalogLabel(drug) }))).toEqual(
       EXPECTED_CATALOG,
     );
@@ -74,7 +99,7 @@ describe("合作藥局常見品項目錄", () => {
   });
 
   it("已驗證的一般食品保留非藥品邊界，並附可核對的營養補充資料", () => {
-    for (const drug of allDrugs().filter((drug) => drug.source)) {
+    for (const drug of allDrugs().filter((drug) => drug.source && drug.source.kind !== "partner")) {
       expect(drug.nameEn).toBeUndefined();
       expect(drug.licenseNo).toBe("");
       expect(drug.drugClass).toBe("非藥品");
@@ -87,6 +112,27 @@ describe("合作藥局常見品項目錄", () => {
       expect(alternativesFor(drug.slug)).toEqual([]);
       expect(storesForDrug(drug.slug)).toEqual([]);
     }
+  });
+
+  it("合作藥局提供的新增品項保留資料來源、廠商、產地與分類待確認邊界", () => {
+    const partnerProvided = allDrugs().filter((drug) => drug.source?.kind === "partner");
+
+    expect(partnerProvided).toHaveLength(25);
+    for (const drug of partnerProvided) {
+      expect(drug.drugClass).toBe("待確認");
+      expect(drug.ingredients.length).toBeGreaterThan(0);
+      expect(drug.indications).toEqual([]);
+      expect(drug.manufacturer).toBeTruthy();
+      expect(drug.origin).toBeTruthy();
+      expect(drug.source).toEqual({ label: "合作藥局提供商品資料", kind: "partner" });
+      expect(storesForDrug(drug.slug)).toEqual([]);
+    }
+  });
+
+  it("不把原料來源誤寫成攝利威成品產地", () => {
+    expect(getDrug("cm-sheliwei-softgel")?.origin).toBe(
+      "待確認；南瓜籽油標示德國有機原料，不等於成品德國製",
+    );
   });
 
   it.each(["huzhikang-60"])(

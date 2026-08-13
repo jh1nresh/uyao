@@ -39,6 +39,7 @@ AREA_BY_DISTRICT = {
     "新莊區": "xinzhuang",
     "西屯區": "xitun",
     "苗栗市": "miaoli",
+    "宜蘭市": "yilan",
 }
 
 # 各區中心點，用來算「距離」。v1 沒有真的定位，距離一律是「距區中心」，
@@ -52,6 +53,7 @@ AREA_CENTER = {
     "xinzhuang": (25.0359, 121.4322),
     "xitun": (24.1813, 120.6466),
     "miaoli": (24.566667, 120.816444),
+    "yilan": (24.7570, 121.7533),
 }
 
 # 目前首波收錄的店。洽談狀態不進公開資料，也不等於已安裝盒子。
@@ -66,6 +68,8 @@ LISTED_STORES = (
     ("萊康中華健保藥局", "新北市", "蘆洲區"),
     ("永遠藥師藥局", "臺中市", "西屯區"),
     ("發元藥局", "苗栗縣", "苗栗市"),
+    ("南興西藥房", "宜蘭縣", "宜蘭市"),
+    ("大豐藥局", "臺北市", "大同區"),
 )
 
 # 食藥署「藥局基本資料」不含一般西藥房。建利仍有有效的西藥零售商業登記，
@@ -89,14 +93,41 @@ MANUAL_STORES = (
         phone="037-320285",
         nhi_contracted=False,
     ),
+    prospects_mod.Pharmacy(
+        name="南興西藥房",
+        city="宜蘭縣",
+        district="宜蘭市",
+        address="光復路130號（南館市場口）",
+        owner="",
+        phone="03-9322678",
+        nhi_contracted=False,
+    ),
+    prospects_mod.Pharmacy(
+        name="大豐藥局",
+        city="臺北市",
+        district="大同區",
+        address="昌吉街96號",
+        owner="",
+        phone="02-25853880",
+        nhi_contracted=False,
+    ),
 )
 MANUAL_STORE_NAMES = {store.name for store in MANUAL_STORES}
 MANUAL_STORE_NOTES = {
     "建利西藥房": "資料來源：臺北市商業登記",
     "發元藥局": "資料來源：合作藥局實地確認",
+    "南興西藥房": "資料來源：合作藥局提供；南館市場口，實際營業狀況建議先電話確認",
+    "大豐藥局": "資料來源：合作藥局提供",
 }
 
-DEFAULT_SCOPES = "臺北市:大同區,中山區;新北市:林口區,新莊區,蘆洲區;臺中市:西屯區;苗栗縣:苗栗市"
+MANUAL_STORE_HOURS = {
+    "南興西藥房": [
+        {"label": "週一–週六", "hours": "07:00–21:00"},
+        {"label": "週日", "hours": "07:00–12:00"},
+    ],
+}
+
+DEFAULT_SCOPES = "臺北市:大同區,中山區;新北市:林口區,新莊區,蘆洲區;臺中市:西屯區;苗栗縣:苗栗市;宜蘭縣:宜蘭市"
 DEFAULT_STORE_NAMES = ",".join(name for name, _, _ in LISTED_STORES)
 
 WEEKDAY_LABEL = {
@@ -295,7 +326,10 @@ def build(
 
         hours: list[dict[str, str]] = []
         hours_source = "none"
-        if place and place.get("weekday_descriptions"):
+        if p.name in MANUAL_STORE_HOURS:
+            hours = MANUAL_STORE_HOURS[p.name]
+            hours_source = "partner"
+        elif place and place.get("weekday_descriptions"):
             # Google 給「星期一: 09:00 – 12:00, ...」，標籤統一成「週一」
             # 跟健保來源一致，時間裡多餘的空白也收掉免得版面撐開。
             hours = []
