@@ -4,8 +4,10 @@ import Lenis from "lenis";
 import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
+import { isSmoothScrollHome } from "@/lib/motion";
+
 /**
- * Site-wide motion grammar.
+ * Home-page motion grammar for the company site and consumer shop.
  *
  * Wheel input gets a small amount of damping, while touch remains native.
  * Content is never hidden without JS and reduced-motion users get the final
@@ -15,8 +17,7 @@ export function MotionSystem() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const isLanding = pathname === "/" || pathname === "/en";
-    if (!isLanding) return;
+    if (!isSmoothScrollHome(pathname)) return;
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (reducedMotion.matches) return;
