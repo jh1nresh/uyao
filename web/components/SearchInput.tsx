@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocale } from "./LocaleProvider";
 import { localizedPath } from "@/lib/i18n";
 import type { AreaSlug } from "@/lib/types";
@@ -37,7 +37,40 @@ export function SearchInput({
   const examples = locale === "en" ? SEARCH_EXAMPLES_EN : SEARCH_EXAMPLES_ZH;
   const large = size !== "sm";
   const xl = size === "xl";
+  const [exampleIndex, setExampleIndex] = useState(0);
+  const [isPlaceholderExiting, setIsPlaceholderExiting] = useState(false);
   const [hasValue, setHasValue] = useState(defaultValue.length > 0);
+  const [reduceMotion, setReduceMotion] = useState(false);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updatePreference = () => setReduceMotion(media.matches);
+
+    updatePreference();
+    media.addEventListener("change", updatePreference);
+    return () => media.removeEventListener("change", updatePreference);
+  }, []);
+
+  useEffect(() => {
+    if (!large || reduceMotion) return;
+
+    const interval = window.setInterval(() => {
+      setIsPlaceholderExiting(true);
+    }, 3000);
+
+    return () => window.clearInterval(interval);
+  }, [large, reduceMotion]);
+
+  useEffect(() => {
+    if (!large || !isPlaceholderExiting || reduceMotion) return;
+
+    const timeout = window.setTimeout(() => {
+      setExampleIndex((current) => (current + 1) % examples.length);
+      setIsPlaceholderExiting(false);
+    }, 500);
+
+    return () => window.clearTimeout(timeout);
+  }, [examples.length, isPlaceholderExiting, large, reduceMotion]);
 
   return (
     <form
@@ -79,7 +112,16 @@ export function SearchInput({
               xl ? "text-[16px] sm:text-[18px]" : "text-[16px]"
             }`}
           >
-            <span>{examples[0]}</span>
+            <span
+              key={exampleIndex}
+              className={
+                isPlaceholderExiting
+                  ? "search-placeholder-exit"
+                  : "search-placeholder-enter"
+              }
+            >
+              {examples[exampleIndex]}
+            </span>
           </div>
         )}
       </div>
