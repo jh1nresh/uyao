@@ -37,6 +37,7 @@ export const AREAS: Area[] = [
   { slug: "xitun", countyCity: "臺中市", name: "臺中市西屯區", shortName: "西屯區" },
   { slug: "miaoli", countyCity: "苗栗縣", name: "苗栗縣苗栗市", shortName: "苗栗市" },
   { slug: "yilan", countyCity: "宜蘭縣", name: "宜蘭縣宜蘭市", shortName: "宜蘭市" },
+  { slug: "luodong", countyCity: "宜蘭縣", name: "宜蘭縣羅東鎮", shortName: "羅東鎮" },
 ];
 
 export const DEFAULT_AREA: AreaSlug = "datong";

@@ -20,6 +20,7 @@ export const AREA_CENTER: Record<AreaSlug, LatLng> = {
   xitun: { lat: 24.1813, lng: 120.6466 },
   miaoli: { lat: 24.566667, lng: 120.816444 },
   yilan: { lat: 24.7570, lng: 121.7533 },
+  luodong: { lat: 24.6760, lng: 121.7690 },
 };
 
 const EARTH_RADIUS_M = 6371000;

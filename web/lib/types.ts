@@ -33,7 +33,8 @@ export type AreaSlug =
   | "xinyi"
   | "xitun"
   | "miaoli"
-  | "yilan";
+  | "yilan"
+  | "luodong";
 
 export interface Area {
   slug: AreaSlug;
