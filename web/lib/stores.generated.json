@@ -380,6 +380,28 @@
       "status": "listed"
     },
     {
+      "slug": "建芳藥局",
+      "name": "建芳藥局",
+      "area": "luodong",
+      "district": "羅東鎮",
+      "address": "宜蘭縣羅東鎮民權路31號",
+      "phone": "03-954-3649",
+      "owner": "陳金芳",
+      "nhiCode": null,
+      "nhiContracted": false,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=建芳藥局+宜蘭縣羅東鎮民權路31號",
+      "hours": [],
+      "hoursSource": "none",
+      "notes": [],
+      "status": "listed"
+    },
+    {
       "slug": "大豐藥局",
       "name": "大豐藥局",
       "area": "datong",

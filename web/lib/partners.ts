@@ -7,6 +7,7 @@
 export type PartnerStoreSlug =
   | "建利西藥房"
   | "南興西藥房"
+  | "建芳藥局"
   | "大豐藥局"
   | "美得心藥局"
   | "樂活健保藥局"
@@ -60,6 +61,11 @@ export const PARTNER_PHARMACIES = {
       "鴻仁 日清勝 LM機能益生菌",
       "中美 顧爾肝膠囊 150 mg",
     ],
+  },
+  建芳藥局: {
+    storeSlug: "建芳藥局",
+    aliases: ["建芳藥局", "建芳西藥房"],
+    confirmedProducts: [],
   },
   大豐藥局: {
     storeSlug: "大豐藥局",
