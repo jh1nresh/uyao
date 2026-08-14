@@ -39,6 +39,7 @@ const EXPECTED_PRODUCTS = {
     "鴻仁 日清勝 LM機能益生菌",
     "中美 顧爾肝膠囊 150 mg",
   ],
+  建芳藥局: [],
   大豐藥局: [
     "固關鍵 UC II",
     "新優力超級鎂",
@@ -78,6 +79,7 @@ const EXPECTED_PRODUCTS = {
 const REQUIRED_ALIASES = {
   建利西藥房: ["建利西藥房", "健利西藥房"],
   南興西藥房: ["南興西藥房", "南興藥房"],
+  建芳藥局: ["建芳藥局", "建芳西藥房"],
   大豐藥局: ["大豐藥局"],
   美得心藥局: ["美得心藥局"],
   樂活健保藥局: ["樂活健保藥局"],
@@ -92,6 +94,7 @@ const REQUIRED_ALIASES = {
 const PARTNER_LOCATIONS = [
   ["建利西藥房", "datong", "臺北市大同區重慶北路1段85之3號1樓", null],
   ["南興西藥房", "yilan", "宜蘭縣宜蘭市光復路130號（南館市場口）", null],
+  ["建芳藥局", "luodong", "宜蘭縣羅東鎮民權路31號", null],
   ["大豐藥局", "datong", "臺北市大同區昌吉街96號", null],
   ["美得心藥局", "linkou", "新北市林口區公園路63號1樓", "5931171957"],
   ["樂活健保藥局", "xinzhuang", "新北市新莊區八德街58巷1號1樓", null],
@@ -104,17 +107,18 @@ const PARTNER_LOCATIONS = [
 ] as const;
 
 describe("合作藥局人工確認資料", () => {
-  it("收錄十一個已確認合作的正式藥局 slug", () => {
+  it("收錄十二個已確認合作的正式藥局 slug", () => {
     expect(Object.keys(PARTNER_PHARMACIES)).toEqual(
       Object.keys(EXPECTED_PRODUCTS),
     );
-    expect(PARTNER_PHARMACY_COUNT).toBe(11);
+    expect(PARTNER_PHARMACY_COUNT).toBe(12);
   });
 
   it("首頁合作藥局列沿用正式店名與行政區", () => {
     expect(PARTNER_STORE_ITEMS).toEqual([
       { name: "建利西藥房", district: "大同區" },
       { name: "南興西藥房", district: "宜蘭市" },
+      { name: "建芳藥局", district: "羅東鎮" },
       { name: "大豐藥局", district: "大同區" },
       { name: "美得心藥局", district: "林口區" },
       { name: "樂活健保藥局", district: "新莊區" },

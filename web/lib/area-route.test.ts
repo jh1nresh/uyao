@@ -28,6 +28,7 @@ describe("GPS 選區", () => {
     [24.1813, 120.6466, "xitun"],
     [24.566667, 120.816444, "miaoli"],
     [24.7570, 121.7533, "yilan"],
+    [24.6760, 121.7690, "luodong"],
   ] as const)("選出距離最近的服務區", (lat, lng, area) => {
     expect(nearestServiceArea({ lat, lng })).toBe(area);
   });
@@ -61,9 +62,15 @@ describe("首波店家縣市與行政區分組", () => {
       },
       { countyCity: "臺中市", areas: [{ area: "西屯區", stores: ["永遠藥師藥局"] }] },
       { countyCity: "苗栗縣", areas: [{ area: "苗栗市", stores: ["發元藥局"] }] },
-      { countyCity: "宜蘭縣", areas: [{ area: "宜蘭市", stores: ["南興西藥房"] }] },
+      {
+        countyCity: "宜蘭縣",
+        areas: [
+          { area: "宜蘭市", stores: ["南興西藥房"] },
+          { area: "羅東鎮", stores: ["建芳藥局"] },
+        ],
+      },
     ]);
 
-    expect(groups.flatMap((group) => group.areas).flatMap((entry) => entry.stores)).toHaveLength(11);
+    expect(groups.flatMap((group) => group.areas).flatMap((entry) => entry.stores)).toHaveLength(12);
   });
 });
