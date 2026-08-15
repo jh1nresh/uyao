@@ -1,8 +1,18 @@
 "use client";
 
-import { useEffect, useRef, useState, type FormEvent } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ComponentType,
+  type FormEvent,
+} from "react";
 
 import { BrandMark } from "@/components/BrandMark";
+import { Cubee } from "@/components/avatar-lab/Cubee";
+import { GrokBot } from "@/components/avatar-lab/GrokBot";
+import { Nova } from "@/components/avatar-lab/Nova";
+import { Strobi } from "@/components/avatar-lab/Strobi";
 import {
   RESTOCK_WORK_ITEM,
   STORE_AGENTS,
@@ -12,74 +22,17 @@ import {
 
 import styles from "./StoreOsShell.module.css";
 
-const AGENT_ORB_PATHS: Record<StoreAgentId, string> = {
-  manager:
-    "M20 3C30 3 37 10 37 20C37 30 30 37 20 37C10 37 3 30 3 20C3 10 10 3 20 3Z",
-  inventory:
-    "M18.5 3.5C29 2 37 9 37.5 18.5C38 29 31 37 21 37.5C10.5 38 3.5 31 3 21C2.5 11 9 5 18.5 3.5Z",
-  purchasing:
-    "M21 3C31 3 38 10 37 20C36 30 30 38 20 37C10 36 3 30 3 20C3 10 11 3 21 3Z",
-  checkout:
-    "M11 4H29C34 4 37 8 36 13L35 29C35 34 31 37 26 36L11 35C6 35 3 31 4 26L5 11C5 7 7 4 11 4Z",
-};
+type ExportedAvatar = ComponentType<{
+  playing?: boolean;
+  size?: number | string;
+  className?: string;
+}>;
 
-interface AgentOrbEye {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  rx: number;
-  rotation: number;
-}
-
-const AGENT_ORB_EYES: Record<
-  StoreAgentId,
-  readonly [AgentOrbEye, AgentOrbEye]
-> = {
-  manager: [
-    {
-      x: 12.3,
-      y: 13.5,
-      width: 4.5,
-      height: 10.8,
-      rx: 2.25,
-      rotation: -6,
-    },
-    {
-      x: 23.2,
-      y: 13.5,
-      width: 4.5,
-      height: 10.8,
-      rx: 2.25,
-      rotation: 6,
-    },
-  ],
-  inventory: [
-    {
-      x: 12.5,
-      y: 16.4,
-      width: 5.4,
-      height: 5.8,
-      rx: 2.7,
-      rotation: 8,
-    },
-    {
-      x: 22.8,
-      y: 16.4,
-      width: 5.4,
-      height: 5.8,
-      rx: 2.7,
-      rotation: -8,
-    },
-  ],
-  purchasing: [
-    { x: 13.1, y: 14.1, width: 4.2, height: 9.8, rx: 2.1, rotation: 10 },
-    { x: 23.9, y: 16.1, width: 4, height: 8.3, rx: 2, rotation: -8 },
-  ],
-  checkout: [
-    { x: 13, y: 16.3, width: 4.3, height: 8.2, rx: 2.15, rotation: -3 },
-    { x: 23.5, y: 16.3, width: 4.3, height: 8.2, rx: 2.15, rotation: 3 },
-  ],
+const AGENT_AVATARS: Record<StoreAgentId, ExportedAvatar> = {
+  manager: Strobi,
+  inventory: Nova,
+  purchasing: GrokBot,
+  checkout: Cubee,
 };
 
 function AgentOrb({
@@ -94,7 +47,7 @@ function AgentOrb({
   small?: boolean;
 }) {
   const agent = storeAgent(id);
-  const eyes = AGENT_ORB_EYES[id];
+  const Avatar = AGENT_AVATARS[id];
   return (
     <span
       className={`${styles.agentFace} ${small ? styles.smallFace : ""}`}
@@ -104,32 +57,12 @@ function AgentOrb({
       data-state={agent.state}
       aria-hidden="true"
     >
-      <svg viewBox="0 0 40 40" focusable="false">
-        <circle className={styles.orbHalo} cx="20" cy="20" r="17.5" />
-        <g className={styles.orbBodyMotion}>
-          <path className={styles.orbBody} d={AGENT_ORB_PATHS[id]} />
-        </g>
-        <g className={styles.orbGaze}>
-          <g className={styles.orbBlink}>
-            {eyes.map((eye, index) => {
-              const centerX = eye.x + eye.width / 2;
-              const centerY = eye.y + eye.height / 2;
-              return (
-                <rect
-                  key={index}
-                  className={styles.orbEye}
-                  x={eye.x}
-                  y={eye.y}
-                  width={eye.width}
-                  height={eye.height}
-                  rx={eye.rx}
-                  transform={`rotate(${eye.rotation} ${centerX} ${centerY})`}
-                />
-              );
-            })}
-          </g>
-        </g>
-      </svg>
+      <i className={styles.orbHalo} />
+      <Avatar
+        className={styles.agentAvatar}
+        playing={animated}
+        size="100%"
+      />
     </span>
   );
 }
@@ -139,9 +72,18 @@ export function StoreOsShell() {
   const [draftOpen, setDraftOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [composerNotice, setComposerNotice] = useState("");
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const draftButtonRef = useRef<HTMLButtonElement>(null);
   const activeAgent = storeAgent(activeAgentId);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const updatePreference = () => setPrefersReducedMotion(media.matches);
+    updatePreference();
+    media.addEventListener("change", updatePreference);
+    return () => media.removeEventListener("change", updatePreference);
+  }, []);
 
   useEffect(() => {
     if (!draftOpen) return;
@@ -244,7 +186,11 @@ export function StoreOsShell() {
             </div>
 
             <section className={styles.agentMessage} aria-live="polite">
-              <AgentOrb id={activeAgent.id} active animated />
+              <AgentOrb
+                id={activeAgent.id}
+                active
+                animated={!prefersReducedMotion}
+              />
               <div>
                 <p className={styles.sender}>{activeAgent.name} <time>09:14</time></p>
                 <p>{activeAgent.summary}</p>
