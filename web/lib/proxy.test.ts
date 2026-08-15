@@ -38,6 +38,12 @@ describe("canonical host routing", () => {
     expect(response.headers.get("location")).toBe(`${SITE_URL}/en/pharmacy`);
   });
 
+  it("keeps Store OS off the consumer shop host", () => {
+    const response = request("https://shop.uyaohealth.com/zh-tw/store-os");
+    expect(response.status).toBe(308);
+    expect(response.headers.get("location")).toBe(`${SITE_URL}/zh-tw/store-os`);
+  });
+
   it("redirects www to the company canonical host", () => {
     const response = request("https://www.uyaohealth.com/zh-tw/evidence");
     expect(response.status).toBe(308);
