@@ -161,6 +161,8 @@
 .agentFace {
   --orb-fill: #2b3037;
   --orb-eye: #ece9e1;
+  --orb-active-fill: var(--blue);
+  --orb-active-eye: #090b0f;
   position: relative;
   width: 40px;
   height: 40px;
@@ -168,6 +170,27 @@
   flex: 0 0 auto;
   place-items: center;
   filter: drop-shadow(0 7px 10px rgba(0, 0, 0, .26));
+}
+
+.agentFace[data-agent="manager"] {
+  --orb-fill: #3f5fa3;
+  --orb-active-fill: #5b82e8;
+}
+
+.agentFace[data-agent="inventory"] {
+  --orb-fill: #2c7180;
+  --orb-active-fill: #46aebe;
+}
+
+.agentFace[data-agent="purchasing"] {
+  --orb-fill: #54469b;
+  --orb-active-fill: #8069df;
+}
+
+.agentFace[data-agent="checkout"] {
+  --orb-fill: #45576b;
+  --orb-active-fill: #6f87a1;
+  --orb-active-eye: #f2f0ea;
 }
 
 .agentAvatar {
@@ -184,8 +207,8 @@
 }
 
 .agentFace[data-active="true"] {
-  --orb-fill: var(--blue);
-  --orb-eye: #090b0f;
+  --orb-fill: var(--orb-active-fill);
+  --orb-eye: var(--orb-active-eye);
 }
 
 .agentAvatar > svg > g > path,

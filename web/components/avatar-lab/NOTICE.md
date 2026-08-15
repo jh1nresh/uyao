@@ -4,7 +4,7 @@ These files were exported from [Bible Strong Avatar Lab](https://avatars.bible-s
 
 - `Strobi` with the `listening` animation for the manager Agent
 - `Nova` with the `working` animation for the inventory Agent
-- `Grok bot` with the `thinking` animation for the purchasing Agent
+- `Citrus` with the `thinking` animation for the purchasing Agent
 - `Cubee` with the `idle` animation for the checkout Agent
 
 The exports were generated on 2026-08-15 from the public project at
@@ -20,6 +20,7 @@ of that license is included as `AGPL-3.0.txt` in this directory.
 - The Vite-specific dynamic import ignore marker was replaced with webpack's
   equivalent so Next.js leaves the generated `blob:` module URL to the browser.
 - The exported components are selected by the existing uYao Agent role.
-- uYao CSS applies active and inactive Store OS colors to the generated SVG.
+- uYao CSS gives every role distinct active and inactive Store OS colors while
+  preserving the sphere, asymmetric capsule, cone, and cube silhouettes.
 - Runtime playback is enabled only for the central active Agent and is disabled
   when the operating system requests reduced motion.
