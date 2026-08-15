@@ -1,18 +1,16 @@
 .screen {
-  --void: #090d14;
-  --rail: #0b1017;
-  --panel: #10161e;
-  --panel-2: #151c25;
-  --panel-3: #1a222d;
-  --line: #28313c;
-  --line-strong: #35414e;
-  --text: #f2f5f8;
-  --muted: #929eae;
-  --faint: #657181;
-  --blue: #3c79ff;
-  --blue-soft: #65a7ff;
-  --cyan: #38b5d1;
-  --indigo: #746dff;
+  --void: #090b0f;
+  --rail: #0b0e13;
+  --panel: #101318;
+  --panel-2: #15191f;
+  --panel-3: #1b2027;
+  --line: #2b3139;
+  --line-strong: #3a424c;
+  --text: #f2f0ea;
+  --muted: #a3a7ad;
+  --faint: #737a84;
+  --blue: #557fe8;
+  --blue-soft: #8ab0ff;
   --green: #38c97b;
   --amber: #efbe58;
   --danger: #ee8585;
@@ -23,6 +21,7 @@
   overflow: hidden;
   background: var(--void);
   color: var(--text);
+  color-scheme: dark;
   font-family: var(--font-sans);
 }
 
@@ -160,88 +159,105 @@
 }
 
 .agentFace {
+  --orb-fill: #2b3037;
+  --orb-eye: #ece9e1;
   position: relative;
   width: 40px;
   height: 40px;
   display: inline-grid;
   flex: 0 0 auto;
   place-items: center;
-  filter: drop-shadow(0 7px 10px rgba(2, 7, 14, .24));
+  filter: drop-shadow(0 7px 10px rgba(0, 0, 0, .26));
 }
 
-.agentFace::before {
-  content: "";
-  position: absolute;
-  inset: 3px;
-  border-radius: 48% 52% 55% 45% / 46% 45% 55% 54%;
-  background: linear-gradient(145deg, #69a8ff 0%, var(--blue) 50%, #2453c7 100%);
-  box-shadow: inset 5px 5px 10px rgba(255, 255, 255, .16), inset -5px -7px 10px rgba(2, 8, 18, .2);
+.agentFace svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
 
-.inventory::before {
-  border-radius: 42% 58% 46% 54% / 55% 44% 56% 45%;
-  background: linear-gradient(145deg, #67d5e9, #2499bf 58%, #146783);
+.agentFace[data-active="true"] {
+  --orb-fill: var(--blue);
+  --orb-eye: #090b0f;
 }
 
-.purchasing::before {
-  border-radius: 55% 45% 48% 52% / 43% 58% 42% 57%;
-  background: linear-gradient(145deg, #9a94ff, var(--indigo) 58%, #4944b8);
+.orbBodyMotion,
+.orbGaze,
+.orbBlink,
+.orbHalo {
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
-.checkout::before {
-  border-radius: 9px 14px 11px 15px;
-  background: linear-gradient(145deg, #7aa7d5, #4e6f95 58%, #34475f);
+.orbBody {
+  fill: var(--orb-fill);
+  stroke: rgba(255, 255, 255, .1);
+  stroke-width: .7px;
+  transition: fill 180ms var(--ease-brand), stroke 180ms var(--ease-brand);
 }
 
-.leftEye,
-.rightEye {
-  position: absolute;
-  z-index: 1;
-  top: 15px;
-  width: 5px;
-  height: 10px;
-  border-radius: 4px;
-  background: #09101b;
+.orbEye {
+  fill: var(--orb-eye);
+  transition: fill 180ms var(--ease-brand);
 }
 
-.leftEye {
-  left: 13px;
-  transform: rotate(-5deg);
+.orbHalo {
+  fill: none;
+  stroke: var(--amber);
+  stroke-width: 1.3px;
+  opacity: 0;
 }
 
-.rightEye {
-  right: 13px;
-  transform: rotate(5deg);
+.agentFace[data-animated="true"] .orbBodyMotion {
+  animation: orbBreathe 4.8s ease-in-out infinite;
 }
 
-.inventory .leftEye,
-.inventory .rightEye {
-  top: 18px;
-  height: 5px;
+.agentFace[data-animated="true"] .orbBlink {
+  animation: orbBlink 5.8s linear infinite;
 }
 
-.inventory .leftEye {
-  transform: rotate(10deg);
+.agentFace[data-agent="inventory"] .orbBlink {
+  animation-delay: -1.3s;
 }
 
-.inventory .rightEye {
-  transform: rotate(-10deg);
+.agentFace[data-agent="purchasing"] .orbBlink {
+  animation-delay: -2.1s;
 }
 
-.purchasing .leftEye {
-  left: 14px;
-  transform: rotate(13deg);
+.agentFace[data-agent="checkout"] .orbBlink {
+  animation-delay: -.6s;
 }
 
-.purchasing .rightEye {
-  top: 17px;
-  right: 11px;
-  transform: rotate(-10deg);
+.agentFace[data-agent="manager"] .orbGaze {
+  transform: translateY(-.6px);
 }
 
-.checkout .leftEye,
-.checkout .rightEye {
-  background: #f1f5f9;
+.agentFace[data-agent="inventory"] .orbGaze {
+  transform: translate(-1px, .4px);
+}
+
+.agentFace[data-agent="purchasing"] .orbGaze {
+  transform: translate(1.5px, .4px);
+}
+
+.agentFace[data-agent="checkout"] .orbGaze {
+  transform: translateY(1.5px);
+}
+
+.agentFace[data-animated="true"][data-state="working"] .orbGaze {
+  animation: orbScan 3.2s ease-in-out infinite;
+}
+
+.agentFace[data-animated="true"][data-state="approval"] .orbGaze {
+  animation: orbApprovalLook 3.6s ease-in-out infinite;
+}
+
+.agentFace[data-animated="true"][data-state="approval"] .orbHalo {
+  animation: orbApprovalPulse 3s ease-out infinite;
+}
+
+.agentFace[data-animated="true"][data-state="idle"] .orbBodyMotion {
+  animation-duration: 7s;
 }
 
 .smallFace {
@@ -250,34 +266,31 @@
   filter: none;
 }
 
-.smallFace::before {
-  inset: 1px;
+@keyframes orbBreathe {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  50% { transform: translateY(-.7px) rotate(-1deg); }
 }
 
-.smallFace .leftEye,
-.smallFace .rightEye {
-  top: 10px;
-  width: 3px;
-  height: 7px;
+@keyframes orbBlink {
+  0%, 43%, 46%, 100% { transform: scaleY(1); }
+  44.2%, 44.9% { transform: scaleY(.08); }
 }
 
-.smallFace .leftEye {
-  left: 9px;
+@keyframes orbScan {
+  0%, 18%, 100% { transform: translate(-1.1px, .4px); }
+  38%, 55% { transform: translate(1.7px, .4px); }
+  72%, 86% { transform: translate(-1.6px, .4px); }
 }
 
-.smallFace .rightEye {
-  right: 9px;
+@keyframes orbApprovalLook {
+  0%, 70%, 100% { transform: translate(2px, .4px); }
+  82% { transform: translate(1px, .4px); }
 }
 
-.smallFace.inventory .leftEye,
-.smallFace.inventory .rightEye {
-  top: 12px;
-  height: 4px;
-}
-
-.smallFace.purchasing .rightEye {
-  top: 12px;
-  right: 7px;
+@keyframes orbApprovalPulse {
+  0%, 58%, 100% { opacity: 0; transform: scale(.88); }
+  68% { opacity: .72; transform: scale(1); }
+  84% { opacity: 0; transform: scale(1.08); }
 }
 
 .workNav {
@@ -890,25 +903,6 @@
     height: 30px;
   }
 
-  .agentRow .agentFace::before {
-    inset: 1px;
-  }
-
-  .agentRow .leftEye,
-  .agentRow .rightEye {
-    top: 11px;
-    width: 3px;
-    height: 7px;
-  }
-
-  .agentRow .leftEye {
-    left: 10px;
-  }
-
-  .agentRow .rightEye {
-    right: 10px;
-  }
-
   .agentCopy strong {
     font-size: 11px;
   }
@@ -978,9 +972,18 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .orbBodyMotion,
+  .orbGaze,
+  .orbBlink,
+  .orbHalo {
+    animation: none !important;
+  }
+
   .agentRow,
   .taskCard,
-  .approvalBar button {
+  .approvalBar button,
+  .orbBody,
+  .orbEye {
     transition: none;
   }
 }
