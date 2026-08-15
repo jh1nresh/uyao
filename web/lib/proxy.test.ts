@@ -11,23 +11,23 @@ function request(url: string) {
 
 describe("canonical host routing", () => {
   it("serves Store OS at the clean store domain root", () => {
-    const response = request("https://store.uyao.com/?work=WI-2031");
+    const response = request("https://store.uyaohealth.com/?work=WI-2031");
     expect(response.status).toBe(200);
     expect(response.headers.get("x-middleware-rewrite")).toBe(
-      "https://store.uyao.com/store-os?work=WI-2031",
+      "https://store.uyaohealth.com/store-os?work=WI-2031",
     );
   });
 
   it("collapses localized Store OS paths to the store domain root", () => {
-    const response = request("https://store.uyao.com/zh-tw/store-os?work=WI-2031");
+    const response = request("https://store.uyaohealth.com/zh-tw/store-os?work=WI-2031");
     expect(response.status).toBe(308);
     expect(response.headers.get("location")).toBe(
-      "https://store.uyao.com/?work=WI-2031",
+      "https://store.uyaohealth.com/?work=WI-2031",
     );
   });
 
   it("keeps unrelated company routes on the company domain", () => {
-    const response = request("https://store.uyao.com/zh-tw/evidence");
+    const response = request("https://store.uyaohealth.com/zh-tw/evidence");
     expect(response.status).toBe(308);
     expect(response.headers.get("location")).toBe(`${SITE_URL}/zh-tw/evidence`);
   });
