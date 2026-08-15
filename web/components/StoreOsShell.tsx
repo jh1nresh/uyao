@@ -9,10 +9,10 @@ import {
 } from "react";
 
 import { BrandMark } from "@/components/BrandMark";
-import { Citrus } from "@/components/avatar-lab/Citrus";
-import { Cubee } from "@/components/avatar-lab/Cubee";
-import { Nova } from "@/components/avatar-lab/Nova";
-import { Strobi } from "@/components/avatar-lab/Strobi";
+import { Flame } from "@/components/avatar-lab/Flame";
+import { Pepper } from "@/components/avatar-lab/Pepper";
+import { Sapling } from "@/components/avatar-lab/Sapling";
+import { Sprout } from "@/components/avatar-lab/Sprout";
 import {
   RESTOCK_WORK_ITEM,
   STORE_AGENTS,
@@ -29,10 +29,10 @@ type ExportedAvatar = ComponentType<{
 }>;
 
 const AGENT_AVATARS: Record<StoreAgentId, ExportedAvatar> = {
-  manager: Strobi,
-  inventory: Nova,
-  purchasing: Citrus,
-  checkout: Cubee,
+  manager: Sprout,
+  inventory: Sapling,
+  purchasing: Flame,
+  checkout: Pepper,
 };
 
 function AgentOrb({
