@@ -173,8 +173,9 @@
 }
 
 .agentFace[data-agent="manager"] {
-  --orb-fill: #3f5fa3;
-  --orb-active-fill: #5b82e8;
+  --orb-fill: #2f7654;
+  --orb-active-fill: #48a873;
+  --orb-active-eye: #f8f4e9;
 }
 
 .agentFace[data-agent="inventory"] {
@@ -183,13 +184,13 @@
 }
 
 .agentFace[data-agent="purchasing"] {
-  --orb-fill: #54469b;
-  --orb-active-fill: #8069df;
+  --orb-fill: #8a5738;
+  --orb-active-fill: #c77a46;
 }
 
 .agentFace[data-agent="checkout"] {
-  --orb-fill: #45576b;
-  --orb-active-fill: #6f87a1;
+  --orb-fill: #74504f;
+  --orb-active-fill: #a96a66;
   --orb-active-eye: #f2f0ea;
 }
 
