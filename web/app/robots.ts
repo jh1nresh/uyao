@@ -11,7 +11,7 @@ import { SHOP_URL } from "@/lib/shop";
 /**
  * robots.txt（spec §2）。production 開放爬取讓 crawler 讀得到各頁的
  * robots meta（noindex 頁必須可爬才看得到 noindex）；非 production
- * deployment 直接全站 Disallow。/api 與 /console 沒有搜尋價值，不給爬。
+ * deployment 直接全站 Disallow。/api、/console 與 /store-os 沒有搜尋價值，不給爬。
  * 注意 proxy matcher 排除含「.」的路徑，robots.txt 不經 locale rewrite。
  */
 export default async function robots(): Promise<MetadataRoute.Robots> {
@@ -23,7 +23,11 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
     return { rules: { userAgent: "*", disallow: "/" } };
   }
   return {
-    rules: { userAgent: "*", allow: "/", disallow: ["/api/", "/console"] },
+    rules: {
+      userAgent: "*",
+      allow: "/",
+      disallow: ["/api/", "/console", "/store-os", "/zh-tw/store-os", "/en/store-os"],
+    },
     sitemap: `${canonicalBase}/sitemap.xml`,
   };
 }
