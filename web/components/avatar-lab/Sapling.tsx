@@ -21,7 +21,7 @@ export type AvatarProps = {
 
 export const Sapling = forwardRef<AvatarHandle, AvatarProps>(function Sapling(
   {
-    animation = "working",
+    animation = "searching",
     playing = true,
     loop,
     size = 240,

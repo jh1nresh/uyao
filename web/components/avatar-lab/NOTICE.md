@@ -3,7 +3,7 @@
 These files were exported from [Bible Strong Avatar Lab](https://avatars.bible-strong.app/):
 
 - custom `Sprout` with the `listening` animation for the manager Agent
-- custom `Sapling` with the `working` animation for the inventory Agent
+- custom `Sapling` with the `searching` animation for the inventory Agent
 - custom `Flame` with the `thinking` animation for the purchasing Agent
 - custom `Pepper` with the `idle` animation for the checkout Agent
 
