@@ -23,6 +23,65 @@ const AGENT_ORB_PATHS: Record<StoreAgentId, string> = {
     "M11 4H29C34 4 37 8 36 13L35 29C35 34 31 37 26 36L11 35C6 35 3 31 4 26L5 11C5 7 7 4 11 4Z",
 };
 
+interface AgentOrbEye {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  rx: number;
+  rotation: number;
+}
+
+const AGENT_ORB_EYES: Record<
+  StoreAgentId,
+  readonly [AgentOrbEye, AgentOrbEye]
+> = {
+  manager: [
+    {
+      x: 12.3,
+      y: 13.5,
+      width: 4.5,
+      height: 10.8,
+      rx: 2.25,
+      rotation: -6,
+    },
+    {
+      x: 23.2,
+      y: 13.5,
+      width: 4.5,
+      height: 10.8,
+      rx: 2.25,
+      rotation: 6,
+    },
+  ],
+  inventory: [
+    {
+      x: 12.5,
+      y: 16.4,
+      width: 5.4,
+      height: 5.8,
+      rx: 2.7,
+      rotation: 8,
+    },
+    {
+      x: 22.8,
+      y: 16.4,
+      width: 5.4,
+      height: 5.8,
+      rx: 2.7,
+      rotation: -8,
+    },
+  ],
+  purchasing: [
+    { x: 13.1, y: 14.1, width: 4.2, height: 9.8, rx: 2.1, rotation: 10 },
+    { x: 23.9, y: 16.1, width: 4, height: 8.3, rx: 2, rotation: -8 },
+  ],
+  checkout: [
+    { x: 13, y: 16.3, width: 4.3, height: 8.2, rx: 2.15, rotation: -3 },
+    { x: 23.5, y: 16.3, width: 4.3, height: 8.2, rx: 2.15, rotation: 3 },
+  ],
+};
+
 function AgentOrb({
   id,
   active = false,
@@ -35,6 +94,7 @@ function AgentOrb({
   small?: boolean;
 }) {
   const agent = storeAgent(id);
+  const eyes = AGENT_ORB_EYES[id];
   return (
     <span
       className={`${styles.agentFace} ${small ? styles.smallFace : ""}`}
@@ -51,24 +111,22 @@ function AgentOrb({
         </g>
         <g className={styles.orbGaze}>
           <g className={styles.orbBlink}>
-            <rect
-              className={styles.orbEye}
-              x="12.3"
-              y="14.1"
-              width="4.5"
-              height="10.8"
-              rx="2.25"
-              transform="rotate(-6 14.55 19.5)"
-            />
-            <rect
-              className={styles.orbEye}
-              x="23.2"
-              y="14.1"
-              width="4.5"
-              height="10.8"
-              rx="2.25"
-              transform="rotate(6 25.45 19.5)"
-            />
+            {eyes.map((eye, index) => {
+              const centerX = eye.x + eye.width / 2;
+              const centerY = eye.y + eye.height / 2;
+              return (
+                <rect
+                  key={index}
+                  className={styles.orbEye}
+                  x={eye.x}
+                  y={eye.y}
+                  width={eye.width}
+                  height={eye.height}
+                  rx={eye.rx}
+                  transform={`rotate(${eye.rotation} ${centerX} ${centerY})`}
+                />
+              );
+            })}
           </g>
         </g>
       </svg>

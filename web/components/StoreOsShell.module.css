@@ -228,6 +228,22 @@
   animation-delay: -.6s;
 }
 
+.agentFace[data-agent="manager"] .orbGaze {
+  transform: translateY(-.6px);
+}
+
+.agentFace[data-agent="inventory"] .orbGaze {
+  transform: translate(-1px, .4px);
+}
+
+.agentFace[data-agent="purchasing"] .orbGaze {
+  transform: translate(1.5px, .4px);
+}
+
+.agentFace[data-agent="checkout"] .orbGaze {
+  transform: translateY(1.5px);
+}
+
 .agentFace[data-animated="true"][data-state="working"] .orbGaze {
   animation: orbScan 3.2s ease-in-out infinite;
 }
@@ -261,14 +277,14 @@
 }
 
 @keyframes orbScan {
-  0%, 18%, 100% { transform: translateX(0); }
-  38%, 55% { transform: translateX(1.6px); }
-  72%, 86% { transform: translateX(-1.2px); }
+  0%, 18%, 100% { transform: translate(-1.1px, .4px); }
+  38%, 55% { transform: translate(1.7px, .4px); }
+  72%, 86% { transform: translate(-1.6px, .4px); }
 }
 
 @keyframes orbApprovalLook {
-  0%, 70%, 100% { transform: translateX(1.8px); }
-  82% { transform: translateX(.8px); }
+  0%, 70%, 100% { transform: translate(2px, .4px); }
+  82% { transform: translate(1px, .4px); }
 }
 
 @keyframes orbApprovalPulse {
