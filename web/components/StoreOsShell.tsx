@@ -12,15 +12,66 @@ import {
 
 import styles from "./StoreOsShell.module.css";
 
-function AgentFace({ id, small = false }: { id: StoreAgentId; small?: boolean }) {
-  const roleClass = id === "manager" ? "" : styles[id];
+const AGENT_ORB_PATHS: Record<StoreAgentId, string> = {
+  manager:
+    "M20 3C30 3 37 10 37 20C37 30 30 37 20 37C10 37 3 30 3 20C3 10 10 3 20 3Z",
+  inventory:
+    "M18.5 3.5C29 2 37 9 37.5 18.5C38 29 31 37 21 37.5C10.5 38 3.5 31 3 21C2.5 11 9 5 18.5 3.5Z",
+  purchasing:
+    "M21 3C31 3 38 10 37 20C36 30 30 38 20 37C10 36 3 30 3 20C3 10 11 3 21 3Z",
+  checkout:
+    "M11 4H29C34 4 37 8 36 13L35 29C35 34 31 37 26 36L11 35C6 35 3 31 4 26L5 11C5 7 7 4 11 4Z",
+};
+
+function AgentOrb({
+  id,
+  active = false,
+  animated = false,
+  small = false,
+}: {
+  id: StoreAgentId;
+  active?: boolean;
+  animated?: boolean;
+  small?: boolean;
+}) {
+  const agent = storeAgent(id);
   return (
     <span
-      className={`${styles.agentFace} ${roleClass} ${small ? styles.smallFace : ""}`}
+      className={`${styles.agentFace} ${small ? styles.smallFace : ""}`}
+      data-active={active ? "true" : "false"}
+      data-agent={id}
+      data-animated={animated ? "true" : "false"}
+      data-state={agent.state}
       aria-hidden="true"
     >
-      <i className={styles.leftEye} />
-      <i className={styles.rightEye} />
+      <svg viewBox="0 0 40 40" focusable="false">
+        <circle className={styles.orbHalo} cx="20" cy="20" r="17.5" />
+        <g className={styles.orbBodyMotion}>
+          <path className={styles.orbBody} d={AGENT_ORB_PATHS[id]} />
+        </g>
+        <g className={styles.orbGaze}>
+          <g className={styles.orbBlink}>
+            <rect
+              className={styles.orbEye}
+              x="12.3"
+              y="14.1"
+              width="4.5"
+              height="10.8"
+              rx="2.25"
+              transform="rotate(-6 14.55 19.5)"
+            />
+            <rect
+              className={styles.orbEye}
+              x="23.2"
+              y="14.1"
+              width="4.5"
+              height="10.8"
+              rx="2.25"
+              transform="rotate(6 25.45 19.5)"
+            />
+          </g>
+        </g>
+      </svg>
     </span>
   );
 }
@@ -81,7 +132,10 @@ export function StoreOsShell() {
               aria-pressed={activeAgentId === agent.id}
               onClick={() => setActiveAgentId(agent.id)}
             >
-              <AgentFace id={agent.id} />
+              <AgentOrb
+                id={agent.id}
+                active={activeAgentId === agent.id}
+              />
               <span className={styles.agentCopy}>
                 <strong>{agent.name}</strong>
                 <small>{agent.description}</small>
@@ -108,7 +162,7 @@ export function StoreOsShell() {
 
       <section className={styles.shell}>
         <header className={styles.topbar}>
-          <AgentFace id={activeAgent.id} small />
+          <AgentOrb id={activeAgent.id} active small />
           <span className={styles.topbarAgent}>
             <strong>{activeAgent.name}</strong>
             <small>{activeAgent.description} · {activeAgent.stateLabel}</small>
@@ -132,7 +186,7 @@ export function StoreOsShell() {
             </div>
 
             <section className={styles.agentMessage} aria-live="polite">
-              <AgentFace id={activeAgent.id} />
+              <AgentOrb id={activeAgent.id} active animated />
               <div>
                 <p className={styles.sender}>{activeAgent.name} <time>09:14</time></p>
                 <p>{activeAgent.summary}</p>
@@ -154,7 +208,7 @@ export function StoreOsShell() {
                     }`}
                   >
                     <header>
-                      <AgentFace id={agent.id} small />
+                      <AgentOrb id={agent.id} active={activeAgentId === agent.id} small />
                       <strong>{agent.name}</strong>
                       <span className={styles[step.state]}>{step.stateLabel}</span>
                     </header>
@@ -180,7 +234,7 @@ export function StoreOsShell() {
             </section>
 
             <form className={styles.composer} onSubmit={submitMessage}>
-              <AgentFace id="manager" small />
+              <AgentOrb id="manager" active={activeAgentId === "manager"} small />
               <label className={styles.visuallyHidden} htmlFor="store-agent-message">交代店長</label>
               <input
                 id="store-agent-message"
@@ -202,7 +256,7 @@ export function StoreOsShell() {
             <ol>
               {RESTOCK_WORK_ITEM.audit.map((entry) => (
                 <li key={`${entry.agentId}-${entry.at}`}>
-                  <AgentFace id={entry.agentId} small />
+                  <AgentOrb id={entry.agentId} small />
                   <div>
                     <strong>{entry.handoff}</strong>
                     <p>{entry.at} · {entry.detail}</p>
