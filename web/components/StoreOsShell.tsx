@@ -9,8 +9,8 @@ import {
 } from "react";
 
 import { BrandMark } from "@/components/BrandMark";
+import { Citrus } from "@/components/avatar-lab/Citrus";
 import { Cubee } from "@/components/avatar-lab/Cubee";
-import { GrokBot } from "@/components/avatar-lab/GrokBot";
 import { Nova } from "@/components/avatar-lab/Nova";
 import { Strobi } from "@/components/avatar-lab/Strobi";
 import {
@@ -31,7 +31,7 @@ type ExportedAvatar = ComponentType<{
 const AGENT_AVATARS: Record<StoreAgentId, ExportedAvatar> = {
   manager: Strobi,
   inventory: Nova,
-  purchasing: GrokBot,
+  purchasing: Citrus,
   checkout: Cubee,
 };
 

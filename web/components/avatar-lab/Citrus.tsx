@@ -1,9 +1,9 @@
 
 import { forwardRef, useEffect, useImperativeHandle, useRef, type CSSProperties } from 'react'
 import { loadAvatarRuntime, type RuntimeAvatar } from './avatar-runtime'
-import { avatarData, type AnimationName } from './grok-bot.avatar'
+import { avatarData, type AnimationName } from './citrus.avatar'
 
-export type { AnimationName } from './grok-bot.avatar'
+export type { AnimationName } from './citrus.avatar'
 export type AvatarHandle = {
   play: (animation?: AnimationName) => void
   pause: () => void
@@ -19,7 +19,7 @@ export type AvatarProps = {
   onAnimationEnd?: (animation: AnimationName) => void
 }
 
-export const GrokBot = forwardRef<AvatarHandle, AvatarProps>(function GrokBot(
+export const Citrus = forwardRef<AvatarHandle, AvatarProps>(function Citrus(
   {
     animation = "thinking",
     playing = true,
@@ -79,4 +79,4 @@ export const GrokBot = forwardRef<AvatarHandle, AvatarProps>(function GrokBot(
   return <span ref={host} className={className} style={{ display: 'inline-block', width: dimension, height: dimension, ...style }} />
 })
 
-export default GrokBot
+export default Citrus
