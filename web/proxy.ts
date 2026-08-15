@@ -8,6 +8,7 @@ import { SHOP_URL } from "@/lib/shop";
  *
  *   uyaohealth.com         → `/` 導向 `/zh-tw` 公司 landing
  *   shop.uyaohealth.com    → `/` 導向 `/zh-tw` Consumer Web
+ *   store.uyao.com         → `/` 顯示 Store OS
  *
  * 為什麼是 shop-uyao 不是 shop.uyao.vercel.app：*.vercel.app 的 wildcard
  * 憑證只涵蓋一層子網域，兩層（shop.uyao.）掛不上去。之後有自訂網域
@@ -21,6 +22,9 @@ export const config = {
 
 const SHOP_HOSTS = new Set(
   ["shop-uyao.vercel.app", process.env.SHOP_HOST ?? ""].filter(Boolean),
+);
+const STORE_HOSTS = new Set(
+  ["store.uyao.com", process.env.STORE_HOST ?? ""].filter(Boolean),
 );
 
 const COMPANY_HOST = new URL(SITE_URL).host;
@@ -65,6 +69,23 @@ export function proxy(req: NextRequest) {
 
   const host = (req.headers.get("host") ?? req.nextUrl.hostname).toLowerCase().split(":")[0];
   const isShop = SHOP_HOSTS.has(host) || host.startsWith("shop.");
+  const isStore = STORE_HOSTS.has(host);
+
+  if (isStore) {
+    const isStoreHome = route.barePath === "/" || route.barePath === "/store-os";
+
+    if (!isStoreHome) {
+      return redirectTo(req, SITE_URL, localizedPath(route.barePath, route.locale));
+    }
+
+    if (pathname !== "/") {
+      return redirectTo(req, `https://${host}`, "/");
+    }
+
+    const url = req.nextUrl.clone();
+    url.pathname = "/store-os";
+    return NextResponse.rewrite(url, { request: { headers: requestHeaders } });
+  }
 
   if (!isShop && host === `www.${COMPANY_HOST}`) {
     return redirectTo(req, SITE_URL, pathname);
