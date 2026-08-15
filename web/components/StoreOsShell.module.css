@@ -170,6 +170,13 @@
   filter: drop-shadow(0 7px 10px rgba(0, 0, 0, .26));
 }
 
+.agentAvatar {
+  position: relative;
+  z-index: 1;
+  width: 100% !important;
+  height: 100% !important;
+}
+
 .agentFace svg {
   width: 100%;
   height: 100%;
@@ -181,110 +188,36 @@
   --orb-eye: #090b0f;
 }
 
-.orbBodyMotion,
-.orbGaze,
-.orbBlink,
-.orbHalo {
-  transform-box: fill-box;
-  transform-origin: center;
+.agentAvatar > svg > g > path,
+.agentAvatar > svg > g > g:not([clip-path]) path {
+  fill: var(--orb-fill) !important;
+  transition: fill 180ms var(--ease-brand);
 }
 
-.orbBody {
-  fill: var(--orb-fill);
-  stroke: rgba(255, 255, 255, .1);
-  stroke-width: .7px;
-  transition: fill 180ms var(--ease-brand), stroke 180ms var(--ease-brand);
-}
-
-.orbEye {
-  fill: var(--orb-eye);
+.agentAvatar > svg > g > g[clip-path] path {
+  fill: var(--orb-eye) !important;
   transition: fill 180ms var(--ease-brand);
 }
 
 .orbHalo {
-  fill: none;
-  stroke: var(--amber);
-  stroke-width: 1.3px;
+  position: absolute;
+  z-index: 0;
+  inset: 2px;
+  border: 1.3px solid var(--amber);
+  border-radius: 50%;
   opacity: 0;
-}
-
-.agentFace[data-animated="true"] .orbBodyMotion {
-  animation: orbBreathe 4.8s ease-in-out infinite;
-}
-
-.agentFace[data-animated="true"] .orbBlink {
-  animation: orbBlink 5.8s linear infinite;
-}
-
-.agentFace[data-agent="inventory"] .orbBlink {
-  animation-delay: -1.3s;
-}
-
-.agentFace[data-agent="purchasing"] .orbBlink {
-  animation-delay: -2.1s;
-}
-
-.agentFace[data-agent="checkout"] .orbBlink {
-  animation-delay: -.6s;
-}
-
-.agentFace[data-agent="manager"] .orbGaze {
-  transform: translateY(-.6px);
-}
-
-.agentFace[data-agent="inventory"] .orbGaze {
-  transform: translate(-1px, .4px);
-}
-
-.agentFace[data-agent="purchasing"] .orbGaze {
-  transform: translate(1.5px, .4px);
-}
-
-.agentFace[data-agent="checkout"] .orbGaze {
-  transform: translateY(1.5px);
-}
-
-.agentFace[data-animated="true"][data-state="working"] .orbGaze {
-  animation: orbScan 3.2s ease-in-out infinite;
-}
-
-.agentFace[data-animated="true"][data-state="approval"] .orbGaze {
-  animation: orbApprovalLook 3.6s ease-in-out infinite;
+  pointer-events: none;
+  transform-origin: center;
 }
 
 .agentFace[data-animated="true"][data-state="approval"] .orbHalo {
   animation: orbApprovalPulse 3s ease-out infinite;
 }
 
-.agentFace[data-animated="true"][data-state="idle"] .orbBodyMotion {
-  animation-duration: 7s;
-}
-
 .smallFace {
   width: 28px;
   height: 28px;
   filter: none;
-}
-
-@keyframes orbBreathe {
-  0%, 100% { transform: translateY(0) rotate(0); }
-  50% { transform: translateY(-.7px) rotate(-1deg); }
-}
-
-@keyframes orbBlink {
-  0%, 43%, 46%, 100% { transform: scaleY(1); }
-  44.2%, 44.9% { transform: scaleY(.08); }
-}
-
-@keyframes orbScan {
-  0%, 18%, 100% { transform: translate(-1.1px, .4px); }
-  38%, 55% { transform: translate(1.7px, .4px); }
-  72%, 86% { transform: translate(-1.6px, .4px); }
-}
-
-@keyframes orbApprovalLook {
-  0%, 70%, 100% { transform: translate(2px, .4px); }
-  82% { transform: translate(1px, .4px); }
 }
 
 @keyframes orbApprovalPulse {
@@ -972,9 +905,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .orbBodyMotion,
-  .orbGaze,
-  .orbBlink,
   .orbHalo {
     animation: none !important;
   }
@@ -982,8 +912,7 @@
   .agentRow,
   .taskCard,
   .approvalBar button,
-  .orbBody,
-  .orbEye {
+  .agentAvatar svg path {
     transition: none;
   }
 }
