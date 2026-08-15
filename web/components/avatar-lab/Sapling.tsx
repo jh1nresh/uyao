@@ -1,9 +1,9 @@
 
 import { forwardRef, useEffect, useImperativeHandle, useRef, type CSSProperties } from 'react'
 import { loadAvatarRuntime, type RuntimeAvatar } from './avatar-runtime'
-import { avatarData, type AnimationName } from './cubee.avatar'
+import { avatarData, type AnimationName } from './sapling.avatar'
 
-export type { AnimationName } from './cubee.avatar'
+export type { AnimationName } from './sapling.avatar'
 export type AvatarHandle = {
   play: (animation?: AnimationName) => void
   pause: () => void
@@ -19,7 +19,7 @@ export type AvatarProps = {
   onAnimationEnd?: (animation: AnimationName) => void
 }
 
-export const Cubee = forwardRef<AvatarHandle, AvatarProps>(function Cubee(
+export const Sapling = forwardRef<AvatarHandle, AvatarProps>(function Sapling(
   {
     animation = "working",
     playing = true,
@@ -79,4 +79,4 @@ export const Cubee = forwardRef<AvatarHandle, AvatarProps>(function Cubee(
   return <span ref={host} className={className} style={{ display: 'inline-block', width: dimension, height: dimension, ...style }} />
 })
 
-export default Cubee
+export default Sapling

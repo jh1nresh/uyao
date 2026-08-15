@@ -1,9 +1,9 @@
 
 import { forwardRef, useEffect, useImperativeHandle, useRef, type CSSProperties } from 'react'
 import { loadAvatarRuntime, type RuntimeAvatar } from './avatar-runtime'
-import { avatarData, type AnimationName } from './cloudee.avatar'
+import { avatarData, type AnimationName } from './pepper.avatar'
 
-export type { AnimationName } from './cloudee.avatar'
+export type { AnimationName } from './pepper.avatar'
 export type AvatarHandle = {
   play: (animation?: AnimationName) => void
   pause: () => void
@@ -19,9 +19,9 @@ export type AvatarProps = {
   onAnimationEnd?: (animation: AnimationName) => void
 }
 
-export const Cloudee = forwardRef<AvatarHandle, AvatarProps>(function Cloudee(
+export const Pepper = forwardRef<AvatarHandle, AvatarProps>(function Pepper(
   {
-    animation = "thinking",
+    animation = "idle",
     playing = true,
     loop,
     size = 240,
@@ -79,4 +79,4 @@ export const Cloudee = forwardRef<AvatarHandle, AvatarProps>(function Cloudee(
   return <span ref={host} className={className} style={{ display: 'inline-block', width: dimension, height: dimension, ...style }} />
 })
 
-export default Cloudee
+export default Pepper

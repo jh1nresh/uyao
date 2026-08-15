@@ -1,9 +1,9 @@
 
 import { forwardRef, useEffect, useImperativeHandle, useRef, type CSSProperties } from 'react'
 import { loadAvatarRuntime, type RuntimeAvatar } from './avatar-runtime'
-import { avatarData, type AnimationName } from './onee.avatar'
+import { avatarData, type AnimationName } from './flame.avatar'
 
-export type { AnimationName } from './onee.avatar'
+export type { AnimationName } from './flame.avatar'
 export type AvatarHandle = {
   play: (animation?: AnimationName) => void
   pause: () => void
@@ -19,9 +19,9 @@ export type AvatarProps = {
   onAnimationEnd?: (animation: AnimationName) => void
 }
 
-export const Onee = forwardRef<AvatarHandle, AvatarProps>(function Onee(
+export const Flame = forwardRef<AvatarHandle, AvatarProps>(function Flame(
   {
-    animation = "idle",
+    animation = "thinking",
     playing = true,
     loop,
     size = 240,
@@ -79,4 +79,4 @@ export const Onee = forwardRef<AvatarHandle, AvatarProps>(function Onee(
   return <span ref={host} className={className} style={{ display: 'inline-block', width: dimension, height: dimension, ...style }} />
 })
 
-export default Onee
+export default Flame
