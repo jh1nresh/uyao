@@ -21,7 +21,7 @@ export type AvatarProps = {
 
 export const Cubee = forwardRef<AvatarHandle, AvatarProps>(function Cubee(
   {
-    animation = "idle",
+    animation = "working",
     playing = true,
     loop,
     size = 240,

@@ -1,9 +1,9 @@
 
 import { forwardRef, useEffect, useImperativeHandle, useRef, type CSSProperties } from 'react'
 import { loadAvatarRuntime, type RuntimeAvatar } from './avatar-runtime'
-import { avatarData, type AnimationName } from './nova.avatar'
+import { avatarData, type AnimationName } from './cloudee.avatar'
 
-export type { AnimationName } from './nova.avatar'
+export type { AnimationName } from './cloudee.avatar'
 export type AvatarHandle = {
   play: (animation?: AnimationName) => void
   pause: () => void
@@ -19,9 +19,9 @@ export type AvatarProps = {
   onAnimationEnd?: (animation: AnimationName) => void
 }
 
-export const Nova = forwardRef<AvatarHandle, AvatarProps>(function Nova(
+export const Cloudee = forwardRef<AvatarHandle, AvatarProps>(function Cloudee(
   {
-    animation = "working",
+    animation = "thinking",
     playing = true,
     loop,
     size = 240,
@@ -79,4 +79,4 @@ export const Nova = forwardRef<AvatarHandle, AvatarProps>(function Nova(
   return <span ref={host} className={className} style={{ display: 'inline-block', width: dimension, height: dimension, ...style }} />
 })
 
-export default Nova
+export default Cloudee

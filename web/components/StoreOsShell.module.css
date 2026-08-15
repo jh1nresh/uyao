@@ -173,8 +173,9 @@
 }
 
 .agentFace[data-agent="manager"] {
-  --orb-fill: #3f5fa3;
-  --orb-active-fill: #5b82e8;
+  --orb-fill: #2f7654;
+  --orb-active-fill: #48a873;
+  --orb-active-eye: #f8f4e9;
 }
 
 .agentFace[data-agent="inventory"] {

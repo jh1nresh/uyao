@@ -1,9 +1,9 @@
 
 import { forwardRef, useEffect, useImperativeHandle, useRef, type CSSProperties } from 'react'
 import { loadAvatarRuntime, type RuntimeAvatar } from './avatar-runtime'
-import { avatarData, type AnimationName } from './citrus.avatar'
+import { avatarData, type AnimationName } from './sprout.avatar'
 
-export type { AnimationName } from './citrus.avatar'
+export type { AnimationName } from './sprout.avatar'
 export type AvatarHandle = {
   play: (animation?: AnimationName) => void
   pause: () => void
@@ -19,9 +19,9 @@ export type AvatarProps = {
   onAnimationEnd?: (animation: AnimationName) => void
 }
 
-export const Citrus = forwardRef<AvatarHandle, AvatarProps>(function Citrus(
+export const Sprout = forwardRef<AvatarHandle, AvatarProps>(function Sprout(
   {
-    animation = "thinking",
+    animation = "listening",
     playing = true,
     loop,
     size = 240,
@@ -79,4 +79,4 @@ export const Citrus = forwardRef<AvatarHandle, AvatarProps>(function Citrus(
   return <span ref={host} className={className} style={{ display: 'inline-block', width: dimension, height: dimension, ...style }} />
 })
 
-export default Citrus
+export default Sprout

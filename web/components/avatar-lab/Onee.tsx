@@ -1,9 +1,9 @@
 
 import { forwardRef, useEffect, useImperativeHandle, useRef, type CSSProperties } from 'react'
 import { loadAvatarRuntime, type RuntimeAvatar } from './avatar-runtime'
-import { avatarData, type AnimationName } from './strobi.avatar'
+import { avatarData, type AnimationName } from './onee.avatar'
 
-export type { AnimationName } from './strobi.avatar'
+export type { AnimationName } from './onee.avatar'
 export type AvatarHandle = {
   play: (animation?: AnimationName) => void
   pause: () => void
@@ -19,9 +19,9 @@ export type AvatarProps = {
   onAnimationEnd?: (animation: AnimationName) => void
 }
 
-export const Strobi = forwardRef<AvatarHandle, AvatarProps>(function Strobi(
+export const Onee = forwardRef<AvatarHandle, AvatarProps>(function Onee(
   {
-    animation = "listening",
+    animation = "idle",
     playing = true,
     loop,
     size = 240,
@@ -79,4 +79,4 @@ export const Strobi = forwardRef<AvatarHandle, AvatarProps>(function Strobi(
   return <span ref={host} className={className} style={{ display: 'inline-block', width: dimension, height: dimension, ...style }} />
 })
 
-export default Strobi
+export default Onee
