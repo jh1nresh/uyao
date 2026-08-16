@@ -477,12 +477,20 @@ export function StoreOsShell({
             className={styles.themeSwitch}
             data-theme-value={resolvedTheme}
             onClick={toggleTheme}
-            aria-label={`目前為${resolvedTheme === "dark" ? "深色" : "淺色"}介面，切換主題`}
+            aria-label={`目前為${resolvedTheme === "dark" ? "深色" : "淺色"}介面，切換為${resolvedTheme === "dark" ? "淺色" : "深色"}介面`}
+            title={resolvedTheme === "dark" ? "切換為淺色介面" : "切換為深色介面"}
           >
-            <span className={styles.themeTrack} aria-hidden="true">
-              <span className={styles.themeThumb} />
+            <span className={styles.themeIcon} data-active={resolvedTheme === "light" ? "true" : "false"} aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                <circle cx="12" cy="12" r="3.5" />
+                <path d="M12 2.5V5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M18.7 5.3l-1.8 1.8M7.1 16.9l-1.8 1.8" />
+              </svg>
             </span>
-            <span className={styles.themeLabel}>{resolvedTheme === "dark" ? "Dark" : "Light"}</span>
+            <span className={styles.themeIcon} data-active={resolvedTheme === "dark" ? "true" : "false"} aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 15.2A8.4 8.4 0 0 1 8.8 4a8.5 8.5 0 1 0 11.2 11.2Z" />
+              </svg>
+            </span>
           </button>
           <button type="button" className={styles.moreButton} onClick={logout} aria-label="登出">↪</button>
         </header>

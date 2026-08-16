@@ -1,55 +1,55 @@
 .screen {
-  --void: #060807;
-  --rail: #080b0a;
-  --panel: #0b0e0d;
-  --panel-2: #111512;
-  --panel-3: #181d1a;
-  --line: #29312d;
-  --line-strong: #46534c;
-  --text: #f2efe6;
-  --muted: #bac2bd;
-  --faint: #8f9b94;
+  --void: #000;
+  --rail: #050505;
+  --panel: #050505;
+  --panel-2: #0c0c0c;
+  --panel-3: #171717;
+  --line: #262626;
+  --line-strong: #494949;
+  --text: #f7f7f7;
+  --muted: #b8b8b8;
+  --faint: #858585;
   --blue: #6e95f5;
   --blue-soft: #a8c0ff;
   --green: #55c78a;
   --amber: #efbe58;
   --danger: #ee8585;
-  --surface-hover: #111713;
-  --nav-active: #121814;
-  --count-bg: #202722;
-  --count-text: #d4ddd7;
-  --button-bg: #101411;
-  --button-text: #e1e6e2;
-  --message-text: #e1e6e2;
+  --surface-hover: #101010;
+  --nav-active: #121212;
+  --count-bg: #202020;
+  --count-text: #dedede;
+  --button-bg: #0b0b0b;
+  --button-text: #ededed;
+  --message-text: #e7e7e7;
   --notice-border: #415d83;
   --notice-bg: #132033;
   --notice-text: #c7d8ff;
   --card-active-border: #486586;
   --card-active-bg: #182231;
   --approval-line: #65522d;
-  --approval-bg: #18150f;
-  --approval-copy: #aaa08c;
-  --composer-bg: #080b0a;
-  --context-bg: #090d0b;
+  --approval-bg: #17130c;
+  --approval-copy: #b2a994;
+  --composer-bg: #050505;
+  --context-bg: #030303;
   --authority-line: #57492e;
-  --authority-bg: #17150f;
+  --authority-bg: #15120c;
   --authority-title: #f0c66f;
   --authority-copy: #aaa08c;
-  --dialog-bg: #101411;
-  --dialog-boundary: #d5cec0;
-  --backdrop: rgba(3, 7, 12, .76);
+  --dialog-bg: #0b0b0b;
+  --dialog-boundary: #d8d8d8;
+  --backdrop: rgba(0, 0, 0, .78);
   --shadow: rgba(0, 0, 0, .18);
   --shadow-strong: rgba(0, 0, 0, .32);
-  --support-trigger: #101411;
-  --support-panel: #0b0e0d;
-  --support-message: #121713;
-  --support-user: #101b29;
+  --support-trigger: #0b0b0b;
+  --support-panel: #050505;
+  --support-message: #111;
+  --support-user: #0d1928;
   --support-user-line: #2b4a72;
   --support-user-text: #cfe1ff;
   --support-human-line: #65522d;
-  --support-human-bg: #18150f;
-  --support-issue-bg: #12110e;
-  --input-bg: #080b0a;
+  --support-human-bg: #17130c;
+  --support-issue-bg: #11100d;
+  --input-bg: #050505;
   --success-line: #256b48;
   --success-bg: #0f2118;
   --success-text: #8de0b3;
@@ -529,46 +529,32 @@
 }
 
 .themeSwitch {
-  min-width: 96px;
-  padding: 0 10px;
+  min-width: 76px;
+  padding: 4px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 2px;
 }
 
-.themeTrack {
-  position: relative;
-  width: 34px;
-  height: 18px;
-  flex: 0 0 auto;
-  border: 1px solid var(--line-strong);
-  border-radius: 10px;
+.themeIcon {
+  width: 30px;
+  height: 30px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 4px;
+  color: var(--faint);
+  transition: background-color 160ms var(--ease-brand), color 160ms var(--ease-brand);
+}
+
+.themeIcon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.themeIcon[data-active="true"] {
   background: var(--panel-3);
-}
-
-.themeThumb {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--blue);
-  transition: transform 160ms var(--ease-brand), background-color 160ms var(--ease-brand);
-}
-
-.themeSwitch[data-theme-value="dark"] .themeThumb {
-  transform: translateX(16px);
-  background: var(--blue-soft);
-}
-
-.themeLabel {
-  min-width: 30px;
-  color: var(--button-text);
-  font-size: 11px;
-  font-weight: 700;
-  text-align: left;
+  color: var(--text);
 }
 
 .moreButton {
@@ -1285,9 +1271,9 @@
   }
 
   .themeSwitch {
-    min-width: 84px;
+    min-width: 76px;
     margin-left: auto;
-    padding: 0 8px;
+    padding: 4px;
   }
 
   .workspace {
@@ -1340,7 +1326,8 @@
   .agentRow,
   .taskCard,
   .approvalBar button,
-  .agentAvatar svg path {
+  .agentAvatar svg path,
+  .themeIcon {
     transition: none;
   }
 }
