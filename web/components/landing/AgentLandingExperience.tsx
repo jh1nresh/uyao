@@ -623,14 +623,18 @@ function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; loc
           aria-hidden
           data-testid="footer-manager-stage"
           data-manager-state={entered ? "resting" : "entering"}
-          className="relative mt-8 h-[400px] w-full overflow-hidden sm:mt-10 sm:h-[640px]"
+          className="relative mt-8 h-[412px] w-full overflow-hidden sm:mt-10 sm:h-[756px]"
         >
           <div
             ref={avatarRef}
             data-testid="footer-manager-body"
-            className="absolute left-1/2 top-0 h-[540px] w-[540px] drop-shadow-[0_30px_28px_rgba(28,39,34,.10)] will-change-transform sm:h-[900px] sm:w-[900px]"
+            // Sprout's eyes reach y=47 of its 300-unit viewBox in the widest expression, so
+            // the footer line cannot drop much past that without submerging the face. The
+            // half-buried look comes from scaling the character up against the stage rather
+            // than from cutting lower; mobile is capped by the artwork's width, not height.
+            className="absolute left-1/2 top-0 h-[540px] w-[540px] drop-shadow-[0_30px_28px_rgba(28,39,34,.10)] will-change-transform sm:h-[1040px] sm:w-[1040px]"
             style={{
-              transform: `translate3d(-50%, ${entered ? -3 : 30}%, 0)`,
+              transform: `translate3d(-49.4%, ${entered ? 0 : 24}%, 0)`,
               transitionProperty: "transform",
               transitionDuration: reducedMotion ? "0ms" : "760ms",
               transitionTimingFunction: "cubic-bezier(0.32, 0.72, 0, 1)",
