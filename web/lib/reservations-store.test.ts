@@ -99,6 +99,14 @@ describe("取貨憑證的鍵", () => {
     expect(rows[0].intake).not.toHaveProperty("consentedAt");
   });
 
+  it("門市 inbox 把最新建立的預留放在最上面", async () => {
+    await saveReservation(make({ code: "A-101", storeSlug: "A 藥局" }));
+    await saveReservation(make({ code: "A-202", storeSlug: "A 藥局" }));
+
+    const rows = await listStoreReservations("A 藥局");
+    expect(rows.map((row) => row.code)).toEqual(["A-202", "A-101"]);
+  });
+
   it("正式 inbox 不混入 preview demo 單", async () => {
     await saveReservation(make({ code: "D-111", storeSlug: "A 藥局", demo: true }));
     expect(await listStoreReservations("A 藥局")).toEqual([]);
