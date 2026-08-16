@@ -9,41 +9,56 @@ import {
   readStoreSessionToken,
   type StoreUser,
 } from "./store-auth";
+import type { StoreLoginIdentity } from "./store-identity";
 
-const originalUsers = process.env.STORE_OS_USERS_JSON;
+const originalDatabaseUrl = process.env.DATABASE_URL;
 const originalSecret = process.env.STORE_OS_SESSION_SECRET;
 
 const user: StoreUser = {
-  id: "owner-a",
-  username: "owner@example.com",
+  userId: "user-a",
+  membershipId: "membership-a",
+  pharmacyId: "pharmacy-a",
+  email: "owner@example.com",
   displayName: "王藥師",
   storeSlug: "A 藥局",
+  role: "owner",
 };
+
+let loginIdentity: StoreLoginIdentity;
 
 beforeEach(async () => {
   process.env.STORE_OS_SESSION_SECRET = "test-session-secret-that-is-long-enough";
-  process.env.STORE_OS_USERS_JSON = JSON.stringify([{
+  process.env.DATABASE_URL = "postgres://test.invalid/uyao";
+  loginIdentity = {
     ...user,
     passwordHash: await hashStorePassword("correct horse battery staple", Buffer.alloc(16, 7)),
-  }]);
+  };
 });
 
 describe("Store OS credentials", () => {
   it("accepts the configured password without returning its hash", async () => {
-    const result = await authenticateStoreUser("OWNER@example.com", "correct horse battery staple");
+    const result = await authenticateStoreUser(
+      "OWNER@example.com",
+      "correct horse battery staple",
+      async () => loginIdentity,
+    );
     expect(result).toEqual(user);
     expect(result).not.toHaveProperty("passwordHash");
   });
 
   it("rejects a wrong password and an unknown account", async () => {
-    await expect(authenticateStoreUser(user.username, "wrong password")).resolves.toBeNull();
-    await expect(authenticateStoreUser("missing@example.com", "wrong password")).resolves.toBeNull();
+    await expect(
+      authenticateStoreUser(user.email, "wrong password", async () => loginIdentity),
+    ).resolves.toBeNull();
+    await expect(
+      authenticateStoreUser("missing@example.com", "wrong password", async () => null),
+    ).resolves.toBeNull();
   });
 
   it("fails closed when credentials or a strong session secret are absent", () => {
-    delete process.env.STORE_OS_USERS_JSON;
+    delete process.env.DATABASE_URL;
     expect(isStoreAuthConfigured()).toBe(false);
-    process.env.STORE_OS_USERS_JSON = "[]";
+    process.env.DATABASE_URL = "postgres://test.invalid/uyao";
     process.env.STORE_OS_SESSION_SECRET = "short";
     expect(isStoreAuthConfigured()).toBe(false);
   });
@@ -65,17 +80,16 @@ describe("Store OS session", () => {
     expect(readStoreSessionToken(token, now)).toBeNull();
   });
 
-  it("invalidates an old session when the account is removed", () => {
+  it("invalidates an old session when the membership is revoked", async () => {
     const session = readStoreSessionToken(createStoreSessionToken(user));
-    expect(session && isStoreSessionActive(session)).toBe(true);
-    process.env.STORE_OS_USERS_JSON = "[]";
-    expect(session && isStoreSessionActive(session)).toBe(false);
+    expect(session && await isStoreSessionActive(session, async () => user)).toBe(true);
+    expect(session && await isStoreSessionActive(session, async () => null)).toBe(false);
   });
 });
 
 afterAll(() => {
-  if (originalUsers === undefined) delete process.env.STORE_OS_USERS_JSON;
-  else process.env.STORE_OS_USERS_JSON = originalUsers;
+  if (originalDatabaseUrl === undefined) delete process.env.DATABASE_URL;
+  else process.env.DATABASE_URL = originalDatabaseUrl;
   if (originalSecret === undefined) delete process.env.STORE_OS_SESSION_SECRET;
   else process.env.STORE_OS_SESSION_SECRET = originalSecret;
 });
