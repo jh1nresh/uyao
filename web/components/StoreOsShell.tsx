@@ -16,6 +16,7 @@ import { Sapling } from "@/components/avatar-lab/Sapling";
 import { Sprout } from "@/components/avatar-lab/Sprout";
 import { Strobi } from "@/components/avatar-lab/Strobi";
 import {
+  answerStoreReservationQuestion,
   parseStoreReservationCommand,
   type StoreReservationAction,
 } from "@/lib/store-reservation-command";
@@ -37,6 +38,7 @@ type ExportedAvatar = ComponentType<{
 }>;
 
 type StoreTheme = "light" | "dark";
+type ComposerNoticeTone = "answer" | "success" | "warning";
 
 const AGENT_AVATARS: Record<StoreAgentId, ExportedAvatar> = {
   manager: Sprout,
@@ -232,6 +234,7 @@ export function StoreOsShell({
   const [draftOpen, setDraftOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [composerNotice, setComposerNotice] = useState("");
+  const [composerNoticeTone, setComposerNoticeTone] = useState<ComposerNoticeTone>("answer");
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [resolvedTheme, setResolvedTheme] = useState<StoreTheme>("dark");
   const [liveReservations, setLiveReservations] = useState(reservations);
@@ -344,6 +347,7 @@ export function StoreOsShell({
       )));
       const actionLabel = action === "confirm" ? "已確認有貨" : action === "reject" ? "已回報無庫存" : "已完成取貨";
       setComposerNotice(`${code} ${actionLabel}；消費者取貨頁會同步更新。`);
+      setComposerNoticeTone("success");
       return true;
     } catch {
       setReservationActionError(`${code} · 網路連線失敗，狀態尚未更新。`);
@@ -357,17 +361,26 @@ export function StoreOsShell({
     event.preventDefault();
     if (!message.trim()) return;
     if (activeAgentId !== "manager") {
+      setComposerNoticeTone("warning");
       setComposerNotice(activeAgentAvailable
         ? "這個 Demo 只展示 Agent 工作狀態；尚未執行正式店務。"
         : `${activeAgent.name} 尚未開通；目前只有店長 Agent 可以處理預留。`);
       return;
     }
     const command = parseStoreReservationCommand(message);
-    if (!command) {
-      setComposerNotice("可輸入：確認 A-123、缺貨 A-123、完成 A-123。其他自由問答尚未開通。");
+    if (command) {
+      if (await updateReservation(command.code, command.action)) setMessage("");
       return;
     }
-    if (await updateReservation(command.code, command.action)) setMessage("");
+    const answer = answerStoreReservationQuestion(message, liveReservations);
+    if (answer) {
+      setComposerNotice(answer);
+      setComposerNoticeTone("answer");
+      setMessage("");
+      return;
+    }
+    setComposerNoticeTone("warning");
+    setComposerNotice("我目前可以回答單號、預留數量與狀態；也可以執行：確認 A-123、缺貨 A-123、完成 A-123。");
   }
 
   async function logout() {
@@ -604,14 +617,15 @@ export function StoreOsShell({
                 onChange={(event) => {
                   setMessage(event.target.value);
                   setComposerNotice("");
+                  setComposerNoticeTone("answer");
                 }}
                 placeholder={activeAgentId === "manager"
-                  ? "輸入：確認 A-123、缺貨 A-123、完成 A-123"
+                  ? "詢問單號，或輸入：確認 A-123"
                   : activeAgentAvailable ? "向店長詢問這個 Demo 工作…" : `${activeAgent.name} 即將開通`}
               />
               <button type="submit" disabled={!message.trim()} aria-label="送出訊息">↑</button>
             </form>}
-            {!supportOpen && <p className={styles.composerNotice} aria-live="polite">{composerNotice}</p>}
+            {!supportOpen && <p className={styles.composerNotice} data-tone={composerNoticeTone} aria-live="polite">{composerNotice}</p>}
           </article>
 
           <aside className={styles.contextPanel}>

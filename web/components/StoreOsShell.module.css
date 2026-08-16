@@ -970,8 +970,18 @@
 .composerNotice {
   min-height: 16px;
   margin: 6px 0 0;
+  color: var(--message-text);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.composerNotice[data-tone="success"] {
+  color: var(--success-text);
+}
+
+.composerNotice[data-tone="warning"] {
   color: var(--amber);
-  font-size: 10px;
 }
 
 .contextPanel {
