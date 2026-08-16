@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 
 import * as kv from "./kv";
+import { isStoreDemoSandbox, STORE_DEMO_SANDBOX_SLUG } from "./store-demo";
 
 /**
  * 預留的可讀取儲存。
@@ -110,6 +111,10 @@ function storeReservationKey(storeSlug: string): string {
   return `store-reservations:${Buffer.from(storeSlug, "utf8").toString("base64url")}`;
 }
 
+function sandboxReservationKey(): string {
+  return `store-sandbox-reservations:${STORE_DEMO_SANDBOX_SLUG}`;
+}
+
 export const isStoreAvailable = kv.isAvailable;
 
 export async function saveReservation(r: StoredReservation): Promise<void> {
@@ -119,6 +124,9 @@ export async function saveReservation(r: StoredReservation): Promise<void> {
   // Store OS 的 inbox 不能在每次請求掃完整個 KV。只在新單建立時附加一次，
   // 讀取時再以 token 取最新狀態；舊 token 過期後會自然被略過。
   await kv.append(storeReservationKey(r.storeSlug), r.token, 500);
+  // Preview 預留只額外進獨立 sandbox queue。正式門市仍會在自己的 inbox
+  // 過濾 demo record，兩邊不共用清單，也不需要偽造一個真實門市 slug。
+  if (r.demo) await kv.append(sandboxReservationKey(), r.token, 500);
 }
 
 export interface StoreReservationSummary {
@@ -130,6 +138,8 @@ export interface StoreReservationSummary {
   status: ReservationStatus;
   createdAt: string;
   confirmedAt: string | null;
+  demo: boolean;
+  sourceStoreName?: string;
 }
 
 /**
@@ -140,7 +150,11 @@ export async function listStoreReservations(
   storeSlug: string,
   limit = 50,
 ): Promise<StoreReservationSummary[]> {
-  const tokens = await kv.lastN(storeReservationKey(storeSlug), Math.min(Math.max(limit, 1), 100));
+  const sandbox = isStoreDemoSandbox(storeSlug);
+  const tokens = await kv.lastN(
+    sandbox ? sandboxReservationKey() : storeReservationKey(storeSlug),
+    Math.min(Math.max(limit, 1), 100),
+  );
   const out: StoreReservationSummary[] = [];
   const seen = new Set<string>();
 
@@ -148,7 +162,8 @@ export async function listStoreReservations(
     if (seen.has(token)) continue;
     seen.add(token);
     const reservation = await getByToken(token).catch(() => null);
-    if (!reservation || reservation.storeSlug !== storeSlug || reservation.demo) continue;
+    if (!reservation) continue;
+    if (sandbox ? !reservation.demo : reservation.storeSlug !== storeSlug || reservation.demo) continue;
     out.push({
       code: reservation.code,
       drugName: reservation.drugName,
@@ -158,6 +173,8 @@ export async function listStoreReservations(
       status: reservation.status,
       createdAt: reservation.createdAt,
       confirmedAt: reservation.confirmedAt,
+      demo: reservation.demo === true,
+      ...(sandbox ? { sourceStoreName: reservation.storeName } : {}),
     });
   }
   return out;

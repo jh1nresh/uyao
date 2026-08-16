@@ -609,6 +609,17 @@
   letter-spacing: .06em;
 }
 
+.reservationDemo {
+  padding: 2px 5px;
+  border: 1px solid #765e2c;
+  border-radius: 4px;
+  color: var(--amber);
+  font-family: var(--font-mono);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: .06em;
+}
+
 .reservationCard header > span:last-child {
   margin-left: auto;
   color: var(--muted);
