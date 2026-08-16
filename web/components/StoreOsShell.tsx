@@ -98,10 +98,14 @@ function ReservationInbox({
           <article className={styles.reservationCard} key={reservation.code}>
             <header>
               <span className={styles.reservationCode}>{reservation.code}</span>
+              {reservation.demo && <span className={styles.reservationDemo}>示範</span>}
               <span data-status={reservation.status}>{STATUS_LABELS[reservation.status]}</span>
             </header>
             <h2>{reservation.drugName}</h2>
-            <p>{reservation.drugSpec} · NT$ {reservation.priceTwd}</p>
+            <p>
+              {reservation.drugSpec} · NT$ {reservation.priceTwd}
+              {reservation.sourceStoreName ? ` · 來源頁 ${reservation.sourceStoreName}` : ""}
+            </p>
             <footer>
               <span>手機末三碼 {reservation.contactTail}</span>
               <time dateTime={reservation.createdAt}>{taipeiTime(reservation.createdAt)}</time>

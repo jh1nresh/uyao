@@ -15,9 +15,9 @@ export async function StorePreviewBanner({ storeName, storeSlug }: { storeName: 
     <div className="border-b-2 border-green bg-green-tint px-4 py-2.5 sm:px-7 xl:px-12 2xl:px-16">
       <p className="text-[14px] leading-[1.6] text-ink">
         {locale === "en" ? (
-          <><b className="font-bold">DEMO PREVIEW</b> · Product names come from the partner-provided catalog; availability and prices below are simulated. Receiving-scan freshness comes from the live demo pipeline. <span className="text-muted">The store name, address, phone, and hours come from government open data.</span></>
+          <><b className="font-bold">DEMO PREVIEW</b> · Product names come from the partner-provided catalog; availability and prices below are simulated. Reservations go only to the uYao Store demo sandbox. <span className="text-muted">No real pharmacy is notified or asked to hold stock.</span></>
         ) : (
-          <><b className="font-bold">示範預覽</b> · 品項名稱來自合作藥局提供的目錄，下方供應狀態與價格是模擬的；進貨掃描新鮮度來自實際 demo pipeline，用來展示{storeName}裝上盒子之後這一頁會長什麼樣。<span className="text-muted">店名、地址、電話與營業時段是政府開放資料的真實內容。</span></>
+          <><b className="font-bold">示範預覽</b> · 品項名稱來自合作藥局提供的目錄，下方供應狀態與價格是模擬的；按下預留只會送到 uYao Store 示範沙盒。<span className="text-muted">不會通知或要求{storeName}保留商品。</span></>
         )}
       </p>
       <p className="mt-1 text-[13px] text-muted">
