@@ -104,12 +104,63 @@ const TTL = 7 * 24 * 3600;
 const set = (key: string, value: string) => kv.set(key, value, TTL);
 const get = (key: string) => kv.get(key);
 
+function storeReservationKey(storeSlug: string): string {
+  // 不放在 `r:` namespace，避免 cron 的 active reservation 掃描把 Redis list
+  // 當成單筆 JSON GET，產生 WRONGTYPE。
+  return `store-reservations:${Buffer.from(storeSlug, "utf8").toString("base64url")}`;
+}
+
 export const isStoreAvailable = kv.isAvailable;
 
 export async function saveReservation(r: StoredReservation): Promise<void> {
   await set(`r:${r.token}`, JSON.stringify(r));
   // postback 只帶得回取貨碼，需要一條 code → token 的索引
   await set(`c:${r.code}`, r.token);
+  // Store OS 的 inbox 不能在每次請求掃完整個 KV。只在新單建立時附加一次，
+  // 讀取時再以 token 取最新狀態；舊 token 過期後會自然被略過。
+  await kv.append(storeReservationKey(r.storeSlug), r.token, 500);
+}
+
+export interface StoreReservationSummary {
+  code: string;
+  drugName: string;
+  drugSpec: string;
+  priceTwd: number;
+  contactTail: string;
+  status: ReservationStatus;
+  createdAt: string;
+  confirmedAt: string | null;
+}
+
+/**
+ * 只回傳該門市的最小 inbox 欄位。完整電話與 consumer capability token
+ * 永遠不離開 server，demo 單也不混進正式店務。
+ */
+export async function listStoreReservations(
+  storeSlug: string,
+  limit = 50,
+): Promise<StoreReservationSummary[]> {
+  const tokens = await kv.lastN(storeReservationKey(storeSlug), Math.min(Math.max(limit, 1), 100));
+  const out: StoreReservationSummary[] = [];
+  const seen = new Set<string>();
+
+  for (const token of [...tokens].reverse()) {
+    if (seen.has(token)) continue;
+    seen.add(token);
+    const reservation = await getByToken(token).catch(() => null);
+    if (!reservation || reservation.storeSlug !== storeSlug || reservation.demo) continue;
+    out.push({
+      code: reservation.code,
+      drugName: reservation.drugName,
+      drugSpec: reservation.drugSpec,
+      priceTwd: reservation.priceTwd,
+      contactTail: contactTail(reservation),
+      status: reservation.status,
+      createdAt: reservation.createdAt,
+      confirmedAt: reservation.confirmedAt,
+    });
+  }
+  return out;
 }
 
 /**

@@ -1,6 +1,15 @@
 import type { Metadata } from "next";
+import { cookies } from "next/headers";
 
+import { StoreOsLogin } from "@/components/StoreOsLogin";
 import { StoreOsShell } from "@/components/StoreOsShell";
+import { listStoreReservations } from "@/lib/reservations-store";
+import {
+  isStoreAuthConfigured,
+  isStoreSessionActive,
+  readStoreSessionToken,
+  storeSessionCookieName,
+} from "@/lib/store-auth";
 
 export const metadata: Metadata = {
   title: "Store OS 介面原型",
@@ -8,6 +17,21 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false, nocache: true },
 };
 
-export default function StoreOsPage() {
-  return <StoreOsShell />;
+export const dynamic = "force-dynamic";
+
+export default async function StoreOsPage() {
+  const cookieStore = await cookies();
+  const session = readStoreSessionToken(cookieStore.get(storeSessionCookieName())?.value);
+  if (!session || !isStoreSessionActive(session)) {
+    return <StoreOsLogin configured={isStoreAuthConfigured()} />;
+  }
+
+  const reservations = await listStoreReservations(session.storeSlug);
+  return (
+    <StoreOsShell
+      storeName={session.storeSlug}
+      operatorName={session.displayName}
+      reservations={reservations}
+    />
+  );
 }

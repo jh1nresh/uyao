@@ -10,6 +10,7 @@ import {
   getByCode,
   getByToken,
   isExpired,
+  listStoreReservations,
   newToken,
   noShowCount,
   reserveUniqueCode,
@@ -66,6 +67,22 @@ describe("取貨憑證的鍵", () => {
 
   it("到店只給尾三碼，頁面上不重印完整號碼", () => {
     expect(contactTail({ contact: "0912345678" })).toBe("678");
+  });
+
+  it("門市 inbox 只回自己的單，而且不洩漏完整手機或 consumer token", async () => {
+    await saveReservation(make({ code: "A-111", storeSlug: "A 藥局", contact: "0911222333" }));
+    await saveReservation(make({ code: "B-222", storeSlug: "B 藥局", contact: "0999888777" }));
+    const rows = await listStoreReservations("A 藥局");
+
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({ code: "A-111", contactTail: "333" });
+    expect(rows[0]).not.toHaveProperty("contact");
+    expect(rows[0]).not.toHaveProperty("token");
+  });
+
+  it("正式 inbox 不混入 preview demo 單", async () => {
+    await saveReservation(make({ code: "D-111", storeSlug: "A 藥局", demo: true }));
+    expect(await listStoreReservations("A 藥局")).toEqual([]);
   });
 });
 
