@@ -1,7 +1,24 @@
 /* Visual language adapted from Beautiful UI (beautifului.dev): neutral ink/line
-   token scale, hairline shadow-ring cards, tinted status chips, 13px/12.5px type. */
+   token scale, hairline shadow-ring cards, tinted status chips. Type is scaled
+   up from the source's 13px/12.5px Latin scale — see --fs-* below. */
 
 .screen {
+  /* Type scale. The Beautiful UI scale is tuned for Latin; this UI is
+     zh-Hant first (Noto Sans TC), and a 藥/驗/劑 packs 15+ strokes into the
+     box an "a" uses for two. Below ~13px those strokes merge at 1x DPR.
+     Anything carrying meaning stays >= 12px; only letterspaced uppercase
+     Latin labels are allowed at --fs-micro. */
+  --fs-micro: 11px;
+  --fs-meta: 12px;
+  --fs-label: 13px;
+  --fs-body: 14px;
+  --fs-strong: 15px;
+  --fs-title: 16px;
+  --fs-dialog: 20px;
+  --fs-h1: 24px;
+  /* CJK needs looser leading than Latin at the same size. */
+  --lh-tight: 1.5;
+  --lh-body: 1.65;
   --void: #141517;
   --rail: #17181a;
   --panel: #17181a;
@@ -11,12 +28,17 @@
   --line-strong: #3a3c40;
   --text: #f2f3f4;
   --muted: #a5a8ad;
-  --faint: #6c6f75;
+  --faint: #92969d;
   --blue: #3d9aff;
   --blue-soft: #7ec0ff;
   --green: #3dbb72;
   --amber: #f68f3c;
   --danger: #ee5c61;
+  --amber-text: #f6a35c;
+  --green-text: #3dbb72;
+  --danger-text: #ee5c61;
+  --blue-solid: #2a6fc9;
+  --blue-solid-hover: #235da8;
   --green-tint: #3dbb7224;
   --amber-tint: #f68f3c24;
   --danger-tint: #ee5c6124;
@@ -35,13 +57,13 @@
   --card-active-bg: #3d9aff17;
   --approval-line: #f68f3c3d;
   --approval-bg: #f68f3c14;
-  --approval-copy: #d9b491;
+  --approval-copy: #e0c0a1;
   --composer-bg: #1f2022;
   --context-bg: #17181a;
   --authority-line: #f68f3c3d;
   --authority-bg: #f68f3c14;
   --authority-title: #f6a35c;
-  --authority-copy: #c9b7a5;
+  --authority-copy: #d5c4b3;
   --dialog-bg: #232427;
   --dialog-boundary: #d6d8da;
   --backdrop: rgba(0, 0, 0, .62);
@@ -88,6 +110,7 @@
   color-scheme: dark;
   font-family: var(--font-sans);
   font-weight: 400;
+  line-height: var(--lh-tight);
 }
 
 .screen[data-theme="light"] {
@@ -99,13 +122,16 @@
   --line: #ecedef;
   --line-strong: #e0e2e5;
   --text: #1f2124;
-  --muted: #62656b;
-  --faint: #9a9da3;
+  --muted: #4c4f55;
+  --faint: #6b6e76;
   --blue: #0285ff;
-  --blue-soft: #0170dd;
+  --blue-soft: #0a5fbd;
   --green: #189a4d;
   --amber: #ef720c;
   --danger: #e3474c;
+  --amber-text: #9c4a0d;
+  --green-text: #0f6d36;
+  --danger-text: #b32025;
   --green-tint: #e8f5ed;
   --amber-tint: #fdf1e5;
   --danger-tint: #fcecec;
@@ -113,24 +139,24 @@
   --surface-hover: #f4f5f6;
   --nav-active: #e7e9eb;
   --count-bg: #f2f2f3;
-  --count-text: #62656b;
+  --count-text: #4c4f55;
   --button-bg: #fff;
   --button-text: #1f2124;
   --message-text: #3f4247;
   --notice-border: #c9e2ff;
   --notice-bg: #e9f3ff;
-  --notice-text: #0170dd;
+  --notice-text: #0a5fbd;
   --card-active-border: #9fceff;
   --card-active-bg: #e9f3ff;
   --approval-line: #f3d3ae;
   --approval-bg: #fdf1e5;
-  --approval-copy: #8c6a42;
+  --approval-copy: #7a5a33;
   --composer-bg: #fff;
   --context-bg: #fafafb;
   --authority-line: #f3d3ae;
   --authority-bg: #fdf1e5;
-  --authority-title: #b45815;
-  --authority-copy: #8c6a42;
+  --authority-title: #9c4a0d;
+  --authority-copy: #7a5a33;
   --dialog-bg: #fff;
   --dialog-boundary: #5c5f65;
   --backdrop: rgba(16, 20, 28, .38);
@@ -151,7 +177,7 @@
   --input-bg: #fff;
   --success-line: #b5e2c8;
   --success-bg: #e8f5ed;
-  --success-text: #178544;
+  --success-text: #0f6d36;
   --avatar-manager: #189a4d;
   --avatar-manager-active: #1cab57;
   --avatar-inventory: #17697a;
@@ -205,16 +231,15 @@
 }
 
 .brandIdentity strong {
-  font-size: 13px;
+  font-size: var(--fs-body);
   font-weight: 600;
-  letter-spacing: -.01em;
 }
 
 .agentsLabel {
   margin-left: auto;
   color: var(--faint);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-micro);
   font-weight: 500;
   letter-spacing: .11em;
 }
@@ -250,7 +275,7 @@
   margin: 0;
   padding: 18px 18px 7px;
   color: var(--faint);
-  font-size: 11.5px;
+  font-size: var(--fs-label);
   font-weight: 400;
 }
 
@@ -295,7 +320,7 @@
 }
 
 .agentCopy strong {
-  font-size: 12.5px;
+  font-size: var(--fs-body);
   font-weight: 500;
 }
 
@@ -303,7 +328,7 @@
   margin-top: 3px;
   overflow: hidden;
   color: var(--faint);
-  font-size: 11px;
+  font-size: var(--fs-label);
   font-weight: 400;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -312,7 +337,7 @@
 .agentState {
   padding: 2px 7px;
   border-radius: 6px;
-  font-size: 10px;
+  font-size: var(--fs-meta);
   font-weight: 500;
   white-space: nowrap;
 }
@@ -327,7 +352,7 @@
 
 .approval {
   background: var(--amber-tint);
-  color: var(--amber);
+  color: var(--amber-text);
 }
 
 .idle {
@@ -455,7 +480,7 @@
   background: transparent;
   color: var(--muted);
   text-align: left;
-  font-size: 12.5px;
+  font-size: var(--fs-body);
   font-weight: 400;
   cursor: pointer;
   transition: background-color 150ms var(--ease-ui), color 150ms var(--ease-ui);
@@ -484,7 +509,7 @@
   background: var(--count-bg);
   color: var(--count-text);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-meta);
   font-weight: 500;
   font-variant-numeric: tabular-nums;
 }
@@ -536,14 +561,14 @@
 }
 
 .pharmacyStatus strong {
-  font-size: 12.5px;
+  font-size: var(--fs-body);
   font-weight: 500;
 }
 
 .pharmacyStatus small {
   margin-top: 3px;
   color: var(--faint);
-  font-size: 11px;
+  font-size: var(--fs-label);
   font-weight: 400;
 }
 
@@ -575,16 +600,15 @@
 }
 
 .topbarAgent strong {
-  font-size: 13px;
+  font-size: var(--fs-body);
   font-weight: 600;
-  letter-spacing: -.01em;
 }
 
 .topbarAgent small {
   margin-top: 2px;
   overflow: hidden;
   color: var(--faint);
-  font-size: 11.5px;
+  font-size: var(--fs-label);
   font-weight: 400;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -596,8 +620,8 @@
   border: 0;
   border-radius: 6px;
   background: var(--green-tint);
-  color: var(--green);
-  font-size: 11px;
+  color: var(--green-text);
+  font-size: var(--fs-meta);
   font-weight: 500;
   white-space: nowrap;
 }
@@ -605,7 +629,7 @@
 .syncTime {
   margin-left: auto;
   color: var(--muted);
-  font-size: 12.5px;
+  font-size: var(--fs-label);
   font-weight: 500;
   white-space: nowrap;
 }
@@ -657,7 +681,7 @@
 .workspace {
   min-width: 0;
   min-height: 0;
-  padding: 28px 34px 18px;
+  padding: 22px 34px 16px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -667,17 +691,16 @@
   margin: 0;
   color: var(--faint);
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--fs-micro);
   font-weight: 500;
   letter-spacing: .08em;
 }
 
 .workHeading h1 {
-  margin: 9px 0 6px;
-  font-size: 22px;
+  margin: 7px 0 5px;
+  font-size: var(--fs-h1);
   font-weight: 600;
   line-height: 1.25;
-  letter-spacing: -.02em;
 }
 
 .workHeading > div {
@@ -685,12 +708,12 @@
   flex-wrap: wrap;
   gap: 8px 14px;
   color: var(--faint);
-  font-size: 12px;
+  font-size: var(--fs-label);
   font-weight: 400;
 }
 
 .agentMessage {
-  margin-top: 22px;
+  margin-top: 18px;
   display: grid;
   grid-template-columns: 38px minmax(0, 1fr);
   gap: 12px;
@@ -698,7 +721,7 @@
 
 .sender {
   margin: 0;
-  font-size: 13px;
+  font-size: var(--fs-body);
   font-weight: 600;
 }
 
@@ -706,16 +729,16 @@
   margin-left: 8px;
   color: var(--faint);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: var(--fs-meta);
   font-weight: 400;
 }
 
 .agentMessage div > p:last-child {
   max-width: 720px;
-  margin: 6px 0 0;
+  margin: 5px 0 0;
   color: var(--message-text);
-  font-size: 13.5px;
-  line-height: 1.6;
+  font-size: var(--fs-strong);
+  line-height: var(--lh-body);
 }
 
 .sharedWorkNotice {
@@ -725,7 +748,7 @@
   border-radius: 8px;
   background: var(--notice-bg);
   color: var(--notice-text);
-  font-size: 12px;
+  font-size: var(--fs-label);
 }
 
 .taskGrid {
@@ -753,7 +776,7 @@
   border: 0;
   background: transparent;
   color: var(--blue-soft);
-  font-size: 12px;
+  font-size: var(--fs-meta);
   font-weight: 500;
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -767,7 +790,7 @@
 .reservationList {
   min-height: 0;
   flex: 1;
-  margin: 22px 0 18px 50px;
+  margin: 14px 0 12px 50px;
   padding: 2px 10px 8px 2px;
   display: grid;
   align-content: start;
@@ -814,7 +837,7 @@
 .reservationCode {
   color: var(--text);
   font-family: var(--font-mono);
-  font-size: 12.5px;
+  font-size: var(--fs-body);
   font-weight: 500;
   letter-spacing: .05em;
   font-variant-numeric: tabular-nums;
@@ -827,7 +850,7 @@
   background: var(--count-bg);
   color: var(--faint);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-meta);
   font-weight: 500;
   letter-spacing: .05em;
 }
@@ -838,45 +861,44 @@
   border-radius: 6px;
   background: var(--count-bg);
   color: var(--muted);
-  font-size: 11px;
+  font-size: var(--fs-meta);
   font-weight: 500;
 }
 
 .reservationCard header > span[data-status="pending_store_confirm"] {
   background: var(--amber-tint);
-  color: var(--amber);
+  color: var(--amber-text);
 }
 
 .reservationCard header > span[data-status="confirmed"] {
   background: var(--green-tint);
-  color: var(--green);
+  color: var(--green-text);
 }
 
 .reservationCard header > span[data-status="rejected_no_stock"],
 .reservationCard header > span[data-status="expired"] {
   background: var(--danger-tint);
-  color: var(--danger);
+  color: var(--danger-text);
 }
 
 .reservationCard h2 {
-  margin: 11px 0 4px;
-  font-size: 13.5px;
+  margin: 9px 0 4px;
+  font-size: var(--fs-strong);
   font-weight: 600;
-  letter-spacing: -.01em;
 }
 
 .reservationCard > p,
 .emptyInbox p {
   margin: 0;
   color: var(--muted);
-  font-size: 12.5px;
+  font-size: var(--fs-body);
   font-weight: 400;
-  line-height: 1.55;
+  line-height: var(--lh-body);
 }
 
 .reservationIntake {
-  margin-top: 12px;
-  padding: 11px 12px;
+  margin-top: 10px;
+  padding: 10px 12px;
   border: 1px solid var(--notice-border);
   border-radius: 8px;
   background: var(--notice-bg);
@@ -891,21 +913,21 @@
 
 .reservationIntake header strong {
   color: var(--notice-text);
-  font-size: 12px;
+  font-size: var(--fs-label);
   font-weight: 500;
 }
 
 .reservationIntake header span,
 .reservationIntake div > span {
-  color: var(--faint);
+  color: var(--muted);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-meta);
   font-weight: 500;
   letter-spacing: .04em;
 }
 
 .reservationIntake div {
-  margin-top: 10px;
+  margin-top: 8px;
 }
 
 .reservationIntake div > span {
@@ -916,31 +938,31 @@
 .reservationIntake div > p {
   margin: 0;
   color: var(--text);
-  font-size: 12.5px;
-  line-height: 1.55;
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
 
 .reservationIntake small {
   display: block;
-  margin-top: 10px;
+  margin-top: 8px;
   color: var(--muted);
-  font-size: 10.5px;
+  font-size: var(--fs-label);
   line-height: 1.5;
 }
 
 .reservationCard footer {
-  margin-top: 13px;
-  padding-top: 11px;
+  margin-top: 10px;
+  padding-top: 9px;
   border-top: 1px dashed var(--line);
   color: var(--faint);
-  font-size: 11px;
+  font-size: var(--fs-meta);
 }
 
 .reservationCard footer time { margin-left: auto; font-variant-numeric: tabular-nums; }
 .emptyInbox { padding: 28px; text-align: center; }
-.emptyInbox strong { font-size: 13px; font-weight: 500; }
+.emptyInbox strong { font-size: var(--fs-body); font-weight: 500; }
 .emptyInbox p { max-width: 420px; margin: 7px auto 0; }
 
 .reservationError {
@@ -949,13 +971,13 @@
   border: 1px solid var(--danger-tint);
   border-radius: 8px;
   background: var(--danger-tint);
-  color: var(--danger);
-  font-size: 11px;
+  color: var(--danger-text);
+  font-size: var(--fs-label);
   line-height: 1.5;
 }
 
 .reservationActions {
-  margin-top: 12px;
+  margin-top: 10px;
   display: flex;
   justify-content: flex-end;
   gap: 8px;
@@ -969,7 +991,7 @@
   background: var(--button-bg);
   box-shadow: var(--shadow-btn);
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--fs-body);
   font-weight: 500;
   cursor: pointer;
   transition: background-color 150ms var(--ease-ui), color 150ms var(--ease-ui), transform 200ms var(--ease-ui);
@@ -985,13 +1007,13 @@
 }
 
 .reservationActions .reservationPrimaryAction {
-  background: var(--blue);
+  background: var(--blue-solid);
   box-shadow: none;
   color: #fff;
 }
 
 .reservationActions .reservationPrimaryAction:hover:not(:disabled) {
-  background: var(--blue-soft);
+  background: var(--blue-solid-hover);
   color: #fff;
 }
 
@@ -1029,7 +1051,7 @@
 .composerField > span {
   color: var(--faint);
   font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-size: var(--fs-meta);
   font-weight: 500;
   letter-spacing: .08em;
 }
@@ -1041,7 +1063,7 @@
   outline: 0;
   background: transparent;
   color: var(--text);
-  font-size: 13.5px;
+  font-size: var(--fs-strong);
   font-weight: 400;
 }
 
@@ -1056,14 +1078,14 @@
   place-items: center;
   border: 0;
   border-radius: 8px;
-  background: var(--blue);
+  background: var(--blue-solid);
   color: #fff;
   cursor: pointer;
   transition: background-color 150ms var(--ease-ui), transform 200ms var(--ease-ui);
 }
 
 .composer button:hover:not(:disabled) {
-  background: var(--blue-soft);
+  background: var(--blue-solid-hover);
 }
 
 .composer button:active:not(:disabled) {
@@ -1087,7 +1109,7 @@
   min-height: 16px;
   margin: 6px 0 0;
   color: var(--message-text);
-  font-size: 12px;
+  font-size: var(--fs-label);
   font-weight: 400;
   line-height: 1.5;
 }
@@ -1097,7 +1119,7 @@
 }
 
 .composerNotice[data-tone="warning"] {
-  color: var(--amber);
+  color: var(--amber-text);
 }
 
 .contextPanel {
@@ -1111,15 +1133,14 @@
 
 .contextPanel h2 {
   margin: 0;
-  font-size: 14px;
+  font-size: var(--fs-title);
   font-weight: 600;
-  letter-spacing: -.01em;
 }
 
 .contextPanel > p {
   margin: 5px 0 0;
   color: var(--faint);
-  font-size: 12px;
+  font-size: var(--fs-label);
   font-weight: 400;
 }
 
@@ -1138,16 +1159,16 @@
 }
 
 .contextPanel li strong {
-  font-size: 12.5px;
+  font-size: var(--fs-body);
   font-weight: 500;
 }
 
 .contextPanel li p {
   margin: 4px 0 0;
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--fs-label);
   font-weight: 400;
-  line-height: 1.55;
+  line-height: var(--lh-body);
 }
 
 .authorityNote {
@@ -1160,14 +1181,14 @@
 
 .authorityNote strong {
   color: var(--authority-title);
-  font-size: 12px;
+  font-size: var(--fs-body);
   font-weight: 500;
 }
 
 .authorityNote p {
   margin: 5px 0 0;
   color: var(--authority-copy);
-  font-size: 11.5px;
+  font-size: var(--fs-label);
   font-weight: 400;
   line-height: 1.5;
 }
@@ -1201,16 +1222,15 @@
   margin: 0;
   color: var(--faint);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: var(--fs-meta);
   font-weight: 500;
   letter-spacing: .08em;
 }
 
 .dialog h2 {
   margin: 8px 0 0;
-  font-size: 18px;
+  font-size: var(--fs-dialog);
   font-weight: 600;
-  letter-spacing: -.015em;
 }
 
 .dialog header button {
@@ -1246,12 +1266,12 @@
 
 .dialog dt {
   color: var(--faint);
-  font-size: 12px;
+  font-size: var(--fs-label);
 }
 
 .dialog dd {
   margin: 0;
-  font-size: 12.5px;
+  font-size: var(--fs-body);
   font-weight: 500;
 }
 
@@ -1262,8 +1282,8 @@
   border-radius: 8px;
   background: var(--approval-bg);
   color: var(--dialog-boundary);
-  font-size: 11.5px;
-  line-height: 1.6;
+  font-size: var(--fs-label);
+  line-height: var(--lh-body);
 }
 
 .dialogDone {
@@ -1272,16 +1292,16 @@
   padding: 0 16px;
   border: 0;
   border-radius: 8px;
-  background: var(--blue);
+  background: var(--blue-solid);
   color: #fff;
-  font-size: 12px;
+  font-size: var(--fs-body);
   font-weight: 500;
   cursor: pointer;
   transition: background-color 150ms var(--ease-ui), transform 200ms var(--ease-ui);
 }
 
 .dialogDone:hover {
-  background: var(--blue-soft);
+  background: var(--blue-solid-hover);
 }
 
 .dialogDone:active {
@@ -1304,7 +1324,7 @@
   display: block;
   margin-top: 4px;
   color: var(--faint);
-  font-size: 11px;
+  font-size: var(--fs-label);
   font-weight: 400;
 }
 
@@ -1333,7 +1353,7 @@
   box-shadow: var(--shadow-btn);
   color: var(--blue-soft);
   font-family: inherit;
-  font-size: 11.5px;
+  font-size: var(--fs-label);
   font-weight: 500;
   cursor: pointer;
   transition: background-color 150ms var(--ease-ui);
@@ -1371,7 +1391,7 @@
   box-shadow: var(--shadow-btn);
   color: var(--text);
   font-family: inherit;
-  font-size: 12.5px;
+  font-size: var(--fs-body);
   font-weight: 500;
   cursor: pointer;
   transition: background-color 150ms var(--ease-ui);
@@ -1402,8 +1422,8 @@
   border-radius: 8px;
   background: var(--panel-3);
   color: var(--muted);
-  font-size: 12px;
-  line-height: 1.6;
+  font-size: var(--fs-label);
+  line-height: var(--lh-body);
 }
 
 .profileActions {
@@ -1421,7 +1441,7 @@
   background: var(--button-bg);
   box-shadow: var(--shadow-btn);
   color: var(--text);
-  font-size: 12px;
+  font-size: var(--fs-body);
   font-weight: 500;
   cursor: pointer;
   transition: background-color 150ms var(--ease-ui);
@@ -1434,7 +1454,7 @@
 .profileActions .logoutButton {
   background: var(--danger-tint);
   box-shadow: none;
-  color: var(--danger);
+  color: var(--danger-text);
 }
 
 .profileActions .logoutButton:hover {
@@ -1587,7 +1607,7 @@
   }
 
   .agentCopy strong {
-    font-size: 11px;
+    font-size: var(--fs-label);
   }
 
   .agentCopy small,
@@ -1623,7 +1643,7 @@
 
   .pharmacyStatus small {
     margin-top: 2px;
-    font-size: 10px;
+    font-size: var(--fs-meta);
   }
 
   .shell {
@@ -1657,7 +1677,7 @@
   }
 
   .workHeading h1 {
-    font-size: 20px;
+    font-size: 22px;
   }
 
   .sharedWorkNotice,

@@ -6,8 +6,10 @@
   --line-strong: #3a3c40;
   --text: #f2f3f4;
   --muted: #a5a8ad;
-  --faint: #6c6f75;
+  --faint: #92969d;
   --accent: #3d9aff;
+  --accent-solid: #2a6fc9;
+  --accent-solid-hover: #235da8;
   min-height: 100dvh;
   padding: 24px;
   display: grid;
@@ -15,6 +17,7 @@
   background: #17181a;
   color: var(--text);
   color-scheme: dark;
+  line-height: 1.5;
 }
 
 .card {
@@ -37,16 +40,16 @@
   display: block;
 }
 
-.card header strong { font-size: 13px; font-weight: 600; letter-spacing: -.01em; }
-.card header span { margin-top: 3px; color: var(--faint); font-size: 10.5px; }
+.card header strong { font-size: 14px; font-weight: 600; }
+.card header span { margin-top: 3px; color: var(--faint); font-size: 13px; }
 
 .intro { margin-top: 42px; }
-.intro p { margin: 0; color: var(--faint); font-family: var(--font-mono); font-size: 9px; letter-spacing: .1em; }
-.intro h1 { margin: 10px 0 7px; font-size: 22px; font-weight: 600; letter-spacing: -.02em; }
-.intro > span { color: var(--muted); font-size: 12.5px; }
+.intro p { margin: 0; color: var(--faint); font-family: var(--font-mono); font-size: 11px; letter-spacing: .1em; }
+.intro h1 { margin: 10px 0 7px; font-size: 24px; font-weight: 600; }
+.intro > span { color: var(--muted); font-size: 14px; line-height: 1.65; }
 
 .card form { margin-top: 28px; display: grid; gap: 16px; }
-.card label span { display: block; margin-bottom: 7px; color: var(--muted); font-size: 11.5px; font-weight: 500; }
+.card label span { display: block; margin-bottom: 7px; color: var(--muted); font-size: 13px; font-weight: 500; }
 .card input {
   width: 100%;
   height: 42px;
@@ -57,24 +60,24 @@
   box-shadow: 0 0 0 1px var(--line), inset 0 1px 2px rgba(0, 0, 0, .4);
   color: var(--text);
   font: inherit;
-  font-size: 13.5px;
+  font-size: 15px;
 }
 .card input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .card button {
   min-height: 42px;
   border: 0;
   border-radius: 8px;
-  background: var(--accent);
+  background: var(--accent-solid);
   color: #fff;
   font: inherit;
-  font-size: 12.5px;
+  font-size: 14px;
   font-weight: 500;
   cursor: pointer;
   transition: background-color 150ms cubic-bezier(.23, 1, .32, 1), transform 200ms cubic-bezier(.23, 1, .32, 1);
 }
-.card button:hover:not(:disabled) { background: #7ec0ff; }
+.card button:hover:not(:disabled) { background: var(--accent-solid-hover); }
 .card button:active:not(:disabled) { transform: scale(.98); }
 .card button:disabled { cursor: not-allowed; opacity: .48; }
-.setupNotice { margin: 14px 0 0; padding: 11px 12px; border: 1px solid #f68f3c3d; border-radius: 8px; background: #f68f3c14; color: #f6a35c; font-size: 11.5px; line-height: 1.5; }
-.error { min-height: 18px; margin: 10px 0 0; color: #ee5c61; font-size: 11.5px; }
-.card footer { margin-top: 22px; padding-top: 15px; border-top: 1px dashed var(--line); color: var(--faint); font-size: 10.5px; }
+.setupNotice { margin: 14px 0 0; padding: 11px 12px; border: 1px solid #f68f3c3d; border-radius: 8px; background: #f68f3c14; color: #f6a35c; font-size: 13px; line-height: 1.65; }
+.error { min-height: 20px; margin: 10px 0 0; color: #ee5c61; font-size: 13px; }
+.card footer { margin-top: 22px; padding-top: 15px; border-top: 1px dashed var(--line); color: var(--faint); font-size: 12px; line-height: 1.6; }
