@@ -19,6 +19,7 @@ import {
   storeAgent,
   type StoreAgentId,
 } from "@/lib/store-os";
+import type { StoreReservationSummary } from "@/lib/reservations-store";
 
 import styles from "./StoreOsShell.module.css";
 
@@ -34,6 +35,83 @@ const AGENT_AVATARS: Record<StoreAgentId, ExportedAvatar> = {
   purchasing: Flame,
   checkout: Pepper,
 };
+
+const STATUS_LABELS: Record<StoreReservationSummary["status"], string> = {
+  pending_store_confirm: "待確認",
+  confirmed: "已確認",
+  rejected_no_stock: "無庫存",
+  cancelled_by_user: "已取消",
+  picked_up: "已取貨",
+  expired: "已逾期",
+};
+
+function taipeiTime(iso: string): string {
+  return new Intl.DateTimeFormat("zh-TW", {
+    timeZone: "Asia/Taipei",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(new Date(iso));
+}
+
+function ReservationInbox({
+  reservations,
+  animate,
+}: {
+  reservations: StoreReservationSummary[];
+  animate: boolean;
+}) {
+  const waiting = reservations.filter((reservation) => reservation.status === "pending_store_confirm");
+  return (
+    <>
+      <div className={styles.workHeading}>
+        <p>RESERVATIONS / LIVE</p>
+        <h1>客戶預留</h1>
+        <div>
+          <span>{waiting.length} 筆等待確認</span>
+          <span>{reservations.length} 筆近期單號</span>
+          <span>完整電話未顯示</span>
+        </div>
+      </div>
+
+      <section className={styles.agentMessage} aria-live="polite">
+        <AgentOrb id="manager" active animated={animate} />
+        <div>
+          <p className={styles.sender}>店長 Agent <time>現在</time></p>
+          <p>
+            {waiting.length > 0
+              ? `有 ${waiting.length} 筆新預留等你確認。我只顯示到店核對所需的手機末三碼。`
+              : "目前沒有等待確認的新預留；新單建立後會直接出現在這裡。"}
+          </p>
+        </div>
+      </section>
+
+      <section className={styles.reservationList} aria-label="門市預留單">
+        {reservations.length === 0 ? (
+          <div className={styles.emptyInbox}>
+            <strong>還沒有預留單</strong>
+            <p>客戶從 uYao 完成預留後，單號會在這裡出現，LINE 通知仍會照常送出。</p>
+          </div>
+        ) : reservations.map((reservation) => (
+          <article className={styles.reservationCard} key={reservation.code}>
+            <header>
+              <span className={styles.reservationCode}>{reservation.code}</span>
+              <span data-status={reservation.status}>{STATUS_LABELS[reservation.status]}</span>
+            </header>
+            <h2>{reservation.drugName}</h2>
+            <p>{reservation.drugSpec} · NT$ {reservation.priceTwd}</p>
+            <footer>
+              <span>手機末三碼 {reservation.contactTail}</span>
+              <time dateTime={reservation.createdAt}>{taipeiTime(reservation.createdAt)}</time>
+            </footer>
+          </article>
+        ))}
+      </section>
+    </>
+  );
+}
 
 function AgentOrb({
   id,
@@ -67,12 +145,21 @@ function AgentOrb({
   );
 }
 
-export function StoreOsShell() {
+export function StoreOsShell({
+  storeName,
+  operatorName,
+  reservations,
+}: {
+  storeName: string;
+  operatorName: string;
+  reservations: StoreReservationSummary[];
+}) {
   const [activeAgentId, setActiveAgentId] = useState<StoreAgentId>("manager");
   const [draftOpen, setDraftOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [composerNotice, setComposerNotice] = useState("");
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [liveReservations, setLiveReservations] = useState(reservations);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const draftButtonRef = useRef<HTMLButtonElement>(null);
   const activeAgent = storeAgent(activeAgentId);
@@ -83,6 +170,31 @@ export function StoreOsShell() {
     updatePreference();
     media.addEventListener("change", updatePreference);
     return () => media.removeEventListener("change", updatePreference);
+  }, []);
+
+  useEffect(() => {
+    let stopped = false;
+    async function syncReservations() {
+      const response = await fetch("/api/store/reservations", { cache: "no-store" }).catch(() => null);
+      if (response?.status === 401) {
+        window.location.reload();
+        return;
+      }
+      if (!response?.ok) return;
+      const result = await response.json().catch(() => null) as { reservations?: StoreReservationSummary[] } | null;
+      if (!stopped && Array.isArray(result?.reservations)) setLiveReservations(result.reservations);
+    }
+
+    const timer = window.setInterval(syncReservations, 15_000);
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") void syncReservations();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      stopped = true;
+      window.clearInterval(timer);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, []);
 
   useEffect(() => {
@@ -107,6 +219,11 @@ export function StoreOsShell() {
     event.preventDefault();
     if (!message.trim()) return;
     setComposerNotice("介面原型尚未連接 Agent runtime；這則訊息沒有送出。");
+  }
+
+  async function logout() {
+    await fetch("/api/store/auth/logout", { method: "POST" }).catch(() => null);
+    window.location.reload();
   }
 
   return (
@@ -152,14 +269,14 @@ export function StoreOsShell() {
 
         <p className={styles.sectionLabel}>工作</p>
         <nav className={styles.workNav} aria-label="工作分類">
-          <span className={styles.workNavActive}>需要你 <b>3</b></span>
-          <span>全部工作 <b>12</b></span>
+          <span className={styles.workNavActive}>需要你 <b>{liveReservations.filter((r) => r.status === "pending_store_confirm").length}</b></span>
+          <span>全部工作 <b>{liveReservations.length}</b></span>
           <span>完成紀錄</span>
         </nav>
 
         <div className={styles.pharmacyStatus}>
           <i aria-hidden="true" />
-          <span><strong>安康藥局</strong><small>台北市 · 系統連線正常</small></span>
+          <span><strong>{storeName}</strong><small>{operatorName} · 系統連線正常</small></span>
         </div>
       </aside>
 
@@ -170,14 +287,18 @@ export function StoreOsShell() {
             <strong>{activeAgent.name}</strong>
             <small>{activeAgent.description} · {activeAgent.stateLabel}</small>
           </span>
-          <span className={styles.prototypeBadge}>介面原型 · 示範資料</span>
-          <span className={styles.syncTime}>最後同步 08:42</span>
+          <span className={styles.prototypeBadge}>預留後端已連線</span>
+          <span className={styles.syncTime}>{storeName}</span>
           <button type="button" className={styles.modeButton}>店務模式</button>
-          <button type="button" className={styles.moreButton} aria-label="更多選項">•••</button>
+          <button type="button" className={styles.moreButton} onClick={logout} aria-label="登出">↪</button>
         </header>
 
         <div className={styles.contentGrid}>
           <article className={styles.workspace}>
+            {activeAgentId === "manager" ? (
+              <ReservationInbox reservations={liveReservations} animate={!prefersReducedMotion} />
+            ) : (
+              <>
             <div className={styles.workHeading}>
               <p>{RESTOCK_WORK_ITEM.type} / {RESTOCK_WORK_ITEM.id}</p>
               <h1>{RESTOCK_WORK_ITEM.title}</h1>
@@ -239,6 +360,8 @@ export function StoreOsShell() {
                 檢查草稿
               </button>
             </section>
+              </>
+            )}
 
             <form className={styles.composer} onSubmit={submitMessage}>
               <AgentOrb id="manager" active={activeAgentId === "manager"} small />
@@ -258,19 +381,38 @@ export function StoreOsShell() {
           </article>
 
           <aside className={styles.contextPanel}>
-            <h2>Agent 交接紀錄</h2>
-            <p>共同 WorkItem · {RESTOCK_WORK_ITEM.id}</p>
-            <ol>
-              {RESTOCK_WORK_ITEM.audit.map((entry) => (
-                <li key={`${entry.agentId}-${entry.at}`}>
-                  <AgentOrb id={entry.agentId} small />
+            <h2>{activeAgentId === "manager" ? "預留連線狀態" : "Agent 交接紀錄"}</h2>
+            <p>{activeAgentId === "manager" ? storeName : `共同 WorkItem · ${RESTOCK_WORK_ITEM.id}`}</p>
+            {activeAgentId === "manager" ? (
+              <ol>
+                <li>
+                  <AgentOrb id="manager" small />
                   <div>
-                    <strong>{entry.handoff}</strong>
-                    <p>{entry.at} · {entry.detail}</p>
+                    <strong>門市身份已驗證</strong>
+                    <p>目前只載入 {storeName} 的預留單。</p>
                   </div>
                 </li>
-              ))}
-            </ol>
+                <li>
+                  <AgentOrb id="inventory" small />
+                  <div>
+                    <strong>預留資料已同步</strong>
+                    <p>{liveReservations.length} 筆近期單號；完整手機與取貨連結不會送到瀏覽器。</p>
+                  </div>
+                </li>
+              </ol>
+            ) : (
+              <ol>
+                {RESTOCK_WORK_ITEM.audit.map((entry) => (
+                  <li key={`${entry.agentId}-${entry.at}`}>
+                    <AgentOrb id={entry.agentId} small />
+                    <div>
+                      <strong>{entry.handoff}</strong>
+                      <p>{entry.at} · {entry.detail}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+            )}
             <section className={styles.authorityNote}>
               <strong>共享工作，不共享無限權限</strong>
               <p>每個角色只看到必要工具；對客承諾、採購與金流仍有清楚的人類批准點。</p>
