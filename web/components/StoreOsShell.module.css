@@ -156,6 +156,11 @@
   outline-offset: 2px;
 }
 
+.screen [data-store-composer] input:focus-visible {
+  outline: 0;
+  outline-offset: 0;
+}
+
 .sidebar {
   min-height: 100dvh;
   display: flex;
