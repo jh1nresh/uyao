@@ -10,7 +10,14 @@ import {
 
 import { BrandMark } from "@/components/BrandMark";
 import { SupportAgent } from "@/components/SupportAgent";
-import { useAvatarEyes } from "@/components/useAvatarEyes";
+import {
+  ApprovalCard,
+  TaskRows,
+  Thinking,
+  ToolTrace,
+  type ApprovalQuestion,
+  type StatusTone,
+} from "@/components/store-os/StoreOsPrimitives";
 import { Flame } from "@/components/avatar-lab/Flame";
 import { Pepper } from "@/components/avatar-lab/Pepper";
 import { Sapling } from "@/components/avatar-lab/Sapling";
@@ -30,6 +37,8 @@ import {
   storeAgent,
   storeAgentCopy,
   storeWorkItemCopy,
+  type RestockStep,
+  type RestockWorkItem,
   type StoreAgentId,
 } from "@/lib/store-os";
 import type { StoreRole } from "@/lib/store-identity";
@@ -38,7 +47,6 @@ import type { StoreReservationSummary } from "@/lib/reservations-store";
 import styles from "./StoreOsShell.module.css";
 
 type ExportedAvatar = ComponentType<{
-  animation?: "resting";
   playing?: boolean;
   size?: number | string;
   className?: string;
@@ -79,6 +87,53 @@ const STATUS_LABELS_EN: Record<StoreReservationSummary["status"], string> = {
   picked_up: "Picked up",
   expired: "Expired",
 };
+
+const STEP_TONES: Record<RestockStep["state"], StatusTone> = {
+  completed: "done",
+  organized: "done",
+  approval: "wait",
+};
+
+function draftApprovalQuestions(
+  draft: RestockWorkItem["draft"],
+  english: boolean,
+): ApprovalQuestion[] {
+  return [
+    {
+      id: "quantity",
+      question: english
+        ? `How many boxes of ${draft.product} should we order?`
+        : `${draft.product} 要訂幾盒？`,
+      options: [
+        { id: "suggested", label: english ? `${draft.quantity} boxes (suggested)` : `${draft.quantity} 盒（建議）` },
+        { id: "half", label: english ? `${Math.round(draft.quantity / 2)} boxes (hold back)` : `${Math.round(draft.quantity / 2)} 盒（保守）` },
+        { id: "double", label: english ? `${draft.quantity * 2} boxes (stock up)` : `${draft.quantity * 2} 盒（多備）` },
+      ],
+      customPlaceholder: english ? "Another quantity…" : "其他數量…",
+    },
+    {
+      id: "supplier",
+      question: english
+        ? `Keep ${draft.supplier} as the supplier?`
+        : `供應商維持 ${draft.supplier}？`,
+      options: [
+        { id: "keep", label: english ? "Keep this supplier" : "維持這家供應商" },
+        { id: "compare", label: english ? "Compare another supplier first" : "先比較其他供應商" },
+      ],
+      customPlaceholder: english ? "Name a supplier…" : "指定供應商…",
+    },
+    {
+      id: "ceiling",
+      question: english
+        ? `Is the ${draft.priceCeiling} price ceiling still right?`
+        : `價格上限 ${draft.priceCeiling} 還適用嗎？`,
+      options: [
+        { id: "keep", label: english ? "Keep the ceiling" : "維持上限" },
+        { id: "raise", label: english ? "Ask me again if it is exceeded" : "超過時再問我一次" },
+      ],
+    },
+  ];
+}
 
 const COMPLETED_RESERVATION_STATUSES = new Set<StoreReservationSummary["status"]>([
   "rejected_no_stock",
@@ -177,6 +232,18 @@ function ReservationInbox({
         <AgentOrb id="manager" active animated={animate} />
         <div>
           <p className={styles.sender}>{english ? "Manager Agent" : "店長 Agent"} <time>{english ? "Now" : "現在"}</time></p>
+          {busyCode ? (
+            <div className={styles.thinkingSlot}>
+              <Thinking
+                label={english ? `Updating ${busyCode}…` : `更新 ${busyCode} 中…`}
+                steps={[
+                  { id: "verify", label: english ? "Checked store identity" : "已核對門市身份", state: "done" },
+                  { id: "write", label: english ? "Writing the reservation status" : "寫入預留狀態", state: "active" },
+                  { id: "notify", label: english ? "Update the customer pickup page" : "更新顧客取貨頁", state: "pending" },
+                ]}
+              />
+            </div>
+          ) : (
           <p>
             {english
               ? view === "completed"
@@ -190,6 +257,7 @@ function ReservationInbox({
                   ? `有 ${waiting.length} 筆新預留等你確認。我只顯示到店核對所需的手機末三碼。`
                   : "目前沒有等待確認的新預留；新單建立後會直接出現在這裡。"}
           </p>
+          )}
         </div>
       </section>
 
@@ -295,7 +363,6 @@ function AgentOrb({
       aria-hidden="true"
     >
       <Avatar
-        animation="resting"
         className={styles.agentAvatar}
         playing={animated}
         size="100%"
@@ -339,7 +406,6 @@ export function StoreOsShell({
   const [profileOpen, setProfileOpen] = useState(false);
   const [locale, setLocale] = useState<Locale>("zh");
   const [pushState, setPushState] = useState<PushState>(webPushPublicKey ? "checking" : "unconfigured");
-  const screenRef = useRef<HTMLElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const draftButtonRef = useRef<HTMLButtonElement>(null);
   const profileButtonRef = useRef<HTMLButtonElement>(null);
@@ -349,10 +415,9 @@ export function StoreOsShell({
   const activeAgent = storeAgentCopy(activeAgentId, locale);
   const workItem = storeWorkItemCopy(locale);
   const activeAgentAvailable = isStoreAgentAvailable(activeAgentId, demoMode);
+  const draftQuestions = draftApprovalQuestions(workItem.draft, english);
   const waitingCount = liveReservations.filter((reservation) => reservation.status === "pending_store_confirm").length;
   const completedCount = liveReservations.filter((reservation) => COMPLETED_RESERVATION_STATUSES.has(reservation.status)).length;
-
-  useAvatarEyes(screenRef, !prefersReducedMotion);
 
   async function registerStoreServiceWorker(): Promise<ServiceWorkerRegistration> {
     return navigator.serviceWorker.register("/store-sw.js", { scope: "/" });
@@ -647,7 +712,6 @@ export function StoreOsShell({
 
   return (
     <main
-      ref={screenRef}
       className={styles.screen}
       lang={english ? "en" : "zh-Hant-TW"}
       data-theme={resolvedTheme}
@@ -744,7 +808,7 @@ export function StoreOsShell({
             onClick={() => setSupportOpen(true)}
           >
             <span className={styles.supportFace} aria-hidden="true">
-              <Strobi animation="resting" playing={!prefersReducedMotion} size="100%" />
+              <Strobi animation="listening" playing={!prefersReducedMotion} size="100%" />
             </span>
             <span className={styles.agentCopy}>
               <strong>{english ? "Support Agent" : "支援 Agent"}</strong>
@@ -772,7 +836,7 @@ export function StoreOsShell({
         <header className={styles.topbar}>
           {supportOpen ? (
             <span className={`${styles.supportFace} ${styles.smallFace}`} aria-hidden="true">
-              <Strobi animation="resting" playing={!prefersReducedMotion} size="100%" />
+              <Strobi animation="listening" playing={!prefersReducedMotion} size="100%" />
             </span>
           ) : (
             <AgentOrb id={activeAgent.id} active animated={!prefersReducedMotion} small />
@@ -881,46 +945,47 @@ export function StoreOsShell({
               {english ? "Three roles are handing off the same work item; you don't need to copy data or ask each one separately." : "三個角色正在同一張工作上交接；你不需要複製資料或分別追問。"}
             </p>
 
-            <section className={styles.taskGrid} aria-label={english ? "Agent progress" : "Agent 處理進度"}>
-              {workItem.steps.map((step) => {
-                const agent = storeAgentCopy(step.agentId, locale);
-                return (
-                  <article
-                    key={step.agentId}
-                    className={`${styles.taskCard} ${
-                      activeAgentId === step.agentId ? styles.taskCardActive : ""
-                    }`}
-                  >
-                    <header>
-                      <AgentOrb
-                        id={agent.id}
-                        active={activeAgentId === agent.id}
-                        animated={!prefersReducedMotion}
-                        small
-                      />
-                      <strong>{agent.name}</strong>
-                      <span className={styles[step.state]}>{step.stateLabel}</span>
-                    </header>
-                    <h2>{step.label}</h2>
-                    <p>{step.detail}</p>
-                  </article>
-                );
-              })}
-            </section>
+            <div className={styles.taskGrid}>
+              <TaskRows
+                label={english ? "Agent progress" : "Agent 處理進度"}
+                defaultOpenId={workItem.steps.find((step) => step.state === "approval")?.agentId}
+                items={workItem.steps.map((step) => {
+                  const agent = storeAgentCopy(step.agentId, locale);
+                  return {
+                    id: step.agentId,
+                    title: step.label,
+                    meta: agent.name,
+                    tone: STEP_TONES[step.state],
+                    statusLabel: step.stateLabel,
+                    detail: step.detail,
+                  };
+                })}
+              />
+            </div>
 
-            <section className={styles.approvalBar} aria-label={english ? "Awaiting approval" : "等待批准"}>
-              <div>
-                <strong>{english ? "The Procurement Agent is waiting for your approval" : "採購 Agent 正在等你的批准"}</strong>
-                <p>{english ? "You approve a fixed draft snapshot. Any quantity or supplier change requires another confirmation." : "批准的是固定草稿快照；任何數量或供應商變更都要重新確認。"}</p>
-              </div>
+            <div className={styles.approvalSlot}>
+              <ApprovalCard
+                questions={draftQuestions}
+                submitLabel={english ? "Send answer" : "送出回答"}
+                note={english
+                  ? "Answers stay in this prototype. Supplier, payment, and order-submission APIs are not connected, so nothing is sent."
+                  : "回答只留在這個原型。尚未連接供應商、付款或送單 API，因此不會送出任何訂單。"}
+                onSubmit={() => {
+                  setComposerNoticeTone("warning");
+                  setComposerNotice(english
+                    ? "Recorded in the prototype. No order was sent."
+                    : "已記錄在原型中，尚未送出任何訂單。");
+                }}
+              />
               <button
                 ref={draftButtonRef}
                 type="button"
+                className={styles.draftLink}
                 onClick={() => setDraftOpen(true)}
               >
-                {english ? "Review draft" : "檢查草稿"}
+                {english ? "Review the fixed draft" : "檢查固定草稿"}
               </button>
-            </section>
+            </div>
               </>
             ))}
 
@@ -972,7 +1037,7 @@ export function StoreOsShell({
               <ol>
                 <li>
                   <span className={`${styles.supportFace} ${styles.smallFace}`} aria-hidden="true">
-                    <Strobi animation="resting" playing={!prefersReducedMotion} size="100%" />
+                    <Strobi animation="listening" playing={!prefersReducedMotion} size="100%" />
                   </span>
                   <div>
                     <strong>{english ? "Self-service answers connected" : "自助問答已連線"}</strong>
@@ -981,7 +1046,7 @@ export function StoreOsShell({
                 </li>
                 <li>
                   <span className={`${styles.supportFace} ${styles.smallFace}`} aria-hidden="true">
-                    <Strobi animation="resting" playing={!prefersReducedMotion} size="100%" />
+                    <Strobi animation="listening" playing={!prefersReducedMotion} size="100%" />
                   </span>
                   <div>
                     <strong>{english ? "Human support tickets connected" : "真人支援單已連線"}</strong>
@@ -1019,17 +1084,22 @@ export function StoreOsShell({
                 </li>
               </ol>
             ) : (
-              <ol>
-                {workItem.audit.map((entry) => (
-                  <li key={`${entry.agentId}-${entry.at}`}>
-                    <AgentOrb id={entry.agentId} animated={!prefersReducedMotion} small />
-                    <div>
-                      <strong>{entry.handoff}</strong>
-                      <p>{entry.at} · {entry.detail}</p>
-                    </div>
-                  </li>
-                ))}
-              </ol>
+              <div className={styles.tracePanel}>
+                <ToolTrace
+                  label={english ? "Agent handoff log" : "Agent 交接紀錄"}
+                  summary={english
+                    ? `${workItem.audit.length} handoffs, ${workItem.steps.length} agents`
+                    : `${workItem.audit.length} 次交接、${workItem.steps.length} 個角色`}
+                  defaultOpen
+                  items={workItem.audit.map((entry) => ({
+                    id: `${entry.agentId}-${entry.at}`,
+                    title: entry.handoff,
+                    at: entry.at,
+                    detail: entry.detail,
+                    icon: <AgentOrb id={entry.agentId} animated={!prefersReducedMotion} small />,
+                  }))}
+                />
+              </div>
             )}
             <section className={styles.authorityNote}>
               <strong>{supportOpen

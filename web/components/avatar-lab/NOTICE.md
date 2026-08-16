@@ -29,22 +29,15 @@ of that license is included as `AGPL-3.0.txt` in this directory.
   body-node geometry so the roles remain distinct at sidebar size.
 - Runtime playback is enabled only for the central active Agent and is disabled
   when the operating system requests reduced motion.
-- Each export gained a hand-written `resting` animation on top of its generated
-  animation: one static expression (`expression-rest`, cloned from the first
-  step of the generated animation) with `bodyMotion: "none"` and
-  `eyeMotion: "microSaccades"`, plus blink. Store OS plays `resting`, so the
-  small sidebar bodies hold their pose and only the eyes move. Re-exporting an
-  avatar from Avatar Lab drops `resting`; re-add it before shipping
-  (`tsc --noEmit` fails when it is missing, because the call sites pass the
-  literal `"resting"`).
-- Sprout also carries a hand-written `ambient` animation for the landing footer,
-  where the character is drawn ~900px tall and `resting` reads as a frozen
-  sticker. It mirrors the x.ai/bot footer character's `sequence` prop —
-  idle, curious, idle, settled, idle, bright, on 4-7s beats — over
-  `bodyMotion: "slowDrift"` (about a degree of head drift) and
+- `Sprout` takes an optional `data` prop so one surface can supply alternate
+  export data. The landing footer uses it to raise and shorten the eyes
+  (`components/landing/footerSproutData.ts`) so the mascot survives being
+  cropped at its mid-line; every other Sprout still renders `sprout.avatar.ts`.
+- Sprout also carries a hand-written `ambient` animation for that footer, where
+  the character is drawn ~1000px tall and the generated `listening` loop reads
+  as a frozen sticker. Idle, curious, idle, settled, idle, bright, on 4-7s
+  beats, over `bodyMotion: "slowDrift"` (about a degree of head drift) and
   `eyeMotion: "microSaccades"`. Every beat keeps the same motion signature,
   because the runtime restarts its ambient clocks whenever that signature
-  changes. `lib/avatar-ambient.test.ts` pins the contract.
-- Pointer tracking is uYao code, not part of the export: `useAvatarEyes`
-  translates the runtime's eye group (`svg g[clip-path]`) toward the pointer,
-  with travel scaled to the rendered size by `lib/avatar-eyes.ts`.
+  changes. `lib/avatar-ambient.test.ts` pins the contract. Re-exporting Sprout
+  from Avatar Lab drops `ambient`; re-add it before shipping.
