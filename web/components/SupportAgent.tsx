@@ -100,17 +100,6 @@ export function SupportAgent({
       aria-label="uYao 支援"
       aria-hidden={!active}
     >
-          <header className={styles.header}>
-            <span className={styles.avatar} aria-hidden="true">
-              <Strobi animation="listening" playing={animate} size="100%" />
-            </span>
-            <span>
-              <strong>uYao 支援</strong>
-              <small>自助回答 · 真人支援單</small>
-            </span>
-            <span className={styles.connectionState}>已連線</span>
-          </header>
-
           {messages.length === 0 ? (
             <div className={styles.welcome}>
               <strong>今天需要我協助什麼？</strong>
@@ -166,18 +155,19 @@ export function SupportAgent({
           {ticketId && <p className={styles.ticket}>支援單號 <strong>{ticketId}</strong></p>}
 
           <form className={styles.composer} onSubmit={submitQuestion}>
-            <label htmlFor="support-question">輸入問題</label>
-            <div>
-              <input
-                ref={inputRef}
-                id="support-question"
-                value={question}
-                onChange={(event) => setQuestion(event.target.value)}
-                placeholder="例如：為什麼沒有新單？"
-                maxLength={600}
-              />
-              <button type="submit" disabled={!question.trim()} aria-label="送出問題">↑</button>
-            </div>
+            <span className={`${styles.avatar} ${styles.composerAvatar}`} aria-hidden="true">
+              <Strobi animation="listening" playing={animate} size="100%" />
+            </span>
+            <label className={styles.visuallyHidden} htmlFor="support-question">輸入問題</label>
+            <input
+              ref={inputRef}
+              id="support-question"
+              value={question}
+              onChange={(event) => setQuestion(event.target.value)}
+              placeholder="例如：為什麼沒有新單？"
+              maxLength={600}
+            />
+            <button type="submit" disabled={!question.trim()} aria-label="送出問題">↑</button>
           </form>
     </section>
   );
