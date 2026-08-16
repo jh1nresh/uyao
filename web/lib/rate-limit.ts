@@ -7,8 +7,8 @@ import * as kv from "./kv";
  * **推一則 LINE 訊息到藥局老闆的手機**。沒有節流的話，一個 for 迴圈就能
  * 把他的聊天室洗版洗到他把我們封鎖 —— 那是這個產品最不能失去的東西。
  *
- * 示範頁（/store/[slug]/preview）更糟：它不需要真實庫存就能產生預留，
- * 而且網址是公開可猜的。
+ * 示範頁（/store/[slug]/preview）不需要真實庫存就能產生預留，而且網址
+ * 是公開可猜的；即使只進 sandbox，也不能讓它把示範 inbox 洗滿。
  *
  * 沒有 KV 時一律放行（fail open）。這是防濫用不是防資料外洩，
  * 為了它讓正常使用者無法預留是本末倒置。
@@ -50,9 +50,9 @@ export async function checkReservation(
   const ip = clientIp(request);
 
   // 示範單另外從嚴。`demo` 是從 request body 來的，任何人送 {"demo":true}
-  // 就能跳過「這家有沒有這個品項」的檢查，對**任何已綁定的真實藥局**產生
-  // 預留並推卡片。手機號只驗格式不驗真偽，換號碼就重置，所以真正的閘門
-  // 是 IP。示範現場一次只按幾下，3 次/小時綽綽有餘，卻把濫用空間砍掉八成。
+  // 就能跳過「這家有沒有這個品項」的正式檢查。它只會進 sandbox，不會碰
+  // 真實藥局，但仍要避免 inbox 被公開流量洗滿。手機號只驗格式不驗真偽，
+  // 所以真正的閘門是 IP；現場 3 次/小時足夠完成一輪展示。
   if (demo) {
     const byDemo = await hit(`res:d:${ip}`, 3, 3600);
     if (!byDemo.ok) return byDemo;
@@ -66,4 +66,28 @@ export async function checkReservation(
 /** 表單類端點（需求訊號、試點申請）。這些不會觸發推播，門檻放寬。 */
 export async function checkForm(request: Request, scope: string): Promise<RateLimit> {
   return hit(`${scope}:i:${clientIp(request)}`, 30, 3600);
+}
+
+export interface SupportRateLimit extends RateLimit {
+  unavailable?: boolean;
+}
+
+/**
+ * 真人支援會真的寄信，不能像一般表單在 KV 故障時無限制放行。
+ * 每個登入帳號 5 筆／小時、每個 IP 10 筆／小時；節流服務壞掉就明確暫停。
+ */
+export async function checkSupport(
+  request: Request,
+  userId: string,
+): Promise<SupportRateLimit> {
+  const safeUserId = Buffer.from(userId).toString("base64url");
+  const ip = clientIp(request);
+  try {
+    const byUser = await kv.incr(`rl:support:u:${safeUserId}`, 3600);
+    if (byUser > 5) return { ok: false, retryAfterSec: 3600 };
+    const byIp = await kv.incr(`rl:support:i:${ip}`, 3600);
+    return byIp > 10 ? { ok: false, retryAfterSec: 3600 } : OK;
+  } catch {
+    return { ok: false, retryAfterSec: 60, unavailable: true };
+  }
 }

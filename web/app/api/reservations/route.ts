@@ -151,52 +151,55 @@ export async function POST(request: Request) {
   try {
     await saveReservation(record);
   } catch (err) {
-    // 存不起來 = 取貨頁會查不到。不擋下預留（藥局那端還是會收到），
-    // 但一定要吵，因為消費者拿到的連結會是死的。
+    // Demo 的唯一收件端就是 sandbox；寫不進去卻回成功，現場會拿到一個
+    // Store OS 永遠看不到的單號。真單仍維持既有容錯：LINE 可能已能送達。
     console.error("[reservations] 寫入 store 失敗，取貨頁將查不到", code, String(err).slice(0, 200));
+    if (demo) {
+      return NextResponse.json({ error: "示範預留未送達，請再試一次" }, { status: 503 });
+    }
   }
 
-  // 推給藥局。推不出去不能讓消費者的預留失敗 —— 那筆已經進 record sink，
-  // 你還是看得到，只是要人工通知藥局。
-  //
-  // 但**示範現場沒有時間翻 log**：你跟老闆說「你的 LINE 會響」，沒響的時候
-  // 畫面卻一切正常，你當場沒有任何線索。所以把結果帶回前端（只在 demo 模式
-  // 回傳，正式路徑不吐 —— 那會洩漏哪些藥局已經上線）。
+  // 真單推給藥局；demo 單只進 uYao Store sandbox。公開 preview 不得觸發
+  // 任何真實藥局的 LINE，否則一個可猜網址就能製造假的店務工作。
   const demoTag = demo ? "［示範］" : "";
   logConsole("🛎", `${demoTag}收到預留 ${code}：${drug.name} → 路由到 ${store.name}`, `${demo ? "[DEMO] " : ""}Reservation ${code} received: ${drugCopy(drug, "en").name} → routed to ${store.name}`);
 
-  const lineUser = await userForStore(storeSlug);
   let notify: NotifyResult;
-  if (!lineUser) {
-    notify = "unbound";
-    console.log(`[reservations] ${storeSlug} 尚未綁定 LINE，${code} 需人工通知`);
-    logConsole("⚠️", `${demoTag}${store.name} 未綁定 LINE，${code} 轉人工通知`, `${demo ? "[DEMO] " : ""}${store.name} is not bound to LINE; ${code} requires manual notification`);
-  } else if (!isConfigured()) {
-    // 原本這條分支什麼都不印 —— 綁好了卻因為少一個環境變數而全靜音，
-    // 是最難查的一種。
-    notify = "not_configured";
-    console.error(`[reservations] LINE 未設定（少 token 或 secret），${code} 推不出去`);
+  if (demo) {
+    notify = "sandboxed";
+    logConsole("🧪", `${code} 已送到 uYao Store 示範帳號`, `${code} was sent to the uYao Store sandbox`);
   } else {
-    try {
-      await push(lineUser, [
-        reservationFlex({
-          code,
-          drugName: drug.name,
-          drugSpec: drug.spec,
-          priceTwd: offer.priceTwd,
-          storeName: store.name,
-          contactKind: contact.kind,
-          contact: contact.value,
-          holdHours: HOLD_HOURS,
-          demo,
-        }),
-      ]);
-      notify = "sent";
-      logConsole("📲", `${demoTag}${code} 已推播到 ${store.name} 的 LINE，等藥師按確認`, `${demo ? "[DEMO] " : ""}${code} was sent to ${store.name} in LINE; awaiting pharmacist approval`);
-    } catch (err) {
-      notify = "failed";
-      console.error("[reservations] 推播給藥局失敗", code, String(err).slice(0, 200));
-      logConsole("🔴", `${demoTag}${code} 推播失敗，需人工聯絡 ${store.name}`, `${demo ? "[DEMO] " : ""}${code} LINE delivery failed; ${store.name} requires manual contact`);
+    const lineUser = await userForStore(storeSlug);
+    if (!lineUser) {
+      notify = "unbound";
+      console.log(`[reservations] ${storeSlug} 尚未綁定 LINE，${code} 需人工通知`);
+      logConsole("⚠️", `${store.name} 未綁定 LINE，${code} 轉人工通知`, `${store.name} is not bound to LINE; ${code} requires manual notification`);
+    } else if (!isConfigured()) {
+      // 原本這條分支什麼都不印 —— 綁好了卻因為少一個環境變數而全靜音，
+      // 是最難查的一種。
+      notify = "not_configured";
+      console.error(`[reservations] LINE 未設定（少 token 或 secret），${code} 推不出去`);
+    } else {
+      try {
+        await push(lineUser, [
+          reservationFlex({
+            code,
+            drugName: drug.name,
+            drugSpec: drug.spec,
+            priceTwd: offer.priceTwd,
+            storeName: store.name,
+            contactKind: contact.kind,
+            contact: contact.value,
+            holdHours: HOLD_HOURS,
+          }),
+        ]);
+        notify = "sent";
+        logConsole("📲", `${code} 已推播到 ${store.name} 的 LINE，等藥師按確認`, `${code} was sent to ${store.name} in LINE; awaiting pharmacist approval`);
+      } catch (err) {
+        notify = "failed";
+        console.error("[reservations] 推播給藥局失敗", code, String(err).slice(0, 200));
+        logConsole("🔴", `${code} 推播失敗，需人工聯絡 ${store.name}`, `${code} LINE delivery failed; ${store.name} requires manual contact`);
+      }
     }
   }
 
@@ -269,11 +272,8 @@ export async function DELETE(request: Request) {
 
   // 已經回報沒貨的就別再吵藥局了，那筆他早就處理完。
   //
-  // 示範單**也要**通知：卡片是推給藥局的，取消卻不推的話，示範現場那張
-  // 卡就永遠掛在老闆的聊天室裡。規則是「凡是關於他已經收到的那張卡的
-  // 訊息，示範也要發」——不發的只有會污染真實資料的東西（需求訊號、
-  // 放鳥計數）。
-  if (r.status !== "rejected_no_stock") {
+  // Demo 單從未送到真實藥局，因此取消也只能更新 sandbox，不能碰 LINE。
+  if (!r.demo && r.status !== "rejected_no_stock") {
     const lineUser = await userForStore(r.storeSlug).catch(() => undefined);
     if (lineUser && isConfigured()) {
       try {

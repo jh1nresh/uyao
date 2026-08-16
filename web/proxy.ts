@@ -33,7 +33,7 @@ const STORE_ALIASES = new Set(
 
 const COMPANY_HOST = new URL(SITE_URL).host;
 const COMPANY_ONLY_ROUTES = ["/pharmacy", "/evidence", "/guides", "/compare", "/store-os"];
-const CONSUMER_ROUTES = ["/app", "/drug", "/store", "/search", "/category", "/r", "/stock-badges"];
+const CONSUMER_ROUTES = ["/app", "/demo", "/drug", "/store", "/search", "/category", "/r", "/stock-badges"];
 
 function routeStartsWith(pathname: string, prefixes: string[]): boolean {
   return prefixes.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));

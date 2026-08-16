@@ -8,9 +8,12 @@ import {
   type StoreSession,
 } from "./store-auth";
 
-export function sessionFromRequest(request: NextRequest): StoreSession | null {
+export async function sessionFromRequest(
+  request: NextRequest,
+  isActive: typeof isStoreSessionActive = isStoreSessionActive,
+): Promise<StoreSession | null> {
   const session = readStoreSessionToken(request.cookies.get(storeSessionCookieName())?.value);
-  return session && isStoreSessionActive(session) ? session : null;
+  return session && await isActive(session) ? session : null;
 }
 
 export function setStoreSessionCookie(response: NextResponse, token: string): void {

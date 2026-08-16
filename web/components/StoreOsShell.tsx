@@ -9,6 +9,7 @@ import {
 } from "react";
 
 import { BrandMark } from "@/components/BrandMark";
+import { SupportAgent } from "@/components/SupportAgent";
 import { Flame } from "@/components/avatar-lab/Flame";
 import { Pepper } from "@/components/avatar-lab/Pepper";
 import { Sapling } from "@/components/avatar-lab/Sapling";
@@ -28,6 +29,14 @@ type ExportedAvatar = ComponentType<{
   size?: number | string;
   className?: string;
 }>;
+
+type ThemePreference = "system" | "light" | "dark";
+
+const THEME_LABELS: Record<ThemePreference, string> = {
+  system: "跟隨系統",
+  light: "日間",
+  dark: "夜間",
+};
 
 const AGENT_AVATARS: Record<StoreAgentId, ExportedAvatar> = {
   manager: Sprout,
@@ -92,16 +101,20 @@ function ReservationInbox({
         {reservations.length === 0 ? (
           <div className={styles.emptyInbox}>
             <strong>還沒有預留單</strong>
-            <p>客戶從 uYao 完成預留後，單號會在這裡出現，LINE 通知仍會照常送出。</p>
+            <p>客戶從 uYao 完成預留後，單號會直接出現在這裡，不需要另外接收 LINE 通知。</p>
           </div>
         ) : reservations.map((reservation) => (
           <article className={styles.reservationCard} key={reservation.code}>
             <header>
               <span className={styles.reservationCode}>{reservation.code}</span>
+              {reservation.demo && <span className={styles.reservationDemo}>示範</span>}
               <span data-status={reservation.status}>{STATUS_LABELS[reservation.status]}</span>
             </header>
             <h2>{reservation.drugName}</h2>
-            <p>{reservation.drugSpec} · NT$ {reservation.priceTwd}</p>
+            <p>
+              {reservation.drugSpec} · NT$ {reservation.priceTwd}
+              {reservation.sourceStoreName ? ` · 來源頁 ${reservation.sourceStoreName}` : ""}
+            </p>
             <footer>
               <span>手機末三碼 {reservation.contactTail}</span>
               <time dateTime={reservation.createdAt}>{taipeiTime(reservation.createdAt)}</time>
@@ -135,7 +148,6 @@ function AgentOrb({
       data-state={agent.state}
       aria-hidden="true"
     >
-      <i className={styles.orbHalo} />
       <Avatar
         className={styles.agentAvatar}
         playing={animated}
@@ -159,6 +171,8 @@ export function StoreOsShell({
   const [message, setMessage] = useState("");
   const [composerNotice, setComposerNotice] = useState("");
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+  const [themePreference, setThemePreference] = useState<ThemePreference>("system");
+  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("dark");
   const [liveReservations, setLiveReservations] = useState(reservations);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const draftButtonRef = useRef<HTMLButtonElement>(null);
@@ -171,6 +185,33 @@ export function StoreOsShell({
     media.addEventListener("change", updatePreference);
     return () => media.removeEventListener("change", updatePreference);
   }, []);
+
+  useEffect(() => {
+    const stored = window.localStorage.getItem("uyao-store-theme");
+    const initial: ThemePreference = stored === "light" || stored === "dark" ? stored : "system";
+    const media = window.matchMedia("(prefers-color-scheme: light)");
+    const resolve = (preference: ThemePreference) => {
+      setResolvedTheme(preference === "system" ? (media.matches ? "light" : "dark") : preference);
+    };
+    setThemePreference(initial);
+    resolve(initial);
+    const onChange = () => {
+      if ((window.localStorage.getItem("uyao-store-theme") ?? "system") === "system") resolve("system");
+    };
+    media.addEventListener("change", onChange);
+    return () => media.removeEventListener("change", onChange);
+  }, []);
+
+  function cycleTheme() {
+    const next: ThemePreference = themePreference === "system"
+      ? "light"
+      : themePreference === "light" ? "dark" : "system";
+    setThemePreference(next);
+    window.localStorage.setItem("uyao-store-theme", next);
+    setResolvedTheme(next === "system"
+      ? (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark")
+      : next);
+  }
 
   useEffect(() => {
     let stopped = false;
@@ -227,7 +268,7 @@ export function StoreOsShell({
   }
 
   return (
-    <main className={styles.screen}>
+    <main className={styles.screen} data-theme={resolvedTheme}>
       <aside className={styles.sidebar} aria-label="Store Agents">
         <div className={styles.brandRow}>
           <span className={styles.brandIdentity}>
@@ -252,9 +293,7 @@ export function StoreOsShell({
               <AgentOrb
                 id={agent.id}
                 active={activeAgentId === agent.id}
-                animated={!prefersReducedMotion && (
-                  activeAgentId === agent.id || agent.state === "working"
-                )}
+                animated={!prefersReducedMotion}
               />
               <span className={styles.agentCopy}>
                 <strong>{agent.name}</strong>
@@ -289,7 +328,13 @@ export function StoreOsShell({
           </span>
           <span className={styles.prototypeBadge}>預留後端已連線</span>
           <span className={styles.syncTime}>{storeName}</span>
-          <button type="button" className={styles.modeButton}>店務模式</button>
+          <button
+            type="button"
+            className={styles.modeButton}
+            onClick={cycleTheme}
+            aria-label={`目前${THEME_LABELS[themePreference]}，切換介面顏色`}
+            title="切換：跟隨系統／日間／夜間"
+          >{THEME_LABELS[themePreference]}</button>
           <button type="button" className={styles.moreButton} onClick={logout} aria-label="登出">↪</button>
         </header>
 
@@ -447,6 +492,7 @@ export function StoreOsShell({
           </section>
         </div>
       )}
+      <SupportAgent animate={!prefersReducedMotion} />
     </main>
   );
 }

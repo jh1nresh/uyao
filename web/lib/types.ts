@@ -171,6 +171,8 @@ export interface StockBadgeSpec {
  * 存在的理由是示範現場沒有時間翻 log：閉環有沒有合上要當場看得見。
  */
 export type NotifyResult =
+  /** 已寫入獨立 uYao Store demo sandbox，不觸發真實藥局 LINE */
+  | "sandboxed"
   /** 已推給藥局的 LINE */
   | "sent"
   /** 這家藥局還沒綁 LINE，不會有人收到 */
