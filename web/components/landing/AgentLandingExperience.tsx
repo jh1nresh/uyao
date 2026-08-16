@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import {
   useEffect,
@@ -404,7 +405,10 @@ function StoreOsPreview({
       <div className="paper-elevation grid min-h-[560px] border border-line-strong bg-paper lg:h-[560px] lg:min-h-0 lg:grid-cols-[218px_1fr] lg:overflow-hidden">
         <aside className="border-b border-line-strong bg-brand-surface text-on-dark lg:border-b-0 lg:border-r">
           <div className="flex min-h-[68px] items-center gap-3 border-b border-on-dark/15 px-4">
-            <Avatar id="manager" size={36} playing={!reducedMotion} />
+            {/* The real Store OS sidebar leads with the brand mark, not an agent
+                avatar; always the reverse mark because this rail stays dark in
+                both themes. */}
+            <Image aria-hidden alt="" src="/brand/uyao-mark-reverse.svg" width={28} height={28} className="flex-none" unoptimized />
             <strong className="text-[14px]">uYao Store OS</strong>
           </div>
           <div className="num px-4 pb-2 pt-5 text-[10px] tracking-[.1em] text-on-dark/55">AGENTS</div>
