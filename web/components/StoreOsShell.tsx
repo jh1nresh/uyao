@@ -139,7 +139,6 @@ function AgentOrb({
       data-state={agent.state}
       aria-hidden="true"
     >
-      <i className={styles.orbHalo} />
       <Avatar
         className={styles.agentAvatar}
         playing={animated}
