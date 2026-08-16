@@ -8,8 +8,8 @@ import { SHOP_URL } from "@/lib/shop";
  *
  *   uyaohealth.com         → `/` 導向 `/zh-tw` 公司 landing
  *   shop.uyaohealth.com    → `/` 導向 `/zh-tw` Consumer Web
- *   store.uyaohealth.com   → `/` 顯示 Store OS
- *   store.uyao.com         → 同一入口的短網域 alias
+ *   store.uyaohealth.com   → `/` 顯示 Store OS（唯一 canonical）
+ *   store.uyao.com         → 永久導向 canonical
  *
  * 為什麼是 shop-uyao 不是 shop.uyao.vercel.app：*.vercel.app 的 wildcard
  * 憑證只涵蓋一層子網域，兩層（shop.uyao.）掛不上去。之後有自訂網域
@@ -24,8 +24,11 @@ export const config = {
 const SHOP_HOSTS = new Set(
   ["shop-uyao.vercel.app", process.env.SHOP_HOST ?? ""].filter(Boolean),
 );
-const STORE_HOSTS = new Set(
-  ["store.uyaohealth.com", "store.uyao.com", process.env.STORE_HOST ?? ""].filter(Boolean),
+const STORE_URL = "https://store.uyaohealth.com";
+const STORE_HOST = new URL(STORE_URL).host;
+const STORE_ALIASES = new Set(
+  ["store.uyao.com", process.env.STORE_HOST ?? ""]
+    .filter((host) => Boolean(host) && host !== STORE_HOST),
 );
 
 const COMPANY_HOST = new URL(SITE_URL).host;
@@ -70,7 +73,19 @@ export function proxy(req: NextRequest) {
 
   const host = (req.headers.get("host") ?? req.nextUrl.hostname).toLowerCase().split(":")[0];
   const isShop = SHOP_HOSTS.has(host) || host.startsWith("shop.");
-  const isStore = STORE_HOSTS.has(host);
+  const isStore = host === STORE_HOST;
+  const isStoreAlias = STORE_ALIASES.has(host);
+
+  // Store OS 只存在一個公開網址。舊 company/shop 路徑與短網域 alias
+  // 都直接收斂到 store.uyaohealth.com 根目錄，不再留下重複頁面。
+  if (!isStore && route.barePath === "/store-os") {
+    return redirectTo(req, STORE_URL, "/");
+  }
+
+  if (isStoreAlias) {
+    if (route.barePath === "/") return redirectTo(req, STORE_URL, "/");
+    return redirectTo(req, SITE_URL, localizedPath(route.barePath, route.locale));
+  }
 
   if (isStore) {
     const isStoreHome = route.barePath === "/" || route.barePath === "/store-os";
@@ -80,7 +95,7 @@ export function proxy(req: NextRequest) {
     }
 
     if (pathname !== "/") {
-      return redirectTo(req, `https://${host}`, "/");
+      return redirectTo(req, STORE_URL, "/");
     }
 
     const url = req.nextUrl.clone();

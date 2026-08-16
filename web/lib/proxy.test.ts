@@ -26,6 +26,22 @@ describe("canonical host routing", () => {
     );
   });
 
+  it("removes the company-host Store OS copy", () => {
+    const response = request("https://uyaohealth.com/zh-tw/store-os?work=WI-2031");
+    expect(response.status).toBe(308);
+    expect(response.headers.get("location")).toBe(
+      "https://store.uyaohealth.com/?work=WI-2031",
+    );
+  });
+
+  it("redirects the short store alias to the canonical store host", () => {
+    const response = request("https://store.uyao.com/?work=WI-2031");
+    expect(response.status).toBe(308);
+    expect(response.headers.get("location")).toBe(
+      "https://store.uyaohealth.com/?work=WI-2031",
+    );
+  });
+
   it("keeps unrelated company routes on the company domain", () => {
     const response = request("https://store.uyaohealth.com/zh-tw/evidence");
     expect(response.status).toBe(308);
@@ -63,7 +79,7 @@ describe("canonical host routing", () => {
   it("keeps Store OS off the consumer shop host", () => {
     const response = request("https://shop.uyaohealth.com/zh-tw/store-os");
     expect(response.status).toBe(308);
-    expect(response.headers.get("location")).toBe(`${SITE_URL}/zh-tw/store-os`);
+    expect(response.headers.get("location")).toBe("https://store.uyaohealth.com/");
   });
 
   it("redirects www to the company canonical host", () => {
