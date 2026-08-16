@@ -67,3 +67,27 @@ export async function checkReservation(
 export async function checkForm(request: Request, scope: string): Promise<RateLimit> {
   return hit(`${scope}:i:${clientIp(request)}`, 30, 3600);
 }
+
+export interface SupportRateLimit extends RateLimit {
+  unavailable?: boolean;
+}
+
+/**
+ * 真人支援會真的寄信，不能像一般表單在 KV 故障時無限制放行。
+ * 每個登入帳號 5 筆／小時、每個 IP 10 筆／小時；節流服務壞掉就明確暫停。
+ */
+export async function checkSupport(
+  request: Request,
+  userId: string,
+): Promise<SupportRateLimit> {
+  const safeUserId = Buffer.from(userId).toString("base64url");
+  const ip = clientIp(request);
+  try {
+    const byUser = await kv.incr(`rl:support:u:${safeUserId}`, 3600);
+    if (byUser > 5) return { ok: false, retryAfterSec: 3600 };
+    const byIp = await kv.incr(`rl:support:i:${ip}`, 3600);
+    return byIp > 10 ? { ok: false, retryAfterSec: 3600 } : OK;
+  } catch {
+    return { ok: false, retryAfterSec: 60, unavailable: true };
+  }
+}

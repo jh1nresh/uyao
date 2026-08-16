@@ -82,6 +82,27 @@ export async function set(key: string, value: string, ttlSeconds?: number): Prom
   await writeFile(p, value, "utf8");
 }
 
+/** 只在 key 不存在時寫入；用於會觸發外部動作的 idempotency claim。 */
+export async function setIfAbsent(
+  key: string,
+  value: string,
+  ttlSeconds: number,
+): Promise<boolean> {
+  if (useMemory()) {
+    if (memory.has(key)) return false;
+    memory.set(key, value);
+    return true;
+  }
+  if (config()) {
+    const result = await command(["SET", key, value, "NX", "EX", ttlSeconds]);
+    return result === "OK";
+  }
+  const existing = await get(key);
+  if (existing !== null) return false;
+  await set(key, value, ttlSeconds);
+  return true;
+}
+
 export async function del(key: string): Promise<void> {
   if (useMemory()) {
     memory.delete(key);

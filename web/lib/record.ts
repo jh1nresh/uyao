@@ -25,7 +25,7 @@ import * as kv from "./kv";
  * 要加 Postgres 就在 SINKS 多一個函式，其餘不用動。掃描流真的開始之後
  * 就是加它的時機 —— 那份資料要 join 要 group by，不該塞進 KV。
  */
-export type RecordKind = "demand" | "pilot" | "reservations" | "line_bind";
+export type RecordKind = "demand" | "pilot" | "reservations" | "line_bind" | "support";
 
 export const LOG_SENTINEL = "UYAO_RECORD";
 
@@ -56,6 +56,9 @@ function summarize(kind: RecordKind, record: Record<string, unknown>): string {
       `確認無誤後把這段併進 LINE_STORE_BINDINGS：` +
       `{"${record.userId}":"${record.storeSlug}"}`
     );
+  }
+  if (kind === "support") {
+    return `🛟 Store OS 支援單 ${record.ticketId ?? ""} @ ${record.storeSlug ?? ""}`;
   }
   return `📦 預留 ${record.code ?? ""} ${record.drugSlug ?? ""} @ ${record.storeSlug ?? ""}`;
 }
