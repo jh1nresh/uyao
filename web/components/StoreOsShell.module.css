@@ -1285,35 +1285,45 @@
   font-weight: 550;
 }
 
-.languageSwitch {
+.languageSelect {
+  position: relative;
+  width: min(220px, 100%);
   display: inline-flex;
-  padding: 3px;
+  align-items: center;
+}
+
+.languageSelect select {
+  width: 100%;
+  min-height: 44px;
+  padding: 0 42px 0 13px;
+  appearance: none;
   border: 1px solid var(--line-strong);
   border-radius: 7px;
   background: var(--panel-2);
-}
-
-.languageSwitch button {
-  min-height: 44px;
-  padding: 0 14px;
-  border: 0;
-  border-radius: 5px;
-  background: transparent;
-  color: var(--muted);
-  font: inherit;
+  color: var(--text);
+  font-family: inherit;
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
+  transition: border-color 160ms var(--ease-brand), background-color 160ms var(--ease-brand);
 }
 
-.languageSwitch button[aria-pressed="true"] {
-  background: var(--blue);
-  color: #fff;
+.languageSelect select:hover {
+  border-color: var(--blue);
 }
 
-.languageSwitch button:focus-visible {
+.languageSelect select:focus-visible {
   outline: 2px solid var(--blue);
   outline-offset: 2px;
+}
+
+.languageSelect svg {
+  position: absolute;
+  right: 13px;
+  width: 18px;
+  height: 18px;
+  color: var(--muted);
+  pointer-events: none;
 }
 
 .profileHelp {
@@ -1610,14 +1620,8 @@
     grid-template-columns: 120px minmax(0, 1fr);
   }
 
-  .languageSwitch {
+  .languageSelect {
     width: 100%;
-  }
-
-  .languageSwitch button {
-    min-width: 0;
-    flex: 1;
-    padding: 0 10px;
   }
 }
 
