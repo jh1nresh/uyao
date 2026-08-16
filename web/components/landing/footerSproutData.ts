@@ -1,6 +1,11 @@
 import { avatarData, type AnimationName } from "@/components/avatar-lab/sprout.avatar";
 import type { AvatarData } from "@/components/avatar-lab/avatar-runtime";
 
+// Keep the large footer mascot on the generated Bible Strong sequence. Unlike
+// the hand-written ambient experiment, `listening` has no procedural body
+// drift, so scaling Sprout to 1000px does not amplify sub-pixel movement.
+export const FOOTER_MANAGER_ANIMATION = "listening" as const;
+
 /**
  * Footer-only Sprout: the landing footer crops the mascot at its waist, and the
  * stock face cannot survive that cut because the eyes are centred on the head

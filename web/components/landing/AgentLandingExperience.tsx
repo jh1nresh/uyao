@@ -20,7 +20,10 @@ import { Pepper } from "@/components/avatar-lab/Pepper";
 import { Sapling } from "@/components/avatar-lab/Sapling";
 import { Sprout } from "@/components/avatar-lab/Sprout";
 import { CompanyFooter } from "@/components/landing/CompanyFooter";
-import { footerSproutData } from "@/components/landing/footerSproutData";
+import {
+  FOOTER_MANAGER_ANIMATION,
+  footerSproutData,
+} from "@/components/landing/footerSproutData";
 import { SHOP_URL } from "@/lib/shop";
 
 const FOOTER_EYE_CENTRE_FRACTION = (-38 + 150) / 300;
@@ -651,12 +654,12 @@ function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; loc
               transitionTimingFunction: "cubic-bezier(0.32, 0.72, 0, 1)",
             }}
           >
-            {/* `ambient`, not the default `listening`: at ~1000px the stock
-                loop reads as a frozen sticker, so the body drifts about a
-                degree and the gaze cycles through mood beats. */}
+            {/* Use Bible Strong's generated `listening` sequence here. Its body
+                poses transition smoothly without procedural drift, which the
+                1000px footer scale would otherwise magnify into visible sway. */}
             <Sprout
               data={footerSproutData}
-              animation="ambient"
+              animation={FOOTER_MANAGER_ANIMATION}
               playing={!reducedMotion}
               loop
               size="100%"
