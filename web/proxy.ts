@@ -73,7 +73,8 @@ export function proxy(req: NextRequest) {
 
   const host = (req.headers.get("host") ?? req.nextUrl.hostname).toLowerCase().split(":")[0];
   const isShop = SHOP_HOSTS.has(host) || host.startsWith("shop.");
-  const isStore = host === STORE_HOST;
+  const isStore = host === STORE_HOST
+    || (process.env.NODE_ENV !== "production" && host === "store.localhost");
   const isStoreAlias = STORE_ALIASES.has(host);
 
   // Store OS 只存在一個公開網址。舊 company/shop 路徑與短網域 alias
