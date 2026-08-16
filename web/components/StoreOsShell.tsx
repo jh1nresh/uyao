@@ -545,9 +545,11 @@ export function StoreOsShell({
         </div>
 
         <button
+          ref={profileButtonRef}
           type="button"
           className={styles.pharmacyStatus}
           onClick={() => setProfileOpen(true)}
+          aria-label="開啟帳號與門市設定"
           aria-haspopup="dialog"
         >
           <i aria-hidden="true" />
@@ -596,19 +598,6 @@ export function StoreOsShell({
                 <path d="M20 15.2A8.4 8.4 0 0 1 8.8 4a8.5 8.5 0 1 0 11.2 11.2Z" />
               </svg>
             </span>
-          </button>
-          <button
-            ref={profileButtonRef}
-            type="button"
-            className={styles.moreButton}
-            onClick={() => setProfileOpen(true)}
-            aria-label="開啟帳號與門市設定"
-            aria-haspopup="dialog"
-          >
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
-              <circle cx="12" cy="8" r="3.2" />
-              <path d="M5.5 20c.6-3.6 2.8-5.5 6.5-5.5s5.9 1.9 6.5 5.5" />
-            </svg>
           </button>
         </header>
 
