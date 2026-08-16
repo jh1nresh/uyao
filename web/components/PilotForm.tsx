@@ -193,7 +193,7 @@ export function PilotForm({ locale }: { locale: Locale }) {
                 onClick={() => toggleProblem(option.value)}
                 className={`min-h-11 border px-3.5 text-[13px] transition-[background-color,border-color,transform] duration-150 active:scale-[.98] ${
                   selected
-                    ? "border-forest bg-forest text-paper"
+                    ? "border-forest bg-brand-surface text-on-dark"
                     : "border-line-strong bg-paper text-ink-2 hover:border-forest"
                 }`}
               >

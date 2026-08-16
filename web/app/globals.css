@@ -10,10 +10,111 @@
   --font-serif: var(--font-noto-serif-tc), "Songti TC", "Noto Serif TC", serif;
   --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
   --ease-brand: cubic-bezier(0.23, 1, 0.32, 1);
+  --color-ink: 28 39 34;
+  --color-forest: 23 57 44;
+  --color-brand-surface: 23 57 44;
+  --color-brand-surface-strong: 28 39 34;
+  --color-on-dark: 248 244 233;
+  --color-ink-2: 62 75 68;
+  --color-muted: 89 102 95;
+  --color-muted-2: 96 109 102;
+  --color-stale: 104 118 109;
+  --color-green: 8 123 67;
+  --color-green-hover: 6 103 55;
+  --color-green-tint: 226 238 229;
+  --color-green-tint-line: 184 210 192;
+  --color-oxblood: 116 53 47;
+  --color-oxblood-tint: 233 217 210;
+  --color-warning: 148 98 0;
+  --color-warning-tint: 255 245 223;
+  --color-warning-line: 199 146 44;
+  --color-line: 210 205 193;
+  --color-line-strong: 184 177 164;
+  --color-line-soft: 226 220 207;
+  --color-surface: 236 231 219;
+  --color-surface-hover: 229 223 210;
+  --color-canvas: 231 225 212;
+  --color-ivory: 242 239 230;
+  --color-paper: 248 244 233;
+  --color-sage: 220 231 217;
+  --color-map-bg: 229 233 226;
+  --color-map-grid: 217 224 215;
+  --shadow-paper: 37 54 45;
 }
 
 html {
-  background: #f2efe6;
+  color-scheme: light;
+  background: rgb(var(--color-ivory));
+}
+
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --color-ink: 241 238 229;
+  --color-forest: 167 216 185;
+  --color-brand-surface: 21 53 41;
+  --color-brand-surface-strong: 11 39 29;
+  --color-on-dark: 248 244 233;
+  --color-ink-2: 208 213 207;
+  --color-muted: 170 182 174;
+  --color-muted-2: 145 158 149;
+  --color-stale: 157 171 162;
+  --color-green: 79 193 122;
+  --color-green-hover: 105 211 143;
+  --color-green-tint: 21 53 37;
+  --color-green-tint-line: 53 101 74;
+  --color-oxblood: 227 165 157;
+  --color-oxblood-tint: 59 36 34;
+  --color-warning: 242 196 105;
+  --color-warning-tint: 55 43 22;
+  --color-warning-line: 130 99 42;
+  --color-line: 52 66 58;
+  --color-line-strong: 70 86 77;
+  --color-line-soft: 41 54 47;
+  --color-surface: 29 43 36;
+  --color-surface-hover: 38 54 46;
+  --color-canvas: 21 32 25;
+  --color-ivory: 17 24 20;
+  --color-paper: 24 35 30;
+  --color-sage: 27 49 37;
+  --color-map-bg: 25 39 31;
+  --color-map-grid: 45 61 51;
+  --shadow-paper: 0 0 0;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme]) {
+    color-scheme: dark;
+    --color-ink: 241 238 229;
+    --color-forest: 167 216 185;
+    --color-brand-surface: 21 53 41;
+    --color-brand-surface-strong: 11 39 29;
+    --color-on-dark: 248 244 233;
+    --color-ink-2: 208 213 207;
+    --color-muted: 170 182 174;
+    --color-muted-2: 145 158 149;
+    --color-stale: 157 171 162;
+    --color-green: 79 193 122;
+    --color-green-hover: 105 211 143;
+    --color-green-tint: 21 53 37;
+    --color-green-tint-line: 53 101 74;
+    --color-oxblood: 227 165 157;
+    --color-oxblood-tint: 59 36 34;
+    --color-warning: 242 196 105;
+    --color-warning-tint: 55 43 22;
+    --color-warning-line: 130 99 42;
+    --color-line: 52 66 58;
+    --color-line-strong: 70 86 77;
+    --color-line-soft: 41 54 47;
+    --color-surface: 29 43 36;
+    --color-surface-hover: 38 54 46;
+    --color-canvas: 21 32 25;
+    --color-ivory: 17 24 20;
+    --color-paper: 24 35 30;
+    --color-sage: 27 49 37;
+    --color-map-bg: 25 39 31;
+    --color-map-grid: 45 61 51;
+    --shadow-paper: 0 0 0;
+  }
 }
 
 html.lenis,
@@ -34,10 +135,17 @@ html.lenis body {
 }
 
 body {
-  background: #f2efe6;
-  color: #1c2722;
+  background: rgb(var(--color-ivory));
+  color: rgb(var(--color-ink));
   -webkit-font-smoothing: antialiased;
   font-variant-numeric: tabular-nums;
+}
+
+html.theme-switching body,
+html.theme-switching body * {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 180ms;
+  transition-timing-function: var(--ease-brand);
 }
 
 @layer components {
@@ -50,7 +158,7 @@ body {
   }
 
   .action-primary {
-    @apply inline-flex min-h-11 items-center justify-center bg-forest px-5 font-bold text-paper no-underline shadow-[0_8px_22px_rgba(23,57,44,0.14)] transition-[background-color,box-shadow,transform] duration-200 hover:bg-ink active:translate-y-px active:shadow-none disabled:cursor-not-allowed disabled:opacity-55;
+    @apply inline-flex min-h-11 items-center justify-center bg-brand-surface px-5 font-bold text-on-dark no-underline shadow-[0_8px_22px_rgba(23,57,44,0.14)] transition-[background-color,box-shadow,transform] duration-200 hover:bg-brand-surface-strong active:translate-y-px active:shadow-none disabled:cursor-not-allowed disabled:opacity-55;
   }
 
   .action-secondary {
@@ -58,8 +166,48 @@ body {
   }
 
   .history-link:visited {
-    color: #59665f;
+    color: rgb(var(--color-muted));
   }
+}
+
+.theme-toggle-sun,
+.theme-toggle-moon {
+  position: absolute;
+  transition:
+    opacity 180ms var(--ease-brand),
+    transform 220ms var(--ease-brand);
+}
+
+.theme-toggle-sun {
+  opacity: 1;
+  transform: rotate(0deg);
+}
+
+.theme-toggle-moon {
+  opacity: 0;
+  transform: rotate(-45deg);
+}
+
+html[data-theme="dark"] .theme-toggle-sun {
+  opacity: 0;
+  transform: rotate(45deg);
+}
+
+html[data-theme="dark"] .theme-toggle-moon {
+  opacity: 1;
+  transform: rotate(0deg);
+}
+
+.theme-logo-dark {
+  display: none;
+}
+
+html[data-theme="dark"] .theme-logo-light {
+  display: none;
+}
+
+html[data-theme="dark"] .theme-logo-dark {
+  display: block;
 }
 
 /* 數據欄位（價格/距離/效期）一律等寬 */
@@ -104,7 +252,7 @@ body {
 }
 
 .paper-elevation {
-  box-shadow: 0 22px 52px rgba(37, 54, 45, 0.09);
+  box-shadow: 0 22px 52px rgb(var(--shadow-paper) / 0.09);
 }
 
 /* Landing avatars keep their original geometry and body colors; eyes are black. */
@@ -178,6 +326,13 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html.theme-switching body,
+  html.theme-switching body *,
+  .theme-toggle-sun,
+  .theme-toggle-moon {
+    transition: none;
+  }
+
   .crossfade,
   .sheet-in,
   .hero-loop-progress,
@@ -210,6 +365,6 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid #087b43;
+  outline: 2px solid rgb(var(--color-green));
   outline-offset: 1px;
 }

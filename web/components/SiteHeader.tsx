@@ -5,6 +5,7 @@ import { BrandMark } from "./BrandMark";
 import { BrandLogo } from "./BrandLogo";
 import { SearchInput } from "./SearchInput";
 import { LanguageSwitch } from "./LanguageSwitch";
+import { ThemeToggle } from "./ThemeToggle";
 import { DEFAULT_AREA } from "@/lib/data";
 import { localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
@@ -43,7 +44,10 @@ export async function SiteHeader({
               <span className="hidden sm:block"><BrandLogo height={34} /></span>
             </>
           ) : (
-            <BrandLogo height={34} />
+            <>
+              <span className="sm:hidden"><BrandMark size={34} /></span>
+              <span className="hidden sm:block"><BrandLogo height={34} /></span>
+            </>
           )}
           {showTagline && (
             <span className="ml-1 hidden border-l border-line-strong pl-3 text-[12px] font-medium tracking-[.04em] text-muted lg:inline">
@@ -65,6 +69,7 @@ export async function SiteHeader({
         <div className="hidden md:block">
           <AreaSwitch area={area} preservePath={preserveAreaPath} locatable={locatable} compact />
         </div>
+        <ThemeToggle locale={locale} />
         <LanguageSwitch />
         {/* 供給側入口。合作說明留在公司站；已開通店家從 Store OS 網域登入。 */}
         <Link
