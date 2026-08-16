@@ -131,7 +131,7 @@ function ReserveButton({
       } ${
         outline
           ? "border-forest bg-paper text-forest hover:bg-surface"
-          : "border-forest bg-forest text-paper hover:bg-ink"
+          : "border-forest bg-brand-surface text-on-dark hover:bg-brand-surface-strong"
       }`}
     >
       {locale === "en" ? "Reserve" : "預留"}

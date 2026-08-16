@@ -75,7 +75,7 @@ export function PreviewShelf({
               className={`mt-1.5 flex min-h-11 items-center justify-center border px-3 text-xs font-bold transition-[background-color,border-color,transform] active:translate-y-px ${
                 it.badge.tier === "unknown"
                   ? "border-line-strong text-muted hover:border-green hover:text-green"
-                  : "border-forest bg-forest text-paper hover:bg-ink"
+                  : "border-forest bg-brand-surface text-on-dark hover:bg-brand-surface-strong"
               }`}
             >
               {locale === "en" ? "Reserve" : "預留"}
