@@ -558,19 +558,13 @@
   white-space: nowrap;
 }
 
-.themeSwitch,
-.moreButton {
+.themeSwitch {
   min-height: 44px;
   border: 1px solid var(--line-strong);
   border-radius: 5px;
   background: var(--button-bg);
   color: var(--button-text);
   cursor: pointer;
-}
-
-.moreButton svg {
-  width: 19px;
-  height: 19px;
 }
 
 .themeSwitch {
@@ -602,13 +596,6 @@
 .themeIcon[data-active="true"] {
   background: var(--panel-3);
   color: var(--text);
-}
-
-.moreButton {
-  width: 44px;
-  padding: 0;
-  color: var(--muted);
-  letter-spacing: .08em;
 }
 
 .contentGrid {
@@ -1403,10 +1390,6 @@
   .prototypeBadge,
   .syncTime {
     display: none;
-  }
-
-  .moreButton {
-    margin-left: 0;
   }
 
   .themeSwitch {
