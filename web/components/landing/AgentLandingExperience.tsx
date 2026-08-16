@@ -19,7 +19,10 @@ import { Pepper } from "@/components/avatar-lab/Pepper";
 import { Sapling } from "@/components/avatar-lab/Sapling";
 import { Sprout } from "@/components/avatar-lab/Sprout";
 import { CompanyFooter } from "@/components/landing/CompanyFooter";
+import { footerSproutData } from "@/components/landing/footerSproutData";
 import { SHOP_URL } from "@/lib/shop";
+
+const FOOTER_EYE_CENTRE_FRACTION = (-38 + 150) / 300;
 
 type Locale = "zh" | "en";
 type AgentId = "manager" | "inventory" | "purchasing" | "checkout";
@@ -593,7 +596,8 @@ function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; loc
     if (reducedMotion || !avatarRef.current) return;
     const rect = avatarRef.current.getBoundingClientRect();
     const eyeCenterX = rect.left + rect.width / 2;
-    const eyeCenterY = rect.top + rect.height * 0.5;
+    // The footer variant lifts the eyes to y=-38 of the -150..150 viewBox.
+    const eyeCenterY = rect.top + rect.height * FOOTER_EYE_CENTRE_FRACTION;
     const x = Math.max(-1, Math.min(1, (event.clientX - eyeCenterX) / (rect.width / 2)));
     const y = Math.max(-1, Math.min(1, (event.clientY - eyeCenterY) / (rect.height / 2)));
     setEyeOffset(x * 5, y * 3, 180);
@@ -623,16 +627,15 @@ function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; loc
           aria-hidden
           data-testid="footer-manager-stage"
           data-manager-state={entered ? "resting" : "entering"}
-          className="relative mt-8 h-[412px] w-full overflow-hidden sm:mt-10 sm:h-[756px]"
+          className="relative mt-8 h-[320px] w-full overflow-hidden sm:mt-10 sm:h-[556px]"
         >
           <div
             ref={avatarRef}
             data-testid="footer-manager-body"
-            // Sprout's eyes reach y=47 of its 300-unit viewBox in the widest expression, so
-            // the footer line cannot drop much past that without submerging the face. The
-            // half-buried look comes from scaling the character up against the stage rather
-            // than from cutting lower; mobile is capped by the artwork's width, not height.
-            className="absolute left-1/2 top-0 h-[540px] w-[540px] drop-shadow-[0_30px_28px_rgba(28,39,34,.10)] will-change-transform sm:h-[1040px] sm:w-[1040px]"
+            // The line lands on the head's mid-plane (y=0 of the -150..150 viewBox), burying
+            // half the mascot. Mobile size is capped by the artwork's width rather than its
+            // height, because the stage sits inside the px-5 container.
+            className="absolute left-1/2 top-0 h-[560px] w-[560px] drop-shadow-[0_30px_28px_rgba(28,39,34,.10)] will-change-transform sm:h-[1000px] sm:w-[1000px]"
             style={{
               transform: `translate3d(-49.4%, ${entered ? 0 : 24}%, 0)`,
               transitionProperty: "transform",
@@ -640,7 +643,13 @@ function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; loc
               transitionTimingFunction: "cubic-bezier(0.32, 0.72, 0, 1)",
             }}
           >
-            <Avatar id="manager" size="100%" playing={!reducedMotion} />
+            <Sprout
+              data={footerSproutData}
+              playing={!reducedMotion}
+              loop
+              size="100%"
+              className="agent-theme-eyes"
+            />
           </div>
           <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-10 border-t border-line bg-paper sm:h-14" aria-hidden />
         </div>
