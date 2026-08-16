@@ -7,8 +7,8 @@
   --line: #262626;
   --line-strong: #494949;
   --text: #f7f7f7;
-  --muted: #b8b8b8;
-  --faint: #858585;
+  --muted: #d0d0d0;
+  --faint: #a6a6a6;
   --blue: #6e95f5;
   --blue-soft: #a8c0ff;
   --green: #55c78a;
@@ -20,7 +20,7 @@
   --count-text: #dedede;
   --button-bg: #0b0b0b;
   --button-text: #ededed;
-  --message-text: #e7e7e7;
+  --message-text: #f0f0f0;
   --notice-border: #415d83;
   --notice-bg: #132033;
   --notice-text: #c7d8ff;
@@ -28,13 +28,13 @@
   --card-active-bg: #182231;
   --approval-line: #65522d;
   --approval-bg: #17130c;
-  --approval-copy: #b2a994;
+  --approval-copy: #c8c0b1;
   --composer-bg: #050505;
   --context-bg: #030303;
   --authority-line: #57492e;
   --authority-bg: #15120c;
   --authority-title: #f0c66f;
-  --authority-copy: #aaa08c;
+  --authority-copy: #c3baa7;
   --dialog-bg: #0b0b0b;
   --dialog-boundary: #d8d8d8;
   --backdrop: rgba(0, 0, 0, .78);
