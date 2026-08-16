@@ -16,7 +16,7 @@ import type { AreaSlug, Store } from "@/lib/types";
  * 一個服務區的藥局列表。
  *
  * 刻意沒有地圖：消費者要的是「多遠、幾點關、電話幾號」，真的要導航時
- * 藥局頁與 LINE 通知裡都有 Google Maps 連結，那件事 Google 做得比我們好。
+ * 藥局頁與 Store OS 工作裡都有 Google Maps 連結，那件事 Google 做得比我們好。
  *
  * 沒有定位時，距離是 seed 算好的「距區中心」，伺服器渲染的結果就是最終
  * 結果 —— 這一段必須跟 server 一致，否則 hydration 會錯。使用者按下定位

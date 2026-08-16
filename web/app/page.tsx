@@ -63,7 +63,7 @@ const HERO_COPY: HeroLoopCopy = {
   flowLabel: "SUPPLY → ACTION → OUTCOME",
   badge: "PROTOTYPE · 示範資料",
   scanTitle: "SCAN EVENT · box/connector",
-  lineHeader: "LINE 訊息 · prototype",
+  lineHeader: "STORE OS 工作 · prototype",
   cardTitle: "這批藥的退貨窗口即將關閉",
   cardMetaLines: ["批號 TW881 · EXP 2026-11", "退貨規則：待藥師／供應商確認"],
   primaryBtn: "開始辦退貨",
@@ -79,7 +79,7 @@ const FORM_COPY: PilotFormCopy = {
   locale: "zh",
   nameLabel: "藥局名稱 *",
   areaLabel: "所在區域",
-  contactLabel: "聯絡方式（LINE ID 或電話）*",
+  contactLabel: "聯絡方式（Email 或電話）*",
   problemsLegend: "目前最常遇到的問題（選填）",
   problems: [
     "過期／報廢",
@@ -113,7 +113,7 @@ const FLOW: { n: string; title: string; body: string; hot?: boolean }[] = [
     body: "從可驗證規則開始，結合現有營運 context 準備下一步行動，交由藥師批准",
     hot: true,
   },
-  { n: "04", title: "Pharmacist approval", body: "藥師在 LINE 批准、拒絕或修正" },
+  { n: "04", title: "Pharmacist approval", body: "藥師在 Store OS 批准、拒絕或修正" },
   { n: "05", title: "Outcome receipt", body: "記錄退貨、避免報廢、減少積壓或新增成交結果" },
 ];
 
@@ -123,7 +123,7 @@ const TIMELINE = [
   { label: "進貨掃描", note: "GTIN · LOT · EXP" },
   { label: "效期／批次確認" },
   { label: "退貨窗口 approaching", note: "待確認供應商退貨規則", hot: true },
-  { label: "LINE action", note: "開始辦退貨？" },
+  { label: "Store OS action", note: "開始辦退貨？" },
   { label: "藥師回覆" },
   { label: "outcome pending / verified", last: true },
 ] as const;
@@ -435,7 +435,7 @@ export default function CompanyLandingPage() {
         </Container>
       </section>
 
-      {/* LINE action proof */}
+      {/* Store OS action proof */}
       <section className="border-b border-line">
         <Container>
           <div className="py-16 sm:py-[88px]">
@@ -445,7 +445,7 @@ export default function CompanyLandingPage() {
               </h2>
               <p className="mb-12 mt-0 text-[16.5px] leading-[1.85] text-ink-2">
                 uYao 主動把要處理的事送到
-                LINE。藥師只需批准、拒絕或修正；每次回覆都讓下一次建議更準確。
+                Store OS。藥師只需批准、拒絕或修正；每次回覆都讓下一次建議更準確。
               </p>
             </div>
             <div className="grid max-w-[860px] gap-8 sm:grid-cols-2">
@@ -520,7 +520,7 @@ export default function CompanyLandingPage() {
                 先從一家藥局、一條退貨閉環開始。
               </h2>
               <p className="m-0 max-w-[30em] text-[16.5px] leading-[1.9] text-ink-2">
-                我們正在找願意一起驗證掃描流程、退貨窗口與 LINE action
+                我們正在找願意一起驗證掃描流程、退貨窗口與 Store OS action
                 的獨立藥局。試點不要求更換 POS，也不碰病患或處方個資。
               </p>
             </div>

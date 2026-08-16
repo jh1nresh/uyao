@@ -90,7 +90,7 @@ CTA intent 全頁保持一致，不混用 `Get started`、`Work with us`、`Appl
 - Sharp edge、receipt-like、operational label 視覺。
 - Noto Sans TC／system sans 搭配 IBM Plex Mono data layer。
 - Hero 右側的 `Supply → Action → Outcome` 產品閉環。
-- LINE action card、pharmacist buttons、outcome receipt。
+- Store OS action card、pharmacist buttons、outcome receipt。
 - `Prototype`、`Example`、`Pending`、`Verified` 狀態清楚標示。
 - POS gap、return-window wedge、demand signal、evidence ladder。
 - 不使用 AI purple、gradient blob、stock doctor、fake dashboard 或 logo wall。
@@ -147,7 +147,7 @@ Navigation 加入單一低權重切換：
 - `/en` 必須是穩定 canonical URL，YC application 直接使用。
 - 語言切換保留相同 section anchor；無對應 anchor 時回到 route top。
 - `/en` 不翻譯藥品或台灣法規內容到超出已驗證範圍。
-- LINE 為產品介面名稱，保留品牌名，不翻成 generic messaging app。
+- Store OS 為產品介面名稱，不翻成 generic dashboard。
 
 ### Navigation copy
 
@@ -237,7 +237,7 @@ PROTOTYPE · EXAMPLE DATA
 SCAN EVENT
 GTIN · LOT · EXP
 
-LINE ACTION
+STORE OS ACTION
 Return window approaching
 [Start return] [This batch will sell] [Incorrect data]
 
@@ -323,7 +323,7 @@ Flow：
     Prepare and advance VERIFY / RETURN / REDUCE / REORDER / RESERVE actions
 
 04  Preserve authority
-    Pharmacists approve, reject, or correct critical decisions in LINE
+    Pharmacists approve, reject, or correct critical decisions in Store OS
 
 05  Record outcomes
     Track returns, avoided waste, reduced overstock, or completed reservations
@@ -363,7 +363,7 @@ Built around actions, not another dashboard.
 只展示三個 proof moments：
 
 1. 真實 scan／parser output。
-2. 可操作的 LINE action card。
+2. 可操作的 Store OS action card。
 3. Outcome receipt，標記 pending 或 verified。
 
 Consumer Web 若已有真實搜尋／miss／notification screenshot，加入為第四個 proof；若沒有，顯示：
@@ -408,7 +408,7 @@ Body：
 
 ```text
 We’re looking for independent pharmacies to validate scanning,
-return windows, and pharmacist-approved LINE actions—without replacing the POS.
+return windows, and pharmacist-approved Store OS actions—without replacing the POS.
 ```
 
 CTA：
@@ -417,7 +417,7 @@ CTA：
 [Join the pilot]
 ```
 
-Form 可維持中文藥局名稱與所在地輸入，但 labels 使用英文；聯絡方式允許 LINE ID、phone 或 email。
+Form 可維持中文藥局名稱與所在地輸入，但 labels 使用英文；聯絡方式允許 phone 或 email。
 
 ---
 
@@ -539,7 +539,7 @@ uYao turns inventory, expiry, and local demand into pharmacist-approved return, 
 上線 `/en` 前：
 
 1. 替換 Consumer Web 缺漏區的真實搜尋／miss／notification screenshot，或清楚標 `prototype`。
-2. 確認 LINE card 是可運作 prototype screenshot 或真實 component，不是不存在的 dashboard mockup。
+2. 確認 Store OS card 是可運作 prototype screenshot 或真實 component，不是不存在的 dashboard mockup。
 3. Hero 的 scan event 必須使用 parser 真實支援的欄位格式。
 4. Outcome receipt 在沒有實際金額時顯示 `Awaiting verified outcome`。
 5. 不增加虛構藥局、客戶 logo、testimonial 或 founder quote。
@@ -600,7 +600,7 @@ uYao turns inventory, expiry, and local demand into pharmacist-approved return, 
 - [ ] Hero CTA 在 1440×900、834×1112、390×844、375×812 初始 viewport 可見。
 - [ ] English H1 desktop 不超過兩行，mobile 不超過三行。
 - [ ] Desktop nav 單行；mobile 無水平 overflow。
-- [ ] LINE action card 在 mobile 仍可閱讀。
+- [ ] Store OS action card 在 mobile 仍可閱讀。
 
 ### Engineering verification
 

@@ -43,7 +43,7 @@ GoodRx 的逐店列表結構，但**不比價** —— 排序軸是距離與庫�
 一個搜尋框 + 品類入口(軟膏/藥膏/貼布) + 「附近現在有貨」流。不做內容農場。
 
 ## 預留流程（SLL-R pickup-first）
-搜 → 藥局 row 按[預留] → 留 LINE/手機 → 藥局端 LINE bot 按 OK → 保留 4hr → 到店付款 → 藥局按已取 → 我們記精確 -1。no-show 兩次限權。
+搜 → 藥局 row 按[預留] → 留手機 → Store OS「需要你」確認 → 保留 4hr → 到店付款 → 藥局按已取 → 我們記精確 -1。no-show 兩次限權。
 
 ## 設計方向（design brief）
 ```
@@ -58,4 +58,4 @@ Don't: 薄荷綠漸層、手機 mockup 圖、insurance-blue、圓角藥丸插畫
 （Pinterest 調研結論：pharmacy app 品類已同質化 — 薄荷綠+白卡+3D 藥丸=品類噪音，走反方向：像「藥師的工具」不像「健康 app」。）
 
 ## Out of scope
-線上支付、處方藥消費端呈現、會員系統（LINE 登入即可）、評價系統（SLL-R reputation 是後話）
+線上支付、處方藥消費端呈現、消費者會員系統、評價系統（SLL-R reputation 是後話）

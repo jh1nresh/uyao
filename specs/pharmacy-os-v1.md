@@ -28,15 +28,16 @@ uYao OS v1 的完成標準不是 dashboard 頁數，而是至少一道真實工�
 | 藥局既有掃描器 | 原本的掃描輸入，不要求藥局改操作 |
 | PharmaBox connector | 被動側錄、解析、離線暫存與盡力上傳 |
 | uYao OS | 供需訊號、規則、WorkItem、核准、執行狀態與 OutcomeReceipt |
-| LINE | 藥師的通知與低摩擦批准／拒絕／修正介面 |
-| uYao Control Plane | 裝置、綁定、失敗重試、稽核與客服；不是藥師每天使用的新後台 |
+| Store OS | 藥師的工作收件匣、批准／拒絕／修正、交接與結果介面 |
+| Web Push / PWA | Store OS 關閉時的離站提醒；不是工作狀態或批准來源 |
+| uYao Control Plane | 裝置、訂閱、失敗重試、稽核與客服 |
 
 硬邊界：
 
 - 掃描是 `Observation`，不是精確庫存數量。
 - uYao 不取代 POS、健保申報或藥師判斷。
 - agent 不自動批准高影響的退貨、補貨或藥品安全決策。
-- 日常操作留在 LINE；複雜明細才開安全的單一任務頁。
+- 日常操作集中在 Store OS；複雜明細使用同一登入邊界下的單一任務頁。
 - 不收集完成工作流所不需要的病患或處方資料。
 
 ## 目前基礎
@@ -46,8 +47,8 @@ Repo 已有以下 prototype 能力，可演進而非重寫：
 - `src/pharmabox/`：GS1／EAN 解析、session 分類、SQLite spool、USB HID 轉發。
 - `POST /api/box/ingest`：掃描事件接收與新鮮度訊號。
 - `web/lib/reservations-store.ts`：預留狀態、逾時、取消、no-show 與取貨結果。
-- `POST /api/line/webhook`：LINE 簽章驗證、藥局綁定與 postback。
-- `POST /api/reservations`：預留建立與 LINE 路由。
+- `POST /api/reservations`：預留建立與 Store OS inbox 路由。
+- `POST/DELETE /api/store/push-subscriptions`：登入店家的裝置通知訂閱與取消。
 - `/console`：內部唯讀事件流水。
 
 目前缺口：
@@ -73,7 +74,7 @@ Repo 已有以下 prototype 能力，可演進而非重寫：
                                                   WorkItem
                                           ┌──────────┼──────────┐
                                           ▼          ▼          ▼
-                                     LINE Action  Task Page  Control Plane
+                                Store OS Queue  Task Page  Control Plane
                                           └──────────┼──────────┘
                                                      ▼
                                                OutcomeReceipt
@@ -147,7 +148,7 @@ POST /api/box/ingest
   接收批次掃描事件；以 device + event id 做 idempotency。
 
 POST /api/work-items/:id/decisions
-  藥師批准、拒絕或修正。重複 LINE postback 必須安全。
+  藥師批准、拒絕或修正。重複 Store OS action 必須安全。
 
 POST /api/work-items/:id/outcomes
   寫入實際完成、失敗、數量與金額結果。
@@ -165,24 +166,25 @@ GET /api/tasks/:token
   提供安全的單一任務明細，不暴露其他藥局資料。
 
 GET /api/owner/summary
-  週期摘要；第一版可由 LINE deep link 開啟，不要求日常登入。
+  週期摘要；第一版直接從 Store OS「完成紀錄」查看。
 ```
 
 ## 介面原則
 
-第一版只有三種操作面：
+第一版只有四種操作面：
 
-1. **LINE Action**：日常批准、拒絕、修正與逾時提醒。
+1. **Store OS Queue**：日常的待處理、全部工作與完成紀錄。
 2. **Single Task Page**：顯示單一工作所需的來源、規則、明細與歷史。
-3. **uYao Control Plane**：給 uYao ops 處理裝置、綁定、重試、稽核與客服。
+3. **Web Push / PWA**：Store OS 關閉時提醒新工作、催單、取消與逾期；點擊後回到 Store OS。
+4. **uYao Control Plane**：給 uYao ops 處理裝置、通知訂閱、重試、稽核與客服。
 
-店長先收到 LINE 週報：待處理、已完成、結果金額與資料品質。只有現場反覆要求批次處理、搜尋歷史或交班時，才增加一頁式 Action Center：
+Store OS 首頁就是一頁式 Action Center：
 
 - 待批准
 - 處理中
 - 已完成／結果
 
-不先做 KPI 卡片牆、圖表首頁、聊天首頁、完整庫存編輯器或另一個 daily inbox。
+不先做 KPI 卡片牆、圖表首頁、聊天首頁或完整庫存編輯器；Store OS 是唯一店務 inbox。
 
 ## Phase 0：現場真相與安裝路徑
 
@@ -237,13 +239,13 @@ GET /api/owner/summary
 - 通用 WorkItem、Decision、Execution、OutcomeReceipt。
 - outbox／retry／dead-letter 狀態與 idempotency。
 - 裝置 heartbeat、最後同步與通知失敗告警。
-- LINE action 與安全 single-task deep link。
+- Store OS action 與安全 single-task detail。
 
 ### Reliability requirements
 
 - connector 斷網時保留本地事件；恢復後補傳。
 - server 以 at-least-once delivery 設計，重送不產生重複 WorkItem。
-- LINE 重複 postback 不重複批准或完成。
+- Store OS 重複 action 不重複批准或完成。
 - 背景排程不改寫終態。
 - tenant query 預設帶 `pharmacy_id`，避免跨店資料洩漏。
 - raw event 不被後續正規化覆寫；修正以新紀錄表示。
@@ -251,9 +253,9 @@ GET /api/owner/summary
 ### Exit gate
 
 - [ ] 同一掃描事件重送三次，只產生一個 observation／WorkItem。
-- [ ] LINE 批准、拒絕與修正都能追到 actor 和來源。
+- [ ] Store OS 批准、拒絕與修正都能追到 actor 和來源。
 - [ ] 每個終態都有 OutcomeReceipt 或失敗原因。
-- [ ] 裝置離線、LINE 推播失敗與卡住任務可被 uYao ops 看見。
+- [ ] 裝置離線、Web Push 失敗與卡住任務可被 uYao ops 看見。
 - [ ] 權限測試證明 A 藥局不能讀取 B 藥局資料。
 - [ ] 現有 parser、spool、預留與取貨測試仍全綠。
 
@@ -265,7 +267,7 @@ GET /api/owner/summary
 批號／效期 observation
 → 對照已驗證的退貨窗口
 → 建立 return WorkItem
-→ LINE 提出理由與建議
+→ Store OS 提出理由與建議
 → 藥師批准／拒絕／修正
 → 實際退貨
 → OutcomeReceipt 記錄數量、金額與差異原因
@@ -282,13 +284,13 @@ GET /api/owner/summary
 ### Exit gate
 
 - [ ] 至少一筆真實 WorkItem 從 observation 走到終態。
-- [ ] 藥師在 LINE 完成批准、拒絕或修正。
+- [ ] 藥師在 Store OS 完成批准、拒絕或修正。
 - [ ] OutcomeReceipt 有實際結果，不是預估數字。
 - [ ] 建議依據可回溯到原始 scan 與 supplier rule。
 - [ ] 現場不需要藥師每天登入另一個 dashboard。
 - [ ] 完成一次失敗／逾時演練，系統能提示人工接手。
 
-若 Phase 0 觸發 pivot，Phase 2 改驗證：真實搜尋 → 預留 → LINE 確認 → 到店取貨 → completed outcome；不得用 demo reservation 充當通過。
+若 Phase 0 觸發 pivot，Phase 2 改驗證：真實搜尋 → 預留 → Store OS 確認 → 到店取貨 → completed outcome；不得用 demo reservation 充當通過。
 
 ## Phase 3：擴張 Workflows，不擴張核心
 
@@ -314,7 +316,7 @@ Agent 準備可被藥師判斷的完整 proposal：
 - 不補貨的風險與過量的風險。
 - proposal 有效期限。
 
-LINE 只提供批准、拒絕、修正與查看明細。此階段不向藥商送單。
+Store OS 只提供批准、拒絕、修正與查看明細。此階段不向藥商送單。
 
 ### Phase 3.2：批准後由 agent 向藥商下單
 
@@ -335,7 +337,7 @@ agent 只能依 snapshot 送單，不得在執行時擴大數量、預算、品�
 或官方通訊管道；受控 browser automation 只能是沒有正式介面的後備方案，不是第一選擇。
 
 下單 API timeout 或回應遺失時，訂單進入 `unknown`／manual reconciliation，不能盲目重送。
-每次送單使用 idempotency key，防止 LINE 重複按鈕、webhook retry 或網路重試造成重複採購。
+每次送單使用 idempotency key，防止 Store OS 重複按鈕、request retry 或網路重試造成重複採購。
 
 ### Phase 3.3：藥商確認、例外與到貨對帳
 
@@ -347,7 +349,7 @@ agent 只能依 snapshot 送單，不得在執行時擴大數量、預算、品�
 - shipment、invoice、receiving scan 與實收數量。
 
 若實際價格、數量、品項、supplier 或替代政策超出 `ApprovalSnapshot`，必須建立
-`OrderException` 並回 LINE 重新批准；agent 不得默認接受。真正的終點是：
+`OrderException` 並回 Store OS 重新批准；agent 不得默認接受。真正的終點是：
 
 ```text
 SupplierOrder
@@ -375,7 +377,7 @@ effective_at / expires_at
 ```
 
 agent 只有在所有條件內才能自動下單；任何一項超界、policy 過期、資料信心不足或 supplier
-提出修改，都回 LINE 重新批准。Policy 必須可撤銷、有版本、記錄建立者，且每筆自動訂單仍產生
+提出修改，都回 Store OS 重新批准。Policy 必須可撤銷、有版本、記錄建立者，且每筆自動訂單仍產生
 完整 Approval／Execution／Outcome audit trail。
 
 ### Reorder exit gate
@@ -411,7 +413,7 @@ L3  有 10+ live pharmacies 與明確 write-back ownership 後，才評估雙向
 ### Security
 
 - production 使用正式登入、短效 deep link、tenant authorization 與 secret rotation。
-- LINE 訊息只帶完成決策所需的最少資料；敏感明細留在授權頁面。
+- Web Push 只帶辨識工作的最少資料；敏感明細留在登入後的 Store OS。
 - webhook 必須驗簽；log 不寫 API key、完整電話或非必要個資。
 - 所有管理操作留下 actor 與 audit record。
 - 採購執行只接受未過期的 ApprovalSnapshot；任何擴大金額、數量、品項或替代都需重新批准。
@@ -420,7 +422,7 @@ L3  有 10+ live pharmacies 與明確 write-back ownership 後，才評估雙向
 ### Availability and recovery
 
 - connector 至少可離線 spool；API 暫時失敗不丟事件。
-- ingestion、LINE push、cron 與 outcome write 都有明確 retry／manual fallback。
+- ingestion、Web Push、cron 與 outcome write 都有明確 retry／manual fallback。
 - dead-letter 必須能由 ops 看見並重放，不能只寫 `console.error`。
 - 備份與恢復要用測試證明，不以「供應商有備份」代替。
 - Supplier order 使用 idempotency；timeout／unknown 不可盲目 retry，必須先查詢或人工 reconciliation。
@@ -431,7 +433,7 @@ L3  有 10+ live pharmacies 與明確 write-back ownership 後，才評估雙向
 
 - device last seen／sync lag。
 - ingest success／duplicate／dead-letter。
-- LINE sent／failed／unbound。
+- Web Push sent／failed／not configured／no subscriptions。
 - WorkItem 各狀態停留時間。
 - approval latency、override rate、completion rate。
 - 有 OutcomeReceipt 的 completed work 比例。
@@ -442,7 +444,7 @@ L3  有 10+ live pharmacies 與明確 write-back ownership 後，才評估雙向
 北極星不是 dashboard DAU，而是 **有證據完成的工作**：
 
 - completed WorkItems with OutcomeReceipt。
-- LINE action 回覆率與中位核准時間。
+- Store OS action 回覆率與中位核准時間。
 - 藥師拒絕／修正率及原因。
 - 真實完成退貨、補貨或取貨的數量與金額。
 - 經藥師批准並由 agent 送單，最後完成收貨／發票 reconciliation 的採購單。
@@ -465,7 +467,7 @@ L3  有 10+ live pharmacies 與明確 write-back ownership 後，才評估雙向
 - 不做無金額、數量、品項、supplier 與有效期限上限的 autonomous ordering。
 - 不自動接受漲價、替代品、部分出貨或超出 ApprovalSnapshot 的修改。
 - 不以 browser automation 作為第一個 supplier connector；沒有正式介面時才做受控 fallback。
-- 不把內部 Console 包裝成藥師每天使用的新 dashboard。
+- 不把內部 Console 與 Store OS 混在一起；Console 只供 ops，Store OS 才是藥局工作面。
 - 不先做線上藥品交易、購物車、金流或配送。
 - 不在沒有真實多店需求前做跨店調撥。
 

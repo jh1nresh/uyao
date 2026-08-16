@@ -122,7 +122,7 @@ export async function scanSummary(): Promise<ScanRow[]> {
 // ── 決策流水 ────────────────────────────────────────────────────────
 //
 // /console 的資料源。每一行都是系統**真的做了**的事 —— 這裡不是行銷
-// 動畫，是把原本埋在 console.error 和 LINE 聊天室裡的決策攤到看得見
+// 動畫，是把原本埋在 console.error 裡的決策攤到 Store OS 看得見
 // 的地方。所以規矩只有兩條：做了才記，記的不含個資（手機號碼禁入）。
 
 const LOG_KEY = "console:log";

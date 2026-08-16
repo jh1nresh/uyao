@@ -85,7 +85,7 @@ export default async function ConsolePage({
           {locale === "en" ? "What the system did after a receiving scan" : "掃描進來之後，系統自己做了什麼"}
         </h1>
         <p className="mt-2.5 max-w-[640px] text-[15px] leading-[1.75] text-muted">
-          {locale === "en" ? "This is an internal, read-only system trace—not a pharmacy dashboard. Each row is a recorded event: a receiving scan refreshed an availability signal, a reservation was routed to LINE, or a timed workflow advanced. Pharmacies act in LINE. This page refreshes every 15 seconds." : "這是內部唯讀的系統流水，不是藥局需要學習的新後台。每一行都是實際發生的事件：進貨掃描更新供應訊號、預留單路由到藥局 LINE，或逾時流程推進。藥局仍在 LINE 操作；本頁每 15 秒更新。"}
+          {locale === "en" ? "This is an internal, read-only system trace—not the pharmacy workspace. Each row is a recorded event: a receiving scan refreshed an availability signal, a reservation reached Store OS, a Web Push alert was attempted, or a timed workflow advanced. Pharmacies act in Store OS. This page refreshes every 15 seconds." : "這是內部唯讀的系統流水，不是藥局工作介面。每一行都是實際發生的事件：進貨掃描更新供應訊號、預留單送進 Store OS、嘗試 Web Push 提醒，或逾時流程推進。藥局在 Store OS 操作；本頁每 15 秒更新。"}
         </p>
       </section>
 

@@ -23,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return locale === "en"
     ? {
         title: { absolute: "Pharmacy pilot | Expiry, return, reorder, and demand workflows | uYao" },
-        description: "Expiry and local demand signals from the scanner workflow pharmacies already use, with actions delivered in LINE.",
+        description: "Expiry and local demand signals from the scanner workflow pharmacies already use, with actions delivered in Store OS.",
         alternates,
         robots,
       }
@@ -60,7 +60,7 @@ export default async function PharmacyPage() {
           {locale === "en" ? "Expired medicine should not become disposal cost" : "過期藥不該是丟錢，還要再付清運費"}
         </h1>
         <p className="mt-2.5 text-[15px] leading-[1.75] text-muted">
-          {locale === "en" ? "uYao captures lot and expiry data from receiving scans, then delivers the next action in LINE before a supplier return window closes." : "效期雷達 — 快過退貨期限的品項，在窗口關掉前主動提醒你。過期藥從「丟錢 + 付清運費」變成「退回藥商」。"}
+          {locale === "en" ? "uYao captures lot and expiry data from receiving scans, then creates the next action in Store OS before a supplier return window closes." : "效期雷達 — 快過退貨期限的品項，在窗口關掉前主動提醒你。過期藥從「丟錢 + 付清運費」變成「退回藥商」。"}
         </p>
 
         <div className="mt-7 grid gap-x-6 gap-y-5 sm:grid-cols-3">
@@ -82,7 +82,7 @@ export default async function PharmacyPage() {
         <div className="shop-shell max-w-[960px] py-10 sm:py-12">
           <h2 className="editorial-display mb-4 text-[28px]">{locale === "en" ? "What the box does" : "盒子做什麼"}</h2>
           <p className="text-[15px] leading-[1.8] text-ink-2">
-            {locale === "en" ? <>A small inline box sits between the existing barcode scanner and POS. Receiving and dispensing continue normally; <b className="text-ink">staff do not learn a new workflow</b>. It records lot and expiry data, then sends time-sensitive actions through LINE.</> : <>一個小盒子串在你現有的條碼掃描器和電腦之間。對電腦來說它就是原本那支掃描器，進貨、調劑照掃，<b className="text-ink">店內流程一個字都不用改</b>。盒子在旁邊把每批藥的效期記下來 —— 快過退貨期限就用 LINE 直接提醒你。</>}
+            {locale === "en" ? <>A small inline box sits between the existing barcode scanner and POS. Receiving and dispensing continue normally. It records lot and expiry data, then creates time-sensitive work in Store OS and can alert subscribed devices.</> : <>一個小盒子串在你現有的條碼掃描器和電腦之間。對電腦來說它就是原本那支掃描器，進貨、調劑照掃。盒子在旁邊把每批藥的效期記下來 —— 快過退貨期限就送進 Store OS，並可提醒已開啟通知的裝置。</>}
           </p>
         </div>
       </section>
@@ -121,7 +121,7 @@ export default async function PharmacyPage() {
         <div className="shop-shell max-w-[960px] py-8">
         <div className="border border-line bg-surface px-5 py-4 text-[15px] leading-[1.7] text-ink-2">
           <div className="mb-1 font-bold text-ink">{locale === "en" ? "Already a partner pharmacy?" : "已經是合作藥局？"}</div>
-          {locale === "en" ? "Reservation decisions arrive in the pharmacy's existing LINE chat. One tap confirms the hold; there is no new dashboard to learn. The box syncs receiving and expiry signals automatically." : "預留確認走藥局端 LINE bot：消費者送出預留後，你在 LINE 按確認即可，不需要另外登入後台。庫存與效期由盒子自動同步。"}
+          {locale === "en" ? "Reservation decisions arrive under Needs you in Store OS. One tap confirms the hold, and optional Web Push alerts subscribed devices when Store OS is closed." : "預留確認直接進 Store OS 的「需要你」：消費者送出預留後，店家在同一個工作面確認；Store OS 關閉時可用 Web Push 提醒已訂閱裝置。"}
         </div>
         </div>
       </section>

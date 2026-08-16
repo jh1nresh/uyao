@@ -310,7 +310,7 @@ export default async function HomePage({
           <p className="m-0 text-[14px] font-bold text-forest">{locale === "en" ? "For pharmacies" : "給藥局"}</p>
           <h2 className="editorial-display mb-0 mt-3 text-[34px] sm:text-[44px]">{locale === "en" ? "Run an independent pharmacy?" : "開藥局的？"}</h2>
           <p className="mt-3 text-[15px] leading-[1.8] text-ink-2">
-            {locale === "en" ? "A small box connects to your existing scanner, captures batch and expiry evidence during receiving, and sends the next action in LINE without changing the in-store workflow." : "一個小盒子串在你現有的條碼掃描器上，自動記下每批藥的效期。快過退貨期限就用 LINE 提醒你，店內流程一個字都不用改。"}
+            {locale === "en" ? "A small box connects to your existing scanner, captures batch and expiry evidence during receiving, and creates the next action in Store OS." : "一個小盒子串在你現有的條碼掃描器上，自動記下每批藥的效期。快過退貨期限就送進 Store OS，並可提醒已開啟通知的裝置。"}
           </p>
           <Link
             href={localizedPath("/pharmacy", locale)}

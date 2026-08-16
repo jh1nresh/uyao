@@ -45,6 +45,13 @@ type ExportedAvatar = ComponentType<{
 type StoreTheme = "light" | "dark";
 type ComposerNoticeTone = "answer" | "success" | "warning";
 type StoreWorkView = "attention" | "all" | "completed";
+type PushState = "checking" | "available" | "enabling" | "enabled" | "disabling" | "denied" | "unsupported" | "unconfigured" | "error";
+
+function applicationServerKey(value: string): Uint8Array {
+  const padded = value.padEnd(value.length + (4 - value.length % 4) % 4, "=");
+  const decoded = atob(padded.replace(/-/g, "+").replace(/_/g, "/"));
+  return Uint8Array.from(decoded, (character) => character.charCodeAt(0));
+}
 
 const AGENT_AVATARS: Record<StoreAgentId, ExportedAvatar> = {
   manager: Sprout,
@@ -144,12 +151,12 @@ function ReservationInbox({
       ? "New reservations will appear here for confirmation."
       : view === "completed"
         ? "Picked-up, out-of-stock, cancelled, and expired reservations remain here."
-        : "When a customer reserves through uYao, the code appears here directly. No separate LINE notification is required."
+        : "When a customer reserves through uYao, the code appears here directly. Enable off-site alerts in Account settings."
     : view === "attention"
       ? "新的預留建立後，會直接出現在這裡等你確認。"
       : view === "completed"
         ? "已取貨、缺貨、取消或逾期的預留會保留在這裡。"
-        : "客戶從 uYao 完成預留後，單號會直接出現在這裡，不需要另外接收 LINE 通知。";
+        : "客戶從 uYao 完成預留後，單號會直接出現在這裡；離站提醒可在帳號設定開啟。";
   return (
     <>
       <div className={styles.workHeading}>
@@ -302,6 +309,7 @@ export function StoreOsShell({
   operatorRole,
   reservations,
   demoMode,
+  webPushPublicKey,
 }: {
   storeName: string;
   storeSlug: string;
@@ -310,6 +318,7 @@ export function StoreOsShell({
   operatorRole: StoreRole;
   reservations: StoreReservationSummary[];
   demoMode: boolean;
+  webPushPublicKey: string | null;
 }) {
   const [activeAgentId, setActiveAgentId] = useState<StoreAgentId>("manager");
   const [draftOpen, setDraftOpen] = useState(false);
@@ -326,6 +335,7 @@ export function StoreOsShell({
   const [supportOpen, setSupportOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [locale, setLocale] = useState<Locale>("zh");
+  const [pushState, setPushState] = useState<PushState>(webPushPublicKey ? "checking" : "unconfigured");
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const draftButtonRef = useRef<HTMLButtonElement>(null);
   const profileButtonRef = useRef<HTMLButtonElement>(null);
@@ -337,6 +347,98 @@ export function StoreOsShell({
   const activeAgentAvailable = isStoreAgentAvailable(activeAgentId, demoMode);
   const waitingCount = liveReservations.filter((reservation) => reservation.status === "pending_store_confirm").length;
   const completedCount = liveReservations.filter((reservation) => COMPLETED_RESERVATION_STATUSES.has(reservation.status)).length;
+
+  async function registerStoreServiceWorker(): Promise<ServiceWorkerRegistration> {
+    return navigator.serviceWorker.register("/store-sw.js", { scope: "/" });
+  }
+
+  async function syncPushSubscription(subscription: PushSubscription): Promise<boolean> {
+    const response = await fetch("/api/store/push-subscriptions", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ subscription: subscription.toJSON() }),
+    });
+    if (response.status === 401) {
+      window.location.reload();
+      return false;
+    }
+    return response.ok;
+  }
+
+  useEffect(() => {
+    if (!webPushPublicKey) {
+      setPushState("unconfigured");
+      return;
+    }
+    if (!("serviceWorker" in navigator) || !("PushManager" in window) || !("Notification" in window)) {
+      setPushState("unsupported");
+      return;
+    }
+    let stopped = false;
+    void (async () => {
+      try {
+        const registration = await registerStoreServiceWorker();
+        const subscription = await registration.pushManager.getSubscription();
+        if (stopped) return;
+        if (Notification.permission === "denied") {
+          setPushState("denied");
+        } else if (subscription) {
+          setPushState(await syncPushSubscription(subscription) ? "enabled" : "error");
+        } else {
+          setPushState("available");
+        }
+      } catch {
+        if (!stopped) setPushState("error");
+      }
+    })();
+    return () => { stopped = true; };
+  }, [webPushPublicKey]);
+
+  async function enablePush() {
+    if (!webPushPublicKey || pushState === "enabling") return;
+    setPushState("enabling");
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") {
+        setPushState(permission === "denied" ? "denied" : "available");
+        return;
+      }
+      const registration = await registerStoreServiceWorker();
+      const existing = await registration.pushManager.getSubscription();
+      const subscription = existing ?? await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: applicationServerKey(webPushPublicKey),
+      });
+      setPushState(await syncPushSubscription(subscription) ? "enabled" : "error");
+    } catch {
+      setPushState("error");
+    }
+  }
+
+  async function disablePush() {
+    if (pushState === "disabling") return;
+    setPushState("disabling");
+    try {
+      const registration = await navigator.serviceWorker.getRegistration("/");
+      const subscription = await registration?.pushManager.getSubscription();
+      if (subscription) {
+        const response = await fetch("/api/store/push-subscriptions", {
+          method: "DELETE",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ endpoint: subscription.endpoint }),
+        });
+        if (response.status === 401) {
+          window.location.reload();
+          return;
+        }
+        if (!response.ok) throw new Error("unsubscribe failed");
+        await subscription.unsubscribe();
+      }
+      setPushState("available");
+    } catch {
+      setPushState("error");
+    }
+  }
 
   function openWorkView(view: StoreWorkView) {
     setSupportOpen(false);
@@ -998,6 +1100,28 @@ export function StoreOsShell({
               <div>
                 <dt>{english ? "Account security" : "帳號安全"}</dt>
                 <dd>{english ? "Password protection enabled" : "密碼保護已啟用"}<small>{english ? "Sign-in sessions last up to 12 hours" : "登入工作階段最長 12 小時"}</small></dd>
+              </div>
+              <div>
+                <dt>{english ? "Work notifications" : "工作通知"}</dt>
+                <dd>
+                  <span className={styles.pushSetting}>
+                    <span>
+                      <strong>{english
+                        ? pushState === "enabled" ? "Enabled on this device" : pushState === "denied" ? "Blocked by browser" : pushState === "unsupported" ? "Not supported" : pushState === "unconfigured" ? "Not configured" : pushState === "error" ? "Needs attention" : "Available"
+                        : pushState === "enabled" ? "這台裝置已開啟" : pushState === "denied" ? "已被瀏覽器封鎖" : pushState === "unsupported" ? "此瀏覽器不支援" : pushState === "unconfigured" ? "尚未設定" : pushState === "error" ? "需要重新設定" : "可以開啟"}</strong>
+                      <small>{english ? "Receive new reservation, reminder, cancellation, and expiry alerts when Store OS is closed." : "Store OS 關閉時，仍可收到新預留、催單、取消與逾期提醒。"}</small>
+                    </span>
+                    {pushState === "enabled" || pushState === "disabling" ? (
+                      <button type="button" disabled={pushState === "disabling"} onClick={disablePush}>{english ? "Turn off" : "關閉通知"}</button>
+                    ) : (
+                      <button
+                        type="button"
+                        disabled={["checking", "enabling", "disabling", "denied", "unsupported", "unconfigured"].includes(pushState)}
+                        onClick={enablePush}
+                      >{pushState === "enabling" ? (english ? "Enabling…" : "開啟中…") : (english ? "Enable" : "開啟通知")}</button>
+                    )}
+                  </span>
+                </dd>
               </div>
             </dl>
             <p className={styles.profileHelp}>{english ? "Store details currently come from activation records. Ask the Support Agent to change a name, email, store, or role." : "店家資料目前由開通資料載入。需要修改姓名、信箱、門市或權限時，請由支援 Agent 協助。"}</p>

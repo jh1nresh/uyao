@@ -5,7 +5,7 @@ import { answerSupportQuestion, supportFaqs, SUPPORT_FAQS } from "./support";
 describe("Store OS 支援問答", () => {
   it("用固定規則回答預留與通知問題", () => {
     expect(answerSupportQuestion("我要去哪裡看預留單號？")?.id).toBe("reservation");
-    expect(answerSupportQuestion("LINE 沒收到通知")?.id).toBe("notification");
+    expect(answerSupportQuestion("Store OS 關閉後怎麼收到推播？")?.id).toBe("notification");
   });
 
   it("未知問題交給真人，不假裝知道答案", () => {

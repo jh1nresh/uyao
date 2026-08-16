@@ -79,7 +79,7 @@ export function PilotForm() {
           />
         </label>
         <label className="grid min-w-0 gap-1 text-[12px] font-medium text-muted" htmlFor="pilot-contact">
-          <span>{locale === "en" ? "LINE ID or phone" : "LINE ID 或電話"}</span>
+          <span>{locale === "en" ? "Email or phone" : "Email 或電話"}</span>
           <input
             id="pilot-contact"
             value={contact}

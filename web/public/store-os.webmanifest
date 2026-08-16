@@ -1,0 +1,19 @@
+{
+  "id": "/",
+  "name": "uYao Store OS",
+  "short_name": "uYao Store",
+  "description": "uYao Store OS 的店務工作與預留通知。",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#0F1512",
+  "theme_color": "#1C2722",
+  "icons": [
+    {
+      "src": "/apple-icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

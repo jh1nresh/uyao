@@ -4,18 +4,12 @@ const mocks = vi.hoisted(() => ({
   active: [] as Array<Record<string, unknown>>,
   bumpNoShow: vi.fn(async () => 1),
   logConsole: vi.fn(),
-  push: vi.fn(async () => undefined),
+  sendStorePush: vi.fn(async () => ({ status: "sent", sent: 1, failed: 0, removed: 0 })),
   save: vi.fn(async () => undefined),
-  userForStore: vi.fn(async () => "line-user"),
 }));
 
-vi.mock("@/lib/bindings", () => ({ userForStore: mocks.userForStore }));
 vi.mock("@/lib/box", () => ({ logConsole: mocks.logConsole }));
-vi.mock("@/lib/line", () => ({
-  isConfigured: () => true,
-  push: mocks.push,
-  text: vi.fn((value: string) => ({ type: "text", text: value })),
-}));
+vi.mock("@/lib/store-push", () => ({ sendStorePush: mocks.sendStorePush }));
 vi.mock("@/lib/reservations-store", () => ({
   EXPIRE_UNANSWERED_AFTER_HOURS: 12,
   REMIND_STORE_AFTER_MIN: 15,
@@ -63,8 +57,8 @@ beforeEach(() => {
   vi.clearAllMocks();
 });
 
-describe("reservation reminder cron demo isolation", () => {
-  it("updates sandbox expiry without resolving a pharmacy binding or sending LINE", async () => {
+describe("reservation reminder cron Store OS delivery", () => {
+  it("updates sandbox expiry and keeps the notification inside the demo store", async () => {
     mocks.active = [reservation("P-001", true), reservation("E-002", true)];
 
     const response = await GET(cronRequest());
@@ -75,22 +69,37 @@ describe("reservation reminder cron demo isolation", () => {
       demo: true,
       status: "expired",
     }));
-    expect(mocks.userForStore).not.toHaveBeenCalled();
-    expect(mocks.push).not.toHaveBeenCalled();
+    expect(mocks.sendStorePush).toHaveBeenCalledWith(
+      "uyao-demo",
+      expect.objectContaining({ tag: "reservation-E-002" }),
+    );
     expect(mocks.bumpNoShow).not.toHaveBeenCalled();
   });
 
-  it("keeps the existing reminder path for a real reservation", async () => {
+  it("sends one Web Push reminder for a real reservation and records the receipt", async () => {
     mocks.active = [reservation("P-003", false)];
 
     const response = await GET(cronRequest());
 
     expect(response.status).toBe(200);
-    expect(mocks.userForStore).toHaveBeenCalledWith("建利西藥房");
-    expect(mocks.push).toHaveBeenCalledOnce();
+    expect(mocks.sendStorePush).toHaveBeenCalledWith(
+      "建利西藥房",
+      expect.objectContaining({ tag: "reservation-P-003" }),
+    );
     expect(mocks.save).toHaveBeenCalledWith(expect.objectContaining({
       code: "P-003",
       remindedAt: expect.any(String),
     }));
+  });
+
+  it("does not mark a reminder delivered when the store has no subscribed device", async () => {
+    mocks.active = [reservation("P-004", false)];
+    mocks.sendStorePush.mockResolvedValueOnce({ status: "no_subscriptions", sent: 0, failed: 0, removed: 0 });
+
+    const response = await GET(cronRequest());
+
+    expect(response.status).toBe(200);
+    expect(mocks.save).not.toHaveBeenCalled();
+    await expect(response.json()).resolves.toMatchObject({ unsubscribed: 1, reminded: 0 });
   });
 });

@@ -47,7 +47,7 @@ const STATUS_UI: Record<
     label: "等藥局確認",
     tone: "wait",
     // 不能寫「確認後我們會通知你」—— 消費者只留了手機，我們沒有簡訊管道
-    // 也還沒接消費者端 LINE，那句是承諾一件做不到的事。
+    // 消費者端也還沒有推播，那句是承諾一件做不到的事。
     body: "藥局確認有貨後才開始計算保留時間，通常 10 分鐘內。這一頁會自己更新，先別關掉。",
   },
   confirmed: {
@@ -131,7 +131,7 @@ export default async function PickupPage({
   }
 
   // 藥局遲遲沒回覆時，不要再叫人乾等一個可能永遠不會來的確認。
-  // LINE 沒有已讀回報，我們唯一能依據的就是時間。
+  // Store OS 工作與 Web Push 沒有可靠已讀回報，我們唯一能依據的就是時間。
   const overdue =
     r.status === "pending_store_confirm" &&
     minutesSince(r.createdAt) > TELL_CONSUMER_AFTER_MIN;
