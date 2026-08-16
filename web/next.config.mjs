@@ -5,9 +5,8 @@ const nextConfig = {
   turbopack: { root: import.meta.dirname },
   async redirects() {
     return [
-      // 藥局端沒有後台帳號可以登入（預留確認走 LINE bot），
-      // 合作說明與試點申請統一收在 /pharmacy。
-      { source: "/pharmacy-login", destination: "/pharmacy", permanent: true },
+      // 舊登入入口直接收斂到唯一 Store OS 網域。
+      { source: "/pharmacy-login", destination: "https://store.uyaohealth.com/", permanent: true },
     ];
   },
 };

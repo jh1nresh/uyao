@@ -2,7 +2,7 @@
 
 **English** | [繁體中文](README.zh-TW.md)
 
-uYao is an AI operating system for independent pharmacies. It turns inventory, expiry, and local demand signals into return, reorder, and reservation work; pharmacists approve critical decisions in LINE, and the agent carries out only the authorized workflow and records the outcome. It connects to the pharmacy's existing scanner and POS workflow instead of replacing them or adding another daily dashboard.
+uYao is an AI operating system for independent pharmacies. It turns inventory, expiry, and local demand signals into return, reorder, and reservation work; pharmacists handle critical decisions in Store OS, and the agent carries out only the authorized workflow and records the outcome. It connects to the pharmacy's existing scanner and POS workflow instead of replacing them.
 
 - Company and pilot: [uyaohealth.com](https://uyaohealth.com)
 - Consumer search: [shop.uyaohealth.com](https://shop.uyaohealth.com)
@@ -17,7 +17,7 @@ Consumer search ─────────────────────�
                                                                                 ▼
                                                                        uYao WorkItem
                                                                                 ▼
-                                                             pharmacist decision in LINE
+                                                              pharmacist decision in Store OS
                                                                                 ▼
                                                          authorized workflow execution
                                                                                 ▼
@@ -31,7 +31,7 @@ For reordering, the target loop continues from a pharmacist-approved, immutable 
 | Path | Purpose |
 |---|---|
 | `src/` | GS1 and EAN parsing, scan-session classification, USB HID forwarding, SQLite spool, and data tools |
-| `web/` | Next.js company site, consumer search, pharmacy pilot flow, LINE reservations, and operations console |
+| `web/` | Next.js company site, consumer search, pharmacy pilot flow, Store OS reservations, Web Push, and operations console |
 | `setup/` | Raspberry Pi service and local pipeline simulator |
 | `specs/` | Product, hardware, demand-capture, and web specifications |
 | `tests/` | Scanner pipeline tests |
@@ -61,7 +61,7 @@ npm run typecheck
 - GS1 DataMatrix can carry GTIN, expiry, and batch data. A typical one-dimensional barcode does not contain complete expiry or batch data.
 - A scan proves that an item was recently observed, not the pharmacy's exact on-hand quantity.
 - The consumer product supports nearby search, reservation, and in-store pickup. It does not provide a shopping cart, online payment, delivery, or prescription-drug transactions.
-- Pharmacists keep decision authority in LINE; routine work should not require logging into another dashboard.
+- Pharmacists keep decision authority in Store OS; Web Push is an optional alert channel, not a second source of workflow state.
 - The agent executes only an approved snapshot or a future revocable, bounded delegation policy. Anything outside those limits returns to the pharmacist for approval.
 
 ## Documentation

@@ -1,8 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { userForStore } from "@/lib/bindings";
 import { logConsole } from "@/lib/box";
-import { isConfigured, push, text } from "@/lib/line";
 import {
   EXPIRE_UNANSWERED_AFTER_HOURS,
   REMIND_STORE_AFTER_MIN,
@@ -12,6 +10,8 @@ import {
   minutesSince,
   save,
 } from "@/lib/reservations-store";
+import { STORE_DEMO_SANDBOX_SLUG } from "@/lib/store-demo";
+import { sendStorePush } from "@/lib/store-push";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -19,12 +19,12 @@ export const dynamic = "force-dynamic";
 /**
  * 催沒回覆的預留。
  *
- * 為什麼需要：LINE 不提供已讀回報，所以藥局漏看那張卡片我們完全無從得知。
- * 卡片推出去了、老闆在忙、四小時過去消費者白等 —— 這是真實會發生的營運
+ * 為什麼需要：Web Push 只負責提醒，不是工作狀態；藥局漏看提醒時仍要由
+ * Store OS 的 WorkItem 時間判斷是否催單。老闆在忙、四小時過去消費者白等是營運
  * 問題，而不是理論上的邊界情況。
  *
  * 每筆只催一次（`remindedAt`），因為第二次、第三次提醒不會讓忙碌的藥師
- * 更快看到，只會讓這個聊天室變成他想靜音的東西。催過還是沒回，就該由人
+ * 更快看到，只會讓這個通知管道變成他想靜音的東西。催過還是沒回，就該由人
  * 打電話，不是讓機器繼續敲。
  *
  * 排程：`vercel.json` 的 crons。**Vercel Hobby 方案的 cron 一天只跑一次**，
@@ -61,7 +61,7 @@ export async function GET(request: Request) {
   });
 
   let reminded = 0;
-  let unbound = 0;
+  let unsubscribed = 0;
   let expired = 0;
   let noShow = 0;
 
@@ -90,53 +90,35 @@ export async function GET(request: Request) {
       if (n > 0) noShow += 1;
     }
 
-    // Demo 單只存在 Store OS sandbox；可以在這裡更新逾期狀態，但永遠不能
-    // 解析真實門市綁定或發 LINE。
-    if (r.demo) continue;
-
-    const lineUser = await userForStore(r.storeSlug).catch(() => undefined);
-    if (!lineUser || !isConfigured()) continue;
-    try {
-      await push(lineUser, [
-        text(
-          (r.demo ? "［示範］" : "") +
-            (wasConfirmed
-              ? `⏰ ${r.code} 已逾期未取\n\n${r.drugName}\n` +
-                `保留 ${r.holdHours} 小時已過，可以放回架上了。`
-              : `⏰ ${r.code} 已自動關閉\n\n${r.drugName}\n` +
-                "這筆一直沒有回覆，已經幫你關掉，不用處理。"),
-        ),
-      ]);
-    } catch (err) {
-      console.error(`[cron] 逾期通知失敗 ${r.code}`, String(err).slice(0, 200));
-    }
+    await sendStorePush(r.demo ? STORE_DEMO_SANDBOX_SLUG : r.storeSlug, {
+      title: wasConfirmed ? `${r.code} 已逾期未取` : `${r.code} 已自動關閉`,
+      body: wasConfirmed
+        ? "保留時間已過，可以放回架上；請開啟 Store OS 查看"
+        : "這筆不用處理；請開啟 Store OS 查看",
+      tag: `reservation-${r.code}`,
+    }).catch((err) => {
+      console.error(`[cron] 逾期 Web Push 失敗 ${r.code}`, String(err).slice(0, 200));
+    });
   }
 
   // ── 催單 ──────────────────────────────────────────────────────
   for (const r of active) {
     if (r.status !== "pending_store_confirm" || isExpired(r)) continue;
-    // Demo inbox 本身就是通知面，沒有任何外部提醒或藥局副作用。
-    if (r.demo) continue;
     if (r.remindedAt) continue;
     if (minutesSince(r.createdAt) < REMIND_STORE_AFTER_MIN) continue;
 
-    const lineUser = await userForStore(r.storeSlug).catch(() => undefined);
-    if (!lineUser || !isConfigured()) {
-      // 沒綁 LINE 的藥局只能靠人工。記下來讓你看得到。
-      unbound += 1;
-      console.log(`[cron] ${r.code} @ ${r.storeSlug} 逾時但該店未綁定 LINE，需人工聯絡`);
+    const result = await sendStorePush(r.demo ? STORE_DEMO_SANDBOX_SLUG : r.storeSlug, {
+      title: `${r.code} 還沒回覆`,
+      body: "消費者仍在等待確認；請開啟 Store OS 查看",
+      tag: `reservation-${r.code}`,
+    }).catch(() => ({ status: "failed" as const, sent: 0, failed: 1, removed: 0 }));
+    if (result.status !== "sent") {
+      if (result.status === "no_subscriptions") unsubscribed += 1;
+      console.log(`[cron] ${r.code} @ ${r.storeSlug} 逾時但 Web Push 未送達（${result.status}）`);
       continue;
     }
 
     try {
-      await push(lineUser, [
-        text(
-          `⚠️ ${r.code} 還沒回覆\n\n` +
-            `${r.drugName} ${r.drugSpec}\n` +
-            `${Math.round(minutesSince(r.createdAt))} 分鐘前送出，消費者還在等。\n\n` +
-            "回到上面那張卡片按「有貨，確認保留」或「沒貨」就好。",
-        ),
-      ]);
       // 只催一次 —— 標記在推播成功之後，失敗的下一輪還會再試
       await save({ ...r, remindedAt: new Date().toISOString() });
       reminded += 1;
@@ -146,9 +128,9 @@ export async function GET(request: Request) {
         `${r.demo ? "[DEMO] " : ""}${r.code} pharmacy had not replied after ${REMIND_STORE_AFTER_MIN} minutes → one automatic reminder sent`,
       );
     } catch (err) {
-      console.error(`[cron] 催單推播失敗 ${r.code}`, String(err).slice(0, 200));
+      console.error(`[cron] 催單狀態寫入失敗 ${r.code}`, String(err).slice(0, 200));
     }
   }
 
-  return NextResponse.json({ active: active.length, reminded, unbound, expired, noShow });
+  return NextResponse.json({ active: active.length, reminded, unsubscribed, expired, noShow });
 }

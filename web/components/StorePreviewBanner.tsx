@@ -15,9 +15,9 @@ export async function StorePreviewBanner({ storeName, storeSlug, demo = false }:
     <div className="border-b-2 border-green bg-green-tint px-4 py-2.5 sm:px-7 xl:px-12 2xl:px-16">
       <p className="text-[14px] leading-[1.6] text-ink">
         {demo ? locale === "en" ? (
-          <><b className="font-bold">DEMO PHARMACY</b> · This synthetic storefront is separate from every real partner pharmacy. Add a symptom or request in the reservation sheet to see the same context in the demo Store OS inbox. No LINE notification is sent.</>
+          <><b className="font-bold">DEMO PHARMACY</b> · This synthetic storefront is separate from every real partner pharmacy. Add a symptom or request in the reservation sheet to see the same context in the demo Store OS inbox. No real pharmacy device is notified.</>
         ) : (
-          <><b className="font-bold">示範藥局</b> · 這是與真實合作藥局完全分開的沙盒。預留時可填入症狀或希望協助的事情，相同脈絡會出現在 Demo Store OS；不會發送 LINE 或要求任何真實藥局留貨。</>
+          <><b className="font-bold">示範藥局</b> · 這是與真實合作藥局完全分開的沙盒。預留時可填入症狀或希望協助的事情，相同脈絡會出現在 Demo Store OS；不會通知或要求任何真實藥局留貨。</>
         ) : locale === "en" ? (
           <><b className="font-bold">DEMO PREVIEW</b> · Product names come from the partner-provided catalog; availability and prices below are simulated. Reservations go only to the uYao Store demo sandbox. <span className="text-muted">No real pharmacy is notified or asked to hold stock.</span></>
         ) : (

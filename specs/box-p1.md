@@ -1,7 +1,7 @@
 # Spec: PharmaBox P1 — 掃描器中間人盒子
 
 > Status: in progress · 2026-08-04
-> Scope: 盒子軟體本體。雲端 dashboard / LINE 推播 / 補貨預測全部 out of scope。
+> Scope: 盒子軟體本體。Store OS / Web Push / 補貨預測全部 out of scope。
 
 ## Product boundary
 串在「藥局現有掃描器 → 藥局電腦」中間的透明盒子。對藥局電腦模擬成同一支 HID 鍵盤掃描器（零工作流改變），同時側錄每筆掃描、解析、落地本地 queue、盡力上傳。

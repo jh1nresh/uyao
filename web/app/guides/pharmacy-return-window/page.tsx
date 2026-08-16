@@ -115,7 +115,7 @@ export default function ReturnWindowGuidePage() {
         <section className="mt-10">
           <h2 className="editorial-display mb-3 mt-0 text-[24px] leading-[1.4]">uYao 怎麼處理這件工作</h2>
           <p className="m-0 max-w-[38em] text-[15px] leading-[1.85] text-ink-2">
-            uYao 從進貨掃描自動留下批號與效期紀錄，在接近退貨門檻時於 LINE 主動提醒，並把單據需要的批號資料整理好交給藥師決定。退貨規則未確認的品項會明確標示「待確認」，不會假造天數。目前為 prototype 並招募試點中，詳見
+            uYao 從進貨掃描自動留下批號與效期紀錄，在接近退貨門檻時於 Store OS 建立工作並用 Web Push 提醒，並把單據需要的批號資料整理好交給藥師決定。退貨規則未確認的品項會明確標示「待確認」，不會假造天數。目前為 prototype 並招募試點中，詳見
             <Link href="/zh-tw/evidence" className="mx-1 text-forest underline underline-offset-2 hover:text-green">
               產品證據頁
             </Link>
@@ -166,7 +166,7 @@ export default function ReturnWindowGuidePage() {
 
         <KnowledgeCta
           title="不想再用便利貼追退貨窗口？"
-          body="uYao 正在招募願意一起驗證退貨窗口提醒與 LINE 決策流程的獨立藥局。試點不要求更換 POS，也不碰病患或處方個資。"
+          body="uYao 正在招募願意一起驗證退貨窗口提醒與 Store OS 決策流程的獨立藥局。試點不要求更換 POS，也不碰病患或處方個資。"
         />
       </article>
     </KnowledgeShell>

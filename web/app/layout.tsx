@@ -44,8 +44,8 @@ export async function generateMetadata(): Promise<Metadata> {
       ? { default: "uYao — AI operating system for independent pharmacies", template: "%s · uYao" }
       : { default: `${BRAND_NAME} — 獨立藥局的供需庫存 Agent`, template: `%s · ${BRAND_NAME}` },
     description: locale === "en"
-      ? "uYao turns pharmacy supply and local demand signals into pharmacist-approved actions in LINE and records the outcome."
-      : `${BRAND_NAME}從店內掃描與附近搜尋取得供需訊號，在 LINE 提出退貨、減量、補貨與預留行動，由藥師批准並記錄實際結果。`,
+      ? "uYao turns pharmacy supply and local demand signals into pharmacist-approved work in Store OS and records the outcome."
+      : `${BRAND_NAME}從店內掃描與附近搜尋取得供需訊號，在 Store OS 提出退貨、減量、補貨與預留工作，由藥師批准並記錄實際結果。`,
     openGraph: {
       siteName: BRAND_NAME,
       locale: locale === "en" ? "en_US" : "zh_TW",

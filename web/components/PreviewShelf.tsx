@@ -18,7 +18,7 @@ import type { Store } from "@/lib/types";
  *    示範是一個封閉世界，不能有通往空資料的出口。
  * 2. 每張卡直接放預留鈕，開 ReserveSheet 並帶 demo flag ——
  *    後端改走 previewOffers 驗證、整筆標示 demo，並只送進 uYao Store
- *    sandbox。公開 preview 永遠不觸發真實藥局的 LINE。
+ *    sandbox。公開 preview 永遠不觸發真實藥局的 inbox 或裝置通知。
  */
 export function PreviewShelf({
   store,

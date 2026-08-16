@@ -30,7 +30,7 @@ const CONSUMER_SURFACES = [
 ];
 
 /** 藥局端的介面，價格本來就該有 —— 老闆知道自己的售價不算「向消費者刊登」。 */
-const PHARMACY_SURFACES = ["components/PreviewShelf.tsx", "lib/line.ts"];
+const PHARMACY_SURFACES = ["components/PreviewShelf.tsx", "components/StoreOsShell.tsx"];
 
 function filesUnder(target: string): string[] {
   const abs = path.resolve(__dirname, "..", target);

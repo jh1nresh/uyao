@@ -27,7 +27,7 @@ const {
 const EN_PATH = "/en/evidence";
 const EN_TITLE = "What has uYao built? Product evidence and pilot status";
 const EN_DESCRIPTION =
-  "Code and automated tests currently verify barcode parsing, offline buffering, consumer reservations, and notifications. The scanner connector, LINE workflow, and medicine finder still include prototypes; real pharmacy return outcomes, savings, and live inventory remain unverified.";
+  "Code and automated tests currently verify barcode parsing, offline buffering, consumer reservations, Store OS, and Web Push. The scanner connector, Store OS workflow, and medicine finder still include prototypes; real pharmacy return outcomes, savings, and live inventory remain unverified.";
 const PARTNER_LOCATIONS = allStores().filter((store) => partnerForStore(store.slug));
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -77,7 +77,7 @@ const CONTENT = {
       "擷取：從現有掃描流程取得品項、批號、效期；從 Consumer Web 取得附近需求",
       "訊號：整理成退貨窗口、缺貨與積壓等待處理事項",
       "準備行動：對照可驗證規則，準備退貨、減量、補貨或預留建議",
-      "藥師批准：關鍵決策由藥師在 LINE 批准、拒絕或修正",
+      "藥師批准：關鍵決策由藥師在 Store OS 批准、拒絕或修正",
       "執行與結果：記錄實際結果（outcome receipt），回頭修正下一次建議",
     ],
     ladder: [
@@ -87,7 +87,7 @@ const CONTENT = {
         items: [
           "GS1 DataMatrix／EAN 條碼解析與批號、效期擷取（自動化測試）",
           "掃描 session 分類與離線暫存（斷線不掉資料）",
-          "消費端預留流程與 LINE 通知（自動化測試）",
+          "消費端預留流程、Store OS 與 Web Push（自動化測試）",
           "藥局試點申請表單與通知（自動化測試）",
         ],
       },
@@ -95,7 +95,7 @@ const CONTENT = {
         status: "Prototype",
         items: [
           "掃描器 connector box：串在現有條碼掃描器與電腦之間，不改店內流程",
-          "LINE 退貨／補貨核准卡片與 outcome receipt 流程",
+          "Store OS 退貨／補貨核准卡片與 outcome receipt 流程",
           "Consumer Web 找藥、到貨通知與需求訊號彙總",
         ],
       },
@@ -162,7 +162,7 @@ const CONTENT = {
       "Capture: collect item, lot, and expiry data from existing scans, plus nearby demand from the Consumer Web",
       "Signal: turn the data into return-window, stockout, and overstock work items",
       "Prepare action: apply verifiable rules to draft return, reduction, reorder, or reservation actions",
-      "Pharmacist approval: pharmacists approve, reject, or correct critical decisions in LINE",
+      "Pharmacist approval: pharmacists approve, reject, or correct critical decisions in Store OS",
       "Execution and outcome: record the actual outcome and use it to improve the next action",
     ],
     ladder: [
@@ -172,7 +172,7 @@ const CONTENT = {
         items: [
           "GS1 DataMatrix and EAN barcode parsing with lot and expiry extraction (automated tests)",
           "Scan-session classification and offline buffering without dropping data",
-          "Consumer reservation flow and LINE notifications (automated tests)",
+          "Consumer reservation flow, Store OS, and Web Push (automated tests)",
           "Pharmacy pilot application and notifications (automated tests)",
         ],
       },
@@ -180,7 +180,7 @@ const CONTENT = {
         status: "Prototype",
         items: [
           "Scanner connector box that sits between the existing scanner and computer without changing the store workflow",
-          "LINE return and reorder approval cards with an outcome-receipt flow",
+          "Store OS return and reorder approval cards with an outcome-receipt flow",
           "Consumer medicine finder, availability notifications, and demand-signal aggregation",
         ],
       },

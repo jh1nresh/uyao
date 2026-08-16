@@ -7,10 +7,9 @@ import { getDrug, getStore, previewOffers, storesForDrug } from "@/lib/data";
 import { hoursSummary } from "@/lib/hours";
 import { drugCopy } from "@/lib/i18n";
 import { stockBadge } from "@/lib/stock";
-import { userForStore } from "@/lib/bindings";
-import { isConfigured, push, reservationFlex, text } from "@/lib/line";
 import { checkReservation } from "@/lib/rate-limit";
-import { getStoreDemoSandbox } from "@/lib/store-demo";
+import { getStoreDemoSandbox, STORE_DEMO_SANDBOX_SLUG } from "@/lib/store-demo";
+import { sendStorePush } from "@/lib/store-push";
 import { appendRecord } from "@/lib/record";
 import { parseReservationIntake } from "@/lib/reservation-intake";
 import {
@@ -23,7 +22,6 @@ import {
   saveReservation,
   type StoredReservation,
 } from "@/lib/reservations-store";
-import type { NotifyResult } from "@/lib/types";
 
 export const runtime = "nodejs";
 
@@ -41,10 +39,9 @@ interface Body {
 /**
  * 手機 09xxxxxxxx（可含 - 或空白）。
  *
- * 只收手機、不收 LINE ID，因為它同時扛兩件事：
- * 1. 到店核對的尾號 —— LINE ID 沒有「尾號」可對，問「前四碼是什麼」
- *    在櫃檯很怪，而且對方通常記不精確
- * 2. 藥局要聯絡時的唯一管道（消費者端還沒接 LINE 推播）
+ * 只收手機，因為它同時扛兩件事：
+ * 1. 到店核對的尾號
+ * 2. 藥局要聯絡時的唯一管道（消費者端還沒有推播）
  */
 function normalizeContact(raw: string): { kind: "phone"; value: string } | null {
   const digits = raw.trim().replace(/[\s-]/g, "");
@@ -99,8 +96,8 @@ export async function POST(request: Request) {
     );
   }
 
-  // 節流：每一筆成功預留都會推一則 LINE 到藥局老闆手機。沒有節流的話
-  // 一個迴圈就能把他的聊天室洗版洗到封鎖我們。
+  // 節流：每一筆成功預留都會進 Store OS，並可能觸發裝置通知。沒有節流的話
+  // 一個迴圈就能洗滿店家的工作收件匣與已訂閱裝置。
   const rl = await checkReservation(request, contact.value, demo);
   if (!rl.ok) {
     return NextResponse.json(
@@ -154,64 +151,35 @@ export async function POST(request: Request) {
     ...(demo ? { demo: true as const } : {}),
   };
 
-  // 兩個去處各有職責：record sink 是給你看的通知，store 是取貨頁要讀的。
+  // 兩個去處各有職責：record sink 是營運紀錄，store 是 Store OS 與取貨頁要讀的。
   // 症狀／需求描述是健康脈絡，只留在受 Store OS 身分保護的 reservation KV。
   // record sink 可能接 webhook 或 log；絕不能因為新增欄位就把內容外送。
   const { intake: _privateIntake, ...recordWithoutIntake } = record;
-  await appendRecord("reservations", { ...recordWithoutIntake, stockTier: offer.badge.tier });
   try {
     await saveReservation(record);
   } catch (err) {
-    // Demo 的唯一收件端就是 sandbox；寫不進去卻回成功，現場會拿到一個
-    // Store OS 永遠看不到的單號。真單仍維持既有容錯：LINE 可能已能送達。
     console.error("[reservations] 寫入 store 失敗，取貨頁將查不到", code, String(err).slice(0, 200));
-    if (demo) {
-      return NextResponse.json({ error: "示範預留未送達，請再試一次" }, { status: 503 });
-    }
+    // Store OS 是唯一店務入口；寫不進去就不能假裝預留已送達。
+    return NextResponse.json({ error: demo ? "示範預留未送達，請再試一次" : "預留未送達藥局，請再試一次" }, { status: 503 });
   }
+  await appendRecord("reservations", { ...recordWithoutIntake, stockTier: offer.badge.tier });
 
-  // 真單推給藥局；demo 單只進 uYao Store sandbox。公開 preview 不得觸發
-  // 任何真實藥局的 LINE，否則一個可猜網址就能製造假的店務工作。
+  // 預留已經安全寫入 Store OS；Web Push 只是離站提醒，失敗不影響 inbox。
+  // Demo 單只提醒 uYao Store sandbox，不得觸發任何真實藥局裝置。
   const demoTag = demo ? "［示範］" : "";
   logConsole("🛎", `${demoTag}收到預留 ${code}：${drug.name} → 路由到 ${store.name}`, `${demo ? "[DEMO] " : ""}Reservation ${code} received: ${drugCopy(drug, "en").name} → routed to ${store.name}`);
-
-  let notify: NotifyResult;
-  if (demo) {
-    notify = "sandboxed";
-    logConsole("🧪", `${code} 已送到 uYao Store 示範帳號`, `${code} was sent to the uYao Store sandbox`);
+  const pushTarget = demo ? STORE_DEMO_SANDBOX_SLUG : storeSlug;
+  const pushResult = await sendStorePush(pushTarget, {
+    title: demo ? "示範預留需要確認" : "新預留需要確認",
+    body: `${code} · 請開啟 Store OS 查看`,
+    tag: `reservation-${code}`,
+  }).catch(() => ({ status: "failed" as const, sent: 0, failed: 1, removed: 0 }));
+  if (pushResult.status === "sent") {
+    logConsole("🔔", `${code} 已送到 Store OS 並推播 ${pushResult.sent} 台裝置`, `${code} reached Store OS and ${pushResult.sent} device notification(s)`);
+  } else if (pushResult.status === "no_subscriptions") {
+    logConsole("🗂", `${code} 已送到 Store OS；這家店尚未開啟裝置通知`, `${code} reached Store OS; device notifications are not enabled`);
   } else {
-    const lineUser = await userForStore(storeSlug);
-    if (!lineUser) {
-      notify = "unbound";
-      console.log(`[reservations] ${storeSlug} 尚未綁定 LINE，${code} 需人工通知`);
-      logConsole("⚠️", `${store.name} 未綁定 LINE，${code} 轉人工通知`, `${store.name} is not bound to LINE; ${code} requires manual notification`);
-    } else if (!isConfigured()) {
-      // 原本這條分支什麼都不印 —— 綁好了卻因為少一個環境變數而全靜音，
-      // 是最難查的一種。
-      notify = "not_configured";
-      console.error(`[reservations] LINE 未設定（少 token 或 secret），${code} 推不出去`);
-    } else {
-      try {
-        await push(lineUser, [
-          reservationFlex({
-            code,
-            drugName: drug.name,
-            drugSpec: drug.spec,
-            priceTwd: offer.priceTwd,
-            storeName: store.name,
-            contactKind: contact.kind,
-            contact: contact.value,
-            holdHours: HOLD_HOURS,
-          }),
-        ]);
-        notify = "sent";
-        logConsole("📲", `${code} 已推播到 ${store.name} 的 LINE，等藥師按確認`, `${code} was sent to ${store.name} in LINE; awaiting pharmacist approval`);
-      } catch (err) {
-        notify = "failed";
-        console.error("[reservations] 推播給藥局失敗", code, String(err).slice(0, 200));
-        logConsole("🔴", `${code} 推播失敗，需人工聯絡 ${store.name}`, `${code} LINE delivery failed; ${store.name} requires manual contact`);
-      }
-    }
+    console.error(`[reservations] Store OS Web Push 未送達 ${code}: ${pushResult.status}`);
   }
 
   return NextResponse.json({
@@ -219,8 +187,6 @@ export async function POST(request: Request) {
     token,
     holdHours: HOLD_HOURS,
     intakeShared: Boolean(record.intake),
-    // 示範專用診斷。真單不帶這個欄位。
-    ...(demo ? { notify } : {}),
     priceTwd: offer.priceTwd,
     store: {
       slug: store.slug,
@@ -282,26 +248,15 @@ export async function DELETE(request: Request) {
     cancelledAt: new Date().toISOString(),
   });
 
-  // 已經回報沒貨的就別再吵藥局了，那筆他早就處理完。
-  //
-  // Demo 單從未送到真實藥局，因此取消也只能更新 sandbox，不能碰 LINE。
-  if (!r.demo && r.status !== "rejected_no_stock") {
-    const lineUser = await userForStore(r.storeSlug).catch(() => undefined);
-    if (lineUser && isConfigured()) {
-      try {
-        await push(lineUser, [
-          text(
-            (r.demo ? "［示範］" : "") +
-              (wasConfirmed
-                ? `🚫 ${r.code} 已被消費者取消\n\n${r.drugName}\n` +
-                  "已經留在櫃檯的話可以放回架上了，不用再等。"
-                : `🚫 ${r.code} 已被消費者取消\n\n${r.drugName}\n不用處理了。`),
-          ),
-        ]);
-      } catch (err) {
-        console.error("[reservations] 取消通知推播失敗", r.code, String(err).slice(0, 200));
-      }
-    }
+  // 已經回報沒貨的就別再提醒；其他取消會留在 Store OS，Web Push 是最佳努力。
+  if (r.status !== "rejected_no_stock") {
+    await sendStorePush(r.demo ? STORE_DEMO_SANDBOX_SLUG : r.storeSlug, {
+      title: `${r.code} 已被消費者取消`,
+      body: wasConfirmed ? "已保留的商品可以放回架上；請開啟 Store OS 查看" : "這筆不用處理；請開啟 Store OS 查看",
+      tag: `reservation-${r.code}`,
+    }).catch((err) => {
+      console.error("[reservations] 取消 Web Push 失敗", r.code, String(err).slice(0, 200));
+    });
   }
 
   return NextResponse.json({ code: r.code, status: "cancelled" });

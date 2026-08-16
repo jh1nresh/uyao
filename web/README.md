@@ -1,6 +1,6 @@
 # uYao Web
 
-uYao 的 Next.js 16 App Router 應用，包含公司 landing、消費端附近找藥、藥局預留通知、試點申請與營運 console。
+uYao 的 Next.js 16 App Router 應用，包含公司 landing、消費端附近找藥、Store OS、PWA Web Push、試點申請與營運 console。
 
 - Landing：[uyao.vercel.app](https://uyao.vercel.app)
 - Consumer app：[shop-uyao.vercel.app](https://shop-uyao.vercel.app)
@@ -26,22 +26,23 @@ npm run build
 | `/drug/[slug]` | 藥品與附近藥局 |
 | `/store/[slug]` | 藥局店頁與可預留品項 |
 | `/search`、`/category/[slug]` | 搜尋結果與品類入口 |
-| `/pharmacy` | 藥局合作與 LINE 綁定入口 |
-| `/console` | 掃描、預留、LINE 與逾時處理流水 |
+| `https://store.uyaohealth.com/` | Store OS 店家登入、預留工作與通知設定 |
+| `/pharmacy` | 藥局合作與試點申請 |
+| `/console` | 掃描、Store OS 預留、Web Push 與逾時處理流水 |
 
 主要 API：
 
 - `POST /api/box/ingest`：接收 PharmaBox 掃描事件。
-- `POST /api/reservations`：建立預留並通知已綁定的藥局 LINE。
+- `POST /api/reservations`：建立預留、寫入 Store OS，並最佳努力送出 Web Push。
+- `POST/DELETE /api/store/push-subscriptions`：登入店家的裝置通知訂閱與取消。
 - `POST /api/demand`：記錄目錄或庫存未命中的搜尋。
 - `POST /api/pilot`：保存試點申請並寄送通知信。
-- `POST /api/line/webhook`：驗證 LINE 簽章並處理綁定／藥局回覆。
 
 ## 資料迴路
 
 ```text
 box ingest → 庫存／效期狀態 → 消費端搜尋與 console
-預留 → rate limit → LINE 藥局通知 → 確認／拒絕／完成店取
+預留 → rate limit → Store OS inbox → Web Push 提醒 → 確認／拒絕／完成店取
 試點表單 → record sinks → Resend email
 ```
 
@@ -52,11 +53,11 @@ box ingest → 庫存／效期狀態 → 消費端搜尋與 console
 | 類別 | 變數 |
 |---|---|
 | KV | `KV_REST_API_URL`、`KV_REST_API_TOKEN` |
-| LINE | `LINE_CHANNEL_SECRET`、`LINE_CHANNEL_ACCESS_TOKEN`、`LINE_ADMIN_USER_IDS` |
+| Web Push | `WEB_PUSH_PUBLIC_KEY`、`WEB_PUSH_PRIVATE_KEY`、`WEB_PUSH_SUBJECT` |
 | Email | `RESEND_API_KEY`、`PILOT_EMAIL_FROM`、`PILOT_EMAIL_TO` |
 | Record sinks | `RECORD_WEBHOOK_URL`、`PILOT_WEBHOOK_URL` |
 
-不要把實際值、Vercel sensitive pull 結果或 LINE user ID 寫進 README。
+不要把實際值、Vercel sensitive pull 結果、Push subscription endpoint 或私鑰寫進 README。
 
 ## 產品邊界
 

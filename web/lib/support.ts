@@ -14,9 +14,9 @@ export const SUPPORT_FAQS: SupportFaq[] = [
   },
   {
     id: "notification",
-    question: "為什麼沒有收到 LINE？",
-    answer: "Store OS 會直接接收預留，不需要用 LINE 收店務通知。登入後保持網頁開啟，新單會每 15 秒同步一次。",
-    keywords: ["line", "通知", "沒收到", "同步"],
+    question: "Store OS 關閉後怎麼收到新工作？",
+    answer: "到帳號與門市設定開啟工作通知。允許瀏覽器通知後，新預留、催單、取消與逾期可用 Web Push 提醒；完整工作狀態仍以 Store OS 為準。",
+    keywords: ["通知", "沒收到", "推播", "同步", "關閉"],
   },
   {
     id: "agents",
@@ -35,9 +35,9 @@ export const SUPPORT_FAQS_EN: SupportFaq[] = [
   },
   {
     id: "notification",
-    question: "Why didn't I receive a LINE notification?",
-    answer: "StoreOS receives reservations directly, so LINE is not required for store notifications. Keep the page open after signing in; new reservations sync every 15 seconds.",
-    keywords: ["line", "notification", "notify", "sync"],
+    question: "How do I receive new work when Store OS is closed?",
+    answer: "Enable Work notifications in Account and store settings. After you allow browser notifications, Web Push can alert this device about new reservations, reminders, cancellations, and expiries. Store OS remains the source of truth.",
+    keywords: ["notification", "notify", "push", "sync", "closed"],
   },
   {
     id: "agents",
