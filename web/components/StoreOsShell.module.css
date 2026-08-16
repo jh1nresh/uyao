@@ -42,8 +42,6 @@
   --shadow-strong: rgba(2, 6, 12, .4);
   --support-trigger: #111822;
   --support-panel: #101318;
-  --support-avatar: #557fe8;
-  --support-avatar-eye: #f8f4e9;
   --support-message: #15191f;
   --support-user: #101b29;
   --support-user-line: #2b4a72;
@@ -110,8 +108,6 @@
   --shadow-strong: rgba(35, 48, 62, .24);
   --support-trigger: #ffffff;
   --support-panel: #ffffff;
-  --support-avatar: #3569d8;
-  --support-avatar-eye: #ffffff;
   --support-message: #f4f6f8;
   --support-user: #eaf2ff;
   --support-user-line: #9dbbe2;

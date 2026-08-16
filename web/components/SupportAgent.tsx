@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
-import { Sprout } from "@/components/avatar-lab/Sprout";
+import { Strobi } from "@/components/avatar-lab/Strobi";
 import { answerSupportQuestion, SUPPORT_FAQS } from "@/lib/support";
 
 import styles from "./SupportAgent.module.css";
@@ -109,7 +109,7 @@ export function SupportAgent({ animate }: { animate: boolean }) {
         <section className={styles.panel} aria-label="uYao 支援">
           <header className={styles.header}>
             <span className={styles.avatar} aria-hidden="true">
-              <Sprout animation="listening" playing={animate} size="100%" />
+              <Strobi animation="listening" playing={animate} size="100%" />
             </span>
             <span>
               <strong>uYao 支援</strong>
@@ -199,7 +199,7 @@ export function SupportAgent({ animate }: { animate: boolean }) {
         onClick={() => setOpen((current) => !current)}
       >
         <span className={styles.triggerAvatar} aria-hidden="true">
-          <Sprout animation="listening" playing={animate && open} size="100%" />
+          <Strobi animation="listening" playing={animate && open} size="100%" />
         </span>
         <span>支援</span>
       </button>

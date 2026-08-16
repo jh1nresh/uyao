@@ -30,8 +30,6 @@
 
 .triggerAvatar,
 .avatar {
-  --orb-fill: var(--support-avatar);
-  --orb-eye: var(--support-avatar-eye);
   display: inline-grid;
   place-items: center;
 }
@@ -44,18 +42,6 @@
   width: 100%;
   height: 100%;
   overflow: visible;
-}
-
-.triggerAvatar > span > svg > g > path,
-.triggerAvatar > span > svg > g > g:not([clip-path]) path,
-.avatar > span > svg > g > path,
-.avatar > span > svg > g > g:not([clip-path]) path {
-  fill: var(--orb-fill) !important;
-}
-
-.triggerAvatar > span > svg > g > g[clip-path] path,
-.avatar > span > svg > g > g[clip-path] path {
-  fill: var(--orb-eye) !important;
 }
 
 .panel {
