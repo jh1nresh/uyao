@@ -172,15 +172,23 @@ export function SupportAgent({
               <Strobi animation="listening" playing={animate} size="100%" />
             </span>
             <label className={styles.visuallyHidden} htmlFor="support-question">輸入問題</label>
-            <input
-              ref={inputRef}
-              id="support-question"
-              value={question}
-              onChange={(event) => setQuestion(event.target.value)}
-              placeholder="例如：為什麼沒有新單？"
-              maxLength={600}
-            />
-            <button type="submit" disabled={!question.trim()} aria-label="送出問題">↑</button>
+            <span className={styles.composerField}>
+              <span aria-hidden="true">支援 Agent</span>
+              <input
+                ref={inputRef}
+                id="support-question"
+                value={question}
+                onChange={(event) => setQuestion(event.target.value)}
+                placeholder="例如：為什麼沒有新單？"
+                maxLength={600}
+              />
+            </span>
+            <button type="submit" disabled={!question.trim()} aria-label="送出問題">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                <path d="M12 19V5" />
+                <path d="m7 10 5-5 5 5" />
+              </svg>
+            </button>
           </form>
     </section>
   );
