@@ -17,8 +17,8 @@ import type { Store } from "@/lib/types";
  *    示範走到一半會掉進「查不到即時庫存」，整個故事斷在最關鍵的一步。
  *    示範是一個封閉世界，不能有通往空資料的出口。
  * 2. 每張卡直接放預留鈕，開 ReserveSheet 並帶 demo flag ——
- *    後端改走 previewOffers 驗證、整筆標示 demo，
- *    藥局若已綁 LINE 會當場收到標了「示範」的推播。這就是 pitch 的高潮。
+ *    後端改走 previewOffers 驗證、整筆標示 demo，並只送進 uYao Store
+ *    sandbox。公開 preview 永遠不觸發真實藥局的 LINE。
  */
 export function PreviewShelf({ store, items }: { store: Store; items: DrugRow[] }) {
   const locale = useLocale();

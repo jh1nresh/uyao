@@ -226,6 +226,11 @@ export function ReserveSheet({
 }
 
 const NOTIFY_UI: Record<NotifyResult, { ok: boolean; label: string; body: string }> = {
+  sandboxed: {
+    ok: true,
+    label: "已送到 uYao Store 示範帳號",
+    body: "相同單號會出現在 uyao-demo 的客戶預留 inbox；這筆不會通知或要求真實藥局保留商品。",
+  },
   sent: {
     ok: true,
     label: "已推播給藥局的 LINE",
@@ -249,6 +254,11 @@ const NOTIFY_UI: Record<NotifyResult, { ok: boolean; label: string; body: string
 };
 
 const NOTIFY_UI_EN: typeof NOTIFY_UI = {
+  sandboxed: {
+    ok: true,
+    label: "Sent to the uYao Store demo account",
+    body: "The same code appears in the uyao-demo reservation inbox. No real pharmacy is notified or asked to hold stock.",
+  },
   sent: {
     ok: true,
     label: "Sent to the pharmacy in LINE",

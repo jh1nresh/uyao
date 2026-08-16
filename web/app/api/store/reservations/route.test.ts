@@ -82,10 +82,35 @@ describe("GET /api/store/reservations", () => {
     expect(body.reservations[0]).not.toHaveProperty("token");
   });
 
+  it("returns preview orders only to the signed-in uyao-demo sandbox", async () => {
+    await saveReservation({
+      ...reservation("A 藥局", "D-333", "0911222555"),
+      demo: true,
+    });
+    const demoUser = { ...user, storeSlug: "uyao-demo" };
+    const response = await handleGetReservations(
+      requestWithSession(createStoreSessionToken(demoUser)),
+      activeSession,
+    );
+    const body = await response.json() as { reservations: Record<string, unknown>[] };
+
+    expect(response.status).toBe(200);
+    expect(body.reservations).toEqual([
+      expect.objectContaining({
+        code: "D-333",
+        demo: true,
+        sourceStoreName: "A 藥局",
+        contactTail: "555",
+      }),
+    ]);
+  });
+
   it("rejects a tampered tenant session", async () => {
     const token = createStoreSessionToken(user);
+    const [payload, signature] = token.split(".");
+    const tampered = `${payload}.${signature.startsWith("a") ? "b" : "a"}${signature.slice(1)}`;
     expect((await handleGetReservations(
-      requestWithSession(`${token.slice(0, -1)}x`),
+      requestWithSession(tampered),
       activeSession,
     )).status).toBe(401);
   });

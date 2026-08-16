@@ -90,7 +90,10 @@ export async function GET(request: Request) {
       if (n > 0) noShow += 1;
     }
 
-    // 示範單也通知 —— 理由同取消：卡片進得去就要出得來
+    // Demo 單只存在 Store OS sandbox；可以在這裡更新逾期狀態，但永遠不能
+    // 解析真實門市綁定或發 LINE。
+    if (r.demo) continue;
+
     const lineUser = await userForStore(r.storeSlug).catch(() => undefined);
     if (!lineUser || !isConfigured()) continue;
     try {
@@ -112,6 +115,8 @@ export async function GET(request: Request) {
   // ── 催單 ──────────────────────────────────────────────────────
   for (const r of active) {
     if (r.status !== "pending_store_confirm" || isExpired(r)) continue;
+    // Demo inbox 本身就是通知面，沒有任何外部提醒或藥局副作用。
+    if (r.demo) continue;
     if (r.remindedAt) continue;
     if (minutesSince(r.createdAt) < REMIND_STORE_AFTER_MIN) continue;
 

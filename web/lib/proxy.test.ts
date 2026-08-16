@@ -54,6 +54,14 @@ describe("canonical host routing", () => {
     );
   });
 
+  it("keeps the demo sandbox on the consumer shop host", () => {
+    const response = request("https://uyaohealth.com/zh-tw/demo/uyao-demo");
+    expect(response.status).toBe(308);
+    expect(response.headers.get("location")).toBe(
+      `${SHOP_URL}/zh-tw/demo/uyao-demo`,
+    );
+  });
+
   it("redirects company content requested on the shop host", () => {
     const response = request("https://shop.uyaohealth.com/en/pharmacy");
     expect(response.status).toBe(308);

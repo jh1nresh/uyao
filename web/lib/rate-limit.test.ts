@@ -32,7 +32,7 @@ describe("預留節流", () => {
     expect(blocked).toBe(true);
   });
 
-  it("示範單另外從嚴 —— demo 旗標是使用者傳的，能對任何已綁定藥局發卡片", async () => {
+  it("示範單另外從嚴 —— 公開 sandbox 不能被任意流量洗滿", async () => {
     const demoOk: boolean[] = [];
     for (let i = 0; i < 5; i += 1) {
       demoOk.push((await checkReservation(req("3.3.3.3"), `09111111${i}1`, true)).ok);

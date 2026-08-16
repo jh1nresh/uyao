@@ -84,6 +84,28 @@ describe("取貨憑證的鍵", () => {
     await saveReservation(make({ code: "D-111", storeSlug: "A 藥局", demo: true }));
     expect(await listStoreReservations("A 藥局")).toEqual([]);
   });
+
+  it("preview demo 單只進 uyao-demo sandbox，並保留來源店但不洩漏聯絡資料", async () => {
+    await saveReservation(make({
+      code: "D-222",
+      storeSlug: "A 藥局",
+      storeName: "A 藥局",
+      contact: "0911222444",
+      demo: true,
+    }));
+    await saveReservation(make({ code: "R-333", storeSlug: "uyao-demo" }));
+
+    const rows = await listStoreReservations("uyao-demo");
+    expect(rows).toHaveLength(1);
+    expect(rows[0]).toMatchObject({
+      code: "D-222",
+      contactTail: "444",
+      demo: true,
+      sourceStoreName: "A 藥局",
+    });
+    expect(rows[0]).not.toHaveProperty("contact");
+    expect(rows[0]).not.toHaveProperty("token");
+  });
 });
 
 describe("逾期：兩種情況責任不同", () => {
