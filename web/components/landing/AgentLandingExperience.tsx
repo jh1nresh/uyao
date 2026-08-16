@@ -366,7 +366,7 @@ function Avatar({
       playing={playing}
       loop
       size={size}
-      className={`agent-black-eyes ${className}`}
+      className={`agent-theme-eyes ${className}`}
       style={style}
     />
   );
