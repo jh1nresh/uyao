@@ -10,6 +10,7 @@ import {
 
 import { BrandMark } from "@/components/BrandMark";
 import { SupportAgent } from "@/components/SupportAgent";
+import { useAvatarEyes } from "@/components/useAvatarEyes";
 import { Flame } from "@/components/avatar-lab/Flame";
 import { Pepper } from "@/components/avatar-lab/Pepper";
 import { Sapling } from "@/components/avatar-lab/Sapling";
@@ -37,6 +38,7 @@ import type { StoreReservationSummary } from "@/lib/reservations-store";
 import styles from "./StoreOsShell.module.css";
 
 type ExportedAvatar = ComponentType<{
+  animation?: "resting";
   playing?: boolean;
   size?: number | string;
   className?: string;
@@ -293,6 +295,7 @@ function AgentOrb({
       aria-hidden="true"
     >
       <Avatar
+        animation="resting"
         className={styles.agentAvatar}
         playing={animated}
         size="100%"
@@ -336,6 +339,7 @@ export function StoreOsShell({
   const [profileOpen, setProfileOpen] = useState(false);
   const [locale, setLocale] = useState<Locale>("zh");
   const [pushState, setPushState] = useState<PushState>(webPushPublicKey ? "checking" : "unconfigured");
+  const screenRef = useRef<HTMLElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const draftButtonRef = useRef<HTMLButtonElement>(null);
   const profileButtonRef = useRef<HTMLButtonElement>(null);
@@ -347,6 +351,8 @@ export function StoreOsShell({
   const activeAgentAvailable = isStoreAgentAvailable(activeAgentId, demoMode);
   const waitingCount = liveReservations.filter((reservation) => reservation.status === "pending_store_confirm").length;
   const completedCount = liveReservations.filter((reservation) => COMPLETED_RESERVATION_STATUSES.has(reservation.status)).length;
+
+  useAvatarEyes(screenRef, !prefersReducedMotion);
 
   async function registerStoreServiceWorker(): Promise<ServiceWorkerRegistration> {
     return navigator.serviceWorker.register("/store-sw.js", { scope: "/" });
@@ -641,6 +647,7 @@ export function StoreOsShell({
 
   return (
     <main
+      ref={screenRef}
       className={styles.screen}
       lang={english ? "en" : "zh-Hant-TW"}
       data-theme={resolvedTheme}
@@ -737,7 +744,7 @@ export function StoreOsShell({
             onClick={() => setSupportOpen(true)}
           >
             <span className={styles.supportFace} aria-hidden="true">
-              <Strobi animation="listening" playing={!prefersReducedMotion} size="100%" />
+              <Strobi animation="resting" playing={!prefersReducedMotion} size="100%" />
             </span>
             <span className={styles.agentCopy}>
               <strong>{english ? "Support Agent" : "支援 Agent"}</strong>
@@ -765,7 +772,7 @@ export function StoreOsShell({
         <header className={styles.topbar}>
           {supportOpen ? (
             <span className={`${styles.supportFace} ${styles.smallFace}`} aria-hidden="true">
-              <Strobi animation="listening" playing={!prefersReducedMotion} size="100%" />
+              <Strobi animation="resting" playing={!prefersReducedMotion} size="100%" />
             </span>
           ) : (
             <AgentOrb id={activeAgent.id} active animated={!prefersReducedMotion} small />
@@ -965,7 +972,7 @@ export function StoreOsShell({
               <ol>
                 <li>
                   <span className={`${styles.supportFace} ${styles.smallFace}`} aria-hidden="true">
-                    <Strobi animation="listening" playing={!prefersReducedMotion} size="100%" />
+                    <Strobi animation="resting" playing={!prefersReducedMotion} size="100%" />
                   </span>
                   <div>
                     <strong>{english ? "Self-service answers connected" : "自助問答已連線"}</strong>
@@ -974,7 +981,7 @@ export function StoreOsShell({
                 </li>
                 <li>
                   <span className={`${styles.supportFace} ${styles.smallFace}`} aria-hidden="true">
-                    <Strobi animation="listening" playing={!prefersReducedMotion} size="100%" />
+                    <Strobi animation="resting" playing={!prefersReducedMotion} size="100%" />
                   </span>
                   <div>
                     <strong>{english ? "Human support tickets connected" : "真人支援單已連線"}</strong>
