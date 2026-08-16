@@ -44,7 +44,6 @@
   color: var(--text);
   font-size: 20px;
   font-weight: 750;
-  letter-spacing: -.01em;
 }
 
 .welcome p {
@@ -142,9 +141,9 @@
 
 .escalationHeading strong,
 .escalationHeading small { display: block; }
-.escalationHeading strong { color: var(--amber); font-size: 14px; }
-.escalationHeading small { margin-top: 4px; color: var(--muted); font-size: 12px; line-height: 1.45; }
-.escalation label { color: var(--muted); font-size: 12px; font-weight: 700; }
+.escalationHeading strong { color: var(--amber-text); font-size: 14px; }
+.escalationHeading small { margin-top: 4px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+.escalation label { color: var(--muted); font-size: 13px; font-weight: 700; }
 
 .escalation input {
   min-height: 42px;
@@ -166,12 +165,12 @@
   border-left: 2px solid var(--amber);
   background: var(--support-issue-bg);
   color: var(--message-text);
-  font-size: 12px;
-  line-height: 1.5;
+  font-size: 13px;
+  line-height: 1.6;
 }
 
-.privacyNote { color: var(--faint); font-size: 11px; }
-.error { margin: 0; color: var(--danger); font-size: 12px; line-height: 1.45; }
+.privacyNote { color: var(--faint); font-size: 12px; line-height: 1.5; }
+.error { margin: 0; color: var(--danger-text); font-size: 12px; line-height: 1.5; }
 
 .escalationActions { display: flex; justify-content: flex-end; gap: 7px; }
 .escalationActions button {
@@ -185,7 +184,7 @@
   font-weight: 650;
   cursor: pointer;
 }
-.escalationActions button[type="submit"] { border-color: var(--blue); background: var(--blue); color: #fff; font-weight: 750; }
+.escalationActions button[type="submit"] { border-color: var(--blue-solid); background: var(--blue-solid); color: #fff; font-weight: 750; }
 .escalationActions button:disabled { cursor: not-allowed; opacity: .45; }
 
 .ticket {
@@ -195,7 +194,7 @@
   border-radius: 6px;
   background: var(--success-bg);
   color: var(--success-text);
-  font-size: 12px;
+  font-size: 13px;
 }
 .ticket strong { margin-left: 4px; font-family: var(--font-mono); }
 
@@ -233,7 +232,7 @@
 .composerField > span {
   color: var(--faint);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   letter-spacing: .08em;
 }
@@ -268,9 +267,9 @@
   height: 44px;
   display: grid;
   place-items: center;
-  border: 1px solid var(--blue);
+  border: 1px solid var(--blue-solid);
   border-radius: 6px;
-  background: var(--blue);
+  background: var(--blue-solid);
   color: #fff;
   cursor: pointer;
 }
