@@ -558,17 +558,13 @@ function StoreOsPreview({
 function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; locale: Locale; reducedMotion: boolean }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
-  const introTimerRef = useRef<number | null>(null);
   const [entered, setEntered] = useState(reducedMotion);
-  const [introPeeking, setIntroPeeking] = useState(false);
-  const [engaged, setEngaged] = useState(false);
   const pilotHref = locale === "en" ? "/en/pharmacy" : "/zh-tw/pharmacy";
   const evidenceHref = locale === "en" ? "/en/evidence" : "/zh-tw/evidence";
 
   useEffect(() => {
     if (reducedMotion) {
       setEntered(true);
-      setIntroPeeking(false);
       return;
     }
 
@@ -578,44 +574,39 @@ function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; loc
       ([entry]) => {
         if (!entry.isIntersecting) return;
         setEntered(true);
-        setIntroPeeking(true);
-        introTimerRef.current = window.setTimeout(() => setIntroPeeking(false), 1400);
         observer.disconnect();
       },
       { threshold: 0.25 },
     );
     observer.observe(stage);
-    return () => {
-      observer.disconnect();
-      if (introTimerRef.current !== null) window.clearTimeout(introTimerRef.current);
-    };
+    return () => observer.disconnect();
   }, [reducedMotion]);
 
-  const setEyeOffset = (x: number, y: number) => {
-    avatarRef.current
-      ?.querySelector("svg g[clip-path]")
-      ?.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
+  const setEyeOffset = (x: number, y: number, settleMs: number) => {
+    const eyes = avatarRef.current?.querySelector<SVGGElement>("svg g[clip-path]");
+    if (!eyes) return;
+    eyes.style.transition = `transform ${settleMs}ms cubic-bezier(0.32, 0.72, 0, 1)`;
+    eyes.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
   };
-  const followEyes = (event: ReactPointerEvent<HTMLDivElement>) => {
-    if (reducedMotion || event.pointerType !== "mouse" || !stageRef.current) return;
-    const rect = stageRef.current.getBoundingClientRect();
-    const x = Math.max(-1, Math.min(1, ((event.clientX - rect.left) / rect.width) * 2 - 1));
-    const y = Math.max(-1, Math.min(1, ((event.clientY - rect.top) / rect.height) * 2 - 1));
-    setEyeOffset(x * 5, y * 3);
+  const followEyes = (event: ReactPointerEvent<HTMLElement>) => {
+    if (reducedMotion || !avatarRef.current) return;
+    const rect = avatarRef.current.getBoundingClientRect();
+    const eyeCenterX = rect.left + rect.width / 2;
+    const eyeCenterY = rect.top + rect.height * 0.5;
+    const x = Math.max(-1, Math.min(1, (event.clientX - eyeCenterX) / (rect.width / 2)));
+    const y = Math.max(-1, Math.min(1, (event.clientY - eyeCenterY) / (rect.height / 2)));
+    setEyeOffset(x * 5, y * 3, 180);
   };
-  const peeking = !reducedMotion && (introPeeking || engaged);
-  const peekState = reducedMotion ? "reduced" : !entered ? "hidden" : peeking ? "peeking" : "resting";
-  const bodyOffset = reducedMotion ? 13 : !entered ? 34 : peeking ? -2 : 13;
-  const engage = () => {
-    if (!reducedMotion) setEngaged(true);
-  };
-  const rest = () => {
-    setEngaged(false);
-    setEyeOffset(0, 0);
-  };
+  const recenterEyes = () => setEyeOffset(0, 0, 420);
 
   return (
-    <section id="meet-manager" className="overflow-hidden border-t border-line bg-paper">
+    <section
+      id="meet-manager"
+      onPointerMove={followEyes}
+      onPointerLeave={recenterEyes}
+      onPointerCancel={recenterEyes}
+      className="overflow-hidden border-t border-line bg-paper"
+    >
       <div className="mx-auto flex min-h-[720px] max-w-[1240px] flex-col items-center px-5 pt-20 text-center sm:min-h-[940px] sm:px-8 sm:pt-28">
         <div className="relative z-10 max-w-[780px]">
           <span className="num text-[11px] font-bold tracking-[.1em] text-green">MEET YOUR FIRST AGENT</span>
@@ -628,38 +619,19 @@ function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; loc
         </div>
         <div
           ref={stageRef}
-          role="button"
-          tabIndex={0}
-          aria-label={locale === "en" ? "Wake the Manager Agent" : "叫店長 Agent 探頭"}
-          aria-pressed={engaged}
+          aria-hidden
           data-testid="footer-manager-stage"
-          data-peek-state={peekState}
-          onPointerEnter={(event) => {
-            if (event.pointerType === "mouse") engage();
-          }}
-          onPointerMove={followEyes}
-          onPointerLeave={rest}
-          onPointerUp={(event) => {
-            if (event.pointerType !== "mouse" && !reducedMotion) setEngaged((current) => !current);
-          }}
-          onFocus={engage}
-          onBlur={rest}
-          onKeyDown={(event) => {
-            if ((event.key === "Enter" || event.key === " ") && !reducedMotion) {
-              event.preventDefault();
-              setEngaged((current) => !current);
-            }
-          }}
-          className="relative mt-8 h-[345px] w-full cursor-pointer overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-4 focus-visible:ring-offset-paper sm:mt-10 sm:h-[560px]"
+          data-manager-state={entered ? "resting" : "entering"}
+          className="relative mt-8 h-[400px] w-full overflow-hidden sm:mt-10 sm:h-[640px]"
         >
           <div
             ref={avatarRef}
             data-testid="footer-manager-body"
             className="absolute left-1/2 top-0 h-[540px] w-[540px] drop-shadow-[0_30px_28px_rgba(28,39,34,.10)] will-change-transform sm:h-[900px] sm:w-[900px]"
             style={{
-              transform: `translate3d(-50%, ${bodyOffset}%, 0)`,
+              transform: `translate3d(-50%, ${entered ? -3 : 30}%, 0)`,
               transitionProperty: "transform",
-              transitionDuration: reducedMotion ? "0ms" : peeking ? "520ms" : "260ms",
+              transitionDuration: reducedMotion ? "0ms" : "760ms",
               transitionTimingFunction: "cubic-bezier(0.32, 0.72, 0, 1)",
             }}
           >
