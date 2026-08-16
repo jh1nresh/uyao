@@ -559,30 +559,8 @@ function StoreOsPreview({
 }
 
 function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; locale: Locale; reducedMotion: boolean }) {
-  const stageRef = useRef<HTMLDivElement>(null);
-  const [entered, setEntered] = useState(reducedMotion);
   const pilotHref = locale === "en" ? "/en/pharmacy" : "/zh-tw/pharmacy";
   const evidenceHref = locale === "en" ? "/en/evidence" : "/zh-tw/evidence";
-
-  useEffect(() => {
-    if (reducedMotion) {
-      setEntered(true);
-      return;
-    }
-
-    const stage = stageRef.current;
-    if (!stage) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        setEntered(true);
-        observer.disconnect();
-      },
-      { threshold: 0.25 },
-    );
-    observer.observe(stage);
-    return () => observer.disconnect();
-  }, [reducedMotion]);
 
   return (
     <section id="meet-manager" className="overflow-hidden border-t border-line bg-paper">
@@ -597,23 +575,19 @@ function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; loc
           </div>
         </div>
         <div
-          ref={stageRef}
           aria-hidden
           data-testid="footer-manager-stage"
-          data-manager-state={entered ? "resting" : "entering"}
+          data-manager-state="resting"
           className="relative mt-8 h-[400px] w-full overflow-hidden sm:mt-10 sm:h-[640px]"
         >
+          {/* The x.ai/bot footer character has no entrance: it is already resting
+              in the footer when you scroll into it, and the only motion is its own
+              ambient loop plus the eyes tracking the pointer. */}
           <div
             data-testid="footer-manager-body"
-            className="absolute left-1/2 top-0 h-[540px] w-[540px] drop-shadow-[0_30px_28px_rgba(28,39,34,.10)] will-change-transform sm:h-[900px] sm:w-[900px]"
-            style={{
-              transform: `translate3d(-50%, ${entered ? -3 : 30}%, 0)`,
-              transitionProperty: "transform",
-              transitionDuration: reducedMotion ? "0ms" : "760ms",
-              transitionTimingFunction: "cubic-bezier(0.32, 0.72, 0, 1)",
-            }}
+            className="absolute left-1/2 top-0 h-[540px] w-[540px] -translate-x-1/2 translate-y-[-3%] drop-shadow-[0_30px_28px_rgba(28,39,34,.10)] sm:h-[900px] sm:w-[900px]"
           >
-            <Avatar id="manager" size="100%" playing={!reducedMotion} />
+            <Sprout animation="ambient" playing={!reducedMotion} loop size="100%" className="agent-theme-eyes" />
           </div>
           <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-10 border-t border-line bg-paper sm:h-14" aria-hidden />
         </div>
