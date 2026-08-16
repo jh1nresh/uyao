@@ -130,6 +130,7 @@ function ReservationInbox({
           <span>{waiting.length} 筆等待確認</span>
           <span>{visibleReservations.length} 筆目前顯示</span>
           <span>{withIntake} 筆附需求脈絡</span>
+          <span>最新單號在上</span>
           <span>完整電話未顯示</span>
         </div>
       </div>

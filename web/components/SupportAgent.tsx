@@ -30,6 +30,7 @@ export function SupportAgent({
   const [error, setError] = useState("");
   const [ticketId, setTicketId] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
+  const messagesRef = useRef<HTMLDivElement>(null);
   const nextMessageId = useRef(0);
   const requestId = useRef("");
 
@@ -37,6 +38,16 @@ export function SupportAgent({
     if (!active) return;
     inputRef.current?.focus();
   }, [active]);
+
+  useEffect(() => {
+    if (!active || messages.length === 0) return;
+    const container = messagesRef.current;
+    if (!container) return;
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior: animate ? "smooth" : "auto",
+    });
+  }, [active, animate, messages]);
 
   function append(role: ChatMessage["role"], text: string) {
     const id = nextMessageId.current++;
@@ -108,14 +119,14 @@ export function SupportAgent({
               <p>可以先選常見問題；找不到答案時，我會幫你整理成真人支援單。</p>
             </div>
           ) : (
-            <div className={styles.messages} aria-live="polite">
+            <div ref={messagesRef} className={styles.messages} aria-live="polite">
               {messages.map((message) => (
                 <p key={message.id} data-role={message.role}>{message.text}</p>
               ))}
             </div>
           )}
 
-          {!unresolved && !ticketId && (
+          {messages.length === 0 && !unresolved && !ticketId && (
             <div className={styles.quickQuestions} aria-label="常見問題">
               {SUPPORT_FAQS.map((faq) => (
                 <button key={faq.id} type="button" onClick={() => ask(faq.question)}>
