@@ -26,14 +26,39 @@ export const SUPPORT_FAQS: SupportFaq[] = [
   },
 ];
 
+export const SUPPORT_FAQS_EN: SupportFaq[] = [
+  {
+    id: "reservation",
+    question: "How do I handle a customer reservation?",
+    answer: "New reservations appear under Needs you. Verify the reservation code and the last three digits of the phone number, then confirm whether the store can fulfill it. Do not promise availability before confirmation.",
+    keywords: ["reservation", "order", "customer", "pickup", "code"],
+  },
+  {
+    id: "notification",
+    question: "Why didn't I receive a LINE notification?",
+    answer: "StoreOS receives reservations directly, so LINE is not required for store notifications. Keep the page open after signing in; new reservations sync every 15 seconds.",
+    keywords: ["line", "notification", "notify", "sync"],
+  },
+  {
+    id: "agents",
+    question: "Can I use the other Agents?",
+    answer: "Only the Manager Agent's reservation inbox is connected today. Inventory, Procurement, and Checkout are previews and do not perform live store operations yet.",
+    keywords: ["agent", "inventory", "procurement", "checkout", "available"],
+  },
+];
+
 function normalize(value: string): string {
   return value.trim().toLocaleLowerCase("zh-TW");
 }
 
-export function answerSupportQuestion(question: string): SupportFaq | null {
+export function supportFaqs(locale: "zh" | "en" = "zh"): SupportFaq[] {
+  return locale === "en" ? SUPPORT_FAQS_EN : SUPPORT_FAQS;
+}
+
+export function answerSupportQuestion(question: string, locale: "zh" | "en" = "zh"): SupportFaq | null {
   const normalized = normalize(question);
   if (!normalized) return null;
-  return SUPPORT_FAQS.find((faq) =>
+  return supportFaqs(locale).find((faq) =>
     normalize(faq.question) === normalized || faq.keywords.some((keyword) => normalized.includes(keyword))
   ) ?? null;
 }

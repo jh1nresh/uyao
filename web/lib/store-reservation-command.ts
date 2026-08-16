@@ -20,9 +20,9 @@ export interface StoreReservationQuestionItem {
 }
 
 const COMMANDS: Array<[StoreReservationAction, RegExp]> = [
-  ["confirm", /^(?:確認|確認有貨|有貨)\s*([a-z])[-\s]?(\d{3})$/i],
-  ["reject", /^(?:缺貨|沒貨|無庫存|回報無庫存)\s*([a-z])[-\s]?(\d{3})$/i],
-  ["pickup", /^(?:完成|已取|已領|取貨完成)\s*([a-z])[-\s]?(\d{3})$/i],
+  ["confirm", /^(?:確認|確認有貨|有貨|confirm|confirm in stock|in stock)\s*([a-z])[-\s]?(\d{3})$/i],
+  ["reject", /^(?:缺貨|沒貨|無庫存|回報無庫存|reject|out of stock)\s*([a-z])[-\s]?(\d{3})$/i],
+  ["pickup", /^(?:完成|已取|已領|取貨完成|picked up|complete pickup|complete)\s*([a-z])[-\s]?(\d{3})$/i],
 ];
 
 /** Deterministic Store OS commands: auditable actions, not free-form LLM intent. */
@@ -44,6 +44,15 @@ const STATUS_LABELS: Record<ReservationQuestionStatus, string> = {
   expired: "已逾期",
 };
 
+const STATUS_LABELS_EN: Record<ReservationQuestionStatus, string> = {
+  pending_store_confirm: "Pending confirmation",
+  confirmed: "Confirmed",
+  rejected_no_stock: "Out of stock",
+  cancelled_by_user: "Cancelled",
+  picked_up: "Picked up",
+  expired: "Expired",
+};
+
 function normalizedCode(input: string): string | null {
   const match = /([a-z])[-\s]?(\d{3})/i.exec(input);
   return match ? `${match[1].toUpperCase()}-${match[2]}` : null;
@@ -53,9 +62,44 @@ function normalizedCode(input: string): string | null {
 export function answerStoreReservationQuestion(
   input: string,
   reservations: StoreReservationQuestionItem[],
+  locale: "zh" | "en" = "zh",
 ): string | null {
   const cleaned = input.trim().replace(/[？?。！!]+$/g, "");
   if (!cleaned) return null;
+
+  if (locale === "en") {
+    const code = normalizedCode(cleaned);
+    if (code && /\b(?:status|progress|check|lookup|look up)\b/i.test(cleaned)) {
+      const reservation = reservations.find((item) => item.code.toUpperCase() === code);
+      return reservation
+        ? `${code} is “${reservation.drugName}.” Current status: ${STATUS_LABELS_EN[reservation.status]}.`
+        : `I couldn't find ${code}. I can only check recent reservations currently loaded for this store.`;
+    }
+
+    if (/\bhow many\b.*\b(?:pending|awaiting confirmation)\b|\b(?:pending|awaiting confirmation)\b.*\bhow many\b/i.test(cleaned)) {
+      const pending = reservations.filter((item) => item.status === "pending_store_confirm");
+      return pending.length === 0
+        ? "There are no reservations awaiting confirmation."
+        : `There ${pending.length === 1 ? "is" : "are"} ${pending.length} ${pending.length === 1 ? "reservation" : "reservations"} awaiting confirmation: ${pending.map((item) => item.code).join(", ")}.`;
+    }
+
+    if (/\bhow many\b.*\b(?:reservations?|orders?)\b|\b(?:reservations?|orders?)\b.*\bhow many\b/i.test(cleaned)) {
+      const pending = reservations.filter((item) => item.status === "pending_store_confirm").length;
+      const confirmed = reservations.filter((item) => item.status === "confirmed").length;
+      return `${reservations.length} recent ${reservations.length === 1 ? "reservation is" : "reservations are"} loaded: ${pending} awaiting confirmation and ${confirmed} confirmed.`;
+    }
+
+    if (/\b(?:list|show|what|which)\b.*\b(?:active|current|open)?\s*(?:reservation|order|code)s?\b/i.test(cleaned)) {
+      const active = reservations.filter((item) => (
+        item.status === "pending_store_confirm" || item.status === "confirmed"
+      ));
+      return active.length === 0
+        ? "There are no active reservation codes."
+        : `${active.length} active ${active.length === 1 ? "reservation" : "reservations"}: ${active.map((item) => `${item.code} (${STATUS_LABELS_EN[item.status]})`).join(", ")}.`;
+    }
+
+    return null;
+  }
 
   const code = normalizedCode(cleaned);
   if (code && /(?:狀態|進度|怎麼樣|如何|查詢|查一下|哪一筆)/.test(cleaned)) {

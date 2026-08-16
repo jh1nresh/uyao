@@ -1285,6 +1285,37 @@
   font-weight: 550;
 }
 
+.languageSwitch {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid var(--line-strong);
+  border-radius: 7px;
+  background: var(--panel-2);
+}
+
+.languageSwitch button {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.languageSwitch button[aria-pressed="true"] {
+  background: var(--blue);
+  color: #fff;
+}
+
+.languageSwitch button:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
 .profileHelp {
   margin: 18px 0 0;
   padding: 12px 13px;
@@ -1471,7 +1502,6 @@
   .agentCopy small,
   .agentState,
   .workNav,
-  .pharmacyStatus,
   .sectionLabel:nth-of-type(2) {
     display: none;
   }
@@ -1493,6 +1523,16 @@
   .sidebarSupport .agentCopy small,
   .sidebarSupport .agentState {
     display: block;
+  }
+
+  .pharmacyStatus {
+    min-height: 54px;
+    padding: 10px 16px;
+  }
+
+  .pharmacyStatus small {
+    margin-top: 2px;
+    font-size: 10px;
   }
 
   .shell {
@@ -1562,6 +1602,22 @@
 
   .composer {
     margin-top: 24px;
+  }
+}
+
+@media (max-width: 520px) {
+  .profileDialog dl > div {
+    grid-template-columns: 120px minmax(0, 1fr);
+  }
+
+  .languageSwitch {
+    width: 100%;
+  }
+
+  .languageSwitch button {
+    min-width: 0;
+    flex: 1;
+    padding: 0 10px;
   }
 }
 

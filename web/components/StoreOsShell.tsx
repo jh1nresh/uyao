@@ -20,11 +20,15 @@ import {
   parseStoreReservationCommand,
   type StoreReservationAction,
 } from "@/lib/store-reservation-command";
+import type { Locale } from "@/lib/i18n";
+import { parseStoreOsLocale, STORE_OS_LOCALE_STORAGE_KEY } from "@/lib/store-os-locale";
 import {
-  RESTOCK_WORK_ITEM,
   STORE_AGENTS,
+  STORE_AGENTS_EN,
   isStoreAgentAvailable,
   storeAgent,
+  storeAgentCopy,
+  storeWorkItemCopy,
   type StoreAgentId,
 } from "@/lib/store-os";
 import type { StoreRole } from "@/lib/store-identity";
@@ -58,6 +62,15 @@ const STATUS_LABELS: Record<StoreReservationSummary["status"], string> = {
   expired: "已逾期",
 };
 
+const STATUS_LABELS_EN: Record<StoreReservationSummary["status"], string> = {
+  pending_store_confirm: "Pending",
+  confirmed: "Confirmed",
+  rejected_no_stock: "Out of stock",
+  cancelled_by_user: "Cancelled",
+  picked_up: "Picked up",
+  expired: "Expired",
+};
+
 const COMPLETED_RESERVATION_STATUSES = new Set<StoreReservationSummary["status"]>([
   "rejected_no_stock",
   "cancelled_by_user",
@@ -69,6 +82,12 @@ const STORE_ROLE_LABELS: Record<StoreRole, string> = {
   owner: "店家擁有者",
   manager: "門市管理者",
   staff: "門市人員",
+};
+
+const STORE_ROLE_LABELS_EN: Record<StoreRole, string> = {
+  owner: "Store owner",
+  manager: "Store manager",
+  staff: "Store staff",
 };
 
 function taipeiTime(iso: string): string {
@@ -92,6 +111,7 @@ function ReservationInbox({
   animate,
   busyCode,
   actionError,
+  locale,
   onAction,
 }: {
   reservations: StoreReservationSummary[];
@@ -99,8 +119,11 @@ function ReservationInbox({
   animate: boolean;
   busyCode: string;
   actionError: string;
+  locale: Locale;
   onAction: (code: string, action: StoreReservationAction) => void;
 }) {
+  const english = locale === "en";
+  const statusLabels = english ? STATUS_LABELS_EN : STATUS_LABELS;
   const waiting = reservations.filter((reservation) => reservation.status === "pending_store_confirm");
   const completed = reservations.filter((reservation) => COMPLETED_RESERVATION_STATUSES.has(reservation.status));
   const visibleReservations = view === "attention"
@@ -109,49 +132,61 @@ function ReservationInbox({
       ? completed
       : reservations;
   const withIntake = visibleReservations.filter((reservation) => reservation.intake).length;
-  const heading = view === "attention" ? "需要你" : view === "completed" ? "完成紀錄" : "全部工作";
+  const heading = english
+    ? view === "attention" ? "Needs you" : view === "completed" ? "Completed" : "All work"
+    : view === "attention" ? "需要你" : view === "completed" ? "完成紀錄" : "全部工作";
   const eyebrow = view === "attention" ? "ACTION" : view === "completed" ? "CLOSED" : "ALL";
-  const emptyTitle = view === "attention"
-    ? "目前沒有需要確認的預留"
-    : view === "completed"
-      ? "還沒有完成紀錄"
-      : "還沒有預留單";
-  const emptyDetail = view === "attention"
-    ? "新的預留建立後，會直接出現在這裡等你確認。"
-    : view === "completed"
-      ? "已取貨、缺貨、取消或逾期的預留會保留在這裡。"
-      : "客戶從 uYao 完成預留後，單號會直接出現在這裡，不需要另外接收 LINE 通知。";
+  const emptyTitle = english
+    ? view === "attention" ? "No reservations need confirmation" : view === "completed" ? "No completed records yet" : "No reservations yet"
+    : view === "attention" ? "目前沒有需要確認的預留" : view === "completed" ? "還沒有完成紀錄" : "還沒有預留單";
+  const emptyDetail = english
+    ? view === "attention"
+      ? "New reservations will appear here for confirmation."
+      : view === "completed"
+        ? "Picked-up, out-of-stock, cancelled, and expired reservations remain here."
+        : "When a customer reserves through uYao, the code appears here directly. No separate LINE notification is required."
+    : view === "attention"
+      ? "新的預留建立後，會直接出現在這裡等你確認。"
+      : view === "completed"
+        ? "已取貨、缺貨、取消或逾期的預留會保留在這裡。"
+        : "客戶從 uYao 完成預留後，單號會直接出現在這裡，不需要另外接收 LINE 通知。";
   return (
     <>
       <div className={styles.workHeading}>
         <p>RESERVATIONS / {eyebrow}</p>
         <h1>{heading}</h1>
         <div>
-          <span>{waiting.length} 筆等待確認</span>
-          <span>{visibleReservations.length} 筆目前顯示</span>
-          <span>{withIntake} 筆附需求脈絡</span>
-          <span>最新單號在上</span>
-          <span>完整電話未顯示</span>
+          <span>{english ? `${waiting.length} awaiting confirmation` : `${waiting.length} 筆等待確認`}</span>
+          <span>{english ? `${visibleReservations.length} shown` : `${visibleReservations.length} 筆目前顯示`}</span>
+          <span>{english ? `${withIntake} with customer context` : `${withIntake} 筆附需求脈絡`}</span>
+          <span>{english ? "Newest first" : "最新單號在上"}</span>
+          <span>{english ? "Full phone numbers hidden" : "完整電話未顯示"}</span>
         </div>
       </div>
 
       <section className={styles.agentMessage} aria-live="polite">
         <AgentOrb id="manager" active animated={animate} />
         <div>
-          <p className={styles.sender}>店長 Agent <time>現在</time></p>
+          <p className={styles.sender}>{english ? "Manager Agent" : "店長 Agent"} <time>{english ? "Now" : "現在"}</time></p>
           <p>
-            {view === "completed"
-              ? `目前顯示 ${completed.length} 筆已結束預留；紀錄只保留店務核對所需資訊。`
-              : waiting.length > 0
-                ? `有 ${waiting.length} 筆新預留等你確認。我只顯示到店核對所需的手機末三碼。`
-                : "目前沒有等待確認的新預留；新單建立後會直接出現在這裡。"}
+            {english
+              ? view === "completed"
+                ? `${completed.length} completed reservations are shown. Records retain only what staff need for verification.`
+                : waiting.length > 0
+                  ? `${waiting.length} new reservations need confirmation. Only the last three phone digits required for in-store verification are shown.`
+                  : "No new reservations are awaiting confirmation. New reservations will appear here directly."
+              : view === "completed"
+                ? `目前顯示 ${completed.length} 筆已結束預留；紀錄只保留店務核對所需資訊。`
+                : waiting.length > 0
+                  ? `有 ${waiting.length} 筆新預留等你確認。我只顯示到店核對所需的手機末三碼。`
+                  : "目前沒有等待確認的新預留；新單建立後會直接出現在這裡。"}
           </p>
         </div>
       </section>
 
       {actionError && <p className={styles.reservationError} role="alert">{actionError}</p>}
 
-      <section className={styles.reservationList} aria-label="門市預留單">
+      <section className={styles.reservationList} aria-label={english ? "Store reservations" : "門市預留單"}>
         {visibleReservations.length === 0 ? (
           <div className={styles.emptyInbox}>
             <strong>{emptyTitle}</strong>
@@ -161,37 +196,39 @@ function ReservationInbox({
           <article className={styles.reservationCard} key={reservation.code}>
             <header>
               <span className={styles.reservationCode}>{reservation.code}</span>
-              {reservation.demo && <span className={styles.reservationDemo}>示範</span>}
-              <span data-status={reservation.status}>{STATUS_LABELS[reservation.status]}</span>
+              {reservation.demo && <span className={styles.reservationDemo}>{english ? "Demo" : "示範"}</span>}
+              <span data-status={reservation.status}>{statusLabels[reservation.status]}</span>
             </header>
             <h2>{reservation.drugName}</h2>
             <p>
               {reservation.drugSpec} · NT$ {reservation.priceTwd}
-              {reservation.sourceStoreName ? ` · 來源頁 ${reservation.sourceStoreName}` : ""}
+              {reservation.sourceStoreName ? ` · ${english ? "Source page" : "來源頁"} ${reservation.sourceStoreName}` : ""}
             </p>
             {reservation.intake && (
-              <section className={styles.reservationIntake} aria-label="顧客需求脈絡">
+              <section className={styles.reservationIntake} aria-label={english ? "Customer context" : "顧客需求脈絡"}>
                 <header>
-                  <strong>顧客需求脈絡</strong>
-                  <span>顧客已同意提供</span>
+                  <strong>{english ? "Customer context" : "顧客需求脈絡"}</strong>
+                  <span>{english ? "Shared with customer consent" : "顧客已同意提供"}</span>
                 </header>
                 {reservation.intake.searchQuery && (
                   <div>
-                    <span>Shop 原始搜尋</span>
+                    <span>{english ? "Original Shop search" : "Shop 原始搜尋"}</span>
                     <p>{reservation.intake.searchQuery}</p>
                   </div>
                 )}
                 {reservation.intake.note && (
                   <div>
-                    <span>顧客補充描述</span>
+                    <span>{english ? "Customer note" : "顧客補充描述"}</span>
                     <p>{reservation.intake.note}</p>
                   </div>
                 )}
-                <small>僅供藥師到店詢問與判斷，不代表系統診斷或品項適用性。</small>
+                <small>{english
+                  ? "For the pharmacist's in-store questions and judgment only. This is not a diagnosis or a product-suitability claim."
+                  : "僅供藥師到店詢問與判斷，不代表系統診斷或品項適用性。"}</small>
               </section>
             )}
             <footer>
-              <span>手機末三碼 {reservation.contactTail}</span>
+              <span>{english ? "Last 3 phone digits" : "手機末三碼"} {reservation.contactTail}</span>
               <time dateTime={reservation.createdAt}>{taipeiTime(reservation.createdAt)}</time>
             </footer>
             {reservation.status === "pending_store_confirm" && (
@@ -201,12 +238,12 @@ function ReservationInbox({
                   className={styles.reservationPrimaryAction}
                   disabled={busyCode === reservation.code}
                   onClick={() => onAction(reservation.code, "confirm")}
-                >{busyCode === reservation.code ? "處理中…" : "確認有貨"}</button>
+                >{busyCode === reservation.code ? (english ? "Processing…" : "處理中…") : (english ? "Confirm in stock" : "確認有貨")}</button>
                 <button
                   type="button"
                   disabled={busyCode === reservation.code}
                   onClick={() => onAction(reservation.code, "reject")}
-                >回報無庫存</button>
+                >{english ? "Report out of stock" : "回報無庫存"}</button>
               </div>
             )}
             {reservation.status === "confirmed" && (
@@ -216,7 +253,7 @@ function ReservationInbox({
                   className={styles.reservationPrimaryAction}
                   disabled={busyCode === reservation.code}
                   onClick={() => onAction(reservation.code, "pickup")}
-                >{busyCode === reservation.code ? "處理中…" : "完成取貨"}</button>
+                >{busyCode === reservation.code ? (english ? "Processing…" : "處理中…") : (english ? "Complete pickup" : "完成取貨")}</button>
               </div>
             )}
           </article>
@@ -288,11 +325,15 @@ export function StoreOsShell({
   const [reservationActionError, setReservationActionError] = useState("");
   const [supportOpen, setSupportOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [locale, setLocale] = useState<Locale>("zh");
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const draftButtonRef = useRef<HTMLButtonElement>(null);
   const profileButtonRef = useRef<HTMLButtonElement>(null);
   const profileCloseButtonRef = useRef<HTMLButtonElement>(null);
-  const activeAgent = storeAgent(activeAgentId);
+  const english = locale === "en";
+  const agents = english ? STORE_AGENTS_EN : STORE_AGENTS;
+  const activeAgent = storeAgentCopy(activeAgentId, locale);
+  const workItem = storeWorkItemCopy(locale);
   const activeAgentAvailable = isStoreAgentAvailable(activeAgentId, demoMode);
   const waitingCount = liveReservations.filter((reservation) => reservation.status === "pending_store_confirm").length;
   const completedCount = liveReservations.filter((reservation) => COMPLETED_RESERVATION_STATUSES.has(reservation.status)).length;
@@ -301,6 +342,18 @@ export function StoreOsShell({
     setSupportOpen(false);
     setActiveAgentId("manager");
     setWorkView(view);
+  }
+
+  useEffect(() => {
+    setLocale(parseStoreOsLocale(window.localStorage.getItem(STORE_OS_LOCALE_STORAGE_KEY)));
+  }, []);
+
+  function changeLocale(next: Locale) {
+    setLocale(next);
+    setMessage("");
+    setComposerNotice("");
+    setReservationActionError("");
+    window.localStorage.setItem(STORE_OS_LOCALE_STORAGE_KEY, next);
   }
 
   useEffect(() => {
@@ -422,19 +475,29 @@ export function StoreOsShell({
         error?: string;
       } | null;
       if (!response.ok || !result?.reservation) {
-        const error = result?.error || "目前無法更新這筆預留，請稍後再試。";
+        const error = english
+          ? response.status === 404
+            ? "Reservation not found."
+            : response.status === 409
+              ? "This reservation changed. Refresh and try again."
+              : "This reservation can't be updated right now. Please try again later."
+          : (result?.error || "目前無法更新這筆預留，請稍後再試。");
         setReservationActionError(`${code} · ${error}`);
         return false;
       }
       setLiveReservations((current) => current.map((item) => (
         item.code === code ? result.reservation! : item
       )));
-      const actionLabel = action === "confirm" ? "已確認有貨" : action === "reject" ? "已回報無庫存" : "已完成取貨";
-      setComposerNotice(`${code} ${actionLabel}；消費者取貨頁會同步更新。`);
+      const actionLabel = english
+        ? action === "confirm" ? "confirmed in stock" : action === "reject" ? "reported out of stock" : "marked as picked up"
+        : action === "confirm" ? "已確認有貨" : action === "reject" ? "已回報無庫存" : "已完成取貨";
+      setComposerNotice(english
+        ? `${code} ${actionLabel}. The customer's pickup page will update automatically.`
+        : `${code} ${actionLabel}；消費者取貨頁會同步更新。`);
       setComposerNoticeTone("success");
       return true;
     } catch {
-      setReservationActionError(`${code} · 網路連線失敗，狀態尚未更新。`);
+      setReservationActionError(`${code} · ${english ? "Network request failed; status was not updated." : "網路連線失敗，狀態尚未更新。"}`);
       return false;
     } finally {
       setReservationBusyCode("");
@@ -447,8 +510,8 @@ export function StoreOsShell({
     if (activeAgentId !== "manager") {
       setComposerNoticeTone("warning");
       setComposerNotice(activeAgentAvailable
-        ? "這個 Demo 只展示 Agent 工作狀態；尚未執行正式店務。"
-        : `${activeAgent.name} 尚未開通；目前只有店長 Agent 可以處理預留。`);
+        ? (english ? "This demo only shows Agent work status; it does not perform live store operations." : "這個 Demo 只展示 Agent 工作狀態；尚未執行正式店務。")
+        : (english ? `${activeAgent.name} is not available yet. Only the Manager Agent can handle reservations.` : `${activeAgent.name} 尚未開通；目前只有店長 Agent 可以處理預留。`));
       return;
     }
     const command = parseStoreReservationCommand(message);
@@ -456,7 +519,7 @@ export function StoreOsShell({
       if (await updateReservation(command.code, command.action)) setMessage("");
       return;
     }
-    const answer = answerStoreReservationQuestion(message, liveReservations);
+    const answer = answerStoreReservationQuestion(message, liveReservations, locale);
     if (answer) {
       setComposerNotice(answer);
       setComposerNoticeTone("answer");
@@ -464,7 +527,9 @@ export function StoreOsShell({
       return;
     }
     setComposerNoticeTone("warning");
-    setComposerNotice("我目前可以回答單號、預留數量與狀態；也可以執行：確認 A-123、缺貨 A-123、完成 A-123。");
+    setComposerNotice(english
+      ? "I can answer questions about reservation codes, counts, and status. I can also run: Confirm A-123, Out of stock A-123, or Complete pickup A-123."
+      : "我目前可以回答單號、預留數量與狀態；也可以執行：確認 A-123、缺貨 A-123、完成 A-123。");
   }
 
   async function logout() {
@@ -475,6 +540,7 @@ export function StoreOsShell({
   return (
     <main
       className={styles.screen}
+      lang={english ? "en" : "zh-Hant-TW"}
       data-theme={resolvedTheme}
       data-sidebar={sidebarCollapsed ? "collapsed" : "expanded"}
     >
@@ -490,8 +556,8 @@ export function StoreOsShell({
             className={styles.sidebarToggle}
             aria-controls="store-agent-sidebar"
             aria-expanded={!sidebarCollapsed}
-            aria-label={sidebarCollapsed ? "展開側邊欄" : "收合側邊欄"}
-            title={sidebarCollapsed ? "展開側邊欄" : "收合側邊欄"}
+            aria-label={sidebarCollapsed ? (english ? "Expand sidebar" : "展開側邊欄") : (english ? "Collapse sidebar" : "收合側邊欄")}
+            title={sidebarCollapsed ? (english ? "Expand sidebar" : "展開側邊欄") : (english ? "Collapse sidebar" : "收合側邊欄")}
             onClick={toggleSidebar}
           >
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
@@ -501,9 +567,9 @@ export function StoreOsShell({
           </button>
         </div>
 
-        <p className={styles.sectionLabel}>你的店務團隊</p>
+        <p className={styles.sectionLabel}>{english ? "Your store team" : "你的店務團隊"}</p>
         <div className={styles.agentList}>
-          {STORE_AGENTS.map((agent) => {
+          {agents.map((agent) => {
             const available = isStoreAgentAvailable(agent.id, demoMode);
             return (
               <button
@@ -537,26 +603,26 @@ export function StoreOsShell({
           })}
         </div>
 
-        <p className={styles.sectionLabel}>工作</p>
-        <nav className={styles.workNav} aria-label="工作分類">
+        <p className={styles.sectionLabel}>{english ? "Work" : "工作"}</p>
+        <nav className={styles.workNav} aria-label={english ? "Work categories" : "工作分類"}>
           <button
             type="button"
             className={workView === "attention" && !supportOpen && activeAgentId === "manager" ? styles.workNavActive : ""}
             aria-current={workView === "attention" && !supportOpen && activeAgentId === "manager" ? "page" : undefined}
             onClick={() => openWorkView("attention")}
-          >需要你 <b>{waitingCount}</b></button>
+          >{english ? "Needs you" : "需要你"} <b>{waitingCount}</b></button>
           <button
             type="button"
             className={workView === "all" && !supportOpen && activeAgentId === "manager" ? styles.workNavActive : ""}
             aria-current={workView === "all" && !supportOpen && activeAgentId === "manager" ? "page" : undefined}
             onClick={() => openWorkView("all")}
-          >全部工作 <b>{liveReservations.length}</b></button>
+          >{english ? "All work" : "全部工作"} <b>{liveReservations.length}</b></button>
           <button
             type="button"
             className={workView === "completed" && !supportOpen && activeAgentId === "manager" ? styles.workNavActive : ""}
             aria-current={workView === "completed" && !supportOpen && activeAgentId === "manager" ? "page" : undefined}
             onClick={() => openWorkView("completed")}
-          >完成紀錄 <b>{completedCount}</b></button>
+          >{english ? "Completed" : "完成紀錄"} <b>{completedCount}</b></button>
         </nav>
 
         <div className={styles.sidebarSupport}>
@@ -564,18 +630,18 @@ export function StoreOsShell({
             type="button"
             className={`${styles.agentRow} ${supportOpen ? styles.agentRowActive : ""}`}
             aria-pressed={supportOpen}
-            aria-label="支援 Agent · 待命"
-            title={sidebarCollapsed ? "支援 Agent · 待命" : undefined}
+            aria-label={english ? "Support Agent · Standing by" : "支援 Agent · 待命"}
+            title={sidebarCollapsed ? (english ? "Support Agent · Standing by" : "支援 Agent · 待命") : undefined}
             onClick={() => setSupportOpen(true)}
           >
             <span className={styles.supportFace} aria-hidden="true">
               <Strobi animation="listening" playing={!prefersReducedMotion} size="100%" />
             </span>
             <span className={styles.agentCopy}>
-              <strong>支援 Agent</strong>
-              <small>操作協助與真人支援</small>
+              <strong>{english ? "Support Agent" : "支援 Agent"}</strong>
+              <small>{english ? "Product help and human support" : "操作協助與真人支援"}</small>
             </span>
-            <span className={`${styles.agentState} ${styles.idle}`}>待命</span>
+            <span className={`${styles.agentState} ${styles.idle}`}>{english ? "Standing by" : "待命"}</span>
           </button>
         </div>
 
@@ -584,11 +650,11 @@ export function StoreOsShell({
           type="button"
           className={styles.pharmacyStatus}
           onClick={() => setProfileOpen(true)}
-          aria-label="開啟帳號與門市設定"
+          aria-label={english ? "Open account and store settings" : "開啟帳號與門市設定"}
           aria-haspopup="dialog"
         >
           <i aria-hidden="true" />
-          <span><strong>{storeName}</strong><small>{operatorName} · 系統連線正常</small></span>
+          <span><strong>{storeName}</strong><small>{operatorName} · {english ? "System connected" : "系統連線正常"}</small></span>
           <span className={styles.profileChevron} aria-hidden="true">›</span>
         </button>
       </aside>
@@ -603,14 +669,14 @@ export function StoreOsShell({
             <AgentOrb id={activeAgent.id} active small />
           )}
           <span className={styles.topbarAgent}>
-            <strong>{supportOpen ? "支援 Agent" : activeAgent.name}</strong>
+            <strong>{supportOpen ? (english ? "Support Agent" : "支援 Agent") : activeAgent.name}</strong>
             <small>
               {supportOpen
-                ? "操作協助與真人支援 · 已連線"
+                ? (english ? "Product help and human support · Connected" : "操作協助與真人支援 · 已連線")
                 : `${activeAgent.description} · ${activeAgentAvailable ? activeAgent.stateLabel : "Coming soon"}`}
             </small>
           </span>
-          <span className={styles.prototypeBadge}>{supportOpen ? "支援後端已連線" : "預留後端已連線"}</span>
+          <span className={styles.prototypeBadge}>{supportOpen ? (english ? "Support backend connected" : "支援後端已連線") : (english ? "Reservation backend connected" : "預留後端已連線")}</span>
           <span className={styles.syncTime}>{storeName}</span>
           <button
             type="button"
@@ -619,8 +685,10 @@ export function StoreOsShell({
             className={styles.themeSwitch}
             data-theme-value={resolvedTheme}
             onClick={toggleTheme}
-            aria-label={`目前為${resolvedTheme === "dark" ? "深色" : "淺色"}介面，切換為${resolvedTheme === "dark" ? "淺色" : "深色"}介面`}
-            title={resolvedTheme === "dark" ? "切換為淺色介面" : "切換為深色介面"}
+            aria-label={english
+              ? `Using ${resolvedTheme} mode. Switch to ${resolvedTheme === "dark" ? "light" : "dark"} mode.`
+              : `目前為${resolvedTheme === "dark" ? "深色" : "淺色"}介面，切換為${resolvedTheme === "dark" ? "淺色" : "深色"}介面`}
+            title={english ? `Switch to ${resolvedTheme === "dark" ? "light" : "dark"} mode` : (resolvedTheme === "dark" ? "切換為淺色介面" : "切換為深色介面")}
           >
             <span className={styles.themeIcon} data-active={resolvedTheme === "light" ? "true" : "false"} aria-hidden="true">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
@@ -641,6 +709,7 @@ export function StoreOsShell({
             <SupportAgent
               animate={!prefersReducedMotion}
               active={supportOpen}
+              locale={locale}
               defaultReplyEmail={operatorEmail}
             />
             {!supportOpen && (activeAgentId === "manager" ? (
@@ -650,37 +719,40 @@ export function StoreOsShell({
                 animate={!prefersReducedMotion}
                 busyCode={reservationBusyCode}
                 actionError={reservationActionError}
+                locale={locale}
                 onAction={(code, action) => { void updateReservation(code, action); }}
               />
             ) : !activeAgentAvailable ? (
               <>
                 <div className={styles.workHeading}>
                   <p>{activeAgent.id.toUpperCase()} / COMING SOON</p>
-                  <h1>{activeAgent.name} 即將開通</h1>
+                  <h1>{english ? `${activeAgent.name} is coming soon` : `${activeAgent.name} 即將開通`}</h1>
                   <div>
-                    <span>正式店家目前先使用預留單與支援功能</span>
+                    <span>{english ? "Live stores currently use reservations and support" : "正式店家目前先使用預留單與支援功能"}</span>
                   </div>
                 </div>
                 <section className={styles.agentMessage} aria-live="polite">
                   <AgentOrb id={activeAgent.id} active />
                   <div>
                     <p className={styles.sender}>{activeAgent.name}</p>
-                    <p>這個角色目前只在 uYao Demo 帳號展示，尚未接入你的店務資料或取得任何操作權限。</p>
+                    <p>{english
+                      ? "This role is currently available only in the uYao demo account. It has no access to your store data or operational permissions."
+                      : "這個角色目前只在 uYao Demo 帳號展示，尚未接入你的店務資料或取得任何操作權限。"}</p>
                   </div>
                 </section>
                 <p className={styles.sharedWorkNotice}>
-                  Coming soon · 開通前會先確認資料來源、權限與藥師批准點。
+                  {english ? "Coming soon · Data sources, permissions, and pharmacist approval points will be confirmed before activation." : "Coming soon · 開通前會先確認資料來源、權限與藥師批准點。"}
                 </p>
               </>
             ) : (
               <>
             <div className={styles.workHeading}>
-              <p>{RESTOCK_WORK_ITEM.type} / {RESTOCK_WORK_ITEM.id}</p>
-              <h1>{RESTOCK_WORK_ITEM.title}</h1>
+              <p>{workItem.type} / {workItem.id}</p>
+              <h1>{workItem.title}</h1>
               <div>
-                <span>{RESTOCK_WORK_ITEM.pharmacy}</span>
-                <span>來源 {RESTOCK_WORK_ITEM.sourceCount} 項</span>
-                <span>{RESTOCK_WORK_ITEM.approvalLabel}</span>
+                <span>{workItem.pharmacy}</span>
+                <span>{english ? `${workItem.sourceCount} sources` : `來源 ${workItem.sourceCount} 項`}</span>
+                <span>{workItem.approvalLabel}</span>
               </div>
             </div>
 
@@ -697,12 +769,12 @@ export function StoreOsShell({
             </section>
 
             <p className={styles.sharedWorkNotice}>
-              三個角色正在同一張工作上交接；你不需要複製資料或分別追問。
+              {english ? "Three roles are handing off the same work item; you don't need to copy data or ask each one separately." : "三個角色正在同一張工作上交接；你不需要複製資料或分別追問。"}
             </p>
 
-            <section className={styles.taskGrid} aria-label="Agent 處理進度">
-              {RESTOCK_WORK_ITEM.steps.map((step) => {
-                const agent = storeAgent(step.agentId);
+            <section className={styles.taskGrid} aria-label={english ? "Agent progress" : "Agent 處理進度"}>
+              {workItem.steps.map((step) => {
+                const agent = storeAgentCopy(step.agentId, locale);
                 return (
                   <article
                     key={step.agentId}
@@ -722,17 +794,17 @@ export function StoreOsShell({
               })}
             </section>
 
-            <section className={styles.approvalBar} aria-label="等待批准">
+            <section className={styles.approvalBar} aria-label={english ? "Awaiting approval" : "等待批准"}>
               <div>
-                <strong>採購 Agent 正在等你的批准</strong>
-                <p>批准的是固定草稿快照；任何數量或供應商變更都要重新確認。</p>
+                <strong>{english ? "The Procurement Agent is waiting for your approval" : "採購 Agent 正在等你的批准"}</strong>
+                <p>{english ? "You approve a fixed draft snapshot. Any quantity or supplier change requires another confirmation." : "批准的是固定草稿快照；任何數量或供應商變更都要重新確認。"}</p>
               </div>
               <button
                 ref={draftButtonRef}
                 type="button"
                 onClick={() => setDraftOpen(true)}
               >
-                檢查草稿
+                {english ? "Review draft" : "檢查草稿"}
               </button>
             </section>
               </>
@@ -740,9 +812,9 @@ export function StoreOsShell({
 
             {!supportOpen && <form className={styles.composer} data-store-composer onSubmit={submitMessage}>
               <AgentOrb id="manager" active={activeAgentId === "manager"} small />
-              <label className={styles.visuallyHidden} htmlFor="store-agent-message">交代店長</label>
+              <label className={styles.visuallyHidden} htmlFor="store-agent-message">{english ? "Message the Manager Agent" : "交代店長"}</label>
               <span className={styles.composerField}>
-                <span aria-hidden="true">店長 Agent</span>
+                <span aria-hidden="true">{english ? "Manager Agent" : "店長 Agent"}</span>
                 <input
                   id="store-agent-message"
                   value={message}
@@ -752,11 +824,11 @@ export function StoreOsShell({
                     setComposerNoticeTone("answer");
                   }}
                   placeholder={activeAgentId === "manager"
-                    ? "詢問單號，或輸入：確認 A-123"
-                    : activeAgentAvailable ? "向店長詢問這個 Demo 工作…" : `${activeAgent.name} 即將開通`}
+                    ? (english ? "Ask about a code, or enter: Confirm A-123" : "詢問單號，或輸入：確認 A-123")
+                    : activeAgentAvailable ? (english ? "Ask the Manager Agent about this demo work…" : "向店長詢問這個 Demo 工作…") : (english ? `${activeAgent.name} is coming soon` : `${activeAgent.name} 即將開通`)}
                 />
               </span>
-              <button type="submit" disabled={!message.trim()} aria-label="送出訊息">
+              <button type="submit" disabled={!message.trim()} aria-label={english ? "Send message" : "送出訊息"}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M12 19V5" />
                   <path d="m7 10 5-5 5 5" />
@@ -768,15 +840,15 @@ export function StoreOsShell({
 
           <aside className={styles.contextPanel}>
             <h2>{supportOpen
-              ? "支援連線狀態"
+              ? (english ? "Support connection" : "支援連線狀態")
               : activeAgentId === "manager"
-              ? "預留連線狀態"
-              : activeAgentAvailable ? "Agent 交接紀錄" : "Agent 開通狀態"}</h2>
+              ? (english ? "Reservation connection" : "預留連線狀態")
+              : activeAgentAvailable ? (english ? "Agent handoff log" : "Agent 交接紀錄") : (english ? "Agent availability" : "Agent 開通狀態")}</h2>
             <p>{supportOpen
               ? storeName
               : activeAgentId === "manager"
               ? storeName
-              : activeAgentAvailable ? `共同 WorkItem · ${RESTOCK_WORK_ITEM.id}` : activeAgent.name}</p>
+              : activeAgentAvailable ? `${english ? "Shared WorkItem" : "共同 WorkItem"} · ${workItem.id}` : activeAgent.name}</p>
             {supportOpen ? (
               <ol>
                 <li>
@@ -784,8 +856,8 @@ export function StoreOsShell({
                     <Strobi animation="listening" playing={!prefersReducedMotion} size="100%" />
                   </span>
                   <div>
-                    <strong>自助問答已連線</strong>
-                    <p>常見操作問題會直接在中央對話區回答。</p>
+                    <strong>{english ? "Self-service answers connected" : "自助問答已連線"}</strong>
+                    <p>{english ? "Common product questions are answered in the central conversation." : "常見操作問題會直接在中央對話區回答。"}</p>
                   </div>
                 </li>
                 <li>
@@ -793,8 +865,8 @@ export function StoreOsShell({
                     <Strobi animation="listening" playing={!prefersReducedMotion} size="100%" />
                   </span>
                   <div>
-                    <strong>真人支援單已連線</strong>
-                    <p>無法處理的問題可留下 Email，由 uYao 團隊接手。</p>
+                    <strong>{english ? "Human support tickets connected" : "真人支援單已連線"}</strong>
+                    <p>{english ? "For unresolved issues, leave an email address and the uYao team will follow up." : "無法處理的問題可留下 Email，由 uYao 團隊接手。"}</p>
                   </div>
                 </li>
               </ol>
@@ -803,15 +875,17 @@ export function StoreOsShell({
                 <li>
                   <AgentOrb id="manager" small />
                   <div>
-                    <strong>門市身份已驗證</strong>
-                    <p>目前只載入 {storeName} 的預留單。</p>
+                    <strong>{english ? "Store identity verified" : "門市身份已驗證"}</strong>
+                    <p>{english ? `Only reservations for ${storeName} are loaded.` : `目前只載入 ${storeName} 的預留單。`}</p>
                   </div>
                 </li>
                 <li>
                   <AgentOrb id="inventory" small />
                   <div>
-                    <strong>預留資料與需求脈絡已同步</strong>
-                    <p>{liveReservations.length} 筆近期單號；只顯示顧客同意提供的描述，完整手機與取貨連結不會送到瀏覽器。</p>
+                    <strong>{english ? "Reservation data and customer context synced" : "預留資料與需求脈絡已同步"}</strong>
+                    <p>{english
+                      ? `${liveReservations.length} recent reservation codes. Only customer-consented context is shown; full phone numbers and pickup links are not sent to the browser.`
+                      : `${liveReservations.length} 筆近期單號；只顯示顧客同意提供的描述，完整手機與取貨連結不會送到瀏覽器。`}</p>
                   </div>
                 </li>
               </ol>
@@ -820,14 +894,14 @@ export function StoreOsShell({
                 <li>
                   <AgentOrb id={activeAgent.id} small />
                   <div>
-                    <strong>尚未連接店務資料</strong>
-                    <p>此角色目前不讀取、不變更任何正式店家資料。</p>
+                    <strong>{english ? "Store data is not connected" : "尚未連接店務資料"}</strong>
+                    <p>{english ? "This role does not read or change any live store data." : "此角色目前不讀取、不變更任何正式店家資料。"}</p>
                   </div>
                 </li>
               </ol>
             ) : (
               <ol>
-                {RESTOCK_WORK_ITEM.audit.map((entry) => (
+                {workItem.audit.map((entry) => (
                   <li key={`${entry.agentId}-${entry.at}`}>
                     <AgentOrb id={entry.agentId} small />
                     <div>
@@ -839,10 +913,12 @@ export function StoreOsShell({
               </ol>
             )}
             <section className={styles.authorityNote}>
-              <strong>{supportOpen ? "支援不會讀取敏感資料" : "共享工作，不共享無限權限"}</strong>
+              <strong>{supportOpen
+                ? (english ? "Support does not read sensitive data" : "支援不會讀取敏感資料")
+                : (english ? "Shared work, not unlimited permissions" : "共享工作，不共享無限權限")}</strong>
               <p>{supportOpen
-                ? "請勿輸入病患、處方、完整電話或其他個人醫療資料。"
-                : "每個角色只看到必要工具；對客承諾、採購與金流仍有清楚的人類批准點。"}</p>
+                ? (english ? "Do not enter patient, prescription, full phone, or other personal health data." : "請勿輸入病患、處方、完整電話或其他個人醫療資料。")
+                : (english ? "Each role sees only the tools it needs. Customer commitments, procurement, and payments retain explicit human approval points." : "每個角色只看到必要工具；對客承諾、採購與金流仍有清楚的人類批准點。")}</p>
             </section>
           </aside>
         </div>
@@ -859,18 +935,18 @@ export function StoreOsShell({
             aria-labelledby="draft-title"
           >
             <header>
-              <div><p>APPROVAL SNAPSHOT / DEMO</p><h2 id="draft-title">檢查採購草稿</h2></div>
-              <button ref={closeButtonRef} type="button" onClick={closeDraft} aria-label="關閉草稿">×</button>
+              <div><p>APPROVAL SNAPSHOT / DEMO</p><h2 id="draft-title">{english ? "Review procurement draft" : "檢查採購草稿"}</h2></div>
+              <button ref={closeButtonRef} type="button" onClick={closeDraft} aria-label={english ? "Close draft" : "關閉草稿"}>×</button>
             </header>
             <dl>
-              <div><dt>品項</dt><dd>{RESTOCK_WORK_ITEM.draft.product}</dd></div>
-              <div><dt>建議數量</dt><dd>{RESTOCK_WORK_ITEM.draft.quantity} 盒</dd></div>
-              <div><dt>供應商</dt><dd>{RESTOCK_WORK_ITEM.draft.supplier}</dd></div>
-              <div><dt>價格上限</dt><dd>{RESTOCK_WORK_ITEM.draft.priceCeiling}</dd></div>
-              <div><dt>送出狀態</dt><dd>尚未送出</dd></div>
+              <div><dt>{english ? "Item" : "品項"}</dt><dd>{workItem.draft.product}</dd></div>
+              <div><dt>{english ? "Suggested quantity" : "建議數量"}</dt><dd>{workItem.draft.quantity} {english ? "boxes" : "盒"}</dd></div>
+              <div><dt>{english ? "Supplier" : "供應商"}</dt><dd>{workItem.draft.supplier}</dd></div>
+              <div><dt>{english ? "Price ceiling" : "價格上限"}</dt><dd>{workItem.draft.priceCeiling}</dd></div>
+              <div><dt>{english ? "Submission status" : "送出狀態"}</dt><dd>{english ? "Not submitted" : "尚未送出"}</dd></div>
             </dl>
-            <p className={styles.dialogBoundary}>這是介面原型。尚未連接供應商、付款或送單 API，因此不提供「批准並送出」。</p>
-            <button type="button" className={styles.dialogDone} onClick={closeDraft}>回到工作</button>
+            <p className={styles.dialogBoundary}>{english ? "This is an interface prototype. Supplier, payment, and order-submission APIs are not connected, so Approve and submit is unavailable." : "這是介面原型。尚未連接供應商、付款或送單 API，因此不提供「批准並送出」。"}</p>
+            <button type="button" className={styles.dialogDone} onClick={closeDraft}>{english ? "Back to work" : "回到工作"}</button>
           </section>
         </div>
       )}
@@ -886,30 +962,39 @@ export function StoreOsShell({
             aria-labelledby="profile-title"
           >
             <header>
-              <div><p>ACCOUNT / STORE</p><h2 id="profile-title">帳號與門市設定</h2></div>
-              <button ref={profileCloseButtonRef} type="button" onClick={closeProfile} aria-label="關閉帳號設定">×</button>
+              <div><p>ACCOUNT / STORE</p><h2 id="profile-title">{english ? "Account and store settings" : "帳號與門市設定"}</h2></div>
+              <button ref={profileCloseButtonRef} type="button" onClick={closeProfile} aria-label={english ? "Close account settings" : "關閉帳號設定"}>×</button>
             </header>
             <dl>
-              <div><dt>操作者</dt><dd>{operatorName}</dd></div>
-              <div><dt>登入信箱</dt><dd>{operatorEmail}</dd></div>
               <div>
-                <dt>所屬藥局</dt>
+                <dt>{english ? "Language" : "介面語言"}</dt>
+                <dd>
+                  <span className={styles.languageSwitch} role="group" aria-label={english ? "Interface language" : "介面語言"}>
+                    <button type="button" aria-pressed={locale === "zh"} onClick={() => changeLocale("zh")}>繁體中文</button>
+                    <button type="button" aria-pressed={locale === "en"} onClick={() => changeLocale("en")}>English</button>
+                  </span>
+                </dd>
+              </div>
+              <div><dt>{english ? "Operator" : "操作者"}</dt><dd>{operatorName}</dd></div>
+              <div><dt>{english ? "Sign-in email" : "登入信箱"}</dt><dd>{operatorEmail}</dd></div>
+              <div>
+                <dt>{english ? "Pharmacy" : "所屬藥局"}</dt>
                 <dd>{storeName}<small>{storeSlug}</small></dd>
               </div>
-              <div><dt>權限角色</dt><dd>{STORE_ROLE_LABELS[operatorRole]}</dd></div>
+              <div><dt>{english ? "Role" : "權限角色"}</dt><dd>{english ? STORE_ROLE_LABELS_EN[operatorRole] : STORE_ROLE_LABELS[operatorRole]}</dd></div>
               <div>
-                <dt>支援回覆信箱</dt>
-                <dd>{operatorEmail}<small>建立真人支援單時會自動帶入</small></dd>
+                <dt>{english ? "Support reply email" : "支援回覆信箱"}</dt>
+                <dd>{operatorEmail}<small>{english ? "Pre-filled when creating a human support ticket" : "建立真人支援單時會自動帶入"}</small></dd>
               </div>
               <div>
-                <dt>帳號安全</dt>
-                <dd>密碼保護已啟用<small>登入工作階段最長 12 小時</small></dd>
+                <dt>{english ? "Account security" : "帳號安全"}</dt>
+                <dd>{english ? "Password protection enabled" : "密碼保護已啟用"}<small>{english ? "Sign-in sessions last up to 12 hours" : "登入工作階段最長 12 小時"}</small></dd>
               </div>
             </dl>
-            <p className={styles.profileHelp}>店家資料目前由開通資料載入。需要修改姓名、信箱、門市或權限時，請由支援 Agent 協助。</p>
+            <p className={styles.profileHelp}>{english ? "Store details currently come from activation records. Ask the Support Agent to change a name, email, store, or role." : "店家資料目前由開通資料載入。需要修改姓名、信箱、門市或權限時，請由支援 Agent 協助。"}</p>
             <div className={styles.profileActions}>
-              <button type="button" onClick={closeProfile}>回到工作</button>
-              <button type="button" className={styles.logoutButton} onClick={logout}>登出</button>
+              <button type="button" onClick={closeProfile}>{english ? "Back to work" : "回到工作"}</button>
+              <button type="button" className={styles.logoutButton} onClick={logout}>{english ? "Sign out" : "登出"}</button>
             </div>
           </section>
         </div>
