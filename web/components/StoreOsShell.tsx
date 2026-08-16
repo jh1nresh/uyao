@@ -969,9 +969,18 @@ export function StoreOsShell({
               <div>
                 <dt>{english ? "Language" : "介面語言"}</dt>
                 <dd>
-                  <span className={styles.languageSwitch} role="group" aria-label={english ? "Interface language" : "介面語言"}>
-                    <button type="button" aria-pressed={locale === "zh"} onClick={() => changeLocale("zh")}>繁體中文</button>
-                    <button type="button" aria-pressed={locale === "en"} onClick={() => changeLocale("en")}>English</button>
+                  <span className={styles.languageSelect}>
+                    <select
+                      value={locale}
+                      onChange={(event) => changeLocale(event.target.value as Locale)}
+                      aria-label={english ? "Interface language" : "介面語言"}
+                    >
+                      <option value="zh">繁體中文</option>
+                      <option value="en">English</option>
+                    </select>
+                    <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                      <path d="m6 8 4 4 4-4" />
+                    </svg>
                   </span>
                 </dd>
               </div>
