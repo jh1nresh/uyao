@@ -138,7 +138,7 @@ export default async function CategoryPage({
                   aria-current={active ? "page" : undefined}
                   className={`inline-flex min-h-11 items-center border px-3.5 text-[14px] font-semibold no-underline transition-colors ${
                     active
-                      ? "border-forest bg-forest text-paper"
+                      ? "border-forest bg-brand-surface text-on-dark"
                       : "border-line-strong bg-paper text-forest hover:border-forest hover:bg-surface-hover"
                   }`}
                 >

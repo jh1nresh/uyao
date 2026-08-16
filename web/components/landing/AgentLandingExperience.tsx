@@ -13,6 +13,7 @@ import {
 } from "react";
 
 import { BrandLogo } from "@/components/BrandLogo";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Flame } from "@/components/avatar-lab/Flame";
 import { Pepper } from "@/components/avatar-lab/Pepper";
 import { Sapling } from "@/components/avatar-lab/Sapling";
@@ -398,12 +399,12 @@ function StoreOsPreview({
         <span className="hidden sm:inline">{copy.previewHint}</span>
       </div>
       <div className="paper-elevation grid min-h-[560px] border border-line-strong bg-paper lg:h-[560px] lg:min-h-0 lg:grid-cols-[218px_1fr] lg:overflow-hidden">
-        <aside className="border-b border-line-strong bg-forest text-paper lg:border-b-0 lg:border-r">
-          <div className="flex min-h-[68px] items-center gap-3 border-b border-paper/15 px-4">
+        <aside className="border-b border-line-strong bg-brand-surface text-on-dark lg:border-b-0 lg:border-r">
+          <div className="flex min-h-[68px] items-center gap-3 border-b border-on-dark/15 px-4">
             <Avatar id="manager" size={36} playing={!reducedMotion} />
             <strong className="text-[14px]">uYao Store OS</strong>
           </div>
-          <div className="num px-4 pb-2 pt-5 text-[10px] tracking-[.1em] text-paper/55">AGENTS</div>
+          <div className="num px-4 pb-2 pt-5 text-[10px] tracking-[.1em] text-on-dark/55">AGENTS</div>
           <div className="grid grid-cols-4 lg:grid-cols-1">
             {copy.agents.map((agent) => {
               const active = agent.id === selected.id;
@@ -414,20 +415,20 @@ function StoreOsPreview({
                   aria-pressed={active}
                   onClick={() => setSelectedId(agent.id)}
                   className={`flex min-h-[72px] items-center justify-center gap-3 border-l-2 px-2 text-left lg:justify-start lg:px-4 ${
-                    active ? "border-green bg-paper/10" : "border-transparent hover:bg-paper/5"
+                    active ? "border-green bg-on-dark/10" : "border-transparent hover:bg-on-dark/5"
                   }`}
                 >
                   <Avatar id={agent.id} size={40} playing={active && !reducedMotion} />
                   <span className="hidden min-w-0 flex-1 lg:block">
                     <strong className="block truncate text-[13px]">{agent.name}</strong>
-                    <small className="num mt-1 block text-[9px] text-paper/65">{agent.state}</small>
+                    <small className="num mt-1 block text-[9px] text-on-dark/65">{agent.state}</small>
                   </span>
                   <span className={`hidden h-1.5 w-1.5 flex-none rounded-full lg:block ${agent.color}`} />
                 </button>
               );
             })}
           </div>
-          <div className="hidden border-t border-paper/15 px-4 py-4 text-[12px] lg:grid lg:gap-3">
+          <div className="hidden border-t border-on-dark/15 px-4 py-4 text-[12px] lg:grid lg:gap-3">
             <span className="flex justify-between"><span>{copy.needsYou}</span><b>1</b></span>
             <span className="flex justify-between"><span>{copy.allWork}</span><b>4</b></span>
             <span className="flex justify-between"><span>{copy.completed}</span><b>6</b></span>
@@ -482,7 +483,7 @@ function StoreOsPreview({
                     >
                       <Avatar id={id} size={28} playing={false} />
                       <span className="min-w-0"><b>{agent.name}</b><span className="ml-3 hidden text-muted sm:inline">{text}</span></span>
-                      <b className={id === "purchasing" ? "text-[#946200]" : "text-green"}>{state}</b>
+                      <b className={id === "purchasing" ? "text-warning" : "text-green"}>{state}</b>
                     </div>
                   );
                 })}
@@ -494,7 +495,7 @@ function StoreOsPreview({
                   aria-label={copy.commandButton}
                   className="min-w-0 flex-1 bg-transparent px-3 py-3 text-[12px] outline-none"
                 />
-                <button type="submit" className="bg-forest px-4 text-[11px] font-bold text-paper">{copy.commandButton}</button>
+                <button type="submit" className="bg-brand-surface px-4 text-[11px] font-bold text-on-dark">{copy.commandButton}</button>
               </form>
               <p className="mb-0 mt-2 text-[10px] leading-[1.5] text-muted" aria-live="polite">{note}</p>
             </div>
@@ -526,8 +527,8 @@ function StoreOsPreview({
                   <span>{label}</span><b>{value}</b>
                 </div>
               ))}
-              <div className={`border border-[#c7922c] bg-[#fff5df] ${compactEnglish ? "mt-3 p-3" : "mt-4 p-4"}`}>
-                <span className="num text-[9px] font-bold text-[#946200]">PHARMACIST APPROVAL</span>
+              <div className={`border border-warning-line bg-warning-tint ${compactEnglish ? "mt-3 p-3" : "mt-4 p-4"}`}>
+                <span className="num text-[9px] font-bold text-warning">PHARMACIST APPROVAL</span>
                 <strong
                   className={`block ${
                     compactEnglish ? "mt-2 text-[11px] leading-[1.45]" : "mt-3 text-[12px] leading-[1.55]"
@@ -537,7 +538,7 @@ function StoreOsPreview({
                 </strong>
                 <button
                   type="button"
-                  className={`w-full bg-forest px-3 text-[11px] font-bold text-paper ${
+                  className={`w-full bg-brand-surface px-3 text-[11px] font-bold text-on-dark ${
                     compactEnglish ? "mt-3 min-h-9" : "mt-4 min-h-10"
                   }`}
                 >
@@ -694,6 +695,7 @@ export function AgentLandingExperience({ locale }: { locale: Locale }) {
             <a href="#jobs" className="min-h-11 content-center no-underline hover:text-green">{copy.nav[2]}</a>
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
+            <ThemeToggle locale={locale} />
             <Link href={localeHref} className="num inline-flex min-h-11 items-center px-2 text-[11px] text-muted no-underline hover:text-green">{localeLabel}</Link>
             <a href={shopUrl} className="inline-flex min-h-11 items-center border border-forest px-3 text-[12px] font-bold text-forest no-underline sm:px-4 sm:text-[13px]">{copy.shop}</a>
             <Link href={pilotHref} className="action-primary hidden text-[13px] sm:inline-flex">{copy.pilot}</Link>
@@ -727,7 +729,7 @@ export function AgentLandingExperience({ locale }: { locale: Locale }) {
             </div>
             <div className="border border-line-strong bg-paper">
               <div className="num flex justify-between border-b border-line px-5 py-4 text-[10px] text-muted"><span>{manager.name.toUpperCase()} · DIRECT MESSAGE</span><span>09:14</span></div>
-              <div className="grid grid-cols-[42px_1fr] gap-4 border-b border-line px-5 py-5"><span className="grid h-[38px] place-items-center bg-forest text-[9px] font-bold text-paper">YOU</span><div><b className="text-[12px]">{copy.you}</b><p className="mb-0 mt-2 text-[13px] text-muted">{copy.command}</p></div></div>
+              <div className="grid grid-cols-[42px_1fr] gap-4 border-b border-line px-5 py-5"><span className="grid h-[38px] place-items-center bg-brand-surface text-[9px] font-bold text-on-dark">YOU</span><div><b className="text-[12px]">{copy.you}</b><p className="mb-0 mt-2 text-[13px] text-muted">{copy.command}</p></div></div>
               <div className="grid grid-cols-[48px_1fr] gap-4 border-b border-line px-5 py-5"><Avatar id="manager" size={46} playing={!reducedMotion} /><div><b className="text-[12px]">{manager.name}</b><p className="mb-0 mt-2 text-[13px] leading-[1.7] text-muted">{copy.agentReply}</p></div></div>
               <div className="m-5 flex justify-between border border-line-strong px-4 py-3 text-[11px] text-muted"><span>{copy.messagePlaceholder}</span><b className="text-forest">{copy.send}</b></div>
             </div>
@@ -736,7 +738,7 @@ export function AgentLandingExperience({ locale }: { locale: Locale }) {
 
         <section id="many" className="border-t border-line py-24 sm:py-32">
           <div className="mx-auto grid max-w-[1240px] items-center gap-14 px-5 sm:px-8 lg:grid-cols-[1.18fr_.82fr]">
-            <div className="order-2 border border-[#b9cbb9] bg-sage p-6 sm:p-10 lg:order-1">
+            <div className="order-2 border border-green-tint-line bg-sage p-6 sm:p-10 lg:order-1">
               <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
                 {copy.agents.map((agent) => (
                   <div key={agent.id} className="text-center"><Avatar id={agent.id} size={96} playing={!reducedMotion} className="mx-auto" /><strong className="mt-2 block text-[14px]">{agent.name}</strong><span className="num mt-2 inline-flex items-center gap-2 text-[9px] text-muted"><i className={`h-1.5 w-1.5 rounded-full ${agent.color}`} />{agent.state}</span></div>
@@ -767,10 +769,10 @@ export function AgentLandingExperience({ locale }: { locale: Locale }) {
           </div>
         </section>
 
-        <section id="pilot" className="bg-forest py-24 text-paper sm:py-32">
+        <section id="pilot" className="bg-brand-surface py-24 text-on-dark sm:py-32">
           <div className="mx-auto grid max-w-[1240px] items-center gap-16 px-5 sm:px-8 lg:grid-cols-[1fr_.88fr] lg:gap-24">
-            <div><span className="num text-[11px] font-bold tracking-[.1em] text-[#8fcda0]">START WITH A REAL WORKFLOW</span><h2 className="editorial-display mb-0 mt-4 text-[clamp(48px,5.4vw,72px)] leading-[1.08]">{copy.pilotTitle}</h2><p className="mb-0 mt-7 max-w-[600px] text-[15px] leading-[1.8] text-paper/75">{copy.pilotBody}</p><Link href={pilotHref} className="mt-8 inline-flex min-h-[52px] items-center bg-paper px-6 text-[14px] font-bold text-forest no-underline">{copy.pilotButton}</Link></div>
-            <div className="border-t border-paper/25">{copy.pilotSteps.map(([label, body]) => <div key={label} className="grid grid-cols-[116px_1fr] gap-5 border-b border-paper/25 py-5"><span className="num text-[9px] font-bold text-[#8fcda0]">{label}</span><b className="text-[14px] leading-[1.55]">{body}</b></div>)}</div>
+            <div><span className="num text-[11px] font-bold tracking-[.1em] text-[#8fcda0]">START WITH A REAL WORKFLOW</span><h2 className="editorial-display mb-0 mt-4 text-[clamp(48px,5.4vw,72px)] leading-[1.08]">{copy.pilotTitle}</h2><p className="mb-0 mt-7 max-w-[600px] text-[15px] leading-[1.8] text-on-dark/75">{copy.pilotBody}</p><Link href={pilotHref} className="mt-8 inline-flex min-h-[52px] items-center bg-paper px-6 text-[14px] font-bold text-forest no-underline">{copy.pilotButton}</Link></div>
+            <div className="border-t border-on-dark/25">{copy.pilotSteps.map(([label, body]) => <div key={label} className="grid grid-cols-[116px_1fr] gap-5 border-b border-on-dark/25 py-5"><span className="num text-[9px] font-bold text-[#8fcda0]">{label}</span><b className="text-[14px] leading-[1.55]">{body}</b></div>)}</div>
           </div>
         </section>
       </main>

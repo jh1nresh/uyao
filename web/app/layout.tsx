@@ -5,6 +5,7 @@ import localFont from "next/font/local";
 import { MotionSystem } from "@/components/MotionSystem";
 import { LocaleProvider } from "@/components/LocaleProvider";
 import { getRequestLocale } from "@/lib/locale-server";
+import { PUBLIC_THEME_INIT_SCRIPT } from "@/lib/public-theme";
 import { BRAND_NAME, SITE_URL } from "@/lib/seo";
 
 import "./globals.css";
@@ -71,7 +72,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html
       lang={locale === "en" ? "en-US" : "zh-Hant-TW"}
       className={`${notoSansTC.variable} ${notoSerifTC.variable} ${plexMono.variable}`}
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: PUBLIC_THEME_INIT_SCRIPT }} />
+      </head>
       <body>
         <MotionSystem />
         <LocaleProvider locale={locale}>

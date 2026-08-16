@@ -85,7 +85,7 @@ export function HeroLoop({ copy }: { copy: HeroLoopCopy }) {
           </div>
           <div className="grid gap-2">
             <span
-              className={`hero-loop-action bg-forest px-3 py-3 text-center text-[14px] font-bold text-paper transition-transform duration-300 ${
+              className={`hero-loop-action bg-brand-surface px-3 py-3 text-center text-[14px] font-bold text-on-dark transition-transform duration-300 ${
                 step >= 2 ? "scale-[1.01]" : "scale-100"
               }`}
             >

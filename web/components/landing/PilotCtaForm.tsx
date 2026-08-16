@@ -134,7 +134,7 @@ export function PilotCtaForm({ copy }: { copy: PilotFormCopy }) {
                 onClick={() => toggle(value)}
                 className={`min-h-11 whitespace-nowrap border px-3.5 py-2 text-[14px] transition-[background-color,border-color,transform] duration-150 active:translate-y-px ${
                   active
-                    ? "border-forest bg-forest text-paper"
+                    ? "border-forest bg-brand-surface text-on-dark"
                     : "border-line-strong bg-paper text-ink-2 hover:border-forest"
                 }`}
               >
