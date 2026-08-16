@@ -56,7 +56,7 @@ export interface StoredReservation {
   holdHours: number;
   /** 逾期的時間。有值代表已經被 cron 掃過，不會重複處理。 */
   expiredAt?: string;
-  /** 業務示範（/store/[slug]/preview）產生的單。真單不會有這個欄位。 */
+  /** 業務示範（/demo/uyao-demo）產生的單。真單不會有這個欄位。 */
   demo?: true;
 }
 

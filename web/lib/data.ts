@@ -780,8 +780,26 @@ export function storeCount(): number {
 export function drugsForStore(storeSlug: string, preview = false): DrugRow[] {
   const store = getStore(storeSlug);
   if (!store) return [];
-  const source = preview ? previewOffers(storeSlug) : OFFERS;
-  return source.filter((o) => o.storeSlug === storeSlug)
+  if (preview) return previewDrugsForStore(store);
+  return OFFERS.filter((o) => o.storeSlug === storeSlug)
+    .flatMap((o) => {
+      const drug = getDrug(o.drugSlug);
+      if (!drug) return [];
+      return [{
+        drug,
+        store,
+        priceTwd: o.priceTwd,
+        daysSinceScan: o.daysSinceScan,
+        badge: stockBadge(o.daysSinceScan),
+      }];
+    })
+    .sort(compareByFreshness);
+}
+
+/** Build a synthetic shelf for an explicit demo store without registering it. */
+export function previewDrugsForStore(store: Store): DrugRow[] {
+  const source = previewOffers(store.slug);
+  return source.filter((o) => o.storeSlug === store.slug)
     .flatMap((o) => {
       const drug = getDrug(o.drugSlug);
       if (!drug) return [];

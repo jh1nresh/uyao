@@ -10,6 +10,7 @@ import { stockBadge } from "@/lib/stock";
 import { userForStore } from "@/lib/bindings";
 import { isConfigured, push, reservationFlex, text } from "@/lib/line";
 import { checkReservation } from "@/lib/rate-limit";
+import { getStoreDemoSandbox } from "@/lib/store-demo";
 import { appendRecord } from "@/lib/record";
 import {
   NO_SHOW_LIMIT,
@@ -64,16 +65,16 @@ export async function POST(request: Request) {
   const drugSlug = typeof body.drugSlug === "string" ? body.drugSlug : "";
   const storeSlug = typeof body.storeSlug === "string" ? body.storeSlug : "";
   const rawContact = typeof body.contact === "string" ? body.contact : "";
+  const demo = body.demo === true;
 
   const drug = getDrug(drugSlug);
-  const store = getStore(storeSlug);
+  const store = demo ? getStoreDemoSandbox(storeSlug) : getStore(storeSlug);
   if (!drug || !store) {
     return NextResponse.json({ error: "找不到這個藥品或藥局" }, { status: 404 });
   }
 
-  // 業務示範（/store/[slug]/preview）：庫存是模擬的，改對 previewOffers 驗證。
-  // 整筆 record 與 LINE 推播都會標示 demo —— 示範單絕不能混進真單。
-  const demo = body.demo === true;
+  // 業務示範只接受獨立的 uyao-demo 身分，並以模擬 offer 驗證。
+  // 整筆 record 都會標示 demo —— 示範單絕不能混進真單。
   const offer = demo
     ? (() => {
         const o = previewOffers(storeSlug).find((x) => x.drugSlug === drugSlug);

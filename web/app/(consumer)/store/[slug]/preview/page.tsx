@@ -1,42 +1,26 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { redirect } from "next/navigation";
 
-import { StoreView } from "@/components/StoreView";
-import { allStores, getStore } from "@/lib/data";
+import { allStores } from "@/lib/data";
+import { localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
+import { STORE_DEMO_SANDBOX_SLUG } from "@/lib/store-demo";
 
 /**
- * 業務示範用：`/store/惠民藥局/preview` 讓藥局老闆看到「裝上盒子之後
- * 你這家店長什麼樣」。庫存是模擬的，頁面頂端一定掛示範橫幅。
- *
- * 獨立路由而不是 `?preview=1`，這樣正式頁跟預覽頁都能靜態產生。
+ * 舊的真實藥局 preview URL 只保留作相容轉址。所有業務示範都收斂到
+ * 獨立的 uyao-demo，避免把真實店名、地址或合作目錄當成沙盒資料。
  */
 export function generateStaticParams() {
   return allStores().map((s) => ({ slug: s.slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
-  const { slug } = await params;
-  const locale = await getRequestLocale();
-  const store = getStore(slug);
-  return {
-    title: store ? `${store.name} — ${locale === "en" ? "Demo preview" : "示範預覽"}` : locale === "en" ? "Demo preview" : "示範預覽",
-    // 模擬庫存絕不能進搜尋引擎
-    robots: { index: false, follow: false },
-  };
-}
+export const metadata: Metadata = {
+  title: "uYao Demo 藥局",
+  // 模擬庫存絕不能進搜尋引擎
+  robots: { index: false, follow: false },
+};
 
-export default async function StorePreviewPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
-  const store = getStore(slug);
-  if (!store) notFound();
-  return <StoreView store={store} preview />;
+export default async function StorePreviewPage() {
+  const locale = await getRequestLocale();
+  redirect(localizedPath(`/demo/${STORE_DEMO_SANDBOX_SLUG}`, locale));
 }

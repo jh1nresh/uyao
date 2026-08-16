@@ -149,7 +149,7 @@ export function ReserveSheet({
         }`}
       >
         {success ? (
-          <SuccessBody target={target} success={success} onClose={onClose} />
+          <SuccessBody target={target} success={success} onClose={onClose} demo={demo} />
         ) : (
           <>
             <div className="mx-auto -mt-1.5 h-1 w-9 bg-line-strong sm:hidden" />
@@ -208,7 +208,9 @@ export function ReserveSheet({
                 </p>
               )}
               <p className="mt-1 text-[13px] leading-[1.6] text-muted">
-                {locale === "en" ? <>The pharmacy holds the item for <b className="text-ink">4 hours</b> after confirmation. Pay in store. Two no-shows pause reservation access.</> : <>藥局按下確認後為你保留 <b className="text-ink">4 小時</b>，到店付款取貨。兩次未取將暫停預留權限。</>}
+                {demo
+                  ? locale === "en" ? "This creates a demo order in the uYao Store sandbox. No real pharmacy is contacted and no pickup is required." : "這會在 uYao Store 沙盒建立一筆示範單，不會聯絡真實藥局，也不需要實際取貨。"
+                  : locale === "en" ? <>The pharmacy holds the item for <b className="text-ink">4 hours</b> after confirmation. Pay in store. Two no-shows pause reservation access.</> : <>藥局按下確認後為你保留 <b className="text-ink">4 小時</b>，到店付款取貨。兩次未取將暫停預留權限。</>}
               </p>
               <button
                 type="submit"
@@ -315,10 +317,12 @@ function SuccessBody({
   target,
   success,
   onClose,
+  demo,
 }: {
   target: ReserveTarget;
   success: Success;
   onClose: () => void;
+  demo: boolean;
 }) {
   const locale = useLocale();
   return (
@@ -336,7 +340,9 @@ function SuccessBody({
           沒有簡訊、沒接 LINE）。他唯一會知道結果的方式是取貨憑證頁自己更新，
           所以這裡要把人推到那一頁去，而不是叫他等一則不會來的訊息。 */}
       <p className="-mt-1.5 text-[14px] leading-[1.6] text-muted">
-        {locale === "en" ? `Waiting for ${target.store.name} to confirm, usually within 10 minutes. The hold lasts ${success.holdHours} hours after confirmation. Keep the pickup receipt open; its status updates automatically.` : <>等{target.store.name}確認（通常 10 分鐘內）— 確認後保留 {success.holdHours} 小時。我們不會另外傳訊息給你，請開啟下面的取貨憑證頁留著，狀態會在那裡自己更新。</>}
+        {demo
+          ? locale === "en" ? "The same code is now in the demo Store OS inbox. This is a sandbox order, so no real pickup is required." : "相同單號現在已送進 Demo Store OS inbox。這是沙盒示範單，不需要實際取貨。"
+          : locale === "en" ? `Waiting for ${target.store.name} to confirm, usually within 10 minutes. The hold lasts ${success.holdHours} hours after confirmation. Keep the pickup receipt open; its status updates automatically.` : <>等{target.store.name}確認（通常 10 分鐘內）— 確認後保留 {success.holdHours} 小時。我們不會另外傳訊息給你，請開啟下面的取貨憑證頁留著，狀態會在那裡自己更新。</>}
       </p>
 
       {success.notify && <NotifyStrip notify={success.notify} />}
@@ -345,7 +351,7 @@ function SuccessBody({
         <div className="text-[13px] font-medium text-muted-2">{locale === "en" ? "Pickup code" : "取貨碼"}</div>
         <div className="num text-[34px] font-semibold tracking-[.12em]">{success.code}</div>
         <div className="text-center text-xs text-ink-2">
-          {target.drug.name} · {locale === "en" ? "Pharmacist confirms; pay in store" : "到店由藥師確認並付款"}
+          {target.drug.name} · {demo ? (locale === "en" ? "Demo only · no pickup" : "僅供示範 · 無需取貨") : (locale === "en" ? "Pharmacist confirms; pay in store" : "到店由藥師確認並付款")}
         </div>
       </div>
 
@@ -370,14 +376,16 @@ function SuccessBody({
       )}
 
       <div className="flex gap-2.5">
-        <a
-          href={target.store.mapsUrl}
-          target="_blank"
-          rel="noreferrer noopener"
-          className="action-primary h-[46px] flex-1 px-3 text-sm"
-        >
-          {locale === "en" ? "Open directions" : "開啟導航"}
-        </a>
+        {!demo && (
+          <a
+            href={target.store.mapsUrl}
+            target="_blank"
+            rel="noreferrer noopener"
+            className="action-primary h-[46px] flex-1 px-3 text-sm"
+          >
+            {locale === "en" ? "Open directions" : "開啟導航"}
+          </a>
+        )}
         <Link
           href={`${SHOP_URL}${localizedPath("/", locale)}`}
           className="action-secondary h-[46px] flex-1 px-3 text-sm font-medium"
