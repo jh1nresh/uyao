@@ -64,6 +64,8 @@
   --avatar-eye: #f8f4e9;
   --support-avatar-fill: #7897f3;
   --support-avatar-eye: #f8f4e9;
+  --scroll-thumb: #5b5b5b;
+  --scroll-thumb-hover: #777;
   width: 100%;
   height: 100dvh;
   min-height: 100dvh;
@@ -143,6 +145,8 @@
   --avatar-eye: #080b0a;
   --support-avatar-fill: #496ac7;
   --support-avatar-eye: #080b0a;
+  --scroll-thumb: #afa99e;
+  --scroll-thumb-hover: #8d877d;
   color-scheme: light;
 }
 
@@ -554,19 +558,13 @@
   white-space: nowrap;
 }
 
-.themeSwitch,
-.moreButton {
+.themeSwitch {
   min-height: 44px;
   border: 1px solid var(--line-strong);
   border-radius: 5px;
   background: var(--button-bg);
   color: var(--button-text);
   cursor: pointer;
-}
-
-.moreButton svg {
-  width: 19px;
-  height: 19px;
 }
 
 .themeSwitch {
@@ -598,13 +596,6 @@
 .themeIcon[data-active="true"] {
   background: var(--panel-3);
   color: var(--text);
-}
-
-.moreButton {
-  width: 44px;
-  padding: 0;
-  color: var(--muted);
-  letter-spacing: .08em;
 }
 
 .contentGrid {
@@ -789,10 +780,31 @@
   min-height: 0;
   flex: 1;
   margin: 24px 0 18px 52px;
+  padding-right: 10px;
   display: grid;
   align-content: start;
   gap: 10px;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: var(--scroll-thumb) transparent;
+  scrollbar-width: thin;
+}
+
+.reservationList::-webkit-scrollbar {
+  width: 5px;
+}
+
+.reservationList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.reservationList::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: var(--scroll-thumb);
+}
+
+.reservationList::-webkit-scrollbar-thumb:hover {
+  background: var(--scroll-thumb-hover);
 }
 
 .reservationCard,
@@ -1378,10 +1390,6 @@
   .prototypeBadge,
   .syncTime {
     display: none;
-  }
-
-  .moreButton {
-    margin-left: 0;
   }
 
   .themeSwitch {
