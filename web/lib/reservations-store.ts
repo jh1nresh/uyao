@@ -1,6 +1,7 @@
 import { randomBytes } from "node:crypto";
 
 import * as kv from "./kv";
+import type { ReservationIntake, ReservationIntakeSummary } from "./reservation-intake";
 import { isStoreDemoSandbox, STORE_DEMO_SANDBOX_SLUG } from "./store-demo";
 
 /**
@@ -58,6 +59,8 @@ export interface StoredReservation {
   expiredAt?: string;
   /** 業務示範（/demo/uyao-demo）產生的單。真單不會有這個欄位。 */
   demo?: true;
+  /** 顧客明確同意提供的需求脈絡；不進 LINE、record webhook 或公開取貨頁。 */
+  intake?: ReservationIntake;
 }
 
 /**
@@ -140,6 +143,7 @@ export interface StoreReservationSummary {
   confirmedAt: string | null;
   demo: boolean;
   sourceStoreName?: string;
+  intake?: ReservationIntakeSummary;
 }
 
 /**
@@ -174,6 +178,13 @@ export async function listStoreReservations(
       createdAt: reservation.createdAt,
       confirmedAt: reservation.confirmedAt,
       demo: reservation.demo === true,
+      ...(reservation.intake ? {
+        intake: {
+          source: reservation.intake.source,
+          ...(reservation.intake.searchQuery ? { searchQuery: reservation.intake.searchQuery } : {}),
+          ...(reservation.intake.note ? { note: reservation.intake.note } : {}),
+        },
+      } : {}),
       ...(sandbox ? { sourceStoreName: reservation.storeName } : {}),
     });
   }

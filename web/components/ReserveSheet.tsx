@@ -8,6 +8,11 @@ import { useLocale } from "./LocaleProvider";
 import { PRICE_NOTICE } from "@/lib/pricing";
 import { hoursSummary } from "@/lib/hours";
 import { localizedPath } from "@/lib/i18n";
+import {
+  RESERVATION_INTAKE_NOTE_MAX,
+  RESERVATION_INTAKE_STORAGE_KEY,
+  readReservationIntakeDraft,
+} from "@/lib/reservation-intake";
 import { SHOP_URL } from "@/lib/shop";
 import type { NotifyResult, StockBadgeSpec, Store } from "@/lib/types";
 
@@ -28,6 +33,7 @@ interface Success {
   holdHours: number;
   /** 只有示範模式會拿到 —— 藥局到底有沒有被通知 */
   notify?: NotifyResult;
+  intakeShared: boolean;
 }
 
 /**
@@ -50,6 +56,9 @@ export function ReserveSheet({
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<Success | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [requestNote, setRequestNote] = useState("");
+  const [shareIntake, setShareIntake] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -86,6 +95,21 @@ export function ReserveSheet({
     inputRef.current?.focus();
   }, [success]);
 
+  useEffect(() => {
+    try {
+      const draft = readReservationIntakeDraft(
+        sessionStorage.getItem(RESERVATION_INTAKE_STORAGE_KEY),
+        target.drug.slug,
+      );
+      if (draft) setSearchQuery(draft.searchQuery);
+    } catch {
+      // sessionStorage 不可用時，仍可在下方手動補充需求。
+    }
+  }, [target.drug.slug]);
+
+  const hasIntake = Boolean(searchQuery || requestNote.trim());
+  const needsIntakeConsent = hasIntake && !shareIntake;
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setPending(true);
@@ -98,6 +122,13 @@ export function ReserveSheet({
           drugSlug: target.drug.slug,
           storeSlug: target.store.slug,
           contact,
+          ...(hasIntake && shareIntake ? {
+            intake: {
+              ...(searchQuery ? { searchQuery } : {}),
+              ...(requestNote.trim() ? { note: requestNote } : {}),
+              consent: true,
+            },
+          } : {}),
           ...(demo ? { demo: true } : {}),
         }),
       });
@@ -106,6 +137,7 @@ export function ReserveSheet({
         token?: string;
         holdHours?: number;
         notify?: NotifyResult;
+        intakeShared?: boolean;
         error?: string;
       };
       if (!res.ok || !data.code) {
@@ -114,6 +146,7 @@ export function ReserveSheet({
       }
       try {
         localStorage.setItem(PHONE_KEY, contact.trim());
+        sessionStorage.removeItem(RESERVATION_INTAKE_STORAGE_KEY);
       } catch {
         /* 存不起來不影響這次預留 */
       }
@@ -122,6 +155,7 @@ export function ReserveSheet({
         token: data.token,
         holdHours: data.holdHours ?? 4,
         notify: data.notify,
+        intakeShared: data.intakeShared === true,
       });
     } catch {
       setError(locale === "en" ? "Connection failed. Check your network and try again." : "連線失敗，請確認網路後再試");
@@ -144,7 +178,7 @@ export function ReserveSheet({
         className="absolute inset-0 bg-[rgba(26,36,32,.32)]"
       />
       <div
-        className={`sheet-in relative flex w-full max-w-[420px] flex-col gap-3.5 border-t-2 bg-paper px-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-[18px] sm:border-x sm:border-b sm:pb-6 ${
+        className={`sheet-in relative flex max-h-[calc(100dvh-1rem)] w-full max-w-[420px] flex-col gap-3.5 overflow-y-auto border-t-2 bg-paper px-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))] pt-[18px] sm:max-h-[calc(100dvh-2rem)] sm:border-x sm:border-b sm:pb-6 ${
           success ? "border-green" : "border-t-ink sm:border-x-line-strong sm:border-b-line-strong"
         }`}
       >
@@ -169,6 +203,73 @@ export function ReserveSheet({
               </div>
               <div className="text-[13px] text-muted-2">{locale === "en" ? "Price confirmed in store" : PRICE_NOTICE}</div>
             </div>
+
+            <section className="border border-line bg-surface px-3.5 py-3" aria-labelledby="reservation-intake-heading">
+              <div className="flex items-baseline justify-between gap-3">
+                <h3 id="reservation-intake-heading" className="m-0 text-[13px] font-bold text-ink">
+                  {locale === "en" ? "Context for the pharmacist" : "給藥師的需求脈絡"}
+                </h3>
+                <span className="text-[10.5px] font-medium tracking-[.06em] text-muted-2">
+                  {locale === "en" ? "STORE OS ONLY" : "只在 STORE OS 顯示"}
+                </span>
+              </div>
+
+              {searchQuery && (
+                <div className="mt-2.5 border-l-2 border-green pl-2.5 text-[13px] leading-[1.55]">
+                  <span className="block text-[11px] font-bold text-muted-2">
+                    {locale === "en" ? "Shop search" : "Shop 原始搜尋"}
+                  </span>
+                  <span className="text-ink">{searchQuery}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery("");
+                      if (!requestNote.trim()) setShareIntake(false);
+                    }}
+                    className="ml-2 min-h-11 text-[11px] text-muted underline"
+                  >
+                    {locale === "en" ? "Do not attach" : "不要附上"}
+                  </button>
+                </div>
+              )}
+
+              <label htmlFor="reservation-intake-note" className="mt-2.5 block text-[12px] font-bold text-ink">
+                {locale === "en" ? "Symptoms or help requested (optional)" : "症狀或希望藥師協助的事情（選填）"}
+              </label>
+              <textarea
+                id="reservation-intake-note"
+                value={requestNote}
+                onChange={(event) => {
+                  setRequestNote(event.target.value);
+                  if (!event.target.value.trim() && !searchQuery) setShareIntake(false);
+                }}
+                maxLength={RESERVATION_INTAKE_NOTE_MAX}
+                rows={3}
+                placeholder={locale === "en" ? "For example: started three days ago; please advise in store" : "例如：最近三天開始不舒服，希望到店請藥師協助判斷"}
+                className="mt-1.5 w-full resize-none border border-line-strong bg-ivory px-3 py-2 text-[13px] leading-[1.55] text-ink outline-none placeholder:text-muted-2 focus:border-forest"
+              />
+
+              {hasIntake && (
+                <label className="mt-2.5 flex cursor-pointer items-start gap-2 text-[12.5px] leading-[1.55] text-ink-2">
+                  <input
+                    type="checkbox"
+                    checked={shareIntake}
+                    onChange={(event) => setShareIntake(event.target.checked)}
+                    className="mt-0.5 h-4 w-4 accent-forest"
+                  />
+                  <span>
+                    {locale === "en"
+                      ? "I agree to share the description above with this pharmacy so its pharmacist can assess it in store."
+                      : "我同意把上述描述提供給這間藥局，讓藥師在門市協助判斷。"}
+                  </span>
+                </label>
+              )}
+              <p className="mb-0 mt-2 text-[11.5px] leading-[1.55] text-muted">
+                {locale === "en"
+                  ? "This is not an online diagnosis or medicine recommendation. The context is not sent to LINE and expires with the reservation record."
+                  : "這不是線上診斷或用藥推薦；內容不會送進 LINE，並會隨預留資料到期。"}
+              </p>
+            </section>
 
             <form onSubmit={submit} className="flex flex-col gap-1.5">
               <label htmlFor="reserve-contact" className="text-xs font-bold">
@@ -207,6 +308,11 @@ export function ReserveSheet({
                   {error}
                 </p>
               )}
+              {needsIntakeConsent && (
+                <p className="text-[12px] font-medium text-oxblood" aria-live="polite">
+                  {locale === "en" ? "Please consent before attaching this context." : "請先勾選同意，才會把這份需求脈絡附在單號上。"}
+                </p>
+              )}
               <p className="mt-1 text-[13px] leading-[1.6] text-muted">
                 {demo
                   ? locale === "en" ? "This creates a demo order in the uYao Store sandbox. No real pharmacy is contacted and no pickup is required." : "這會在 uYao Store 沙盒建立一筆示範單，不會聯絡真實藥局，也不需要實際取貨。"
@@ -214,7 +320,7 @@ export function ReserveSheet({
               </p>
               <button
                 type="submit"
-                disabled={pending || contact.trim() === ""}
+                disabled={pending || contact.trim() === "" || needsIntakeConsent}
                 className="action-primary mt-1.5 h-12 text-[16px] tracking-[.1em] disabled:shadow-none"
               >
                 {pending ? (locale === "en" ? "Submitting…" : "送出中…") : (locale === "en" ? "Send reservation" : "送出預留")}
@@ -346,6 +452,19 @@ function SuccessBody({
       </p>
 
       {success.notify && <NotifyStrip notify={success.notify} />}
+
+      {success.intakeShared && (
+        <div className="border border-green-tint-line bg-green-tint px-3.5 py-2.5 text-[12.5px] leading-[1.6] text-ink-2">
+          <b className="font-bold text-green">
+            {locale === "en" ? "Context shared with Store OS" : "需求脈絡已附在單號上"}
+          </b>
+          <p className="mb-0 mt-1 text-muted">
+            {locale === "en"
+              ? "The pharmacy can review your Shop search and note before confirming; the pharmacist still decides what is appropriate in store."
+              : "藥局確認前可以看到你的 Shop 搜尋與補充描述；實際適合的藥品或服務仍由藥師在門市判斷。"}
+          </p>
+        </div>
+      )}
 
       <div className="flex flex-col items-center gap-1 border border-line bg-surface p-4">
         <div className="text-[13px] font-medium text-muted-2">{locale === "en" ? "Pickup code" : "取貨碼"}</div>
