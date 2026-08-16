@@ -531,6 +531,8 @@
 .themeSwitch {
   min-width: 76px;
   padding: 4px;
+  border: 0;
+  background: transparent;
   display: inline-flex;
   align-items: center;
   justify-content: center;
