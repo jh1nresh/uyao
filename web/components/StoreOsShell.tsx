@@ -282,6 +282,7 @@ export function StoreOsShell({
   const [workView, setWorkView] = useState<StoreWorkView>("attention");
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [resolvedTheme, setResolvedTheme] = useState<StoreTheme>("dark");
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [liveReservations, setLiveReservations] = useState(reservations);
   const [reservationBusyCode, setReservationBusyCode] = useState("");
   const [reservationActionError, setReservationActionError] = useState("");
@@ -329,6 +330,18 @@ export function StoreOsShell({
     const next: StoreTheme = resolvedTheme === "dark" ? "light" : "dark";
     setResolvedTheme(next);
     window.localStorage.setItem("uyao-store-theme", next);
+  }
+
+  useEffect(() => {
+    setSidebarCollapsed(window.localStorage.getItem("uyao-store-sidebar") === "collapsed");
+  }, []);
+
+  function toggleSidebar() {
+    setSidebarCollapsed((current) => {
+      const next = !current;
+      window.localStorage.setItem("uyao-store-sidebar", next ? "collapsed" : "expanded");
+      return next;
+    });
   }
 
   useEffect(() => {
@@ -460,14 +473,32 @@ export function StoreOsShell({
   }
 
   return (
-    <main className={styles.screen} data-theme={resolvedTheme}>
-      <aside className={styles.sidebar} aria-label="Store Agents">
+    <main
+      className={styles.screen}
+      data-theme={resolvedTheme}
+      data-sidebar={sidebarCollapsed ? "collapsed" : "expanded"}
+    >
+      <aside id="store-agent-sidebar" className={styles.sidebar} aria-label="Store Agents">
         <div className={styles.brandRow}>
           <span className={styles.brandIdentity}>
             <BrandMark size={28} />
             <strong>uYao Store</strong>
           </span>
           <span className={styles.agentsLabel}>AGENTS</span>
+          <button
+            type="button"
+            className={styles.sidebarToggle}
+            aria-controls="store-agent-sidebar"
+            aria-expanded={!sidebarCollapsed}
+            aria-label={sidebarCollapsed ? "展開側邊欄" : "收合側邊欄"}
+            title={sidebarCollapsed ? "展開側邊欄" : "收合側邊欄"}
+            onClick={toggleSidebar}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+              <path d="M14.5 7 9.5 12l5 5" />
+              <path d="M19 5v14" />
+            </svg>
+          </button>
         </div>
 
         <p className={styles.sectionLabel}>你的店務團隊</p>
@@ -482,6 +513,8 @@ export function StoreOsShell({
                   !supportOpen && activeAgentId === agent.id ? styles.agentRowActive : ""
                 } ${!available ? styles.agentRowComingSoon : ""}`}
                 aria-pressed={!supportOpen && activeAgentId === agent.id}
+                aria-label={`${agent.name} · ${available ? agent.stateLabel : "Coming soon"}`}
+                title={sidebarCollapsed ? `${agent.name} · ${available ? agent.stateLabel : "Coming soon"}` : undefined}
                 onClick={() => {
                   setActiveAgentId(agent.id);
                   setSupportOpen(false);
@@ -531,6 +564,8 @@ export function StoreOsShell({
             type="button"
             className={`${styles.agentRow} ${supportOpen ? styles.agentRowActive : ""}`}
             aria-pressed={supportOpen}
+            aria-label="支援 Agent · 待命"
+            title={sidebarCollapsed ? "支援 Agent · 待命" : undefined}
             onClick={() => setSupportOpen(true)}
           >
             <span className={styles.supportFace} aria-hidden="true">
@@ -706,19 +741,27 @@ export function StoreOsShell({
             {!supportOpen && <form className={styles.composer} data-store-composer onSubmit={submitMessage}>
               <AgentOrb id="manager" active={activeAgentId === "manager"} small />
               <label className={styles.visuallyHidden} htmlFor="store-agent-message">交代店長</label>
-              <input
-                id="store-agent-message"
-                value={message}
-                onChange={(event) => {
-                  setMessage(event.target.value);
-                  setComposerNotice("");
-                  setComposerNoticeTone("answer");
-                }}
-                placeholder={activeAgentId === "manager"
-                  ? "詢問單號，或輸入：確認 A-123"
-                  : activeAgentAvailable ? "向店長詢問這個 Demo 工作…" : `${activeAgent.name} 即將開通`}
-              />
-              <button type="submit" disabled={!message.trim()} aria-label="送出訊息">↑</button>
+              <span className={styles.composerField}>
+                <span aria-hidden="true">店長 Agent</span>
+                <input
+                  id="store-agent-message"
+                  value={message}
+                  onChange={(event) => {
+                    setMessage(event.target.value);
+                    setComposerNotice("");
+                    setComposerNoticeTone("answer");
+                  }}
+                  placeholder={activeAgentId === "manager"
+                    ? "詢問單號，或輸入：確認 A-123"
+                    : activeAgentAvailable ? "向店長詢問這個 Demo 工作…" : `${activeAgent.name} 即將開通`}
+                />
+              </span>
+              <button type="submit" disabled={!message.trim()} aria-label="送出訊息">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <path d="M12 19V5" />
+                  <path d="m7 10 5-5 5 5" />
+                </svg>
+              </button>
             </form>}
             {!supportOpen && <p className={styles.composerNotice} data-tone={composerNoticeTone} aria-live="polite">{composerNotice}</p>}
           </article>
