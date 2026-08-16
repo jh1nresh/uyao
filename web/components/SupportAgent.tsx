@@ -154,7 +154,7 @@ export function SupportAgent({
 
           {ticketId && <p className={styles.ticket}>支援單號 <strong>{ticketId}</strong></p>}
 
-          <form className={styles.composer} onSubmit={submitQuestion}>
+          <form className={styles.composer} data-store-composer onSubmit={submitQuestion}>
             <span className={`${styles.avatar} ${styles.composerAvatar}`} aria-hidden="true">
               <Strobi animation="listening" playing={animate} size="100%" />
             </span>

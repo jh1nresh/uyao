@@ -663,7 +663,7 @@ export function StoreOsShell({
               </>
             ))}
 
-            {!supportOpen && <form className={styles.composer} onSubmit={submitMessage}>
+            {!supportOpen && <form className={styles.composer} data-store-composer onSubmit={submitMessage}>
               <AgentOrb id="manager" active={activeAgentId === "manager"} small />
               <label className={styles.visuallyHidden} htmlFor="store-agent-message">交代店長</label>
               <input
