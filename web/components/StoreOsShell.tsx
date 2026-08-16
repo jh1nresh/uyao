@@ -252,9 +252,7 @@ export function StoreOsShell({
               <AgentOrb
                 id={agent.id}
                 active={activeAgentId === agent.id}
-                animated={!prefersReducedMotion && (
-                  activeAgentId === agent.id || agent.state === "working"
-                )}
+                animated={!prefersReducedMotion}
               />
               <span className={styles.agentCopy}>
                 <strong>{agent.name}</strong>
