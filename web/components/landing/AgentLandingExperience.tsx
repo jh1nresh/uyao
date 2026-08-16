@@ -9,11 +9,11 @@ import {
   type ComponentType,
   type CSSProperties,
   type FormEvent,
-  type PointerEvent as ReactPointerEvent,
 } from "react";
 
 import { BrandLogo } from "@/components/BrandLogo";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { useAvatarEyes } from "@/components/useAvatarEyes";
 import { Flame } from "@/components/avatar-lab/Flame";
 import { Pepper } from "@/components/avatar-lab/Pepper";
 import { Sapling } from "@/components/avatar-lab/Sapling";
@@ -22,11 +22,10 @@ import { CompanyFooter } from "@/components/landing/CompanyFooter";
 import { footerSproutData } from "@/components/landing/footerSproutData";
 import { SHOP_URL } from "@/lib/shop";
 
-const FOOTER_EYE_CENTRE_FRACTION = (-38 + 150) / 300;
-
 type Locale = "zh" | "en";
 type AgentId = "manager" | "inventory" | "purchasing" | "checkout";
 type AvatarVisualProps = {
+  animation?: "resting";
   playing?: boolean;
   loop?: boolean;
   size?: number | string;
@@ -366,6 +365,7 @@ function Avatar({
   const Component = AVATARS[id];
   return (
     <Component
+      animation="resting"
       playing={playing}
       loop
       size={size}
@@ -561,7 +561,6 @@ function StoreOsPreview({
 
 function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; locale: Locale; reducedMotion: boolean }) {
   const stageRef = useRef<HTMLDivElement>(null);
-  const avatarRef = useRef<HTMLDivElement>(null);
   const [entered, setEntered] = useState(reducedMotion);
   const pilotHref = locale === "en" ? "/en/pharmacy" : "/zh-tw/pharmacy";
   const evidenceHref = locale === "en" ? "/en/evidence" : "/zh-tw/evidence";
@@ -586,32 +585,8 @@ function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; loc
     return () => observer.disconnect();
   }, [reducedMotion]);
 
-  const setEyeOffset = (x: number, y: number, settleMs: number) => {
-    const eyes = avatarRef.current?.querySelector<SVGGElement>("svg g[clip-path]");
-    if (!eyes) return;
-    eyes.style.transition = `transform ${settleMs}ms cubic-bezier(0.32, 0.72, 0, 1)`;
-    eyes.style.transform = `translate(${x.toFixed(1)}px, ${y.toFixed(1)}px)`;
-  };
-  const followEyes = (event: ReactPointerEvent<HTMLElement>) => {
-    if (reducedMotion || !avatarRef.current) return;
-    const rect = avatarRef.current.getBoundingClientRect();
-    const eyeCenterX = rect.left + rect.width / 2;
-    // The footer variant lifts the eyes to y=-38 of the -150..150 viewBox.
-    const eyeCenterY = rect.top + rect.height * FOOTER_EYE_CENTRE_FRACTION;
-    const x = Math.max(-1, Math.min(1, (event.clientX - eyeCenterX) / (rect.width / 2)));
-    const y = Math.max(-1, Math.min(1, (event.clientY - eyeCenterY) / (rect.height / 2)));
-    setEyeOffset(x * 5, y * 3, 180);
-  };
-  const recenterEyes = () => setEyeOffset(0, 0, 420);
-
   return (
-    <section
-      id="meet-manager"
-      onPointerMove={followEyes}
-      onPointerLeave={recenterEyes}
-      onPointerCancel={recenterEyes}
-      className="overflow-hidden border-t border-line bg-paper"
-    >
+    <section id="meet-manager" className="overflow-hidden border-t border-line bg-paper">
       <div className="mx-auto flex min-h-[720px] max-w-[1240px] flex-col items-center px-5 pt-20 text-center sm:min-h-[940px] sm:px-8 sm:pt-28">
         <div className="relative z-10 max-w-[780px]">
           <span className="num text-[11px] font-bold tracking-[.1em] text-green">MEET YOUR FIRST AGENT</span>
@@ -630,7 +605,6 @@ function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; loc
           className="relative mt-8 h-[320px] w-full overflow-hidden sm:mt-10 sm:h-[556px]"
         >
           <div
-            ref={avatarRef}
             data-testid="footer-manager-body"
             // The line lands on the head's mid-plane (y=0 of the -150..150 viewBox), burying
             // half the mascot. Mobile size is capped by the artwork's width rather than its
@@ -645,6 +619,7 @@ function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; loc
           >
             <Sprout
               data={footerSproutData}
+              animation="resting"
               playing={!reducedMotion}
               loop
               size="100%"
@@ -666,9 +641,12 @@ export function AgentLandingExperience({ locale }: { locale: Locale }) {
   const localeHref = locale === "en" ? "/zh-tw" : "/en";
   const localeLabel = locale === "en" ? "ZH" : "EN";
   const manager = useMemo(() => copy.agents[0], [copy]);
+  const pageRef = useRef<HTMLDivElement | null>(null);
+
+  useAvatarEyes(pageRef, !reducedMotion);
 
   return (
-    <div className="min-w-[320px] bg-ivory text-ink">
+    <div ref={pageRef} className="min-w-[320px] bg-ivory text-ink">
       <nav className="sticky top-0 z-50 border-b border-line bg-ivory/95 backdrop-blur-sm">
         <div className="mx-auto flex h-[68px] max-w-[1240px] items-center justify-between gap-4 px-5 sm:h-[78px] sm:px-8">
           <Link href={locale === "en" ? "/en" : "/zh-tw"} className="flex min-h-11 items-center no-underline">
