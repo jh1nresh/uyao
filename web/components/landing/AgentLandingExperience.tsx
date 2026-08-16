@@ -24,6 +24,7 @@ import { SHOP_URL } from "@/lib/shop";
 type Locale = "zh" | "en";
 type AgentId = "manager" | "inventory" | "purchasing" | "checkout";
 type AvatarVisualProps = {
+  animation?: "resting";
   playing?: boolean;
   loop?: boolean;
   size?: number | string;
@@ -351,18 +352,21 @@ function Avatar({
   id,
   size,
   playing,
+  resting = false,
   className = "",
   style,
 }: {
   id: AgentId;
   size: number | string;
   playing: boolean;
+  resting?: boolean;
   className?: string;
   style?: CSSProperties;
 }) {
   const Component = AVATARS[id];
   return (
     <Component
+      animation={resting ? "resting" : undefined}
       playing={playing}
       loop
       size={size}
@@ -401,7 +405,7 @@ function StoreOsPreview({
       <div className="paper-elevation grid min-h-[560px] border border-line-strong bg-paper lg:h-[560px] lg:min-h-0 lg:grid-cols-[218px_1fr] lg:overflow-hidden">
         <aside className="border-b border-line-strong bg-brand-surface text-on-dark lg:border-b-0 lg:border-r">
           <div className="flex min-h-[68px] items-center gap-3 border-b border-on-dark/15 px-4">
-            <Avatar id="manager" size={36} playing={!reducedMotion} />
+            <Avatar id="manager" size={36} playing={!reducedMotion} resting />
             <strong className="text-[14px]">uYao Store OS</strong>
           </div>
           <div className="num px-4 pb-2 pt-5 text-[10px] tracking-[.1em] text-on-dark/55">AGENTS</div>
@@ -418,7 +422,7 @@ function StoreOsPreview({
                     active ? "border-green bg-on-dark/10" : "border-transparent hover:bg-on-dark/5"
                   }`}
                 >
-                  <Avatar id={agent.id} size={40} playing={active && !reducedMotion} />
+                  <Avatar id={agent.id} size={40} playing={active && !reducedMotion} resting />
                   <span className="hidden min-w-0 flex-1 lg:block">
                     <strong className="block truncate text-[13px]">{agent.name}</strong>
                     <small className="num mt-1 block text-[9px] text-on-dark/65">{agent.state}</small>
@@ -438,7 +442,7 @@ function StoreOsPreview({
         <div className="min-w-0">
           <div className="flex min-h-[68px] items-center justify-between gap-4 border-b border-line px-4 sm:px-6">
             <div className="flex min-w-0 items-center gap-3">
-              <Avatar id={selected.id} size={42} playing={!reducedMotion} />
+              <Avatar id={selected.id} size={42} playing={!reducedMotion} resting />
               <span className="min-w-0">
                 <strong className="block truncate text-[14px]">{selected.name}</strong>
                 <small className="block truncate text-[11px] text-muted">{selected.description}</small>
@@ -454,7 +458,7 @@ function StoreOsPreview({
             <div className="flex min-h-0 min-w-0 flex-col px-4 py-5 sm:px-6 lg:py-4">
               <span className="num text-[9px] font-semibold tracking-[.08em] text-muted">SHARED WORKITEM · WI-2031</span>
               <div className="mt-5 flex items-start gap-4 lg:mt-4">
-                <Avatar id={selected.id} size={48} playing={!reducedMotion} />
+                <Avatar id={selected.id} size={48} playing={!reducedMotion} resting />
                 <div className="min-w-0">
                   <strong className="text-[13px]">{selected.name}</strong>
                   <p
@@ -481,7 +485,7 @@ function StoreOsPreview({
                         compactEnglish ? "text-[10px]" : "text-[11px]"
                       }`}
                     >
-                      <Avatar id={id} size={28} playing={false} />
+                      <Avatar id={id} size={28} playing={false} resting />
                       <span className="min-w-0"><b>{agent.name}</b><span className="ml-3 hidden text-muted sm:inline">{text}</span></span>
                       <b className={id === "purchasing" ? "text-warning" : "text-green"}>{state}</b>
                     </div>

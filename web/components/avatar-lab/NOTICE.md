@@ -29,3 +29,11 @@ of that license is included as `AGPL-3.0.txt` in this directory.
   body-node geometry so the roles remain distinct at sidebar size.
 - Runtime playback is enabled only for the central active Agent and is disabled
   when the operating system requests reduced motion.
+- Each export gained a hand-written `resting` animation on top of its generated
+  animation: one static expression (`expression-rest`, cloned from the first
+  step of the generated animation) with `bodyMotion: "none"` and
+  `eyeMotion: "microSaccades"`, plus blink. Store OS plays `resting` so the
+  bodies hold their pose and only the eyes move, matching the x.ai/bot motion
+  language the landing footer already follows. Re-exporting an avatar from
+  Avatar Lab drops `resting`; re-add it before shipping (`tsc --noEmit` fails
+  when it is missing, because the call sites pass the literal `"resting"`).
