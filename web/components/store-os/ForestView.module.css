@@ -1,0 +1,215 @@
+/* 森林檢視。顏色全部走 StoreOsShell.module.css 定義的 token,
+   深淺色主題自動跟著切。 */
+
+.forest {
+  display: grid;
+  gap: 12px;
+}
+
+.forestScroll {
+  overflow-x: auto;
+  border-radius: 14px;
+  background:
+    linear-gradient(180deg, transparent 58%, color-mix(in srgb, var(--green) 7%, transparent) 100%),
+    var(--panel-2);
+  box-shadow: var(--shadow-card);
+  scrollbar-width: thin;
+  scrollbar-color: var(--scroll-thumb) transparent;
+}
+
+.forestCanvas {
+  display: block;
+  min-width: 100%;
+}
+
+.ground {
+  fill: color-mix(in srgb, var(--green) 12%, var(--panel-3));
+}
+
+.tree {
+  cursor: pointer;
+  outline: none;
+  transition: filter .2s var(--ease-ui);
+}
+
+.tree:hover,
+.tree:focus-visible {
+  filter: brightness(1.15);
+}
+
+.treeSelected {
+  filter: brightness(1.22) drop-shadow(0 0 6px color-mix(in srgb, var(--blue) 55%, transparent));
+}
+
+.treeShadow {
+  fill: var(--shadow);
+}
+
+.trunk {
+  fill: #8a6f52;
+}
+
+.canopyHealthy path,
+.canopyHealthy circle {
+  fill: var(--green);
+}
+
+.canopyThriving path,
+.canopyThriving circle {
+  fill: color-mix(in srgb, var(--green) 78%, var(--blue) 22%);
+}
+
+.canopyWarning path,
+.canopyWarning circle {
+  fill: var(--amber);
+}
+
+.deadWood path {
+  fill: none;
+  stroke: var(--faint);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+@keyframes forestPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .62; }
+}
+
+.treePulse {
+  animation: forestPulse 2.4s var(--ease-ui) infinite;
+}
+
+.rain line {
+  stroke: var(--blue-soft);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  opacity: 0;
+  animation: forestRain 1.3s linear infinite;
+}
+
+@keyframes forestRain {
+  0% { opacity: 0; transform: translateY(0); }
+  18% { opacity: .7; }
+  100% { opacity: 0; transform: translateY(250px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .treePulse { animation: none; }
+  .rain line { animation: none; opacity: .35; transform: translateY(120px); }
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  font-size: var(--fs-meta);
+  color: var(--muted);
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.legend i {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.legend i[data-kind="healthy"] { background: var(--green); }
+.legend i[data-kind="warning"] { background: var(--amber); }
+.legend i[data-kind="dead"] { background: var(--faint); }
+.legend i[data-kind="rain"] { background: var(--blue-soft); }
+
+.timeline {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: var(--fs-meta);
+  color: var(--muted);
+}
+
+.timeline label {
+  flex: none;
+}
+
+.timeline input {
+  flex: 1;
+  accent-color: var(--blue);
+  min-width: 120px;
+}
+
+.timeline span {
+  flex: none;
+  min-width: 84px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.treeDetail {
+  border-radius: 14px;
+  background: var(--panel-2);
+  box-shadow: var(--shadow-card);
+  padding: 14px 16px;
+  display: grid;
+  gap: 4px;
+}
+
+.treeDetail header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.detailCode {
+  font-size: var(--fs-meta);
+  letter-spacing: .04em;
+  color: var(--blue-soft);
+}
+
+.treeDetail header [data-status] {
+  font-size: var(--fs-micro);
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--panel-3);
+  color: var(--muted);
+}
+
+.treeDetail header [data-status="pending_store_confirm"] { background: var(--amber-tint); color: var(--amber-text); }
+.treeDetail header [data-status="confirmed"],
+.treeDetail header [data-status="picked_up"] { background: var(--green-tint); color: var(--green-text); }
+.treeDetail header [data-status="rejected_no_stock"],
+.treeDetail header [data-status="cancelled_by_user"],
+.treeDetail header [data-status="expired"] { background: var(--danger-tint); color: var(--danger-text); }
+
+.treeDetail header button {
+  margin-left: auto;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font-size: 16px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 2px 6px;
+}
+
+.treeDetail header button:hover {
+  color: var(--text);
+}
+
+.treeDetail h3 {
+  margin: 0;
+  font-size: var(--fs-strong);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.treeDetail p {
+  margin: 0;
+  font-size: var(--fs-meta);
+  color: var(--muted);
+}
