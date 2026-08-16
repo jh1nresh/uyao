@@ -32,8 +32,11 @@ of that license is included as `AGPL-3.0.txt` in this directory.
 - Each export gained a hand-written `resting` animation on top of its generated
   animation: one static expression (`expression-rest`, cloned from the first
   step of the generated animation) with `bodyMotion: "none"` and
-  `eyeMotion: "microSaccades"`, plus blink. Store OS plays `resting` so the
-  bodies hold their pose and only the eyes move, matching the x.ai/bot motion
-  language the landing footer already follows. Re-exporting an avatar from
-  Avatar Lab drops `resting`; re-add it before shipping (`tsc --noEmit` fails
-  when it is missing, because the call sites pass the literal `"resting"`).
+  `eyeMotion: "microSaccades"`, plus blink. Every uYao surface plays `resting`,
+  so the bodies hold their pose and only the eyes move — the x.ai/bot motion
+  language. Re-exporting an avatar from Avatar Lab drops `resting`; re-add it
+  before shipping (`tsc --noEmit` fails when it is missing, because the call
+  sites pass the literal `"resting"`).
+- Pointer tracking is uYao code, not part of the export: `useAvatarEyes`
+  translates the runtime's eye group (`svg g[clip-path]`) toward the pointer,
+  with travel scaled to the rendered size by `lib/avatar-eyes.ts`.

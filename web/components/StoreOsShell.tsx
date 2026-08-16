@@ -10,6 +10,7 @@ import {
 
 import { BrandMark } from "@/components/BrandMark";
 import { SupportAgent } from "@/components/SupportAgent";
+import { useAvatarEyes } from "@/components/useAvatarEyes";
 import { Flame } from "@/components/avatar-lab/Flame";
 import { Pepper } from "@/components/avatar-lab/Pepper";
 import { Sapling } from "@/components/avatar-lab/Sapling";
@@ -338,6 +339,7 @@ export function StoreOsShell({
   const [profileOpen, setProfileOpen] = useState(false);
   const [locale, setLocale] = useState<Locale>("zh");
   const [pushState, setPushState] = useState<PushState>(webPushPublicKey ? "checking" : "unconfigured");
+  const screenRef = useRef<HTMLElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const draftButtonRef = useRef<HTMLButtonElement>(null);
   const profileButtonRef = useRef<HTMLButtonElement>(null);
@@ -349,6 +351,8 @@ export function StoreOsShell({
   const activeAgentAvailable = isStoreAgentAvailable(activeAgentId, demoMode);
   const waitingCount = liveReservations.filter((reservation) => reservation.status === "pending_store_confirm").length;
   const completedCount = liveReservations.filter((reservation) => COMPLETED_RESERVATION_STATUSES.has(reservation.status)).length;
+
+  useAvatarEyes(screenRef, !prefersReducedMotion);
 
   async function registerStoreServiceWorker(): Promise<ServiceWorkerRegistration> {
     return navigator.serviceWorker.register("/store-sw.js", { scope: "/" });
@@ -643,6 +647,7 @@ export function StoreOsShell({
 
   return (
     <main
+      ref={screenRef}
       className={styles.screen}
       lang={english ? "en" : "zh-Hant-TW"}
       data-theme={resolvedTheme}
