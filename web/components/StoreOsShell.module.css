@@ -61,9 +61,9 @@
   --avatar-purchasing-active: #ff8b6c;
   --avatar-checkout: #ca8e96;
   --avatar-checkout-active: #dda5ac;
-  --avatar-eye: #f8f4e9;
+  --avatar-eye: var(--panel);
   --support-avatar-fill: #7897f3;
-  --support-avatar-eye: #f8f4e9;
+  --support-avatar-eye: var(--panel);
   --scroll-thumb: #5b5b5b;
   --scroll-thumb-hover: #777;
   width: 100%;
@@ -142,9 +142,7 @@
   --avatar-purchasing-active: #b95a3a;
   --avatar-checkout: #74434a;
   --avatar-checkout-active: #85515a;
-  --avatar-eye: #080b0a;
   --support-avatar-fill: #496ac7;
-  --support-avatar-eye: #080b0a;
   --scroll-thumb: #afa99e;
   --scroll-thumb-hover: #8d877d;
   color-scheme: light;

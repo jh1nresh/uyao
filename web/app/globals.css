@@ -36,6 +36,7 @@
   --color-canvas: 231 225 212;
   --color-ivory: 242 239 230;
   --color-paper: 248 244 233;
+  --color-agent-eye: var(--color-paper);
   --color-sage: 220 231 217;
   --color-map-bg: 229 233 226;
   --color-map-grid: 217 224 215;
@@ -255,9 +256,9 @@ html[data-theme="dark"] .theme-logo-dark {
   box-shadow: 0 22px 52px rgb(var(--shadow-paper) / 0.09);
 }
 
-/* Landing avatars keep their original geometry and body colors; eyes are black. */
-.agent-black-eyes svg g[clip-path] path {
-  fill: #111316 !important;
+/* Match Grok Bot's cutout treatment: eyes inherit the active page surface. */
+.agent-theme-eyes svg g[clip-path] path {
+  fill: rgb(var(--color-agent-eye)) !important;
 }
 
 @keyframes partner-marquee-scroll {
