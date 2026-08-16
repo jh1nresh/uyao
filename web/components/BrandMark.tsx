@@ -16,7 +16,7 @@ export function BrandMark({ size = 26 }: { size?: number }) {
       <Image
         aria-hidden
         alt=""
-        src="/brand/uyao-mark-reverse.svg"
+        src="/brand/uyao-mark-v4-reverse.svg"
         width={size}
         height={size}
         className="theme-logo-dark flex-none"
