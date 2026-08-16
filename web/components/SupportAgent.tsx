@@ -15,12 +15,10 @@ interface ChatMessage {
 
 export function SupportAgent({
   animate,
-  open,
-  onOpenChange,
+  active,
 }: {
   animate: boolean;
-  open: boolean;
-  onOpenChange: (open: boolean) => void;
+  active: boolean;
 }) {
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -29,23 +27,14 @@ export function SupportAgent({
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const [ticketId, setTicketId] = useState("");
-  const triggerRef = useRef<HTMLButtonElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const nextMessageId = useRef(0);
   const requestId = useRef("");
 
   useEffect(() => {
-    if (!open) return;
+    if (!active) return;
     inputRef.current?.focus();
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") {
-        onOpenChange(false);
-        requestAnimationFrame(() => triggerRef.current?.focus());
-      }
-    };
-    window.addEventListener("keydown", onKeyDown);
-    return () => window.removeEventListener("keydown", onKeyDown);
-  }, [onOpenChange, open]);
+  }, [active]);
 
   function append(role: ChatMessage["role"], text: string) {
     const id = nextMessageId.current++;
@@ -105,9 +94,12 @@ export function SupportAgent({
   }
 
   return (
-    <div className={styles.support} data-open={open ? "true" : "false"}>
-      {open && (
-        <section className={styles.panel} aria-label="uYao 支援">
+    <section
+      className={styles.panel}
+      data-active={active ? "true" : "false"}
+      aria-label="uYao 支援"
+      aria-hidden={!active}
+    >
           <header className={styles.header}>
             <span className={styles.avatar} aria-hidden="true">
               <Strobi animation="listening" playing={animate} size="100%" />
@@ -116,15 +108,7 @@ export function SupportAgent({
               <strong>uYao 支援</strong>
               <small>自助回答 · 真人支援單</small>
             </span>
-            <button
-              type="button"
-              className={styles.close}
-              onClick={() => {
-                onOpenChange(false);
-                requestAnimationFrame(() => triggerRef.current?.focus());
-              }}
-              aria-label="關閉支援"
-            >×</button>
+            <span className={styles.connectionState}>已連線</span>
           </header>
 
           {messages.length === 0 ? (
@@ -195,22 +179,6 @@ export function SupportAgent({
               <button type="submit" disabled={!question.trim()} aria-label="送出問題">↑</button>
             </div>
           </form>
-        </section>
-      )}
-
-      <button
-        ref={triggerRef}
-        type="button"
-        className={styles.trigger}
-        aria-expanded={open}
-        aria-label={open ? "關閉 uYao 支援" : "開啟 uYao 支援"}
-        onClick={() => onOpenChange(!open)}
-      >
-        <span className={styles.triggerAvatar} aria-hidden="true">
-          <Strobi animation="listening" playing={animate} size="100%" />
-        </span>
-        <span>支援</span>
-      </button>
-    </div>
+    </section>
   );
 }
