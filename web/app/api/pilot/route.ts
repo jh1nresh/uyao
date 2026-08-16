@@ -57,7 +57,7 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "請填藥局名稱" }, { status: 422 });
   }
   if (!contact) {
-    return NextResponse.json({ error: "請留 LINE ID 或電話，我們才能跟你聯繫" }, { status: 422 });
+    return NextResponse.json({ error: "請留 Email 或電話，我們才能跟你聯繫" }, { status: 422 });
   }
 
   const application: PilotApplication = {

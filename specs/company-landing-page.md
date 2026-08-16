@@ -12,13 +12,13 @@
 
 1. **Route**：`/` 作公司 landing；消費者產品搬 `/app`（route group `(consumer)`，URL 不變其餘不動）。
 2. **Hero headline**：`少丟貨，少缺貨。讓每一盒庫存跟附近需求連起來。`
-3. **Primary proof**：return-window LINE action（hero 的 Supply → Action → Outcome 閉環）。
+3. **Primary proof**：return-window Store OS action（hero 的 Supply → Action → Outcome 閉環）。
 4. **Evidence state**：只公開 repo／測試層級；共同創辦人現場經驗仍標 ○（整理中）。Evidence date: 2026-08-09。
 
 ## 一句話定位
 
 > uYao 是台灣獨立藥局的 demand-connected inventory agent。它從店內掃描與附近搜尋取得供需
-> 訊號，在 LINE 提出退貨、減量、補貨與預留行動，由藥師批准，並記錄實際追回、避免或增加的
+> 訊號，在 Store OS 提出退貨、減量、補貨與預留行動，由藥師批准，並記錄實際追回、避免或增加的
 > 經濟結果。
 
 ## Route 分工
@@ -48,12 +48,12 @@ deployment，正式上線後要在 Vercel dashboard → Domains 加成 project d
 | Section | 內容 | 實作 |
 |---|---|---|
 | Nav | logo + 怎麼運作/#how · 目前進度/#progress · 附近找藥→/app · 申請試點/#pilot；mobile 只剩 logo+CTA | `app/page.tsx` |
-| Hero | H1 + subtext + 雙 CTA + status line；visual = scan event → LINE return card → outcome receipt，一次性 3 段進場動畫（reduced-motion 直接靜態） | `components/landing/HeroLoop.tsx` |
+| Hero | H1 + subtext + 雙 CTA + status line；visual = scan event → Store OS return card → outcome receipt，一次性 3 段進場動畫（reduced-motion 直接靜態） | `components/landing/HeroLoop.tsx` |
 | POS gap | comparison strip 3 rows；mobile 改 paired rows | `app/page.tsx` |
 | 閉環 | 01–05 不對稱流程（03 Action agent 加重 + VERIFY/RETURN/REDUCE/REORDER/RESERVE chips） | `app/page.tsx` |
 | Wedge | return-window timeline（退貨規則標「待確認供應商退貨規則」，不寫 30 天） | `app/page.tsx` |
 | Demand | copy + 目前合作藥局目錄資料卡（只顯示已確認名稱與規格；庫存、價格、分類、成分與適用資訊不推測） | `app/page.tsx` |
-| LINE proof | RETURN REVIEW（規則待確認）+ REORDER REVIEW（示範資料）兩張卡 | `app/page.tsx` |
+| Store OS proof | RETURN REVIEW（規則待確認）+ REORDER REVIEW（示範資料）兩張卡 | `app/page.tsx` |
 | Evidence | ✓/○ ladder 8 項 + evidence date | `app/page.tsx` |
 | Pilot CTA | 深色 end-cap；表單 name*/area/contact* + 問題 chips（選填）→ POST /api/pilot（新增 problems 白名單欄位） | `components/landing/PilotCtaForm.tsx` |
 | Footer | logo + 附近找藥/申請試點/聯絡方式 + 法規聲明 | `app/page.tsx` |
@@ -77,7 +77,7 @@ deployment，正式上線後要在 Vercel dashboard → Domains 加成 project d
 ## 驗證紀錄（2026-08-09）
 
 - `tsc --noEmit` ✓ · `npm test` 51/51 ✓ · `npm run build` ✓（全路由照舊生成）
-- 1280/834/390 無水平 overflow；834 hero CTA 在 initial viewport；390 H1 34px、LINE card 350px 可讀
+- 1280/834/390 無水平 overflow；834 hero CTA 在 initial viewport；390 H1 34px、Store OS card 350px 可讀
 - 表單：空值 inline error、送出 loading、成功 inline success；`.data/pilot.jsonl` 記錄含 problems
 - `/` 不掛消費端試營運橫幅（`(consumer)/layout.tsx` 才掛）；全站 noindex 不變
 

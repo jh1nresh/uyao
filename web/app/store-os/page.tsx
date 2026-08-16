@@ -5,6 +5,7 @@ import { StoreOsLogin } from "@/components/StoreOsLogin";
 import { StoreOsShell } from "@/components/StoreOsShell";
 import { listStoreReservations } from "@/lib/reservations-store";
 import { isStoreDemoSandbox } from "@/lib/store-demo";
+import { webPushPublicKey } from "@/lib/store-push";
 import {
   isStoreAuthConfigured,
   readStoreSessionToken,
@@ -15,6 +16,12 @@ import {
 export const metadata: Metadata = {
   title: "Store OS 介面原型",
   description: "uYao Store OS 的多角色藥局工作介面原型。",
+  manifest: "/store-os.webmanifest",
+  appleWebApp: {
+    capable: true,
+    title: "uYao Store",
+    statusBarStyle: "black-translucent",
+  },
   robots: { index: false, follow: false, nocache: true },
 };
 
@@ -38,6 +45,7 @@ export default async function StoreOsPage() {
       operatorRole={identity.role}
       reservations={reservations}
       demoMode={isStoreDemoSandbox(session.storeSlug)}
+      webPushPublicKey={webPushPublicKey()}
     />
   );
 }

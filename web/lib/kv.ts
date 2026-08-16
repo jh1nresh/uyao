@@ -50,7 +50,7 @@ async function command(args: (string | number)[]): Promise<unknown> {
 }
 
 function filePath(key: string): string {
-  // key 只會是 base64url、取貨碼、LINE userId 這類字元，還是擋一下路徑穿越
+  // key 只會是 base64url、取貨碼、subscription hash 這類字元，還是擋一下路徑穿越
   const safe = key.replace(/[^A-Za-z0-9_:.-]/g, "_");
   return path.join(process.cwd(), ".data", "kv", `${safe}.json`);
 }

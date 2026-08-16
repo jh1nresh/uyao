@@ -59,13 +59,13 @@ export interface StoredReservation {
   expiredAt?: string;
   /** 業務示範（/demo/uyao-demo）產生的單。真單不會有這個欄位。 */
   demo?: true;
-  /** 顧客明確同意提供的需求脈絡；不進 LINE、record webhook 或公開取貨頁。 */
+  /** 顧客明確同意提供的需求脈絡；不進 Web Push、record webhook 或公開取貨頁。 */
   intake?: ReservationIntake;
 }
 
 /**
  * 藥局遲遲不回覆是真實會發生的事 —— 老闆在忙，卡片沉下去了。
- * LINE 不提供已讀回報，所以我們無從得知，只能靠時間推斷。
+ * Web Push 不提供可靠的工作已讀回報，所以仍只能靠 WorkItem 時間推斷。
  *
  * 兩個門檻刻意錯開：先催藥局，再叫消費者打電話。倒過來的話，
  * 消費者會在藥局根本還沒被提醒的時候就先被推去打電話。

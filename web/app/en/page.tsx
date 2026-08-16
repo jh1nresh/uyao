@@ -63,7 +63,7 @@ const HERO_COPY: HeroLoopCopy = {
   flowLabel: "SUPPLY → ACTION → OUTCOME",
   badge: "PROTOTYPE · EXAMPLE DATA",
   scanTitle: "SCAN EVENT · box/connector",
-  lineHeader: "LINE ACTION · prototype",
+  lineHeader: "STORE OS ACTION · prototype",
   cardTitle: "Return window approaching",
   cardMetaLines: ["Batch TW881 · EXP 2026-11", "Supplier return rule: confirmation required"],
   primaryBtn: "Start return",
@@ -79,7 +79,7 @@ const FORM_COPY: PilotFormCopy = {
   locale: "en",
   nameLabel: "Pharmacy name *",
   areaLabel: "Area",
-  contactLabel: "Contact (LINE ID, phone, or email) *",
+  contactLabel: "Contact (phone or email) *",
   problemsLegend: "Most frequent problems (optional)",
   // value 送 API 的中文 canonical 白名單值；label 顯示英文。
   problems: [
@@ -121,7 +121,7 @@ const FLOW: { n: string; title: string; body: string; hot?: boolean }[] = [
   {
     n: "04",
     title: "Preserve authority",
-    body: "Pharmacists approve, reject, or correct critical decisions in LINE",
+    body: "Pharmacists approve, reject, or correct critical decisions in Store OS",
   },
   {
     n: "05",
@@ -136,7 +136,7 @@ const TIMELINE = [
   { label: "Intake scan", note: "GTIN · LOT · EXP" },
   { label: "Batch and expiry check" },
   { label: "Return window approaching", note: "Supplier return rule: confirmation required", hot: true },
-  { label: "LINE action", note: "Start return?" },
+  { label: "Store OS action", note: "Start return?" },
   { label: "Pharmacist response" },
   { label: "Outcome pending / verified", last: true },
 ] as const;
@@ -478,7 +478,7 @@ export default function EnglishLandingPage() {
                   <BrandMark size={18} />
                   <span className="text-[13px] font-bold">uYao</span>
                   <span className="num ml-auto text-[11px] font-medium text-muted">
-                    LINE ACTION · prototype
+                    STORE OS ACTION · prototype
                   </span>
                 </div>
                 <div className="px-[18px] py-3.5">
@@ -520,7 +520,7 @@ export default function EnglishLandingPage() {
               </h2>
               <p className="m-0 max-w-[30em] text-[16.5px] leading-[1.85] text-ink-2">
                 We’re looking for independent pharmacies to validate scanning, return windows,
-                and pharmacist-approved LINE actions without replacing the POS.
+                and pharmacist-approved Store OS actions without replacing the POS.
               </p>
             </div>
             <PilotCtaForm copy={FORM_COPY} />

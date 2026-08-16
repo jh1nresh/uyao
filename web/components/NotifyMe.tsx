@@ -119,7 +119,7 @@ export function NotifyMe({
         </label>
 
         <label className="grid min-w-0 flex-1 gap-1 text-[14px] font-medium text-muted" htmlFor="notify-contact">
-          <span>Email 或 LINE ID</span>
+          <span>Email 或電話</span>
           <input
             id="notify-contact"
             value={contact}

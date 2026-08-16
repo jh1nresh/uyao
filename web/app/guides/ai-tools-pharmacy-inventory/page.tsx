@@ -153,7 +153,7 @@ export default function AiToolsPharmacyInventoryGuidePage() {
           <ul className="m-0 grid max-w-[40em] gap-2 pl-5 text-[15px] leading-[1.8] text-ink-2">
             <li>供應商公開功能不等於台灣藥局現場已驗證；需另查介接、法規、資安、語言與服務範圍</li>
             <li>需求預測不能補回錯誤或缺漏的庫存資料，也不能代替實際盤點與藥師確認</li>
-            <li>uYao 的掃描、LINE action 與 Consumer Web 目前包含 prototype；不得當成既有市場成果</li>
+            <li>uYao 的掃描、Store OS action、Web Push 與 Consumer Web 目前包含 prototype；不得當成既有市場成果</li>
             <li>本文未經藥師專業審閱，不構成藥事、法規或個別採購建議</li>
           </ul>
         </section>
@@ -193,7 +193,7 @@ export default function AiToolsPharmacyInventoryGuidePage() {
 
         <KnowledgeCta
           title="先用一個真實庫存問題測試"
-          body="uYao 正在招募獨立藥局驗證掃描、效期與 LINE 決策流程。試點不要求更換 POS，也不碰病患或處方個資。"
+          body="uYao 正在招募獨立藥局驗證掃描、效期與 Store OS 決策流程。試點不要求更換 POS，也不碰病患或處方個資。"
         />
       </article>
     </KnowledgeShell>

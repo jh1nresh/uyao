@@ -117,7 +117,7 @@ export default function ExpiryGuidePage() {
         <section className="mt-10">
           <h2 className="editorial-display mb-3 mt-0 text-[24px] leading-[1.4]">uYao 怎麼處理這件工作</h2>
           <p className="m-0 max-w-[38em] text-[15px] leading-[1.85] text-ink-2">
-            uYao 把一個小盒子串在藥局現有的條碼掃描器上，進貨照掃，批號與效期自動記錄；接近退貨窗口時在 LINE 主動提醒，藥師只需批准、拒絕或修正，最後記下每批的實際結果。目前為 prototype 並招募試點中——實際做到哪裡、還沒做到哪裡，見
+            uYao 把一個小盒子串在藥局現有的條碼掃描器上，進貨照掃，批號與效期自動記錄；接近退貨窗口時在 Store OS 建立工作並用 Web Push 提醒，藥師只需批准、拒絕或修正，最後記下每批的實際結果。目前為 prototype 並招募試點中——實際做到哪裡、還沒做到哪裡，見
             <Link href="/zh-tw/evidence" className="mx-1 text-forest underline underline-offset-2 hover:text-green">
               產品證據頁
             </Link>

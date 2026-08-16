@@ -14,7 +14,7 @@ import {
   readReservationIntakeDraft,
 } from "@/lib/reservation-intake";
 import { SHOP_URL } from "@/lib/shop";
-import type { NotifyResult, StockBadgeSpec, Store } from "@/lib/types";
+import type { StockBadgeSpec, Store } from "@/lib/types";
 
 export interface ReserveTarget {
   drug: { slug: string; name: string; spec: string };
@@ -31,8 +31,6 @@ interface Success {
   token?: string;
   code: string;
   holdHours: number;
-  /** 只有示範模式會拿到 —— 藥局到底有沒有被通知 */
-  notify?: NotifyResult;
   intakeShared: boolean;
 }
 
@@ -136,7 +134,6 @@ export function ReserveSheet({
         code?: string;
         token?: string;
         holdHours?: number;
-        notify?: NotifyResult;
         intakeShared?: boolean;
         error?: string;
       };
@@ -154,7 +151,6 @@ export function ReserveSheet({
         code: data.code,
         token: data.token,
         holdHours: data.holdHours ?? 4,
-        notify: data.notify,
         intakeShared: data.intakeShared === true,
       });
     } catch {
@@ -266,8 +262,8 @@ export function ReserveSheet({
               )}
               <p className="mb-0 mt-2 text-[11.5px] leading-[1.55] text-muted">
                 {locale === "en"
-                  ? "This is not an online diagnosis or medicine recommendation. The context is not sent to LINE and expires with the reservation record."
-                  : "這不是線上診斷或用藥推薦；內容不會送進 LINE，並會隨預留資料到期。"}
+                  ? "This is not an online diagnosis or medicine recommendation. The context stays inside the signed-in Store OS and expires with the reservation record."
+                  : "這不是線上診斷或用藥推薦；內容只留在登入後的 Store OS，並會隨預留資料到期。"}
               </p>
             </section>
 
@@ -333,92 +329,6 @@ export function ReserveSheet({
   );
 }
 
-const NOTIFY_UI: Record<NotifyResult, { ok: boolean; label: string; body: string }> = {
-  sandboxed: {
-    ok: true,
-    label: "已送到 uYao Store 示範帳號",
-    body: "相同單號會出現在 uyao-demo 的客戶預留 inbox；這筆不會通知或要求真實藥局保留商品。",
-  },
-  sent: {
-    ok: true,
-    label: "已推播給藥局的 LINE",
-    body: "老闆按下「有貨，確認保留」之後，取貨憑證頁會變成「已確認保留」。閉環到那裡才算合上。",
-  },
-  unbound: {
-    ok: false,
-    label: "這家藥局還沒綁定 LINE",
-    body: "沒有人會收到這筆。用要收通知的帳號傳店名給官方帳號、核可之後再按一次。",
-  },
-  not_configured: {
-    ok: false,
-    label: "LINE 未設定",
-    body: "少了 LINE_CHANNEL_ACCESS_TOKEN 或 LINE_CHANNEL_SECRET，這個環境推不出任何訊息。",
-  },
-  failed: {
-    ok: false,
-    label: "推播被 LINE 擋下",
-    body: "綁定與設定都在，是 LINE API 回了錯誤。log 裡有狀態碼：配額、好友關係、或訊息格式。",
-  },
-};
-
-const NOTIFY_UI_EN: typeof NOTIFY_UI = {
-  sandboxed: {
-    ok: true,
-    label: "Sent to the uYao Store demo account",
-    body: "The same code appears in the uyao-demo reservation inbox. No real pharmacy is notified or asked to hold stock.",
-  },
-  sent: {
-    ok: true,
-    label: "Sent to the pharmacy in LINE",
-    body: "When the pharmacist taps confirm, the pickup receipt updates to confirmed.",
-  },
-  unbound: {
-    ok: false,
-    label: "This pharmacy is not linked to LINE",
-    body: "Nobody received this demo request. Bind the pharmacy account and try again.",
-  },
-  not_configured: {
-    ok: false,
-    label: "LINE is not configured",
-    body: "This environment is missing the LINE channel token or secret.",
-  },
-  failed: {
-    ok: false,
-    label: "LINE rejected the push",
-    body: "Check the server log for quota, friendship, or message-format errors.",
-  },
-};
-
-/**
- * 示範專用的閉環診斷。
- *
- * 在藥局老闆面前沒有時間翻 log —— 你說「你的 LINE 會響」，沒響的時候
- * 畫面卻一切正常，當場沒有任何線索。這一條把後端的推播結果直接講出來。
- * 只有 demo 模式的回應帶 `notify`，所以真單不會看到它。
- */
-function NotifyStrip({ notify }: { notify: NotifyResult }) {
-  const locale = useLocale();
-  const ui = (locale === "en" ? NOTIFY_UI_EN : NOTIFY_UI)[notify];
-  return (
-    <div
-      className={`border px-3.5 py-2.5 text-[12.5px] leading-[1.6] ${
-        ui.ok ? "border-green-tint-line bg-green-tint" : "border-line-strong bg-surface"
-      }`}
-    >
-      <div className="flex items-baseline gap-1.5 font-bold">
-        <span aria-hidden className={ui.ok ? "text-green" : "text-ink"}>
-          {ui.ok ? "✓" : "⚠"}
-        </span>
-        <span className={ui.ok ? "text-green" : "text-ink"}>{ui.label}</span>
-        <span className="ml-auto text-[10.5px] font-medium tracking-[.08em] text-muted-2">
-          {locale === "en" ? "DEMO STATUS" : "示範診斷"}
-        </span>
-      </div>
-      <p className="mt-1 text-muted">{ui.body}</p>
-    </div>
-  );
-}
-
 function SuccessBody({
   target,
   success,
@@ -442,16 +352,14 @@ function SuccessBody({
         </div>
         <h2 className="text-[18px] font-black">{locale === "en" ? "Reservation sent" : "預留已送出"}</h2>
       </div>
-      {/* 不能寫「會用 LINE 通知你」—— 消費者端還沒有任何推播管道（只留手機、
-          沒有簡訊、沒接 LINE）。他唯一會知道結果的方式是取貨憑證頁自己更新，
+      {/* 消費者端還沒有任何推播管道（只留手機、沒有簡訊）。他唯一會知道
+          結果的方式是取貨憑證頁自己更新，
           所以這裡要把人推到那一頁去，而不是叫他等一則不會來的訊息。 */}
       <p className="-mt-1.5 text-[14px] leading-[1.6] text-muted">
         {demo
           ? locale === "en" ? "The same code is now in the demo Store OS inbox. This is a sandbox order, so no real pickup is required." : "相同單號現在已送進 Demo Store OS inbox。這是沙盒示範單，不需要實際取貨。"
           : locale === "en" ? `Waiting for ${target.store.name} to confirm, usually within 10 minutes. The hold lasts ${success.holdHours} hours after confirmation. Keep the pickup receipt open; its status updates automatically.` : <>等{target.store.name}確認（通常 10 分鐘內）— 確認後保留 {success.holdHours} 小時。我們不會另外傳訊息給你，請開啟下面的取貨憑證頁留著，狀態會在那裡自己更新。</>}
       </p>
-
-      {success.notify && <NotifyStrip notify={success.notify} />}
 
       {success.intakeShared && (
         <div className="border border-green-tint-line bg-green-tint px-3.5 py-2.5 text-[12.5px] leading-[1.6] text-ink-2">

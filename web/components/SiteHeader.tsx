@@ -66,8 +66,7 @@ export async function SiteHeader({
           <AreaSwitch area={area} preservePath={preserveAreaPath} locatable={locatable} compact />
         </div>
         <LanguageSwitch />
-        {/* 供給側入口。藥局端不需要後台帳號（預留確認走 LINE bot），
-            所以連的是合作說明頁而不是登入頁。 */}
+        {/* 供給側入口。合作說明留在公司站；已開通店家從 Store OS 網域登入。 */}
         <Link
           href={`${SITE_URL}${localizedPath("/pharmacy", locale)}`}
           className="inline-flex min-h-11 flex-none items-center border border-line-strong bg-paper px-3 text-xs font-bold text-forest no-underline transition-colors hover:border-forest hover:bg-surface"
