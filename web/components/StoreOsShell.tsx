@@ -395,14 +395,17 @@ export function StoreOsShell({
                 key={agent.id}
                 type="button"
                 className={`${styles.agentRow} ${
-                  activeAgentId === agent.id ? styles.agentRowActive : ""
+                  !supportOpen && activeAgentId === agent.id ? styles.agentRowActive : ""
                 } ${!available ? styles.agentRowComingSoon : ""}`}
-                aria-pressed={activeAgentId === agent.id}
-                onClick={() => setActiveAgentId(agent.id)}
+                aria-pressed={!supportOpen && activeAgentId === agent.id}
+                onClick={() => {
+                  setActiveAgentId(agent.id);
+                  setSupportOpen(false);
+                }}
               >
                 <AgentOrb
                   id={agent.id}
-                  active={activeAgentId === agent.id}
+                  active={!supportOpen && activeAgentId === agent.id}
                   animated={!prefersReducedMotion && available}
                 />
                 <span className={styles.agentCopy}>
@@ -415,21 +418,6 @@ export function StoreOsShell({
               </button>
             );
           })}
-          <button
-            type="button"
-            className={`${styles.agentRow} ${supportOpen ? styles.agentRowActive : ""}`}
-            aria-expanded={supportOpen}
-            onClick={() => setSupportOpen(true)}
-          >
-            <span className={styles.supportFace} aria-hidden="true">
-              <Strobi playing={!prefersReducedMotion} size="100%" />
-            </span>
-            <span className={styles.agentCopy}>
-              <strong>支援 Agent</strong>
-              <small>操作協助與真人支援</small>
-            </span>
-            <span className={`${styles.agentState} ${styles.idle}`}>待命</span>
-          </button>
         </div>
 
         <p className={styles.sectionLabel}>工作</p>
@@ -439,6 +427,24 @@ export function StoreOsShell({
           <span>完成紀錄</span>
         </nav>
 
+        <div className={styles.sidebarSupport}>
+          <button
+            type="button"
+            className={`${styles.agentRow} ${supportOpen ? styles.agentRowActive : ""}`}
+            aria-pressed={supportOpen}
+            onClick={() => setSupportOpen(true)}
+          >
+            <span className={styles.supportFace} aria-hidden="true">
+              <Strobi animation="listening" playing={!prefersReducedMotion} size="100%" />
+            </span>
+            <span className={styles.agentCopy}>
+              <strong>支援 Agent</strong>
+              <small>操作協助與真人支援</small>
+            </span>
+            <span className={`${styles.agentState} ${styles.idle}`}>待命</span>
+          </button>
+        </div>
+
         <div className={styles.pharmacyStatus}>
           <i aria-hidden="true" />
           <span><strong>{storeName}</strong><small>{operatorName} · 系統連線正常</small></span>
@@ -447,14 +453,22 @@ export function StoreOsShell({
 
       <section className={styles.shell}>
         <header className={styles.topbar}>
-          <AgentOrb id={activeAgent.id} active small />
+          {supportOpen ? (
+            <span className={`${styles.supportFace} ${styles.smallFace}`} aria-hidden="true">
+              <Strobi animation="listening" playing={!prefersReducedMotion} size="100%" />
+            </span>
+          ) : (
+            <AgentOrb id={activeAgent.id} active small />
+          )}
           <span className={styles.topbarAgent}>
-            <strong>{activeAgent.name}</strong>
+            <strong>{supportOpen ? "支援 Agent" : activeAgent.name}</strong>
             <small>
-              {activeAgent.description} · {activeAgentAvailable ? activeAgent.stateLabel : "Coming soon"}
+              {supportOpen
+                ? "操作協助與真人支援 · 已連線"
+                : `${activeAgent.description} · ${activeAgentAvailable ? activeAgent.stateLabel : "Coming soon"}`}
             </small>
           </span>
-          <span className={styles.prototypeBadge}>預留後端已連線</span>
+          <span className={styles.prototypeBadge}>{supportOpen ? "支援後端已連線" : "預留後端已連線"}</span>
           <span className={styles.syncTime}>{storeName}</span>
           <button
             type="button"
@@ -475,7 +489,11 @@ export function StoreOsShell({
 
         <div className={styles.contentGrid}>
           <article className={styles.workspace}>
-            {activeAgentId === "manager" ? (
+            <SupportAgent
+              animate={!prefersReducedMotion}
+              active={supportOpen}
+            />
+            {!supportOpen && (activeAgentId === "manager" ? (
               <ReservationInbox
                 reservations={liveReservations}
                 animate={!prefersReducedMotion}
@@ -567,9 +585,9 @@ export function StoreOsShell({
               </button>
             </section>
               </>
-            )}
+            ))}
 
-            <form className={styles.composer} onSubmit={submitMessage}>
+            {!supportOpen && <form className={styles.composer} onSubmit={submitMessage}>
               <AgentOrb id="manager" active={activeAgentId === "manager"} small />
               <label className={styles.visuallyHidden} htmlFor="store-agent-message">交代店長</label>
               <input
@@ -584,18 +602,43 @@ export function StoreOsShell({
                   : activeAgentAvailable ? "向店長詢問這個 Demo 工作…" : `${activeAgent.name} 即將開通`}
               />
               <button type="submit" disabled={!message.trim()} aria-label="送出訊息">↑</button>
-            </form>
-            <p className={styles.composerNotice} aria-live="polite">{composerNotice}</p>
+            </form>}
+            {!supportOpen && <p className={styles.composerNotice} aria-live="polite">{composerNotice}</p>}
           </article>
 
           <aside className={styles.contextPanel}>
-            <h2>{activeAgentId === "manager"
+            <h2>{supportOpen
+              ? "支援連線狀態"
+              : activeAgentId === "manager"
               ? "預留連線狀態"
               : activeAgentAvailable ? "Agent 交接紀錄" : "Agent 開通狀態"}</h2>
-            <p>{activeAgentId === "manager"
+            <p>{supportOpen
+              ? storeName
+              : activeAgentId === "manager"
               ? storeName
               : activeAgentAvailable ? `共同 WorkItem · ${RESTOCK_WORK_ITEM.id}` : activeAgent.name}</p>
-            {activeAgentId === "manager" ? (
+            {supportOpen ? (
+              <ol>
+                <li>
+                  <span className={`${styles.supportFace} ${styles.smallFace}`} aria-hidden="true">
+                    <Strobi animation="listening" playing={!prefersReducedMotion} size="100%" />
+                  </span>
+                  <div>
+                    <strong>自助問答已連線</strong>
+                    <p>常見操作問題會直接在中央對話區回答。</p>
+                  </div>
+                </li>
+                <li>
+                  <span className={`${styles.supportFace} ${styles.smallFace}`} aria-hidden="true">
+                    <Strobi animation="listening" playing={!prefersReducedMotion} size="100%" />
+                  </span>
+                  <div>
+                    <strong>真人支援單已連線</strong>
+                    <p>無法處理的問題可留下 Email，由 uYao 團隊接手。</p>
+                  </div>
+                </li>
+              </ol>
+            ) : activeAgentId === "manager" ? (
               <ol>
                 <li>
                   <AgentOrb id="manager" small />
@@ -636,8 +679,10 @@ export function StoreOsShell({
               </ol>
             )}
             <section className={styles.authorityNote}>
-              <strong>共享工作，不共享無限權限</strong>
-              <p>每個角色只看到必要工具；對客承諾、採購與金流仍有清楚的人類批准點。</p>
+              <strong>{supportOpen ? "支援不會讀取敏感資料" : "共享工作，不共享無限權限"}</strong>
+              <p>{supportOpen
+                ? "請勿輸入病患、處方、完整電話或其他個人醫療資料。"
+                : "每個角色只看到必要工具；對客承諾、採購與金流仍有清楚的人類批准點。"}</p>
             </section>
           </aside>
         </div>
@@ -669,11 +714,6 @@ export function StoreOsShell({
           </section>
         </div>
       )}
-      <SupportAgent
-        animate={!prefersReducedMotion}
-        open={supportOpen}
-        onOpenChange={setSupportOpen}
-      />
     </main>
   );
 }
