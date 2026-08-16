@@ -371,11 +371,20 @@ function Avatar({
   );
 }
 
-function StoreOsPreview({ copy, reducedMotion }: { copy: LandingCopy; reducedMotion: boolean }) {
+function StoreOsPreview({
+  copy,
+  locale,
+  reducedMotion,
+}: {
+  copy: LandingCopy;
+  locale: Locale;
+  reducedMotion: boolean;
+}) {
   const [selectedId, setSelectedId] = useState<AgentId>("manager");
   const [command, setCommand] = useState(copy.command);
   const [note, setNote] = useState(copy.demoNote);
   const selected = copy.agents.find((agent) => agent.id === selectedId) ?? copy.agents[0];
+  const compactEnglish = locale === "en";
 
   const submitCommand = (event: FormEvent) => {
     event.preventDefault();
@@ -436,18 +445,28 @@ function StoreOsPreview({ copy, reducedMotion }: { copy: LandingCopy; reducedMot
             </div>
             <span className="num hidden bg-sage px-3 py-2 text-[9px] font-semibold text-forest sm:block">{copy.demoData}</span>
           </div>
-          <div className="grid min-h-[448px] lg:h-[448px] lg:min-h-0 lg:grid-cols-[1fr_238px] lg:overflow-hidden">
-            <div className="flex min-w-0 flex-col px-4 py-5 sm:px-6 lg:py-4">
+          <div
+            className={`grid min-h-[448px] lg:h-[448px] lg:min-h-0 lg:overflow-hidden ${
+              compactEnglish ? "lg:grid-cols-[1fr_220px]" : "lg:grid-cols-[1fr_238px]"
+            }`}
+          >
+            <div className="flex min-h-0 min-w-0 flex-col px-4 py-5 sm:px-6 lg:py-4">
               <span className="num text-[9px] font-semibold tracking-[.08em] text-muted">SHARED WORKITEM · WI-2031</span>
               <div className="mt-5 flex items-start gap-4 lg:mt-4">
                 <Avatar id={selected.id} size={48} playing={!reducedMotion} />
                 <div className="min-w-0">
                   <strong className="text-[13px]">{selected.name}</strong>
-                  <p className="mb-0 mt-2 text-[13px] leading-[1.75] text-ink-2">{selected.summary}</p>
+                  <p
+                    className={`mb-0 mt-2 text-[13px] text-ink-2 ${
+                      compactEnglish ? "lg:text-[12px] lg:leading-[1.55]" : "leading-[1.75]"
+                    }`}
+                  >
+                    {selected.summary}
+                  </p>
                 </div>
               </div>
               <div className="mt-6 border-t border-line pt-5 lg:mt-4 lg:pt-4">
-                <h2 className="editorial-display m-0 text-[22px]">{copy.workFlow}</h2>
+                <h2 className={`editorial-display m-0 ${compactEnglish ? "lg:text-[20px]" : "text-[22px]"}`}>{copy.workFlow}</h2>
                 {([
                   ["inventory", copy.scanEvidence, copy.done],
                   ["manager", copy.organized, copy.prepared],
@@ -455,7 +474,12 @@ function StoreOsPreview({ copy, reducedMotion }: { copy: LandingCopy; reducedMot
                 ] satisfies [AgentId, string, string][]).map(([id, text, state]) => {
                   const agent = copy.agents.find((item) => item.id === id)!;
                   return (
-                    <div key={id} className="grid grid-cols-[32px_1fr_auto] items-center gap-3 border-b border-line py-3 text-[11px] lg:py-2.5">
+                    <div
+                      key={id}
+                      className={`grid grid-cols-[32px_1fr_auto] items-center gap-3 border-b border-line py-3 lg:py-2.5 ${
+                        compactEnglish ? "text-[10px]" : "text-[11px]"
+                      }`}
+                    >
                       <Avatar id={id} size={28} playing={false} />
                       <span className="min-w-0"><b>{agent.name}</b><span className="ml-3 hidden text-muted sm:inline">{text}</span></span>
                       <b className={id === "purchasing" ? "text-[#946200]" : "text-green"}>{state}</b>
@@ -474,21 +498,51 @@ function StoreOsPreview({ copy, reducedMotion }: { copy: LandingCopy; reducedMot
               </form>
               <p className="mb-0 mt-2 text-[10px] leading-[1.5] text-muted" aria-live="polite">{note}</p>
             </div>
-            <aside className="border-t border-line bg-ivory px-5 py-6 lg:border-l lg:border-t-0">
+            <aside
+              className={`min-h-0 border-t border-line bg-ivory px-5 py-6 lg:border-l lg:border-t-0 ${
+                compactEnglish ? "lg:px-4 lg:py-4" : ""
+              }`}
+            >
               <span className="num text-[9px] font-semibold tracking-[.08em] text-muted">NEEDS YOU</span>
-              <h2 className="editorial-display mb-5 mt-3 text-[24px] leading-[1.25]">{copy.workTitle}</h2>
+              <h2
+                className={`editorial-display leading-[1.25] ${
+                  compactEnglish ? "mb-3 mt-2 text-[21px]" : "mb-5 mt-3 text-[24px]"
+                }`}
+              >
+                {copy.workTitle}
+              </h2>
               {[
                 ["WorkItem", "WI-2031"],
                 [copy.evidenceSources, "3"],
                 [copy.reorderDraft, copy.boxes],
                 [copy.orderStatus, copy.notSubmitted],
               ].map(([label, value]) => (
-                <div key={label} className="flex justify-between gap-3 border-t border-line py-3 text-[11px]"><span>{label}</span><b>{value}</b></div>
+                <div
+                  key={label}
+                  className={`flex justify-between gap-3 border-t border-line text-[11px] ${
+                    compactEnglish ? "py-2" : "py-3"
+                  }`}
+                >
+                  <span>{label}</span><b>{value}</b>
+                </div>
               ))}
-              <div className="mt-4 border border-[#c7922c] bg-[#fff5df] p-4">
+              <div className={`border border-[#c7922c] bg-[#fff5df] ${compactEnglish ? "mt-3 p-3" : "mt-4 p-4"}`}>
                 <span className="num text-[9px] font-bold text-[#946200]">PHARMACIST APPROVAL</span>
-                <strong className="mt-3 block text-[12px] leading-[1.55]">{copy.pharmacistControl}</strong>
-                <button type="button" className="mt-4 min-h-10 w-full bg-forest px-3 text-[11px] font-bold text-paper">{copy.reviewDraft}</button>
+                <strong
+                  className={`block ${
+                    compactEnglish ? "mt-2 text-[11px] leading-[1.45]" : "mt-3 text-[12px] leading-[1.55]"
+                  }`}
+                >
+                  {copy.pharmacistControl}
+                </strong>
+                <button
+                  type="button"
+                  className={`w-full bg-forest px-3 text-[11px] font-bold text-paper ${
+                    compactEnglish ? "mt-3 min-h-9" : "mt-4 min-h-10"
+                  }`}
+                >
+                  {copy.reviewDraft}
+                </button>
               </div>
             </aside>
           </div>
@@ -595,7 +649,7 @@ export function AgentLandingExperience({ locale }: { locale: Locale }) {
           </div>
         </header>
 
-        <div className="px-0 sm:px-8"><StoreOsPreview copy={copy} reducedMotion={reducedMotion} /></div>
+        <div className="px-0 sm:px-8"><StoreOsPreview copy={copy} locale={locale} reducedMotion={reducedMotion} /></div>
 
         <section id="message" className="border-t border-line py-24 sm:py-32">
           <div className="mx-auto grid max-w-[1240px] items-center gap-14 px-5 sm:px-8 lg:grid-cols-[.82fr_1.18fr]">
