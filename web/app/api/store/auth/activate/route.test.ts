@@ -13,6 +13,7 @@ const identity: StoreIdentity = {
   email: "owner@example.com",
   displayName: "王藥師",
   storeSlug: "A 藥局",
+  storeName: "A 藥局",
   role: "owner",
 };
 

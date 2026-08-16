@@ -7,8 +7,8 @@ import { listStoreReservations } from "@/lib/reservations-store";
 import { isStoreDemoSandbox } from "@/lib/store-demo";
 import {
   isStoreAuthConfigured,
-  isStoreSessionActive,
   readStoreSessionToken,
+  resolveStoreSessionIdentity,
   storeSessionCookieName,
 } from "@/lib/store-auth";
 
@@ -23,15 +23,19 @@ export const dynamic = "force-dynamic";
 export default async function StoreOsPage() {
   const cookieStore = await cookies();
   const session = readStoreSessionToken(cookieStore.get(storeSessionCookieName())?.value);
-  if (!session || !(await isStoreSessionActive(session))) {
+  const identity = session ? await resolveStoreSessionIdentity(session) : null;
+  if (!session || !identity) {
     return <StoreOsLogin configured={isStoreAuthConfigured()} />;
   }
 
   const reservations = await listStoreReservations(session.storeSlug);
   return (
     <StoreOsShell
-      storeName={session.storeSlug}
-      operatorName={session.displayName}
+      storeName={identity.storeName}
+      storeSlug={identity.storeSlug}
+      operatorName={identity.displayName}
+      operatorEmail={identity.email}
+      operatorRole={identity.role}
       reservations={reservations}
       demoMode={isStoreDemoSandbox(session.storeSlug)}
     />

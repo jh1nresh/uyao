@@ -7,6 +7,7 @@ import {
   isStoreAuthConfigured,
   isStoreSessionActive,
   readStoreSessionToken,
+  resolveStoreSessionIdentity,
   type StoreUser,
 } from "./store-auth";
 import type { StoreLoginIdentity } from "./store-identity";
@@ -21,6 +22,7 @@ const user: StoreUser = {
   email: "owner@example.com",
   displayName: "王藥師",
   storeSlug: "A 藥局",
+  storeName: "A 藥局",
   role: "owner",
 };
 
@@ -84,6 +86,24 @@ describe("Store OS session", () => {
     const session = readStoreSessionToken(createStoreSessionToken(user));
     expect(session && await isStoreSessionActive(session, async () => user)).toBe(true);
     expect(session && await isStoreSessionActive(session, async () => null)).toBe(false);
+  });
+
+  it("returns only the current tenant-bound identity for the profile", async () => {
+    const session = readStoreSessionToken(createStoreSessionToken(user));
+    expect(session).not.toBeNull();
+    await expect(resolveStoreSessionIdentity(session!, async () => ({
+      ...user,
+      storeName: "A 藥局新名稱",
+    }))).resolves.toMatchObject({
+      email: user.email,
+      storeName: "A 藥局新名稱",
+      role: "owner",
+    });
+    await expect(resolveStoreSessionIdentity(session!, async () => ({
+      ...user,
+      storeSlug: "B 藥局",
+      storeName: "B 藥局",
+    }))).resolves.toBeNull();
   });
 });
 

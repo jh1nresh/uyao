@@ -441,11 +441,22 @@
 }
 
 .pharmacyStatus {
+  width: 100%;
   padding: 16px 18px 18px;
   display: flex;
   align-items: center;
   gap: 10px;
+  border: 0;
   border-top: 1px solid var(--line);
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 160ms var(--ease-brand);
+}
+
+.pharmacyStatus:hover {
+  background: var(--surface-hover);
 }
 
 .pharmacyStatus > i {
@@ -460,6 +471,13 @@
 .pharmacyStatus strong,
 .pharmacyStatus small {
   display: block;
+}
+
+.profileChevron {
+  margin-left: auto;
+  color: var(--faint);
+  font-size: 22px;
+  line-height: 1;
 }
 
 .pharmacyStatus strong {
@@ -542,6 +560,11 @@
   background: var(--button-bg);
   color: var(--button-text);
   cursor: pointer;
+}
+
+.moreButton svg {
+  width: 19px;
+  height: 19px;
 }
 
 .themeSwitch {
@@ -1168,6 +1191,61 @@
   font-size: 12px;
   font-weight: 700;
   cursor: pointer;
+}
+
+.profileDialog {
+  width: min(600px, 100%);
+}
+
+.profileDialog dl > div {
+  grid-template-columns: 140px minmax(0, 1fr);
+}
+
+.profileDialog dd {
+  overflow-wrap: anywhere;
+}
+
+.profileDialog dd small {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 550;
+}
+
+.profileHelp {
+  margin: 18px 0 0;
+  padding: 12px 13px;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  background: var(--panel-2);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.profileActions {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+}
+
+.profileActions button {
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.profileActions .logoutButton {
+  border-color: var(--danger);
+  color: var(--danger);
 }
 
 .visuallyHidden {
