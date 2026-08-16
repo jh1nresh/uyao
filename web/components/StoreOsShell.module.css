@@ -14,6 +14,47 @@
   --green: #38c97b;
   --amber: #efbe58;
   --danger: #ee8585;
+  --surface-hover: #111821;
+  --nav-active: #121923;
+  --count-bg: #202b37;
+  --count-text: #c4cfdb;
+  --button-bg: #111822;
+  --button-text: #c8d1dc;
+  --message-text: #d9dfe6;
+  --notice-border: #2b4a72;
+  --notice-bg: #101b29;
+  --notice-text: #a9ccff;
+  --card-active-border: #486586;
+  --card-active-bg: #182231;
+  --approval-line: #65522d;
+  --approval-bg: #18150f;
+  --approval-copy: #aaa08c;
+  --composer-bg: #0c1118;
+  --context-bg: #0d1219;
+  --authority-line: #57492e;
+  --authority-bg: #17150f;
+  --authority-title: #f0c66f;
+  --authority-copy: #aaa08c;
+  --dialog-bg: #121923;
+  --dialog-boundary: #c8bfae;
+  --backdrop: rgba(3, 7, 12, .76);
+  --shadow: rgba(0, 0, 0, .26);
+  --shadow-strong: rgba(2, 6, 12, .4);
+  --support-trigger: #111822;
+  --support-panel: #101318;
+  --support-avatar: #557fe8;
+  --support-avatar-eye: #f8f4e9;
+  --support-message: #15191f;
+  --support-user: #101b29;
+  --support-user-line: #2b4a72;
+  --support-user-text: #cfe1ff;
+  --support-human-line: #65522d;
+  --support-human-bg: #18150f;
+  --support-issue-bg: #12110e;
+  --input-bg: #0c1118;
+  --success-line: #256b48;
+  --success-bg: #0f2118;
+  --success-text: #8de0b3;
   width: 100%;
   min-height: 100dvh;
   display: grid;
@@ -23,6 +64,66 @@
   color: var(--text);
   color-scheme: dark;
   font-family: var(--font-sans);
+}
+
+.screen[data-theme="light"] {
+  --void: #e9edf1;
+  --rail: #f4f6f7;
+  --panel: #ffffff;
+  --panel-2: #f7f8f9;
+  --panel-3: #e9edf1;
+  --line: #d9dee4;
+  --line-strong: #bbc4ce;
+  --text: #17212b;
+  --muted: #5e6975;
+  --faint: #788491;
+  --blue: #3569d8;
+  --blue-soft: #285dbd;
+  --green: #16844d;
+  --amber: #946200;
+  --danger: #be3d3d;
+  --surface-hover: #e9edf2;
+  --nav-active: #e5ebf3;
+  --count-bg: #dce4ed;
+  --count-text: #334454;
+  --button-bg: #f5f7f9;
+  --button-text: #33404d;
+  --message-text: #33404d;
+  --notice-border: #9cb9df;
+  --notice-bg: #edf5ff;
+  --notice-text: #24558f;
+  --card-active-border: #8daed4;
+  --card-active-bg: #edf4fc;
+  --approval-line: #d0b36f;
+  --approval-bg: #fff8e8;
+  --approval-copy: #6f6042;
+  --composer-bg: #ffffff;
+  --context-bg: #f7f8fa;
+  --authority-line: #d2bd84;
+  --authority-bg: #fff9ea;
+  --authority-title: #79520a;
+  --authority-copy: #6c6048;
+  --dialog-bg: #ffffff;
+  --dialog-boundary: #5f5648;
+  --backdrop: rgba(22, 31, 42, .38);
+  --shadow: rgba(35, 48, 62, .16);
+  --shadow-strong: rgba(35, 48, 62, .24);
+  --support-trigger: #ffffff;
+  --support-panel: #ffffff;
+  --support-avatar: #3569d8;
+  --support-avatar-eye: #ffffff;
+  --support-message: #f4f6f8;
+  --support-user: #eaf2ff;
+  --support-user-line: #9dbbe2;
+  --support-user-text: #1f4f89;
+  --support-human-line: #d0b36f;
+  --support-human-bg: #fff8e8;
+  --support-issue-bg: #fffdf7;
+  --input-bg: #ffffff;
+  --success-line: #8fc4a7;
+  --success-bg: #edf8f1;
+  --success-text: #216c43;
+  color-scheme: light;
 }
 
 .screen button,
@@ -104,7 +205,7 @@
 }
 
 .agentRow:hover {
-  background: #111821;
+  background: var(--surface-hover);
 }
 
 .agentRowActive {
@@ -169,7 +270,7 @@
   display: inline-grid;
   flex: 0 0 auto;
   place-items: center;
-  filter: drop-shadow(0 7px 10px rgba(0, 0, 0, .26));
+  filter: drop-shadow(0 7px 10px var(--shadow));
 }
 
 .agentFace[data-agent="manager"] {
@@ -247,7 +348,7 @@
 }
 
 .workNav .workNavActive {
-  background: #121923;
+  background: var(--nav-active);
   color: var(--text);
   font-weight: 700;
 }
@@ -260,8 +361,8 @@
   display: grid;
   place-items: center;
   border-radius: 10px;
-  background: #202b37;
-  color: #c4cfdb;
+  background: var(--count-bg);
+  color: var(--count-text);
   font-family: var(--font-mono);
   font-size: 9px;
 }
@@ -361,8 +462,8 @@
   min-height: 44px;
   border: 1px solid var(--line-strong);
   border-radius: 5px;
-  background: #111822;
-  color: #c8d1dc;
+  background: var(--button-bg);
+  color: var(--button-text);
   cursor: pointer;
 }
 
@@ -441,7 +542,7 @@
 .agentMessage div > p:last-child {
   max-width: 720px;
   margin: 7px 0 0;
-  color: #d9dfe6;
+  color: var(--message-text);
   font-size: 13px;
   line-height: 1.6;
 }
@@ -449,10 +550,10 @@
 .sharedWorkNotice {
   margin: 10px 0 0 52px;
   padding: 10px 13px;
-  border: 1px solid #2b4a72;
+  border: 1px solid var(--notice-border);
   border-radius: 7px;
-  background: #101b29;
-  color: #a9ccff;
+  background: var(--notice-bg);
+  color: var(--notice-text);
   font-size: 11px;
 }
 
@@ -473,8 +574,8 @@
 }
 
 .taskCardActive {
-  border-color: #486586;
-  background: #182231;
+  border-color: var(--card-active-border);
+  background: var(--card-active-bg);
 }
 
 .taskCard header {
@@ -518,9 +619,9 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  border: 1px solid #65522d;
+  border: 1px solid var(--approval-line);
   border-radius: 8px;
-  background: #18150f;
+  background: var(--approval-bg);
 }
 
 .approvalBar strong {
@@ -530,7 +631,7 @@
 
 .approvalBar p {
   margin: 4px 0 0;
-  color: #aaa08c;
+  color: var(--approval-copy);
   font-size: 10px;
   line-height: 1.45;
 }
@@ -646,7 +747,7 @@
   gap: 10px;
   border: 1px solid var(--line-strong);
   border-radius: 10px;
-  background: #0c1118;
+  background: var(--composer-bg);
 }
 
 .composer input {
@@ -692,7 +793,7 @@
   display: flex;
   flex-direction: column;
   border-left: 1px solid var(--line);
-  background: #0d1219;
+  background: var(--context-bg);
 }
 
 .contextPanel h2 {
@@ -734,19 +835,19 @@
 .authorityNote {
   margin-top: auto;
   padding: 13px;
-  border: 1px solid #57492e;
+  border: 1px solid var(--authority-line);
   border-radius: 7px;
-  background: #17150f;
+  background: var(--authority-bg);
 }
 
 .authorityNote strong {
-  color: #f0c66f;
+  color: var(--authority-title);
   font-size: 10px;
 }
 
 .authorityNote p {
   margin: 5px 0 0;
-  color: #aaa08c;
+  color: var(--authority-copy);
   font-size: 10px;
   line-height: 1.5;
 }
@@ -758,7 +859,7 @@
   padding: 20px;
   display: grid;
   place-items: center;
-  background: rgba(3, 7, 12, .76);
+  background: var(--backdrop);
 }
 
 .dialog {
@@ -766,8 +867,8 @@
   padding: 22px;
   border: 1px solid var(--line-strong);
   border-radius: 10px;
-  background: #121923;
-  box-shadow: 0 24px 70px rgba(2, 6, 12, .36);
+  background: var(--dialog-bg);
+  box-shadow: 0 24px 70px var(--shadow-strong);
 }
 
 .dialog > header {
@@ -830,7 +931,7 @@
   margin: 18px 0 0;
   padding-left: 11px;
   border-left: 2px solid var(--amber);
-  color: #c8bfae;
+  color: var(--dialog-boundary);
   font-size: 11px;
   line-height: 1.6;
 }
@@ -944,8 +1045,7 @@
   }
 
   .prototypeBadge,
-  .syncTime,
-  .modeButton {
+  .syncTime {
     display: none;
   }
 
