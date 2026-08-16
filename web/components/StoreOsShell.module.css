@@ -752,109 +752,39 @@
 }
 
 .taskGrid {
-  margin: 28px 0 0 50px;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
+  margin: 26px 0 0 50px;
 }
 
-.taskCard {
-  min-width: 0;
-  padding: 13px;
-  border: 0;
-  border-radius: 10px;
-  background: var(--panel-2);
-  box-shadow: var(--shadow-card);
-  transition: box-shadow 150ms var(--ease-ui), background-color 150ms var(--ease-ui);
+.thinkingSlot {
+  margin-top: 8px;
 }
 
-.taskCardActive {
-  background: var(--card-active-bg);
-  box-shadow: 0 0 0 1px var(--card-active-border);
-}
-
-.taskCard header {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.taskCard header strong {
-  min-width: 0;
-  overflow: hidden;
-  font-size: var(--fs-label);
-  font-weight: 500;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.taskCard header > span:last-child {
-  margin-left: auto;
-  font-size: var(--fs-meta);
-  white-space: nowrap;
-}
-
-.taskCard h2 {
-  margin: 12px 0 4px;
-  font-size: var(--fs-body);
-  font-weight: 500;
-}
-
-.taskCard > p {
-  margin: 0;
-  color: var(--faint);
-  font-size: var(--fs-label);
-  font-weight: 400;
-  line-height: 1.5;
-}
-
-.approvalBar {
-  min-height: 66px;
+.approvalSlot {
   margin: 14px 0 0 50px;
-  padding: 12px 14px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  border: 1px solid var(--approval-line);
-  border-radius: 10px;
-  background: var(--approval-bg);
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  max-width: 420px;
 }
 
-.approvalBar strong {
-  color: var(--amber-text);
-  font-size: var(--fs-body);
-  font-weight: 500;
+.approvalSlot > section {
+  width: 100%;
 }
 
-.approvalBar p {
-  margin: 4px 0 0;
-  color: var(--approval-copy);
-  font-size: var(--fs-label);
-  font-weight: 400;
-  line-height: 1.45;
-}
-
-.approvalBar button {
-  min-height: 38px;
-  margin-left: auto;
-  padding: 0 14px;
+.draftLink {
+  padding: 4px 2px;
   border: 0;
-  border-radius: 8px;
-  background: var(--blue-solid);
-  color: #fff;
-  font-size: var(--fs-body);
+  background: transparent;
+  color: var(--blue-soft);
+  font-size: var(--fs-meta);
   font-weight: 500;
-  white-space: nowrap;
+  text-decoration: underline;
+  text-underline-offset: 3px;
   cursor: pointer;
-  transition: background-color 150ms var(--ease-ui), transform 200ms var(--ease-ui);
 }
 
-.approvalBar button:hover {
-  background: var(--blue-solid-hover);
-}
-
-.approvalBar button:active {
-  transform: scale(.97);
+.tracePanel {
+  margin-top: 16px;
 }
 
 .reservationList {
@@ -1752,7 +1682,7 @@
 
   .sharedWorkNotice,
   .taskGrid,
-  .approvalBar,
+  .approvalSlot,
   .reservationList,
   .reservationError {
     margin-left: 0;
@@ -1768,17 +1698,10 @@
 
   .taskGrid {
     margin-top: 20px;
-    grid-template-columns: 1fr;
   }
 
-  .approvalBar {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .approvalBar button {
-    width: 100%;
-    margin-left: 0;
+  .approvalSlot {
+    max-width: none;
   }
 
   .composer {
@@ -1807,8 +1730,6 @@
 
 @media (prefers-reduced-motion: reduce) {
   .agentRow,
-  .taskCard,
-  .approvalBar button,
   .agentAvatar svg path,
   .themeIcon,
   .sidebarToggle,

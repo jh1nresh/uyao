@@ -1,0 +1,601 @@
+/* Component patterns adapted from Beautiful UI (beautifului.dev): collapsible
+   pill rows, trace rails, tool chips, and the human-in-the-loop approval card.
+   Colours come from the .screen token layer in StoreOsShell.module.css. */
+
+/* ---------- shared ---------- */
+
+.row,
+.card {
+  border: 0;
+  background: var(--panel-2);
+  box-shadow: var(--shadow-card);
+}
+
+.chip {
+  display: inline-flex;
+  height: 22px;
+  align-items: center;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--count-bg);
+  color: var(--muted);
+  font-size: 11.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.chip[data-tone="done"] { background: var(--green-tint); color: var(--green); }
+.chip[data-tone="wait"] { background: var(--amber-tint); color: var(--amber); }
+.chip[data-tone="run"] { background: var(--accent-tint); color: var(--blue-soft); }
+.chip[data-tone="fail"] { background: var(--danger-tint); color: var(--danger); }
+
+/* Collapse via grid-template-rows so the panel animates without a fixed height. */
+.collapse {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition: grid-template-rows 300ms var(--ease-ui), opacity 300ms var(--ease-ui);
+}
+
+.collapse[data-open="true"] {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.collapse > div {
+  overflow: hidden;
+}
+
+/* ---------- task rows ---------- */
+
+.taskRows {
+  display: grid;
+  gap: 8px;
+}
+
+.row {
+  overflow: hidden;
+  border-radius: 22px;
+  transition: border-radius 300ms var(--ease-ui), background-color 150ms var(--ease-ui);
+}
+
+.row[data-open="true"] {
+  border-radius: 14px;
+}
+
+.rowHeader {
+  display: flex;
+  width: 100%;
+  min-height: 44px;
+  align-items: center;
+  gap: 10px;
+  padding: 0 10px;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 100ms var(--ease-ui);
+}
+
+.rowHeader:hover {
+  background: var(--surface-hover);
+}
+
+.statusDot {
+  display: grid;
+  width: 22px;
+  height: 22px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--count-bg);
+  color: var(--muted);
+}
+
+.statusDot svg {
+  width: 13px;
+  height: 13px;
+}
+
+.statusDot[data-tone="done"] { background: var(--green); color: #fff; }
+.statusDot[data-tone="wait"] { background: var(--amber); color: #fff; }
+.statusDot[data-tone="run"] { background: var(--blue); color: #fff; }
+.statusDot[data-tone="fail"] { background: var(--danger); color: #fff; }
+
+.rowTitle {
+  min-width: 0;
+  flex: 1;
+  overflow: hidden;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.rowMeta {
+  color: var(--muted);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.chevron {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  margin-left: -4px;
+  place-items: center;
+  color: var(--faint);
+}
+
+.chevron svg {
+  width: 15px;
+  height: 15px;
+  transition: transform 300ms var(--ease-ui);
+}
+
+.row[data-open="true"] .chevron svg {
+  transform: rotate(180deg);
+}
+
+/* 24px rail column mirrors the status dot above it, so the thread reads as one line. */
+.rowBody {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 10px;
+  padding: 0 10px 12px;
+}
+
+.rail {
+  width: 1px;
+  height: 100%;
+  margin: 0 auto;
+  background: var(--line-strong);
+}
+
+.rowDetail {
+  display: grid;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.rowDetail > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rowDetail b {
+  color: var(--faint);
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---------- tool chips / trace ---------- */
+
+.traceToggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: -6px;
+  padding: 4px 6px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 12.5px;
+  cursor: pointer;
+  transition: background-color 100ms var(--ease-ui), color 100ms var(--ease-ui);
+}
+
+.traceToggle:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.traceToggle svg {
+  width: 12px;
+  height: 12px;
+  transition: transform 200ms var(--ease-ui);
+}
+
+.traceToggle[data-open="true"] svg {
+  transform: rotate(180deg);
+}
+
+.traceList {
+  display: grid;
+  gap: 4px;
+  padding: 6px 0 2px;
+}
+
+.toolChip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 8px;
+  border-radius: 8px;
+  background: var(--panel-3);
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.toolChip > span:first-child {
+  display: grid;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 auto;
+  place-items: center;
+}
+
+.toolChip strong {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.toolChip time {
+  margin-left: auto;
+  color: var(--faint);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.toolChipDetail {
+  margin: 0;
+  padding: 2px 8px 6px 34px;
+  color: var(--faint);
+  font-size: 11.5px;
+  line-height: 1.5;
+}
+
+/* ---------- thinking ---------- */
+
+.thinking {
+  display: grid;
+  gap: 6px;
+}
+
+.thinkingHead {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.spark {
+  display: grid;
+  width: 14px;
+  height: 14px;
+  place-items: center;
+  color: var(--blue-soft);
+}
+
+.spark svg {
+  width: 14px;
+  height: 14px;
+  animation: spin 1.6s linear infinite;
+}
+
+/* Shimmer marks the label as in-flight without adding a second moving element. */
+.thinkingLabel {
+  background: linear-gradient(90deg, var(--faint) 20%, var(--text) 50%, var(--faint) 80%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 1.8s linear infinite;
+}
+
+.thinkingSteps {
+  display: grid;
+  gap: 5px;
+  padding-left: 21px;
+}
+
+.thinkingStep {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.thinkingStep > span:first-child {
+  display: grid;
+  width: 13px;
+  height: 13px;
+  flex: 0 0 auto;
+  place-items: center;
+  color: var(--faint);
+}
+
+.thinkingStep svg {
+  width: 13px;
+  height: 13px;
+}
+
+.thinkingStep[data-state="done"] > span:first-child {
+  color: var(--green);
+}
+
+.thinkingStep[data-state="active"] {
+  color: var(--text);
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  to { background-position: -200% 0; }
+}
+
+/* ---------- approval card ---------- */
+
+.card {
+  overflow: hidden;
+  border-radius: 12px;
+}
+
+.cardPad {
+  padding: 14px 15px;
+}
+
+.cardHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.cardHead > span {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.iconButton {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  flex: 0 0 auto;
+  place-items: center;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--faint);
+  cursor: pointer;
+  transition: background-color 100ms var(--ease-ui), color 100ms var(--ease-ui);
+}
+
+.iconButton:hover:not(:disabled) {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.iconButton:disabled {
+  cursor: not-allowed;
+  opacity: .35;
+}
+
+.iconButton svg {
+  width: 14px;
+  height: 14px;
+}
+
+.options {
+  display: grid;
+  gap: 2px;
+  margin-top: 10px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 -6px;
+  padding: 5px 6px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  text-align: left;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 100ms var(--ease-ui), color 200ms var(--ease-ui);
+}
+
+.option:hover {
+  background: var(--surface-hover);
+}
+
+.option[aria-pressed="true"] {
+  color: var(--text);
+}
+
+.radio {
+  display: grid;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1.5px var(--line-strong);
+  transition: box-shadow 200ms var(--ease-ui);
+}
+
+.option[aria-pressed="true"] .radio {
+  box-shadow: inset 0 0 0 1.5px var(--blue);
+}
+
+.radio > i {
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--blue);
+  transform: scale(0);
+  transition: transform 200ms var(--ease-ui);
+}
+
+.option[aria-pressed="true"] .radio > i {
+  transform: scale(1);
+}
+
+.customOption {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 -6px;
+  padding: 5px 6px;
+  border-radius: 8px;
+  transition: background-color 100ms var(--ease-ui);
+}
+
+.customOption:focus-within,
+.customOption:hover {
+  background: var(--surface-hover);
+}
+
+.customOption > span {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+
+.customOption input {
+  min-width: 0;
+  flex: 1;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 13px;
+}
+
+.customOption input::placeholder {
+  color: var(--faint);
+}
+
+.cardFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 11px;
+  border-top: 1px dashed var(--line);
+  background: var(--inset, var(--panel-3));
+}
+
+.pager {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dots {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dots > button {
+  padding: 0;
+  border: 1.5px solid var(--faint);
+  border-radius: 999px;
+  width: 7px;
+  height: 7px;
+  background: transparent;
+  cursor: pointer;
+  transition: width 300ms var(--ease-ui), height 300ms var(--ease-ui), border-color 300ms var(--ease-ui);
+}
+
+.dots > button[aria-current="step"] {
+  width: 9px;
+  height: 9px;
+  border-width: 2.5px;
+  border-color: var(--text);
+}
+
+.submit {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 0;
+  border-radius: 8px;
+  background: var(--blue);
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 150ms var(--ease-ui), transform 200ms var(--ease-ui);
+}
+
+.submit:hover:not(:disabled) {
+  background: var(--blue-soft);
+}
+
+.submit:active:not(:disabled) {
+  transform: scale(.96);
+}
+
+.submit:disabled {
+  background: var(--field, var(--panel-3));
+  box-shadow: var(--shadow-btn);
+  color: var(--faint);
+  cursor: not-allowed;
+}
+
+.submit svg {
+  width: 14px;
+  height: 14px;
+}
+
+.cardNote {
+  margin: 0;
+  padding: 10px 15px 12px;
+  border-top: 1px dashed var(--line);
+  color: var(--faint);
+  font-size: 11.5px;
+  line-height: 1.55;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .collapse,
+  .row,
+  .chevron svg,
+  .traceToggle svg,
+  .radio,
+  .radio > i,
+  .dots > button,
+  .submit {
+    transition: none;
+  }
+
+  .spark svg,
+  .thinkingLabel {
+    animation: none;
+  }
+
+  .thinkingLabel {
+    background: none;
+    -webkit-background-clip: border-box;
+    background-clip: border-box;
+    color: var(--text);
+  }
+}

@@ -1,6 +1,6 @@
 
 import { forwardRef, useEffect, useImperativeHandle, useRef, type CSSProperties } from 'react'
-import { loadAvatarRuntime, type RuntimeAvatar } from './avatar-runtime'
+import { loadAvatarRuntime, type AvatarData, type RuntimeAvatar } from './avatar-runtime'
 import { avatarData, type AnimationName } from './sprout.avatar'
 
 export type { AnimationName } from './sprout.avatar'
@@ -17,6 +17,9 @@ export type AvatarProps = {
   className?: string
   style?: CSSProperties
   onAnimationEnd?: (animation: AnimationName) => void
+  // Alternate export data for a single surface. The runtime is cached by object
+  // identity, so this must be a stable module-level value, not built per render.
+  data?: AvatarData<AnimationName>
 }
 
 export const Sprout = forwardRef<AvatarHandle, AvatarProps>(function Sprout(
@@ -28,6 +31,7 @@ export const Sprout = forwardRef<AvatarHandle, AvatarProps>(function Sprout(
     className,
     style,
     onAnimationEnd,
+    data = avatarData,
   },
   ref
 ) {
@@ -44,7 +48,7 @@ export const Sprout = forwardRef<AvatarHandle, AvatarProps>(function Sprout(
     if (!host.current) return
     let disposed = false
     let avatar: RuntimeAvatar<AnimationName> | null = null
-    void loadAvatarRuntime<AnimationName>(avatarData).then(runtime => {
+    void loadAvatarRuntime<AnimationName>(data).then(runtime => {
       if (disposed || !host.current) return
       avatar = runtime.createAvatar(host.current, {
         animation: animationRef.current,
@@ -60,7 +64,7 @@ export const Sprout = forwardRef<AvatarHandle, AvatarProps>(function Sprout(
       avatar?.destroy()
       controller.current = null
     }
-  }, [loop])
+  }, [loop, data])
 
   useEffect(() => {
     const avatar = controller.current
