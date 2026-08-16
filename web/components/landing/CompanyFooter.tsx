@@ -31,7 +31,7 @@ const COPY: Record<"zh" | "en", FooterCopy> = {
     evidence: "產品證據",
     partnership: "WeStrong 合作",
     xLabel: "X（@uyaohealth）",
-    email: "Email",
+    email: "電子郵件",
     disclaimer:
       "uYao 不進行藥品網路販售，也不提供醫療或用藥建議。消費者服務僅協助查詢、留下需求與安排到店取貨；供應與實際交付由藥局或藥師確認。",
   },
@@ -128,6 +128,7 @@ export function CompanyFooter({
           <p className="m-0 max-w-[72em] text-[14px] leading-[1.8] text-muted">
             {copy.disclaimer}
           </p>
+          <p className="num mb-0 mt-4 text-[11px] text-muted">© 2026 uYao</p>
         </div>
       </div>
     </footer>
