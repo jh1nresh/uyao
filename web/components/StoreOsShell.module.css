@@ -1,55 +1,55 @@
 .screen {
-  --void: #060807;
-  --rail: #080b0a;
-  --panel: #0b0e0d;
-  --panel-2: #111512;
-  --panel-3: #181d1a;
-  --line: #29312d;
-  --line-strong: #46534c;
-  --text: #f2efe6;
-  --muted: #bac2bd;
-  --faint: #8f9b94;
+  --void: #000;
+  --rail: #050505;
+  --panel: #050505;
+  --panel-2: #0c0c0c;
+  --panel-3: #171717;
+  --line: #262626;
+  --line-strong: #494949;
+  --text: #f7f7f7;
+  --muted: #b8b8b8;
+  --faint: #858585;
   --blue: #6e95f5;
   --blue-soft: #a8c0ff;
   --green: #55c78a;
   --amber: #efbe58;
   --danger: #ee8585;
-  --surface-hover: #111713;
-  --nav-active: #121814;
-  --count-bg: #202722;
-  --count-text: #d4ddd7;
-  --button-bg: #101411;
-  --button-text: #e1e6e2;
-  --message-text: #e1e6e2;
+  --surface-hover: #101010;
+  --nav-active: #121212;
+  --count-bg: #202020;
+  --count-text: #dedede;
+  --button-bg: #0b0b0b;
+  --button-text: #ededed;
+  --message-text: #e7e7e7;
   --notice-border: #415d83;
   --notice-bg: #132033;
   --notice-text: #c7d8ff;
   --card-active-border: #486586;
   --card-active-bg: #182231;
   --approval-line: #65522d;
-  --approval-bg: #18150f;
-  --approval-copy: #aaa08c;
-  --composer-bg: #080b0a;
-  --context-bg: #090d0b;
+  --approval-bg: #17130c;
+  --approval-copy: #b2a994;
+  --composer-bg: #050505;
+  --context-bg: #030303;
   --authority-line: #57492e;
-  --authority-bg: #17150f;
+  --authority-bg: #15120c;
   --authority-title: #f0c66f;
   --authority-copy: #aaa08c;
-  --dialog-bg: #101411;
-  --dialog-boundary: #d5cec0;
-  --backdrop: rgba(3, 7, 12, .76);
+  --dialog-bg: #0b0b0b;
+  --dialog-boundary: #d8d8d8;
+  --backdrop: rgba(0, 0, 0, .78);
   --shadow: rgba(0, 0, 0, .18);
   --shadow-strong: rgba(0, 0, 0, .32);
-  --support-trigger: #101411;
-  --support-panel: #0b0e0d;
-  --support-message: #121713;
-  --support-user: #101b29;
+  --support-trigger: #0b0b0b;
+  --support-panel: #050505;
+  --support-message: #111;
+  --support-user: #0d1928;
   --support-user-line: #2b4a72;
   --support-user-text: #cfe1ff;
   --support-human-line: #65522d;
-  --support-human-bg: #18150f;
-  --support-issue-bg: #12110e;
-  --input-bg: #080b0a;
+  --support-human-bg: #17130c;
+  --support-issue-bg: #11100d;
+  --input-bg: #050505;
   --success-line: #256b48;
   --success-bg: #0f2118;
   --success-text: #8de0b3;
@@ -61,9 +61,9 @@
   --avatar-purchasing-active: #ff8b6c;
   --avatar-checkout: #ca8e96;
   --avatar-checkout-active: #dda5ac;
-  --avatar-eye: #080b0a;
+  --avatar-eye: #f8f4e9;
   --support-avatar-fill: #7897f3;
-  --support-avatar-eye: #080b0a;
+  --support-avatar-eye: #f8f4e9;
   width: 100%;
   min-height: 100dvh;
   display: grid;
@@ -73,6 +73,7 @@
   color: var(--text);
   color-scheme: dark;
   font-family: var(--font-sans);
+  font-weight: 500;
 }
 
 .screen[data-theme="light"] {
@@ -138,9 +139,9 @@
   --avatar-purchasing-active: #b95a3a;
   --avatar-checkout: #74434a;
   --avatar-checkout-active: #85515a;
-  --avatar-eye: #f8f4e9;
+  --avatar-eye: #080b0a;
   --support-avatar-fill: #496ac7;
-  --support-avatar-eye: #f8f4e9;
+  --support-avatar-eye: #080b0a;
   color-scheme: light;
 }
 
@@ -251,6 +252,7 @@
   overflow: hidden;
   color: var(--muted);
   font-size: 11px;
+  font-weight: 550;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -258,7 +260,7 @@
 .agentState {
   font-family: var(--font-mono);
   font-size: 10px;
-  font-weight: 600;
+  font-weight: 700;
   white-space: nowrap;
 }
 
@@ -393,6 +395,7 @@
   border-radius: 6px;
   color: var(--muted);
   font-size: 13px;
+  font-weight: 600;
 }
 
 .workNav .workNavActive {
@@ -415,8 +418,13 @@
   font-size: 10px;
 }
 
-.pharmacyStatus {
+.sidebarSupport {
   margin-top: auto;
+  padding: 12px 8px;
+  border-top: 1px solid var(--line);
+}
+
+.pharmacyStatus {
   padding: 16px 18px 18px;
   display: flex;
   align-items: center;
@@ -440,12 +448,14 @@
 
 .pharmacyStatus strong {
   font-size: 13px;
+  font-weight: 750;
 }
 
 .pharmacyStatus small {
   margin-top: 4px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 550;
 }
 
 .shell {
@@ -476,13 +486,15 @@
 
 .topbarAgent strong {
   font-size: 14px;
+  font-weight: 750;
 }
 
 .topbarAgent small {
   margin-top: 2px;
   overflow: hidden;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
+  font-weight: 550;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -493,7 +505,7 @@
   border: 1px solid #5f4c29;
   border-radius: 4px;
   color: var(--amber);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -501,7 +513,8 @@
 .syncTime {
   margin-left: auto;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
+  font-weight: 650;
   white-space: nowrap;
 }
 
@@ -516,46 +529,34 @@
 }
 
 .themeSwitch {
-  min-width: 96px;
-  padding: 0 10px;
+  min-width: 76px;
+  padding: 4px;
+  border: 0;
+  background: transparent;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 2px;
 }
 
-.themeTrack {
-  position: relative;
-  width: 34px;
-  height: 18px;
-  flex: 0 0 auto;
-  border: 1px solid var(--line-strong);
-  border-radius: 10px;
+.themeIcon {
+  width: 30px;
+  height: 30px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 4px;
+  color: var(--faint);
+  transition: background-color 160ms var(--ease-brand), color 160ms var(--ease-brand);
+}
+
+.themeIcon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.themeIcon[data-active="true"] {
   background: var(--panel-3);
-}
-
-.themeThumb {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  background: var(--blue);
-  transition: transform 160ms var(--ease-brand), background-color 160ms var(--ease-brand);
-}
-
-.themeSwitch[data-theme-value="dark"] .themeThumb {
-  transform: translateX(16px);
-  background: var(--blue-soft);
-}
-
-.themeLabel {
-  min-width: 30px;
-  color: var(--button-text);
-  font-size: 11px;
-  font-weight: 700;
-  text-align: left;
+  color: var(--text);
 }
 
 .moreButton {
@@ -602,6 +603,7 @@
   gap: 8px 14px;
   color: var(--muted);
   font-size: 12px;
+  font-weight: 550;
 }
 
 .agentMessage {
@@ -970,8 +972,18 @@
 .composerNotice {
   min-height: 16px;
   margin: 6px 0 0;
+  color: var(--message-text);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+.composerNotice[data-tone="success"] {
+  color: var(--success-text);
+}
+
+.composerNotice[data-tone="warning"] {
   color: var(--amber);
-  font-size: 10px;
 }
 
 .contextPanel {
@@ -985,13 +997,15 @@
 
 .contextPanel h2 {
   margin: 0;
-  font-size: 13px;
+  font-size: 16px;
+  font-weight: 750;
 }
 
 .contextPanel > p {
   margin: 6px 0 0;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .contextPanel ol {
@@ -1009,14 +1023,16 @@
 }
 
 .contextPanel li strong {
-  font-size: 10px;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .contextPanel li p {
   margin: 4px 0 0;
   color: var(--muted);
-  font-size: 10px;
-  line-height: 1.5;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.55;
 }
 
 .authorityNote {
@@ -1029,13 +1045,15 @@
 
 .authorityNote strong {
   color: var(--authority-title);
-  font-size: 10px;
+  font-size: 12px;
+  font-weight: 750;
 }
 
 .authorityNote p {
   margin: 5px 0 0;
   color: var(--authority-copy);
-  font-size: 10px;
+  font-size: 12px;
+  font-weight: 500;
   line-height: 1.5;
 }
 
@@ -1190,7 +1208,7 @@
   .agentList {
     padding: 0 12px 12px;
     display: grid;
-    grid-template-columns: repeat(5, minmax(62px, 1fr));
+    grid-template-columns: repeat(4, minmax(62px, 1fr));
     gap: 6px;
   }
 
@@ -1226,6 +1244,25 @@
     display: none;
   }
 
+  .sidebarSupport {
+    margin-top: 0;
+    padding: 0 12px 12px;
+    border-top: 0;
+  }
+
+  .sidebarSupport .agentRow {
+    min-height: 58px;
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr) auto;
+    padding: 7px 10px;
+    text-align: left;
+  }
+
+  .sidebarSupport .agentCopy small,
+  .sidebarSupport .agentState {
+    display: block;
+  }
+
   .shell {
     min-height: auto;
     display: block;
@@ -1246,9 +1283,9 @@
   }
 
   .themeSwitch {
-    min-width: 84px;
+    min-width: 76px;
     margin-left: auto;
-    padding: 0 8px;
+    padding: 4px;
   }
 
   .workspace {
@@ -1301,7 +1338,8 @@
   .agentRow,
   .taskCard,
   .approvalBar button,
-  .agentAvatar svg path {
+  .agentAvatar svg path,
+  .themeIcon {
     transition: none;
   }
 }

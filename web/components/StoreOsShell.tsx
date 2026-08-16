@@ -16,6 +16,7 @@ import { Sapling } from "@/components/avatar-lab/Sapling";
 import { Sprout } from "@/components/avatar-lab/Sprout";
 import { Strobi } from "@/components/avatar-lab/Strobi";
 import {
+  answerStoreReservationQuestion,
   parseStoreReservationCommand,
   type StoreReservationAction,
 } from "@/lib/store-reservation-command";
@@ -37,6 +38,7 @@ type ExportedAvatar = ComponentType<{
 }>;
 
 type StoreTheme = "light" | "dark";
+type ComposerNoticeTone = "answer" | "success" | "warning";
 
 const AGENT_AVATARS: Record<StoreAgentId, ExportedAvatar> = {
   manager: Sprout,
@@ -232,6 +234,7 @@ export function StoreOsShell({
   const [draftOpen, setDraftOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [composerNotice, setComposerNotice] = useState("");
+  const [composerNoticeTone, setComposerNoticeTone] = useState<ComposerNoticeTone>("answer");
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [resolvedTheme, setResolvedTheme] = useState<StoreTheme>("dark");
   const [liveReservations, setLiveReservations] = useState(reservations);
@@ -344,6 +347,7 @@ export function StoreOsShell({
       )));
       const actionLabel = action === "confirm" ? "已確認有貨" : action === "reject" ? "已回報無庫存" : "已完成取貨";
       setComposerNotice(`${code} ${actionLabel}；消費者取貨頁會同步更新。`);
+      setComposerNoticeTone("success");
       return true;
     } catch {
       setReservationActionError(`${code} · 網路連線失敗，狀態尚未更新。`);
@@ -357,17 +361,26 @@ export function StoreOsShell({
     event.preventDefault();
     if (!message.trim()) return;
     if (activeAgentId !== "manager") {
+      setComposerNoticeTone("warning");
       setComposerNotice(activeAgentAvailable
         ? "這個 Demo 只展示 Agent 工作狀態；尚未執行正式店務。"
         : `${activeAgent.name} 尚未開通；目前只有店長 Agent 可以處理預留。`);
       return;
     }
     const command = parseStoreReservationCommand(message);
-    if (!command) {
-      setComposerNotice("可輸入：確認 A-123、缺貨 A-123、完成 A-123。其他自由問答尚未開通。");
+    if (command) {
+      if (await updateReservation(command.code, command.action)) setMessage("");
       return;
     }
-    if (await updateReservation(command.code, command.action)) setMessage("");
+    const answer = answerStoreReservationQuestion(message, liveReservations);
+    if (answer) {
+      setComposerNotice(answer);
+      setComposerNoticeTone("answer");
+      setMessage("");
+      return;
+    }
+    setComposerNoticeTone("warning");
+    setComposerNotice("我目前可以回答單號、預留數量與狀態；也可以執行：確認 A-123、缺貨 A-123、完成 A-123。");
   }
 
   async function logout() {
@@ -395,14 +408,17 @@ export function StoreOsShell({
                 key={agent.id}
                 type="button"
                 className={`${styles.agentRow} ${
-                  activeAgentId === agent.id ? styles.agentRowActive : ""
+                  !supportOpen && activeAgentId === agent.id ? styles.agentRowActive : ""
                 } ${!available ? styles.agentRowComingSoon : ""}`}
-                aria-pressed={activeAgentId === agent.id}
-                onClick={() => setActiveAgentId(agent.id)}
+                aria-pressed={!supportOpen && activeAgentId === agent.id}
+                onClick={() => {
+                  setActiveAgentId(agent.id);
+                  setSupportOpen(false);
+                }}
               >
                 <AgentOrb
                   id={agent.id}
-                  active={activeAgentId === agent.id}
+                  active={!supportOpen && activeAgentId === agent.id}
                   animated={!prefersReducedMotion && available}
                 />
                 <span className={styles.agentCopy}>
@@ -415,21 +431,6 @@ export function StoreOsShell({
               </button>
             );
           })}
-          <button
-            type="button"
-            className={`${styles.agentRow} ${supportOpen ? styles.agentRowActive : ""}`}
-            aria-expanded={supportOpen}
-            onClick={() => setSupportOpen(true)}
-          >
-            <span className={styles.supportFace} aria-hidden="true">
-              <Strobi playing={!prefersReducedMotion} size="100%" />
-            </span>
-            <span className={styles.agentCopy}>
-              <strong>支援 Agent</strong>
-              <small>操作協助與真人支援</small>
-            </span>
-            <span className={`${styles.agentState} ${styles.idle}`}>待命</span>
-          </button>
         </div>
 
         <p className={styles.sectionLabel}>工作</p>
@@ -439,6 +440,24 @@ export function StoreOsShell({
           <span>完成紀錄</span>
         </nav>
 
+        <div className={styles.sidebarSupport}>
+          <button
+            type="button"
+            className={`${styles.agentRow} ${supportOpen ? styles.agentRowActive : ""}`}
+            aria-pressed={supportOpen}
+            onClick={() => setSupportOpen(true)}
+          >
+            <span className={styles.supportFace} aria-hidden="true">
+              <Strobi animation="listening" playing={!prefersReducedMotion} size="100%" />
+            </span>
+            <span className={styles.agentCopy}>
+              <strong>支援 Agent</strong>
+              <small>操作協助與真人支援</small>
+            </span>
+            <span className={`${styles.agentState} ${styles.idle}`}>待命</span>
+          </button>
+        </div>
+
         <div className={styles.pharmacyStatus}>
           <i aria-hidden="true" />
           <span><strong>{storeName}</strong><small>{operatorName} · 系統連線正常</small></span>
@@ -447,14 +466,22 @@ export function StoreOsShell({
 
       <section className={styles.shell}>
         <header className={styles.topbar}>
-          <AgentOrb id={activeAgent.id} active small />
+          {supportOpen ? (
+            <span className={`${styles.supportFace} ${styles.smallFace}`} aria-hidden="true">
+              <Strobi animation="listening" playing={!prefersReducedMotion} size="100%" />
+            </span>
+          ) : (
+            <AgentOrb id={activeAgent.id} active small />
+          )}
           <span className={styles.topbarAgent}>
-            <strong>{activeAgent.name}</strong>
+            <strong>{supportOpen ? "支援 Agent" : activeAgent.name}</strong>
             <small>
-              {activeAgent.description} · {activeAgentAvailable ? activeAgent.stateLabel : "Coming soon"}
+              {supportOpen
+                ? "操作協助與真人支援 · 已連線"
+                : `${activeAgent.description} · ${activeAgentAvailable ? activeAgent.stateLabel : "Coming soon"}`}
             </small>
           </span>
-          <span className={styles.prototypeBadge}>預留後端已連線</span>
+          <span className={styles.prototypeBadge}>{supportOpen ? "支援後端已連線" : "預留後端已連線"}</span>
           <span className={styles.syncTime}>{storeName}</span>
           <button
             type="button"
@@ -463,19 +490,31 @@ export function StoreOsShell({
             className={styles.themeSwitch}
             data-theme-value={resolvedTheme}
             onClick={toggleTheme}
-            aria-label={`目前為${resolvedTheme === "dark" ? "深色" : "淺色"}介面，切換主題`}
+            aria-label={`目前為${resolvedTheme === "dark" ? "深色" : "淺色"}介面，切換為${resolvedTheme === "dark" ? "淺色" : "深色"}介面`}
+            title={resolvedTheme === "dark" ? "切換為淺色介面" : "切換為深色介面"}
           >
-            <span className={styles.themeTrack} aria-hidden="true">
-              <span className={styles.themeThumb} />
+            <span className={styles.themeIcon} data-active={resolvedTheme === "light" ? "true" : "false"} aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round">
+                <circle cx="12" cy="12" r="3.5" />
+                <path d="M12 2.5V5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M18.7 5.3l-1.8 1.8M7.1 16.9l-1.8 1.8" />
+              </svg>
             </span>
-            <span className={styles.themeLabel}>{resolvedTheme === "dark" ? "Dark" : "Light"}</span>
+            <span className={styles.themeIcon} data-active={resolvedTheme === "dark" ? "true" : "false"} aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 15.2A8.4 8.4 0 0 1 8.8 4a8.5 8.5 0 1 0 11.2 11.2Z" />
+              </svg>
+            </span>
           </button>
           <button type="button" className={styles.moreButton} onClick={logout} aria-label="登出">↪</button>
         </header>
 
         <div className={styles.contentGrid}>
           <article className={styles.workspace}>
-            {activeAgentId === "manager" ? (
+            <SupportAgent
+              animate={!prefersReducedMotion}
+              active={supportOpen}
+            />
+            {!supportOpen && (activeAgentId === "manager" ? (
               <ReservationInbox
                 reservations={liveReservations}
                 animate={!prefersReducedMotion}
@@ -567,9 +606,9 @@ export function StoreOsShell({
               </button>
             </section>
               </>
-            )}
+            ))}
 
-            <form className={styles.composer} onSubmit={submitMessage}>
+            {!supportOpen && <form className={styles.composer} onSubmit={submitMessage}>
               <AgentOrb id="manager" active={activeAgentId === "manager"} small />
               <label className={styles.visuallyHidden} htmlFor="store-agent-message">交代店長</label>
               <input
@@ -578,24 +617,50 @@ export function StoreOsShell({
                 onChange={(event) => {
                   setMessage(event.target.value);
                   setComposerNotice("");
+                  setComposerNoticeTone("answer");
                 }}
                 placeholder={activeAgentId === "manager"
-                  ? "輸入：確認 A-123、缺貨 A-123、完成 A-123"
+                  ? "詢問單號，或輸入：確認 A-123"
                   : activeAgentAvailable ? "向店長詢問這個 Demo 工作…" : `${activeAgent.name} 即將開通`}
               />
               <button type="submit" disabled={!message.trim()} aria-label="送出訊息">↑</button>
-            </form>
-            <p className={styles.composerNotice} aria-live="polite">{composerNotice}</p>
+            </form>}
+            {!supportOpen && <p className={styles.composerNotice} data-tone={composerNoticeTone} aria-live="polite">{composerNotice}</p>}
           </article>
 
           <aside className={styles.contextPanel}>
-            <h2>{activeAgentId === "manager"
+            <h2>{supportOpen
+              ? "支援連線狀態"
+              : activeAgentId === "manager"
               ? "預留連線狀態"
               : activeAgentAvailable ? "Agent 交接紀錄" : "Agent 開通狀態"}</h2>
-            <p>{activeAgentId === "manager"
+            <p>{supportOpen
+              ? storeName
+              : activeAgentId === "manager"
               ? storeName
               : activeAgentAvailable ? `共同 WorkItem · ${RESTOCK_WORK_ITEM.id}` : activeAgent.name}</p>
-            {activeAgentId === "manager" ? (
+            {supportOpen ? (
+              <ol>
+                <li>
+                  <span className={`${styles.supportFace} ${styles.smallFace}`} aria-hidden="true">
+                    <Strobi animation="listening" playing={!prefersReducedMotion} size="100%" />
+                  </span>
+                  <div>
+                    <strong>自助問答已連線</strong>
+                    <p>常見操作問題會直接在中央對話區回答。</p>
+                  </div>
+                </li>
+                <li>
+                  <span className={`${styles.supportFace} ${styles.smallFace}`} aria-hidden="true">
+                    <Strobi animation="listening" playing={!prefersReducedMotion} size="100%" />
+                  </span>
+                  <div>
+                    <strong>真人支援單已連線</strong>
+                    <p>無法處理的問題可留下 Email，由 uYao 團隊接手。</p>
+                  </div>
+                </li>
+              </ol>
+            ) : activeAgentId === "manager" ? (
               <ol>
                 <li>
                   <AgentOrb id="manager" small />
@@ -636,8 +701,10 @@ export function StoreOsShell({
               </ol>
             )}
             <section className={styles.authorityNote}>
-              <strong>共享工作，不共享無限權限</strong>
-              <p>每個角色只看到必要工具；對客承諾、採購與金流仍有清楚的人類批准點。</p>
+              <strong>{supportOpen ? "支援不會讀取敏感資料" : "共享工作，不共享無限權限"}</strong>
+              <p>{supportOpen
+                ? "請勿輸入病患、處方、完整電話或其他個人醫療資料。"
+                : "每個角色只看到必要工具；對客承諾、採購與金流仍有清楚的人類批准點。"}</p>
             </section>
           </aside>
         </div>
@@ -669,11 +736,6 @@ export function StoreOsShell({
           </section>
         </div>
       )}
-      <SupportAgent
-        animate={!prefersReducedMotion}
-        open={supportOpen}
-        onOpenChange={setSupportOpen}
-      />
     </main>
   );
 }

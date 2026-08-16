@@ -1,6 +1,16 @@
 import { describe, expect, it } from "vitest";
 
-import { parseStoreReservationCommand } from "./store-reservation-command";
+import {
+  answerStoreReservationQuestion,
+  parseStoreReservationCommand,
+  type StoreReservationQuestionItem,
+} from "./store-reservation-command";
+
+const reservations: StoreReservationQuestionItem[] = [
+  { code: "A-123", drugName: "葉黃素", status: "pending_store_confirm" },
+  { code: "B-456", drugName: "鈣片", status: "confirmed" },
+  { code: "C-789", drugName: "維生素", status: "picked_up" },
+];
 
 describe("parseStoreReservationCommand", () => {
   it.each([
@@ -18,4 +28,34 @@ describe("parseStoreReservationCommand", () => {
       expect(parseStoreReservationCommand(input)).toBeNull();
     },
   );
+});
+
+describe("answerStoreReservationQuestion", () => {
+  it("lists active reservation codes without exposing completed work", () => {
+    expect(answerStoreReservationQuestion("目前還有什麼單號？", reservations)).toBe(
+      "目前有 2 筆進行中：A-123（待確認）、B-456（已確認）。",
+    );
+  });
+
+  it("answers pending and recent reservation counts", () => {
+    expect(answerStoreReservationQuestion("有幾筆待確認？", reservations)).toBe(
+      "目前有 1 筆待確認：A-123。",
+    );
+    expect(answerStoreReservationQuestion("目前有幾筆預留？", reservations)).toBe(
+      "目前載入 3 筆近期預留，其中 1 筆待確認、1 筆已確認。",
+    );
+  });
+
+  it("answers a known code and fails closed for an unknown code", () => {
+    expect(answerStoreReservationQuestion("A-123 是什麼狀態？", reservations)).toBe(
+      "A-123 是「葉黃素」，目前狀態：待確認。",
+    );
+    expect(answerStoreReservationQuestion("查一下 Z-999 狀態", reservations)).toBe(
+      "找不到 Z-999；我只能查詢這間門市目前載入的近期單號。",
+    );
+  });
+
+  it("does not guess unrelated free-form questions", () => {
+    expect(answerStoreReservationQuestion("明天天氣如何？", reservations)).toBeNull();
+  });
 });
