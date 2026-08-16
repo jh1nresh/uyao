@@ -6,61 +6,31 @@ import {
 } from "node:crypto";
 import { promisify } from "node:util";
 
+import { isStoreDatabaseConfigured } from "./store-db";
+import {
+  findActiveStoreIdentity,
+  findStoreLoginIdentity,
+  type StoreIdentity,
+  type StoreLoginIdentity,
+  type StoreRole,
+} from "./store-identity";
+
 const scryptAsync = promisify(scrypt);
 const SESSION_TTL_SECONDS = 12 * 60 * 60;
 const KEY_LENGTH = 32;
 
-export interface StoreUser {
-  id: string;
-  username: string;
-  displayName: string;
-  storeSlug: string;
-}
-
-interface ConfiguredStoreUser extends StoreUser {
-  passwordHash: string;
-}
+export type StoreUser = StoreIdentity;
 
 export interface StoreSession {
-  version: 1;
+  version: 2;
   userId: string;
+  membershipId: string;
+  pharmacyId: string;
   displayName: string;
   storeSlug: string;
+  role: StoreRole;
   issuedAt: number;
   expiresAt: number;
-}
-
-function configuredUsers(): ConfiguredStoreUser[] {
-  const raw = process.env.STORE_OS_USERS_JSON;
-  if (!raw) return [];
-
-  try {
-    const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed)) return [];
-
-    return parsed.flatMap((entry): ConfiguredStoreUser[] => {
-      if (!entry || typeof entry !== "object" || Array.isArray(entry)) return [];
-      const user = entry as Record<string, unknown>;
-      const username = typeof user.username === "string" ? user.username.trim() : "";
-      const storeSlug = typeof user.storeSlug === "string" ? user.storeSlug.trim() : "";
-      const passwordHash = typeof user.passwordHash === "string" ? user.passwordHash : "";
-      const displayName = typeof user.displayName === "string" && user.displayName.trim()
-        ? user.displayName.trim()
-        : username;
-      const id = typeof user.id === "string" && user.id.trim() ? user.id.trim() : username;
-
-      if (
-        !username || username.length > 120 || /[\u0000-\u001f]/.test(username) ||
-        !storeSlug || storeSlug.length > 160 ||
-        !id || id.length > 120 ||
-        !/^scrypt\$[A-Za-z0-9_-]{16,}\$[A-Za-z0-9_-]{32,}$/.test(passwordHash)
-      ) return [];
-
-      return [{ id, username, displayName, storeSlug, passwordHash }];
-    });
-  } catch {
-    return [];
-  }
 }
 
 function sessionSecret(): string | null {
@@ -83,7 +53,7 @@ export function storeSessionCookieName(): string {
 }
 
 export function isStoreAuthConfigured(): boolean {
-  return Boolean(sessionSecret()) && configuredUsers().length > 0;
+  return Boolean(sessionSecret()) && isStoreDatabaseConfigured();
 }
 
 export async function hashStorePassword(password: string, salt = randomBytes(16)): Promise<string> {
@@ -112,11 +82,9 @@ async function verifyPassword(password: string, encoded: string): Promise<boolea
 export async function authenticateStoreUser(
   username: string,
   password: string,
+  findIdentity: (email: string) => Promise<StoreLoginIdentity | null> = findStoreLoginIdentity,
 ): Promise<StoreUser | null> {
-  const normalized = username.trim().toLocaleLowerCase("en-US");
-  const user = configuredUsers().find(
-    (candidate) => candidate.username.toLocaleLowerCase("en-US") === normalized,
-  );
+  const user = await findIdentity(username);
 
   // 找不到帳號也跑一次 scrypt，避免用回應時間枚舉帳號。
   if (!user) {
@@ -138,10 +106,13 @@ export function createStoreSessionToken(
 
   const issuedAt = Math.floor(now / 1000);
   const session: StoreSession = {
-    version: 1,
-    userId: user.id,
+    version: 2,
+    userId: user.userId,
+    membershipId: user.membershipId,
+    pharmacyId: user.pharmacyId,
     displayName: user.displayName,
     storeSlug: user.storeSlug,
+    role: user.role,
     issuedAt,
     expiresAt: issuedAt + SESSION_TTL_SECONDS,
   };
@@ -166,10 +137,13 @@ export function readStoreSessionToken(
     const session = parsed as Partial<StoreSession>;
     const nowSeconds = Math.floor(now / 1000);
     if (
-      session.version !== 1 ||
+      session.version !== 2 ||
       typeof session.userId !== "string" || !session.userId ||
+      typeof session.membershipId !== "string" || !session.membershipId ||
+      typeof session.pharmacyId !== "string" || !session.pharmacyId ||
       typeof session.displayName !== "string" ||
       typeof session.storeSlug !== "string" || !session.storeSlug ||
+      !["owner", "manager", "staff"].includes(session.role ?? "") ||
       typeof session.issuedAt !== "number" ||
       typeof session.expiresAt !== "number" ||
       session.issuedAt > nowSeconds + 60 ||
@@ -181,9 +155,19 @@ export function readStoreSessionToken(
   }
 }
 
-export function isStoreSessionActive(session: StoreSession): boolean {
-  return configuredUsers().some(
-    (user) => user.id === session.userId && user.storeSlug === session.storeSlug,
+export async function isStoreSessionActive(
+  session: StoreSession,
+  findIdentity: typeof findActiveStoreIdentity = findActiveStoreIdentity,
+): Promise<boolean> {
+  const identity = await findIdentity({
+    userId: session.userId,
+    membershipId: session.membershipId,
+    pharmacyId: session.pharmacyId,
+  });
+  return Boolean(
+    identity &&
+    identity.storeSlug === session.storeSlug &&
+    identity.role === session.role,
   );
 }
 

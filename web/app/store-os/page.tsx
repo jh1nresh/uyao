@@ -22,7 +22,7 @@ export const dynamic = "force-dynamic";
 export default async function StoreOsPage() {
   const cookieStore = await cookies();
   const session = readStoreSessionToken(cookieStore.get(storeSessionCookieName())?.value);
-  if (!session || !isStoreSessionActive(session)) {
+  if (!session || !(await isStoreSessionActive(session))) {
     return <StoreOsLogin configured={isStoreAuthConfigured()} />;
   }
 

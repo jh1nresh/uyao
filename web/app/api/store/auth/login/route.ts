@@ -25,7 +25,10 @@ function loginAttemptKey(request: NextRequest, username: string): string {
   return `rate:store-login:${digest}`;
 }
 
-export async function POST(request: NextRequest) {
+export async function handleLogin(
+  request: NextRequest,
+  authenticate: typeof authenticateStoreUser = authenticateStoreUser,
+) {
   if (!isStoreAuthConfigured()) {
     return NextResponse.json({ error: "店家登入尚未啟用" }, { status: 503 });
   }
@@ -58,7 +61,13 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  const user = await authenticateStoreUser(username, password);
+  let user;
+  try {
+    user = await authenticate(username, password);
+  } catch (error) {
+    console.error("[store-auth] 登入資料庫查詢失敗", String(error).slice(0, 200));
+    return NextResponse.json({ error: "登入服務暫時無法使用" }, { status: 503 });
+  }
   if (!user) {
     return NextResponse.json({ error: "帳號或密碼錯誤" }, { status: 401 });
   }
@@ -70,4 +79,8 @@ export async function POST(request: NextRequest) {
   setStoreSessionCookie(response, createStoreSessionToken(user));
   response.headers.set("cache-control", "no-store");
   return response;
+}
+
+export async function POST(request: NextRequest) {
+  return handleLogin(request);
 }

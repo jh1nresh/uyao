@@ -3,15 +3,24 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import { __resetForTests } from "@/lib/kv";
 import { newToken, saveReservation, type StoredReservation } from "@/lib/reservations-store";
-import { createStoreSessionToken, hashStorePassword, type StoreUser } from "@/lib/store-auth";
+import {
+  createStoreSessionToken,
+  readStoreSessionToken,
+  storeSessionCookieName,
+  type StoreSession,
+  type StoreUser,
+} from "@/lib/store-auth";
 
-import { GET } from "./route";
+import { handleGetReservations } from "./route";
 
 const user: StoreUser = {
-  id: "owner-a",
-  username: "owner@example.com",
+  userId: "user-a",
+  membershipId: "membership-a",
+  pharmacyId: "pharmacy-a",
+  email: "owner@example.com",
   displayName: "王藥師",
   storeSlug: "A 藥局",
+  role: "owner",
 };
 
 function reservation(storeSlug: string, code: string, contact: string): StoredReservation {
@@ -37,13 +46,9 @@ function reservation(storeSlug: string, code: string, contact: string): StoredRe
   };
 }
 
-beforeEach(async () => {
+beforeEach(() => {
   __resetForTests();
   process.env.STORE_OS_SESSION_SECRET = "test-session-secret-that-is-long-enough";
-  process.env.STORE_OS_USERS_JSON = JSON.stringify([{
-    ...user,
-    passwordHash: await hashStorePassword("correct horse battery staple", Buffer.alloc(16, 4)),
-  }]);
 });
 
 function requestWithSession(token?: string) {
@@ -52,15 +57,22 @@ function requestWithSession(token?: string) {
   });
 }
 
+async function activeSession(request: NextRequest): Promise<StoreSession | null> {
+  return readStoreSessionToken(request.cookies.get(storeSessionCookieName())?.value);
+}
+
 describe("GET /api/store/reservations", () => {
   it("rejects an unauthenticated request", async () => {
-    expect((await GET(requestWithSession())).status).toBe(401);
+    expect((await handleGetReservations(requestWithSession(), activeSession)).status).toBe(401);
   });
 
   it("returns only the signed-in pharmacy's orders and masks the phone", async () => {
     await saveReservation(reservation("A 藥局", "A-111", "0911222333"));
     await saveReservation(reservation("B 藥局", "B-222", "0999888777"));
-    const response = await GET(requestWithSession(createStoreSessionToken(user)));
+    const response = await handleGetReservations(
+      requestWithSession(createStoreSessionToken(user)),
+      activeSession,
+    );
     const body = await response.json() as { reservations: Record<string, unknown>[] };
 
     expect(response.status).toBe(200);
@@ -72,6 +84,17 @@ describe("GET /api/store/reservations", () => {
 
   it("rejects a tampered tenant session", async () => {
     const token = createStoreSessionToken(user);
-    expect((await GET(requestWithSession(`${token.slice(0, -1)}x`))).status).toBe(401);
+    expect((await handleGetReservations(
+      requestWithSession(`${token.slice(0, -1)}x`),
+      activeSession,
+    )).status).toBe(401);
+  });
+
+  it("fails closed with unavailable when membership validation cannot reach the database", async () => {
+    const response = await handleGetReservations(
+      requestWithSession(createStoreSessionToken(user)),
+      async () => { throw new Error("database down"); },
+    );
+    expect(response.status).toBe(503);
   });
 });
