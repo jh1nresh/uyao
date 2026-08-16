@@ -309,6 +309,20 @@
   --orb-eye: var(--orb-active-eye);
 }
 
+.supportFace {
+  width: 40px;
+  height: 40px;
+  display: inline-grid;
+  place-items: center;
+  filter: drop-shadow(0 7px 10px var(--shadow));
+}
+
+.supportFace svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
 .agentAvatar > svg > g > path,
 .agentAvatar > svg > g > g:not([clip-path]) path {
   fill: var(--orb-fill) !important;
@@ -734,6 +748,51 @@
 .emptyInbox strong { font-size: 13px; }
 .emptyInbox p { max-width: 420px; margin: 7px auto 0; }
 
+.reservationError {
+  margin: 14px 0 0 52px;
+  padding: 9px 11px;
+  border-left: 2px solid var(--danger);
+  background: color-mix(in srgb, var(--danger) 9%, transparent);
+  color: var(--danger);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.reservationActions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.reservationActions button {
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.reservationActions button:hover:not(:disabled) {
+  border-color: var(--blue-soft);
+  color: var(--text);
+}
+
+.reservationActions .reservationPrimaryAction {
+  border-color: var(--blue);
+  background: var(--blue);
+  color: #fff;
+}
+
+.reservationActions button:disabled {
+  cursor: wait;
+  opacity: .5;
+}
+
 .composer {
   min-height: 60px;
   margin-top: auto;
@@ -999,7 +1058,7 @@
   .agentList {
     padding: 0 12px 12px;
     display: grid;
-    grid-template-columns: repeat(4, minmax(70px, 1fr));
+    grid-template-columns: repeat(5, minmax(62px, 1fr));
     gap: 6px;
   }
 
@@ -1014,6 +1073,11 @@
   }
 
   .agentRow .agentFace {
+    width: 30px;
+    height: 30px;
+  }
+
+  .agentRow .supportFace {
     width: 30px;
     height: 30px;
   }
@@ -1062,8 +1126,17 @@
   .sharedWorkNotice,
   .taskGrid,
   .approvalBar,
-  .reservationList {
+  .reservationList,
+  .reservationError {
     margin-left: 0;
+  }
+
+  .reservationActions {
+    justify-content: stretch;
+  }
+
+  .reservationActions button {
+    flex: 1;
   }
 
   .taskGrid {

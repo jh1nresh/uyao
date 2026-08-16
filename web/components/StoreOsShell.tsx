@@ -14,6 +14,11 @@ import { Flame } from "@/components/avatar-lab/Flame";
 import { Pepper } from "@/components/avatar-lab/Pepper";
 import { Sapling } from "@/components/avatar-lab/Sapling";
 import { Sprout } from "@/components/avatar-lab/Sprout";
+import { Strobi } from "@/components/avatar-lab/Strobi";
+import {
+  parseStoreReservationCommand,
+  type StoreReservationAction,
+} from "@/lib/store-reservation-command";
 import {
   RESTOCK_WORK_ITEM,
   STORE_AGENTS,
@@ -55,22 +60,32 @@ const STATUS_LABELS: Record<StoreReservationSummary["status"], string> = {
 };
 
 function taipeiTime(iso: string): string {
-  return new Intl.DateTimeFormat("zh-TW", {
+  const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Taipei",
     month: "2-digit",
     day: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
-  }).format(new Date(iso));
+  }).formatToParts(new Date(iso));
+  const value = (type: Intl.DateTimeFormatPartTypes) => (
+    parts.find((part) => part.type === type)?.value ?? ""
+  );
+  return `${value("month")}/${value("day")} ${value("hour")}:${value("minute")}`;
 }
 
 function ReservationInbox({
   reservations,
   animate,
+  busyCode,
+  actionError,
+  onAction,
 }: {
   reservations: StoreReservationSummary[];
   animate: boolean;
+  busyCode: string;
+  actionError: string;
+  onAction: (code: string, action: StoreReservationAction) => void;
 }) {
   const waiting = reservations.filter((reservation) => reservation.status === "pending_store_confirm");
   return (
@@ -97,6 +112,8 @@ function ReservationInbox({
         </div>
       </section>
 
+      {actionError && <p className={styles.reservationError} role="alert">{actionError}</p>}
+
       <section className={styles.reservationList} aria-label="門市預留單">
         {reservations.length === 0 ? (
           <div className={styles.emptyInbox}>
@@ -119,6 +136,31 @@ function ReservationInbox({
               <span>手機末三碼 {reservation.contactTail}</span>
               <time dateTime={reservation.createdAt}>{taipeiTime(reservation.createdAt)}</time>
             </footer>
+            {reservation.status === "pending_store_confirm" && (
+              <div className={styles.reservationActions}>
+                <button
+                  type="button"
+                  className={styles.reservationPrimaryAction}
+                  disabled={busyCode === reservation.code}
+                  onClick={() => onAction(reservation.code, "confirm")}
+                >{busyCode === reservation.code ? "處理中…" : "確認有貨"}</button>
+                <button
+                  type="button"
+                  disabled={busyCode === reservation.code}
+                  onClick={() => onAction(reservation.code, "reject")}
+                >回報無庫存</button>
+              </div>
+            )}
+            {reservation.status === "confirmed" && (
+              <div className={styles.reservationActions}>
+                <button
+                  type="button"
+                  className={styles.reservationPrimaryAction}
+                  disabled={busyCode === reservation.code}
+                  onClick={() => onAction(reservation.code, "pickup")}
+                >{busyCode === reservation.code ? "處理中…" : "完成取貨"}</button>
+              </div>
+            )}
           </article>
         ))}
       </section>
@@ -174,6 +216,9 @@ export function StoreOsShell({
   const [themePreference, setThemePreference] = useState<ThemePreference>("system");
   const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("dark");
   const [liveReservations, setLiveReservations] = useState(reservations);
+  const [reservationBusyCode, setReservationBusyCode] = useState("");
+  const [reservationActionError, setReservationActionError] = useState("");
+  const [supportOpen, setSupportOpen] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const draftButtonRef = useRef<HTMLButtonElement>(null);
   const activeAgent = storeAgent(activeAgentId);
@@ -256,10 +301,57 @@ export function StoreOsShell({
     requestAnimationFrame(() => draftButtonRef.current?.focus());
   }
 
-  function submitMessage(event: FormEvent<HTMLFormElement>) {
+  async function updateReservation(code: string, action: StoreReservationAction): Promise<boolean> {
+    if (reservationBusyCode) return false;
+    setReservationBusyCode(code);
+    setReservationActionError("");
+    setComposerNotice("");
+    try {
+      const response = await fetch("/api/store/reservations", {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ code, action }),
+      });
+      if (response.status === 401) {
+        window.location.reload();
+        return false;
+      }
+      const result = await response.json().catch(() => null) as {
+        reservation?: StoreReservationSummary;
+        error?: string;
+      } | null;
+      if (!response.ok || !result?.reservation) {
+        const error = result?.error || "目前無法更新這筆預留，請稍後再試。";
+        setReservationActionError(`${code} · ${error}`);
+        return false;
+      }
+      setLiveReservations((current) => current.map((item) => (
+        item.code === code ? result.reservation! : item
+      )));
+      const actionLabel = action === "confirm" ? "已確認有貨" : action === "reject" ? "已回報無庫存" : "已完成取貨";
+      setComposerNotice(`${code} ${actionLabel}；消費者取貨頁會同步更新。`);
+      return true;
+    } catch {
+      setReservationActionError(`${code} · 網路連線失敗，狀態尚未更新。`);
+      return false;
+    } finally {
+      setReservationBusyCode("");
+    }
+  }
+
+  async function submitMessage(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!message.trim()) return;
-    setComposerNotice("介面原型尚未連接 Agent runtime；這則訊息沒有送出。");
+    if (activeAgentId !== "manager") {
+      setComposerNotice(`${activeAgent.name} 尚未開通；目前只有店長 Agent 可以處理預留。`);
+      return;
+    }
+    const command = parseStoreReservationCommand(message);
+    if (!command) {
+      setComposerNotice("可輸入：確認 A-123、缺貨 A-123、完成 A-123。其他自由問答尚未開通。");
+      return;
+    }
+    if (await updateReservation(command.code, command.action)) setMessage("");
   }
 
   async function logout() {
@@ -304,6 +396,21 @@ export function StoreOsShell({
               </span>
             </button>
           ))}
+          <button
+            type="button"
+            className={`${styles.agentRow} ${supportOpen ? styles.agentRowActive : ""}`}
+            aria-expanded={supportOpen}
+            onClick={() => setSupportOpen(true)}
+          >
+            <span className={styles.supportFace} aria-hidden="true">
+              <Strobi playing={!prefersReducedMotion} size="100%" />
+            </span>
+            <span className={styles.agentCopy}>
+              <strong>支援 Agent</strong>
+              <small>操作協助與真人支援</small>
+            </span>
+            <span className={`${styles.agentState} ${styles.idle}`}>待命</span>
+          </button>
         </div>
 
         <p className={styles.sectionLabel}>工作</p>
@@ -341,7 +448,13 @@ export function StoreOsShell({
         <div className={styles.contentGrid}>
           <article className={styles.workspace}>
             {activeAgentId === "manager" ? (
-              <ReservationInbox reservations={liveReservations} animate={!prefersReducedMotion} />
+              <ReservationInbox
+                reservations={liveReservations}
+                animate={!prefersReducedMotion}
+                busyCode={reservationBusyCode}
+                actionError={reservationActionError}
+                onAction={(code, action) => { void updateReservation(code, action); }}
+              />
             ) : (
               <>
             <div className={styles.workHeading}>
@@ -418,7 +531,9 @@ export function StoreOsShell({
                   setMessage(event.target.value);
                   setComposerNotice("");
                 }}
-                placeholder="交代店長，或直接問這張工作…"
+                placeholder={activeAgentId === "manager"
+                  ? "輸入：確認 A-123、缺貨 A-123、完成 A-123"
+                  : `${activeAgent.name} 即將開通`}
               />
               <button type="submit" disabled={!message.trim()} aria-label="送出訊息">↑</button>
             </form>
@@ -492,7 +607,11 @@ export function StoreOsShell({
           </section>
         </div>
       )}
-      <SupportAgent animate={!prefersReducedMotion} />
+      <SupportAgent
+        animate={!prefersReducedMotion}
+        open={supportOpen}
+        onOpenChange={setSupportOpen}
+      />
     </main>
   );
 }

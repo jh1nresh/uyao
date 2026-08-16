@@ -83,6 +83,24 @@
   cursor: pointer;
 }
 
+.welcome {
+  padding: 20px 14px 12px;
+}
+
+.welcome strong {
+  display: block;
+  color: var(--text);
+  font-size: 15px;
+  letter-spacing: -.01em;
+}
+
+.welcome p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
 .messages {
   min-height: 96px;
   padding: 14px;
