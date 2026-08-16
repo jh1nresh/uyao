@@ -66,21 +66,28 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
   );
 }
 
-export function CompanyFooter({ locale }: { locale: "zh" | "en" }) {
+export function CompanyFooter({
+  locale,
+  children,
+}: {
+  locale: "zh" | "en";
+  children?: React.ReactNode;
+}) {
   const copy = COPY[locale];
   const shopUrl = `${SHOP_URL.replace(/\/$/, "")}${locale === "en" ? "/en" : "/zh-tw"}`;
   const companyPrefix = locale === "en" ? "/en" : "/zh-tw";
   const joinGuideUrl = locale === "en" ? "/en#how" : "/zh-tw/guides/join-uyao";
 
   return (
-    <footer className="border-t border-line bg-paper">
+    <footer className="bg-paper">
+      {children}
       <div className="mx-auto max-w-[1240px] px-5 py-12 sm:px-8 sm:py-14">
         <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-[1.45fr_1fr_1fr_1fr] lg:gap-8">
           <div>
             <Link href={companyPrefix} className="inline-flex min-h-11 items-center no-underline">
               <BrandLogo height={30} />
             </Link>
-            <p className="mb-0 mt-3 max-w-[29em] text-[14px] leading-[1.75] text-muted">
+            <p data-testid="footer-tagline" className="mb-0 mt-3 max-w-[29em] text-[14px] leading-[1.75] text-muted">
               {copy.tagline}
             </p>
           </div>
