@@ -29,3 +29,7 @@ of that license is included as `AGPL-3.0.txt` in this directory.
   body-node geometry so the roles remain distinct at sidebar size.
 - Runtime playback is enabled only for the central active Agent and is disabled
   when the operating system requests reduced motion.
+- `Sprout` takes an optional `data` prop so one surface can supply alternate
+  export data. The landing footer uses it to raise and shorten the eyes
+  (`components/landing/footerSproutData.ts`) so the mascot survives being
+  cropped at its mid-line; every other Sprout still renders `sprout.avatar.ts`.
