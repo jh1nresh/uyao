@@ -27,6 +27,7 @@ import {
   storeAgent,
   type StoreAgentId,
 } from "@/lib/store-os";
+import type { StoreRole } from "@/lib/store-identity";
 import type { StoreReservationSummary } from "@/lib/reservations-store";
 
 import styles from "./StoreOsShell.module.css";
@@ -63,6 +64,12 @@ const COMPLETED_RESERVATION_STATUSES = new Set<StoreReservationSummary["status"]
   "picked_up",
   "expired",
 ]);
+
+const STORE_ROLE_LABELS: Record<StoreRole, string> = {
+  owner: "店家擁有者",
+  manager: "門市管理者",
+  staff: "門市人員",
+};
 
 function taipeiTime(iso: string): string {
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -251,12 +258,18 @@ function AgentOrb({
 
 export function StoreOsShell({
   storeName,
+  storeSlug,
   operatorName,
+  operatorEmail,
+  operatorRole,
   reservations,
   demoMode,
 }: {
   storeName: string;
+  storeSlug: string;
   operatorName: string;
+  operatorEmail: string;
+  operatorRole: StoreRole;
   reservations: StoreReservationSummary[];
   demoMode: boolean;
 }) {
@@ -272,8 +285,11 @@ export function StoreOsShell({
   const [reservationBusyCode, setReservationBusyCode] = useState("");
   const [reservationActionError, setReservationActionError] = useState("");
   const [supportOpen, setSupportOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const draftButtonRef = useRef<HTMLButtonElement>(null);
+  const profileButtonRef = useRef<HTMLButtonElement>(null);
+  const profileCloseButtonRef = useRef<HTMLButtonElement>(null);
   const activeAgent = storeAgent(activeAgentId);
   const activeAgentAvailable = isStoreAgentAvailable(activeAgentId, demoMode);
   const waitingCount = liveReservations.filter((reservation) => reservation.status === "pending_store_confirm").length;
@@ -352,9 +368,24 @@ export function StoreOsShell({
     return () => window.removeEventListener("keydown", onKeyDown);
   }, [draftOpen]);
 
+  useEffect(() => {
+    if (!profileOpen) return;
+    profileCloseButtonRef.current?.focus();
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") closeProfile();
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [profileOpen]);
+
   function closeDraft() {
     setDraftOpen(false);
     requestAnimationFrame(() => draftButtonRef.current?.focus());
+  }
+
+  function closeProfile() {
+    setProfileOpen(false);
+    requestAnimationFrame(() => profileButtonRef.current?.focus());
   }
 
   async function updateReservation(code: string, action: StoreReservationAction): Promise<boolean> {
@@ -512,10 +543,16 @@ export function StoreOsShell({
           </button>
         </div>
 
-        <div className={styles.pharmacyStatus}>
+        <button
+          type="button"
+          className={styles.pharmacyStatus}
+          onClick={() => setProfileOpen(true)}
+          aria-haspopup="dialog"
+        >
           <i aria-hidden="true" />
           <span><strong>{storeName}</strong><small>{operatorName} · 系統連線正常</small></span>
-        </div>
+          <span className={styles.profileChevron} aria-hidden="true">›</span>
+        </button>
       </aside>
 
       <section className={styles.shell}>
@@ -559,7 +596,19 @@ export function StoreOsShell({
               </svg>
             </span>
           </button>
-          <button type="button" className={styles.moreButton} onClick={logout} aria-label="登出">↪</button>
+          <button
+            ref={profileButtonRef}
+            type="button"
+            className={styles.moreButton}
+            onClick={() => setProfileOpen(true)}
+            aria-label="開啟帳號與門市設定"
+            aria-haspopup="dialog"
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" aria-hidden="true">
+              <circle cx="12" cy="8" r="3.2" />
+              <path d="M5.5 20c.6-3.6 2.8-5.5 6.5-5.5s5.9 1.9 6.5 5.5" />
+            </svg>
+          </button>
         </header>
 
         <div className={styles.contentGrid}>
@@ -567,6 +616,7 @@ export function StoreOsShell({
             <SupportAgent
               animate={!prefersReducedMotion}
               active={supportOpen}
+              defaultReplyEmail={operatorEmail}
             />
             {!supportOpen && (activeAgentId === "manager" ? (
               <ReservationInbox
@@ -788,6 +838,46 @@ export function StoreOsShell({
             </dl>
             <p className={styles.dialogBoundary}>這是介面原型。尚未連接供應商、付款或送單 API，因此不提供「批准並送出」。</p>
             <button type="button" className={styles.dialogDone} onClick={closeDraft}>回到工作</button>
+          </section>
+        </div>
+      )}
+
+      {profileOpen && (
+        <div className={styles.dialogBackdrop} onMouseDown={(event) => {
+          if (event.target === event.currentTarget) closeProfile();
+        }}>
+          <section
+            className={`${styles.dialog} ${styles.profileDialog}`}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="profile-title"
+          >
+            <header>
+              <div><p>ACCOUNT / STORE</p><h2 id="profile-title">帳號與門市設定</h2></div>
+              <button ref={profileCloseButtonRef} type="button" onClick={closeProfile} aria-label="關閉帳號設定">×</button>
+            </header>
+            <dl>
+              <div><dt>操作者</dt><dd>{operatorName}</dd></div>
+              <div><dt>登入信箱</dt><dd>{operatorEmail}</dd></div>
+              <div>
+                <dt>所屬藥局</dt>
+                <dd>{storeName}<small>{storeSlug}</small></dd>
+              </div>
+              <div><dt>權限角色</dt><dd>{STORE_ROLE_LABELS[operatorRole]}</dd></div>
+              <div>
+                <dt>支援回覆信箱</dt>
+                <dd>{operatorEmail}<small>建立真人支援單時會自動帶入</small></dd>
+              </div>
+              <div>
+                <dt>帳號安全</dt>
+                <dd>密碼保護已啟用<small>登入工作階段最長 12 小時</small></dd>
+              </div>
+            </dl>
+            <p className={styles.profileHelp}>店家資料目前由開通資料載入。需要修改姓名、信箱、門市或權限時，請由支援 Agent 協助。</p>
+            <div className={styles.profileActions}>
+              <button type="button" onClick={closeProfile}>回到工作</button>
+              <button type="button" className={styles.logoutButton} onClick={logout}>登出</button>
+            </div>
           </section>
         </div>
       )}

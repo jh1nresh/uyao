@@ -16,14 +16,16 @@ interface ChatMessage {
 export function SupportAgent({
   animate,
   active,
+  defaultReplyEmail = "",
 }: {
   animate: boolean;
   active: boolean;
+  defaultReplyEmail?: string;
 }) {
   const [question, setQuestion] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [unresolved, setUnresolved] = useState("");
-  const [replyEmail, setReplyEmail] = useState("");
+  const [replyEmail, setReplyEmail] = useState(defaultReplyEmail);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const [ticketId, setTicketId] = useState("");

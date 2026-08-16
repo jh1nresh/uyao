@@ -11,6 +11,7 @@ export interface StoreIdentity {
   email: string;
   displayName: string;
   storeSlug: string;
+  storeName: string;
   role: StoreRole;
 }
 
@@ -48,6 +49,7 @@ function rowToIdentity(row: Record<string, unknown>): StoreIdentity {
     email: String(row.email),
     displayName: String(row.display_name),
     storeSlug: String(row.store_slug),
+    storeName: String(row.store_name),
     role: row.role as StoreRole,
   };
 }
@@ -63,7 +65,8 @@ export async function findStoreLoginIdentity(email: string): Promise<StoreLoginI
       m.id AS membership_id,
       m.role,
       p.id AS pharmacy_id,
-      p.slug AS store_slug
+      p.slug AS store_slug,
+      p.display_name AS store_name
     FROM store_users u
     JOIN pharmacy_memberships m ON m.user_id = u.id
     JOIN pharmacies p ON p.id = m.pharmacy_id
@@ -93,7 +96,8 @@ export async function findActiveStoreIdentity(input: {
       m.id AS membership_id,
       m.role,
       p.id AS pharmacy_id,
-      p.slug AS store_slug
+      p.slug AS store_slug,
+      p.display_name AS store_name
     FROM pharmacy_memberships m
     JOIN store_users u ON u.id = m.user_id
     JOIN pharmacies p ON p.id = m.pharmacy_id
@@ -173,7 +177,8 @@ export async function activatePharmacyInvite(input: {
   const sql = storeDb();
   return sql.begin(async (tx) => {
     const invites = await tx`
-      SELECT i.id, i.email, i.role, i.expires_at, p.id AS pharmacy_id, p.slug AS store_slug
+      SELECT i.id, i.email, i.role, i.expires_at,
+        p.id AS pharmacy_id, p.slug AS store_slug, p.display_name AS store_name
       FROM pharmacy_invites i
       JOIN pharmacies p ON p.id = i.pharmacy_id
       WHERE i.token_hash = ${tokenHash(input.token)}
@@ -223,6 +228,7 @@ export async function activatePharmacyInvite(input: {
       email: String(users[0].email),
       displayName: String(users[0].display_name),
       storeSlug: String(invite.store_slug),
+      storeName: String(invite.store_name),
       role: memberships[0].role as StoreRole,
     };
   });
