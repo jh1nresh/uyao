@@ -18,6 +18,9 @@ describe("parseStoreReservationCommand", () => {
     ["有貨 a123", { action: "confirm", code: "A-123" }],
     ["回報無庫存 B 456", { action: "reject", code: "B-456" }],
     ["完成 C-789", { action: "pickup", code: "C-789" }],
+    ["Confirm A-123", { action: "confirm", code: "A-123" }],
+    ["Out of stock B 456", { action: "reject", code: "B-456" }],
+    ["Complete pickup C-789", { action: "pickup", code: "C-789" }],
   ])("parses %s", (input, expected) => {
     expect(parseStoreReservationCommand(input)).toEqual(expected);
   });
@@ -57,5 +60,14 @@ describe("answerStoreReservationQuestion", () => {
 
   it("does not guess unrelated free-form questions", () => {
     expect(answerStoreReservationQuestion("明天天氣如何？", reservations)).toBeNull();
+  });
+
+  it("answers English reservation questions without changing source product names", () => {
+    expect(answerStoreReservationQuestion("Check A-123 status", reservations, "en")).toBe(
+      "A-123 is “葉黃素.” Current status: Pending confirmation.",
+    );
+    expect(answerStoreReservationQuestion("How many reservations are there?", reservations, "en")).toBe(
+      "3 recent reservations are loaded: 1 awaiting confirmation and 1 confirmed.",
+    );
   });
 });

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { answerSupportQuestion, SUPPORT_FAQS } from "./support";
+import { answerSupportQuestion, supportFaqs, SUPPORT_FAQS } from "./support";
 
 describe("Store OS 支援問答", () => {
   it("用固定規則回答預留與通知問題", () => {
@@ -14,5 +14,11 @@ describe("Store OS 支援問答", () => {
 
   it("每個快捷問題都有可顯示的答案", () => {
     expect(SUPPORT_FAQS.every((faq) => faq.question && faq.answer)).toBe(true);
+  });
+
+  it("answers English support questions from the English FAQ set", () => {
+    expect(answerSupportQuestion("How do I handle a customer reservation?", "en")?.id).toBe("reservation");
+    expect(answerSupportQuestion("Can I use the checkout agent?", "en")?.id).toBe("agents");
+    expect(supportFaqs("en").every((faq) => faq.question && faq.answer)).toBe(true);
   });
 });

@@ -24,6 +24,25 @@ export interface AuditEntry {
   detail: string;
 }
 
+export interface RestockWorkItem {
+  id: string;
+  type: string;
+  title: string;
+  pharmacy: string;
+  sourceCount: number;
+  requiresApproval: boolean;
+  approvalLabel: string;
+  steps: readonly RestockStep[];
+  draft: {
+    product: string;
+    quantity: number;
+    supplier: string;
+    priceCeiling: string;
+    sent: boolean;
+  };
+  audit: readonly AuditEntry[];
+}
+
 export const STORE_AGENTS: readonly StoreAgent[] = [
   {
     id: "manager",
@@ -60,6 +79,45 @@ export const STORE_AGENTS: readonly StoreAgent[] = [
     stateLabel: "待命",
     summary:
       "這張補貨工作不需要交易、退款或收據操作。我會保持待命，不取得這張工作不需要的權限。",
+  },
+] as const;
+
+export const STORE_AGENTS_EN: readonly StoreAgent[] = [
+  {
+    id: "manager",
+    name: "Manager Agent",
+    description: "Coordinates cross-agent work",
+    state: "online",
+    stateLabel: "Online",
+    summary:
+      "The Inventory Agent found a mismatch between scans and checkout records for lutein. I asked it to verify the evidence before the Procurement Agent prepares a draft from the confirmed quantity.",
+  },
+  {
+    id: "inventory",
+    name: "Inventory Agent",
+    description: "Scans and quantity evidence",
+    state: "working",
+    stateLabel: "Working",
+    summary:
+      "I checked three sources: 8 scans, 6 checkout records, and 1 manual correction. These are observations, not exact inventory; pharmacy staff still need to confirm the available quantity.",
+  },
+  {
+    id: "purchasing",
+    name: "Procurement Agent",
+    description: "Restock drafts and suppliers",
+    state: "approval",
+    stateLabel: "Needs approval",
+    summary:
+      "The restock draft includes the supplier, package details, and a suggested quantity of 12 boxes. It is a fixed draft and no order has been sent.",
+  },
+  {
+    id: "checkout",
+    name: "Checkout Agent",
+    description: "Transactions, receipts, and reconciliation",
+    state: "idle",
+    stateLabel: "Standing by",
+    summary:
+      "This restock task does not require a transaction, refund, or receipt action. I will remain on standby without receiving unnecessary permissions.",
   },
 ] as const;
 
@@ -129,10 +187,87 @@ export const RESTOCK_WORK_ITEM = {
   ] satisfies readonly AuditEntry[],
 } as const;
 
+export const RESTOCK_WORK_ITEM_EN: RestockWorkItem = {
+  id: "WI-2031",
+  type: "RESTOCK",
+  title: "Low-stock review for lutein",
+  pharmacy: "Ankang Pharmacy",
+  sourceCount: 3,
+  requiresApproval: true,
+  approvalLabel: "Approval required before submitting procurement",
+  steps: [
+    {
+      agentId: "inventory",
+      label: "Review quantity evidence",
+      detail: "8 scans, 6 checkout records, and 1 manual correction; staff must still confirm the available quantity.",
+      state: "completed",
+      stateLabel: "Completed",
+    },
+    {
+      agentId: "manager",
+      label: "Form an operational decision",
+      detail: "After reserving 2 boxes for existing pickups, the suggested restock quantity is 12 boxes.",
+      state: "organized",
+      stateLabel: "Organized",
+    },
+    {
+      agentId: "purchasing",
+      label: "Prepare a restock draft",
+      detail: "The supplier, package details, and lead time are listed; no order has been sent.",
+      state: "approval",
+      stateLabel: "Needs approval",
+    },
+  ],
+  draft: {
+    product: "Lutein, 30 count",
+    quantity: 12,
+    supplier: "Demo supplier (pharmacy confirmation required)",
+    priceCeiling: "Not provided",
+    sent: false,
+  },
+  audit: [
+    {
+      agentId: "inventory",
+      handoff: "Inventory → Manager",
+      at: "09:10",
+      detail: "Attached scan, checkout, and correction evidence.",
+    },
+    {
+      agentId: "manager",
+      handoff: "Manager → Procurement",
+      at: "09:12",
+      detail: "Draft creation only; submission is not authorized.",
+    },
+    {
+      agentId: "purchasing",
+      handoff: "Procurement → You",
+      at: "09:14",
+      detail: "Draft ready; waiting for supplier and quantity approval.",
+    },
+    {
+      agentId: "checkout",
+      handoff: "Checkout Agent",
+      at: "Standby",
+      detail: "No transaction or refund is needed for this task.",
+    },
+  ],
+};
+
 export function storeAgent(id: StoreAgentId): StoreAgent {
   const agent = STORE_AGENTS.find((candidate) => candidate.id === id);
   if (!agent) throw new Error(`Unknown Store Agent: ${id}`);
   return agent;
+}
+
+export function storeAgentCopy(id: StoreAgentId, locale: "zh" | "en"): StoreAgent {
+  if (locale === "zh") return storeAgent(id);
+  const agent = STORE_AGENTS_EN.find((candidate) => candidate.id === id);
+  if (!agent) throw new Error(`Unknown Store Agent: ${id}`);
+  return agent;
+}
+
+export function storeWorkItemCopy(locale: "zh" | "en"): RestockWorkItem {
+  return locale === "en" ? RESTOCK_WORK_ITEM_EN : RESTOCK_WORK_ITEM;
 }
 
 export function isStoreAgentAvailable(id: StoreAgentId, demoMode: boolean): boolean {

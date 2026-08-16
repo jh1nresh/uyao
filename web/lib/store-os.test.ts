@@ -5,6 +5,8 @@ import {
   STORE_AGENTS,
   isStoreAgentAvailable,
   storeAgent,
+  storeAgentCopy,
+  storeWorkItemCopy,
 } from "@/lib/store-os";
 
 describe("Store OS prototype truth boundaries", () => {
@@ -32,5 +34,12 @@ describe("Store OS prototype truth boundaries", () => {
     expect(isStoreAgentAvailable("purchasing", false)).toBe(false);
     expect(isStoreAgentAvailable("checkout", false)).toBe(false);
     expect(STORE_AGENTS.every((agent) => isStoreAgentAvailable(agent.id, true))).toBe(true);
+  });
+
+  it("uses the agreed English names for operational agents", () => {
+    expect(storeAgentCopy("inventory", "en").name).toBe("Inventory Agent");
+    expect(storeAgentCopy("purchasing", "en").name).toBe("Procurement Agent");
+    expect(storeAgentCopy("checkout", "en").name).toBe("Checkout Agent");
+    expect(storeWorkItemCopy("en").draft.sent).toBe(false);
   });
 });
