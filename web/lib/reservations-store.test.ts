@@ -158,6 +158,13 @@ describe("狀態流轉", () => {
   it("查不到的取貨碼回 null，不要憑空造一筆", async () => {
     expect(await updateStatus("X-000", "confirmed")).toBeNull();
   });
+
+  it("狀態已被別人更新時不覆寫新狀態", async () => {
+    const r = make({ code: "C-002", status: "confirmed" });
+    await saveReservation(r);
+    expect(await updateStatus("C-002", "rejected_no_stock", "pending_store_confirm")).toBeNull();
+    expect(await getByCode("C-002")).toMatchObject({ status: "confirmed" });
+  });
 });
 
 describe("已交付", () => {

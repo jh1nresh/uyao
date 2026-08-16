@@ -14,9 +14,15 @@ import { Flame } from "@/components/avatar-lab/Flame";
 import { Pepper } from "@/components/avatar-lab/Pepper";
 import { Sapling } from "@/components/avatar-lab/Sapling";
 import { Sprout } from "@/components/avatar-lab/Sprout";
+import { Strobi } from "@/components/avatar-lab/Strobi";
+import {
+  parseStoreReservationCommand,
+  type StoreReservationAction,
+} from "@/lib/store-reservation-command";
 import {
   RESTOCK_WORK_ITEM,
   STORE_AGENTS,
+  isStoreAgentAvailable,
   storeAgent,
   type StoreAgentId,
 } from "@/lib/store-os";
@@ -30,13 +36,7 @@ type ExportedAvatar = ComponentType<{
   className?: string;
 }>;
 
-type ThemePreference = "system" | "light" | "dark";
-
-const THEME_LABELS: Record<ThemePreference, string> = {
-  system: "跟隨系統",
-  light: "日間",
-  dark: "夜間",
-};
+type StoreTheme = "light" | "dark";
 
 const AGENT_AVATARS: Record<StoreAgentId, ExportedAvatar> = {
   manager: Sprout,
@@ -55,22 +55,32 @@ const STATUS_LABELS: Record<StoreReservationSummary["status"], string> = {
 };
 
 function taipeiTime(iso: string): string {
-  return new Intl.DateTimeFormat("zh-TW", {
+  const parts = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Asia/Taipei",
     month: "2-digit",
     day: "2-digit",
     hour: "2-digit",
     minute: "2-digit",
     hour12: false,
-  }).format(new Date(iso));
+  }).formatToParts(new Date(iso));
+  const value = (type: Intl.DateTimeFormatPartTypes) => (
+    parts.find((part) => part.type === type)?.value ?? ""
+  );
+  return `${value("month")}/${value("day")} ${value("hour")}:${value("minute")}`;
 }
 
 function ReservationInbox({
   reservations,
   animate,
+  busyCode,
+  actionError,
+  onAction,
 }: {
   reservations: StoreReservationSummary[];
   animate: boolean;
+  busyCode: string;
+  actionError: string;
+  onAction: (code: string, action: StoreReservationAction) => void;
 }) {
   const waiting = reservations.filter((reservation) => reservation.status === "pending_store_confirm");
   return (
@@ -97,6 +107,8 @@ function ReservationInbox({
         </div>
       </section>
 
+      {actionError && <p className={styles.reservationError} role="alert">{actionError}</p>}
+
       <section className={styles.reservationList} aria-label="門市預留單">
         {reservations.length === 0 ? (
           <div className={styles.emptyInbox}>
@@ -119,6 +131,31 @@ function ReservationInbox({
               <span>手機末三碼 {reservation.contactTail}</span>
               <time dateTime={reservation.createdAt}>{taipeiTime(reservation.createdAt)}</time>
             </footer>
+            {reservation.status === "pending_store_confirm" && (
+              <div className={styles.reservationActions}>
+                <button
+                  type="button"
+                  className={styles.reservationPrimaryAction}
+                  disabled={busyCode === reservation.code}
+                  onClick={() => onAction(reservation.code, "confirm")}
+                >{busyCode === reservation.code ? "處理中…" : "確認有貨"}</button>
+                <button
+                  type="button"
+                  disabled={busyCode === reservation.code}
+                  onClick={() => onAction(reservation.code, "reject")}
+                >回報無庫存</button>
+              </div>
+            )}
+            {reservation.status === "confirmed" && (
+              <div className={styles.reservationActions}>
+                <button
+                  type="button"
+                  className={styles.reservationPrimaryAction}
+                  disabled={busyCode === reservation.code}
+                  onClick={() => onAction(reservation.code, "pickup")}
+                >{busyCode === reservation.code ? "處理中…" : "完成取貨"}</button>
+              </div>
+            )}
           </article>
         ))}
       </section>
@@ -161,22 +198,27 @@ export function StoreOsShell({
   storeName,
   operatorName,
   reservations,
+  demoMode,
 }: {
   storeName: string;
   operatorName: string;
   reservations: StoreReservationSummary[];
+  demoMode: boolean;
 }) {
   const [activeAgentId, setActiveAgentId] = useState<StoreAgentId>("manager");
   const [draftOpen, setDraftOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [composerNotice, setComposerNotice] = useState("");
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-  const [themePreference, setThemePreference] = useState<ThemePreference>("system");
-  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("dark");
+  const [resolvedTheme, setResolvedTheme] = useState<StoreTheme>("dark");
   const [liveReservations, setLiveReservations] = useState(reservations);
+  const [reservationBusyCode, setReservationBusyCode] = useState("");
+  const [reservationActionError, setReservationActionError] = useState("");
+  const [supportOpen, setSupportOpen] = useState(false);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const draftButtonRef = useRef<HTMLButtonElement>(null);
   const activeAgent = storeAgent(activeAgentId);
+  const activeAgentAvailable = isStoreAgentAvailable(activeAgentId, demoMode);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -188,29 +230,23 @@ export function StoreOsShell({
 
   useEffect(() => {
     const stored = window.localStorage.getItem("uyao-store-theme");
-    const initial: ThemePreference = stored === "light" || stored === "dark" ? stored : "system";
     const media = window.matchMedia("(prefers-color-scheme: light)");
-    const resolve = (preference: ThemePreference) => {
-      setResolvedTheme(preference === "system" ? (media.matches ? "light" : "dark") : preference);
-    };
-    setThemePreference(initial);
-    resolve(initial);
+    const savedTheme = stored === "light" || stored === "dark" ? stored : null;
+    setResolvedTheme(savedTheme ?? (media.matches ? "light" : "dark"));
+    if (savedTheme) return;
     const onChange = () => {
-      if ((window.localStorage.getItem("uyao-store-theme") ?? "system") === "system") resolve("system");
+      if (!window.localStorage.getItem("uyao-store-theme")) {
+        setResolvedTheme(media.matches ? "light" : "dark");
+      }
     };
     media.addEventListener("change", onChange);
     return () => media.removeEventListener("change", onChange);
   }, []);
 
-  function cycleTheme() {
-    const next: ThemePreference = themePreference === "system"
-      ? "light"
-      : themePreference === "light" ? "dark" : "system";
-    setThemePreference(next);
+  function toggleTheme() {
+    const next: StoreTheme = resolvedTheme === "dark" ? "light" : "dark";
+    setResolvedTheme(next);
     window.localStorage.setItem("uyao-store-theme", next);
-    setResolvedTheme(next === "system"
-      ? (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark")
-      : next);
   }
 
   useEffect(() => {
@@ -256,10 +292,59 @@ export function StoreOsShell({
     requestAnimationFrame(() => draftButtonRef.current?.focus());
   }
 
-  function submitMessage(event: FormEvent<HTMLFormElement>) {
+  async function updateReservation(code: string, action: StoreReservationAction): Promise<boolean> {
+    if (reservationBusyCode) return false;
+    setReservationBusyCode(code);
+    setReservationActionError("");
+    setComposerNotice("");
+    try {
+      const response = await fetch("/api/store/reservations", {
+        method: "PATCH",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ code, action }),
+      });
+      if (response.status === 401) {
+        window.location.reload();
+        return false;
+      }
+      const result = await response.json().catch(() => null) as {
+        reservation?: StoreReservationSummary;
+        error?: string;
+      } | null;
+      if (!response.ok || !result?.reservation) {
+        const error = result?.error || "目前無法更新這筆預留，請稍後再試。";
+        setReservationActionError(`${code} · ${error}`);
+        return false;
+      }
+      setLiveReservations((current) => current.map((item) => (
+        item.code === code ? result.reservation! : item
+      )));
+      const actionLabel = action === "confirm" ? "已確認有貨" : action === "reject" ? "已回報無庫存" : "已完成取貨";
+      setComposerNotice(`${code} ${actionLabel}；消費者取貨頁會同步更新。`);
+      return true;
+    } catch {
+      setReservationActionError(`${code} · 網路連線失敗，狀態尚未更新。`);
+      return false;
+    } finally {
+      setReservationBusyCode("");
+    }
+  }
+
+  async function submitMessage(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (!message.trim()) return;
-    setComposerNotice("介面原型尚未連接 Agent runtime；這則訊息沒有送出。");
+    if (activeAgentId !== "manager") {
+      setComposerNotice(activeAgentAvailable
+        ? "這個 Demo 只展示 Agent 工作狀態；尚未執行正式店務。"
+        : `${activeAgent.name} 尚未開通；目前只有店長 Agent 可以處理預留。`);
+      return;
+    }
+    const command = parseStoreReservationCommand(message);
+    if (!command) {
+      setComposerNotice("可輸入：確認 A-123、缺貨 A-123、完成 A-123。其他自由問答尚未開通。");
+      return;
+    }
+    if (await updateReservation(command.code, command.action)) setMessage("");
   }
 
   async function logout() {
@@ -280,30 +365,48 @@ export function StoreOsShell({
 
         <p className={styles.sectionLabel}>你的店務團隊</p>
         <div className={styles.agentList}>
-          {STORE_AGENTS.map((agent) => (
-            <button
-              key={agent.id}
-              type="button"
-              className={`${styles.agentRow} ${
-                activeAgentId === agent.id ? styles.agentRowActive : ""
-              }`}
-              aria-pressed={activeAgentId === agent.id}
-              onClick={() => setActiveAgentId(agent.id)}
-            >
-              <AgentOrb
-                id={agent.id}
-                active={activeAgentId === agent.id}
-                animated={!prefersReducedMotion}
-              />
-              <span className={styles.agentCopy}>
-                <strong>{agent.name}</strong>
-                <small>{agent.description}</small>
-              </span>
-              <span className={`${styles.agentState} ${styles[agent.state]}`}>
-                {agent.stateLabel}
-              </span>
-            </button>
-          ))}
+          {STORE_AGENTS.map((agent) => {
+            const available = isStoreAgentAvailable(agent.id, demoMode);
+            return (
+              <button
+                key={agent.id}
+                type="button"
+                className={`${styles.agentRow} ${
+                  activeAgentId === agent.id ? styles.agentRowActive : ""
+                } ${!available ? styles.agentRowComingSoon : ""}`}
+                aria-pressed={activeAgentId === agent.id}
+                onClick={() => setActiveAgentId(agent.id)}
+              >
+                <AgentOrb
+                  id={agent.id}
+                  active={activeAgentId === agent.id}
+                  animated={!prefersReducedMotion && available}
+                />
+                <span className={styles.agentCopy}>
+                  <strong>{agent.name}</strong>
+                  <small>{agent.description}</small>
+                </span>
+                <span className={`${styles.agentState} ${available ? styles[agent.state] : styles.comingSoon}`}>
+                  {available ? agent.stateLabel : "Coming soon"}
+                </span>
+              </button>
+            );
+          })}
+          <button
+            type="button"
+            className={`${styles.agentRow} ${supportOpen ? styles.agentRowActive : ""}`}
+            aria-expanded={supportOpen}
+            onClick={() => setSupportOpen(true)}
+          >
+            <span className={styles.supportFace} aria-hidden="true">
+              <Strobi playing={!prefersReducedMotion} size="100%" />
+            </span>
+            <span className={styles.agentCopy}>
+              <strong>支援 Agent</strong>
+              <small>操作協助與真人支援</small>
+            </span>
+            <span className={`${styles.agentState} ${styles.idle}`}>待命</span>
+          </button>
         </div>
 
         <p className={styles.sectionLabel}>工作</p>
@@ -324,24 +427,59 @@ export function StoreOsShell({
           <AgentOrb id={activeAgent.id} active small />
           <span className={styles.topbarAgent}>
             <strong>{activeAgent.name}</strong>
-            <small>{activeAgent.description} · {activeAgent.stateLabel}</small>
+            <small>
+              {activeAgent.description} · {activeAgentAvailable ? activeAgent.stateLabel : "Coming soon"}
+            </small>
           </span>
           <span className={styles.prototypeBadge}>預留後端已連線</span>
           <span className={styles.syncTime}>{storeName}</span>
           <button
             type="button"
-            className={styles.modeButton}
-            onClick={cycleTheme}
-            aria-label={`目前${THEME_LABELS[themePreference]}，切換介面顏色`}
-            title="切換：跟隨系統／日間／夜間"
-          >{THEME_LABELS[themePreference]}</button>
+            role="switch"
+            aria-checked={resolvedTheme === "dark"}
+            className={styles.themeSwitch}
+            data-theme-value={resolvedTheme}
+            onClick={toggleTheme}
+            aria-label={`目前為${resolvedTheme === "dark" ? "深色" : "淺色"}介面，切換主題`}
+          >
+            <span className={styles.themeTrack} aria-hidden="true">
+              <span className={styles.themeThumb} />
+            </span>
+            <span className={styles.themeLabel}>{resolvedTheme === "dark" ? "Dark" : "Light"}</span>
+          </button>
           <button type="button" className={styles.moreButton} onClick={logout} aria-label="登出">↪</button>
         </header>
 
         <div className={styles.contentGrid}>
           <article className={styles.workspace}>
             {activeAgentId === "manager" ? (
-              <ReservationInbox reservations={liveReservations} animate={!prefersReducedMotion} />
+              <ReservationInbox
+                reservations={liveReservations}
+                animate={!prefersReducedMotion}
+                busyCode={reservationBusyCode}
+                actionError={reservationActionError}
+                onAction={(code, action) => { void updateReservation(code, action); }}
+              />
+            ) : !activeAgentAvailable ? (
+              <>
+                <div className={styles.workHeading}>
+                  <p>{activeAgent.id.toUpperCase()} / COMING SOON</p>
+                  <h1>{activeAgent.name} 即將開通</h1>
+                  <div>
+                    <span>正式店家目前先使用預留單與支援功能</span>
+                  </div>
+                </div>
+                <section className={styles.agentMessage} aria-live="polite">
+                  <AgentOrb id={activeAgent.id} active />
+                  <div>
+                    <p className={styles.sender}>{activeAgent.name}</p>
+                    <p>這個角色目前只在 uYao Demo 帳號展示，尚未接入你的店務資料或取得任何操作權限。</p>
+                  </div>
+                </section>
+                <p className={styles.sharedWorkNotice}>
+                  Coming soon · 開通前會先確認資料來源、權限與藥師批准點。
+                </p>
+              </>
             ) : (
               <>
             <div className={styles.workHeading}>
@@ -418,7 +556,9 @@ export function StoreOsShell({
                   setMessage(event.target.value);
                   setComposerNotice("");
                 }}
-                placeholder="交代店長，或直接問這張工作…"
+                placeholder={activeAgentId === "manager"
+                  ? "輸入：確認 A-123、缺貨 A-123、完成 A-123"
+                  : activeAgentAvailable ? "向店長詢問這個 Demo 工作…" : `${activeAgent.name} 即將開通`}
               />
               <button type="submit" disabled={!message.trim()} aria-label="送出訊息">↑</button>
             </form>
@@ -426,8 +566,12 @@ export function StoreOsShell({
           </article>
 
           <aside className={styles.contextPanel}>
-            <h2>{activeAgentId === "manager" ? "預留連線狀態" : "Agent 交接紀錄"}</h2>
-            <p>{activeAgentId === "manager" ? storeName : `共同 WorkItem · ${RESTOCK_WORK_ITEM.id}`}</p>
+            <h2>{activeAgentId === "manager"
+              ? "預留連線狀態"
+              : activeAgentAvailable ? "Agent 交接紀錄" : "Agent 開通狀態"}</h2>
+            <p>{activeAgentId === "manager"
+              ? storeName
+              : activeAgentAvailable ? `共同 WorkItem · ${RESTOCK_WORK_ITEM.id}` : activeAgent.name}</p>
             {activeAgentId === "manager" ? (
               <ol>
                 <li>
@@ -442,6 +586,16 @@ export function StoreOsShell({
                   <div>
                     <strong>預留資料已同步</strong>
                     <p>{liveReservations.length} 筆近期單號；完整手機與取貨連結不會送到瀏覽器。</p>
+                  </div>
+                </li>
+              </ol>
+            ) : !activeAgentAvailable ? (
+              <ol>
+                <li>
+                  <AgentOrb id={activeAgent.id} small />
+                  <div>
+                    <strong>尚未連接店務資料</strong>
+                    <p>此角色目前不讀取、不變更任何正式店家資料。</p>
                   </div>
                 </li>
               </ol>
@@ -492,7 +646,11 @@ export function StoreOsShell({
           </section>
         </div>
       )}
-      <SupportAgent animate={!prefersReducedMotion} />
+      <SupportAgent
+        animate={!prefersReducedMotion}
+        open={supportOpen}
+        onOpenChange={setSupportOpen}
+      />
     </main>
   );
 }

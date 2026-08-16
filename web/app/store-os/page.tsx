@@ -4,6 +4,7 @@ import { cookies } from "next/headers";
 import { StoreOsLogin } from "@/components/StoreOsLogin";
 import { StoreOsShell } from "@/components/StoreOsShell";
 import { listStoreReservations } from "@/lib/reservations-store";
+import { isStoreDemoSandbox } from "@/lib/store-demo";
 import {
   isStoreAuthConfigured,
   isStoreSessionActive,
@@ -32,6 +33,7 @@ export default async function StoreOsPage() {
       storeName={session.storeSlug}
       operatorName={session.displayName}
       reservations={reservations}
+      demoMode={isStoreDemoSandbox(session.storeSlug)}
     />
   );
 }

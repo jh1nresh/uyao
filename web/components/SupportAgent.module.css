@@ -44,6 +44,18 @@
   overflow: visible;
 }
 
+.triggerAvatar svg > g > path,
+.triggerAvatar svg > g > g:not([clip-path]) path,
+.avatar svg > g > path,
+.avatar svg > g > g:not([clip-path]) path {
+  fill: var(--support-avatar-fill) !important;
+}
+
+.triggerAvatar svg > g > g[clip-path] path,
+.avatar svg > g > g[clip-path] path {
+  fill: var(--support-avatar-eye) !important;
+}
+
 .panel {
   width: min(370px, calc(100vw - 24px));
   max-height: min(610px, calc(100dvh - 92px));
@@ -69,8 +81,8 @@
 .header > span:nth-child(2) { min-width: 0; }
 .header strong,
 .header small { display: block; }
-.header strong { font-size: 13px; }
-.header small { margin-top: 3px; color: var(--muted); font-size: 9px; }
+.header strong { font-size: 14px; }
+.header small { margin-top: 3px; color: var(--muted); font-size: 10px; }
 
 .close {
   width: 44px;
@@ -81,6 +93,24 @@
   color: var(--muted);
   font-size: 20px;
   cursor: pointer;
+}
+
+.welcome {
+  padding: 20px 14px 12px;
+}
+
+.welcome strong {
+  display: block;
+  color: var(--text);
+  font-size: 15px;
+  letter-spacing: -.01em;
+}
+
+.welcome p {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.55;
 }
 
 .messages {
@@ -100,7 +130,7 @@
   border-radius: 7px;
   background: var(--support-message);
   color: var(--message-text);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.55;
 }
 
@@ -125,7 +155,7 @@
   background: transparent;
   color: var(--muted);
   text-align: left;
-  font-size: 10px;
+  font-size: 11px;
   cursor: pointer;
 }
 
@@ -143,10 +173,10 @@
 
 .escalationHeading strong,
 .escalationHeading small { display: block; }
-.escalationHeading strong { color: var(--amber); font-size: 11px; }
-.escalationHeading small { margin-top: 4px; color: var(--muted); font-size: 9px; line-height: 1.45; }
+.escalationHeading strong { color: var(--amber); font-size: 12px; }
+.escalationHeading small { margin-top: 4px; color: var(--muted); font-size: 10px; line-height: 1.45; }
 .escalation label,
-.composer label { color: var(--muted); font-size: 9px; font-weight: 700; }
+.composer label { color: var(--muted); font-size: 10px; font-weight: 700; }
 
 .escalation input,
 .composer input {
@@ -155,7 +185,7 @@
   border-radius: 6px;
   background: var(--input-bg);
   color: var(--text);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .escalation input { width: 100%; padding: 0 10px; }

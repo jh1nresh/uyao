@@ -1,58 +1,69 @@
 .screen {
-  --void: #090b0f;
-  --rail: #0b0e13;
-  --panel: #101318;
-  --panel-2: #15191f;
-  --panel-3: #1b2027;
-  --line: #2b3139;
-  --line-strong: #3a424c;
-  --text: #f2f0ea;
-  --muted: #a3a7ad;
-  --faint: #737a84;
-  --blue: #557fe8;
-  --blue-soft: #8ab0ff;
-  --green: #38c97b;
+  --void: #060807;
+  --rail: #080b0a;
+  --panel: #0b0e0d;
+  --panel-2: #111512;
+  --panel-3: #181d1a;
+  --line: #29312d;
+  --line-strong: #46534c;
+  --text: #f2efe6;
+  --muted: #bac2bd;
+  --faint: #8f9b94;
+  --blue: #6e95f5;
+  --blue-soft: #a8c0ff;
+  --green: #55c78a;
   --amber: #efbe58;
   --danger: #ee8585;
-  --surface-hover: #111821;
-  --nav-active: #121923;
-  --count-bg: #202b37;
-  --count-text: #c4cfdb;
-  --button-bg: #111822;
-  --button-text: #c8d1dc;
-  --message-text: #d9dfe6;
-  --notice-border: #2b4a72;
-  --notice-bg: #101b29;
-  --notice-text: #a9ccff;
+  --surface-hover: #111713;
+  --nav-active: #121814;
+  --count-bg: #202722;
+  --count-text: #d4ddd7;
+  --button-bg: #101411;
+  --button-text: #e1e6e2;
+  --message-text: #e1e6e2;
+  --notice-border: #415d83;
+  --notice-bg: #132033;
+  --notice-text: #c7d8ff;
   --card-active-border: #486586;
   --card-active-bg: #182231;
   --approval-line: #65522d;
   --approval-bg: #18150f;
   --approval-copy: #aaa08c;
-  --composer-bg: #0c1118;
-  --context-bg: #0d1219;
+  --composer-bg: #080b0a;
+  --context-bg: #090d0b;
   --authority-line: #57492e;
   --authority-bg: #17150f;
   --authority-title: #f0c66f;
   --authority-copy: #aaa08c;
-  --dialog-bg: #121923;
-  --dialog-boundary: #c8bfae;
+  --dialog-bg: #101411;
+  --dialog-boundary: #d5cec0;
   --backdrop: rgba(3, 7, 12, .76);
-  --shadow: rgba(0, 0, 0, .26);
-  --shadow-strong: rgba(2, 6, 12, .4);
-  --support-trigger: #111822;
-  --support-panel: #101318;
-  --support-message: #15191f;
+  --shadow: rgba(0, 0, 0, .18);
+  --shadow-strong: rgba(0, 0, 0, .32);
+  --support-trigger: #101411;
+  --support-panel: #0b0e0d;
+  --support-message: #121713;
   --support-user: #101b29;
   --support-user-line: #2b4a72;
   --support-user-text: #cfe1ff;
   --support-human-line: #65522d;
   --support-human-bg: #18150f;
   --support-issue-bg: #12110e;
-  --input-bg: #0c1118;
+  --input-bg: #080b0a;
   --success-line: #256b48;
   --success-bg: #0f2118;
   --success-text: #8de0b3;
+  --avatar-manager: #55c78a;
+  --avatar-manager-active: #70d69d;
+  --avatar-inventory: #56b9c8;
+  --avatar-inventory-active: #72c9d5;
+  --avatar-purchasing: #ef7657;
+  --avatar-purchasing-active: #ff8b6c;
+  --avatar-checkout: #ca8e96;
+  --avatar-checkout-active: #dda5ac;
+  --avatar-eye: #080b0a;
+  --support-avatar-fill: #7897f3;
+  --support-avatar-eye: #080b0a;
   width: 100%;
   min-height: 100dvh;
   display: grid;
@@ -65,60 +76,71 @@
 }
 
 .screen[data-theme="light"] {
-  --void: #e9edf1;
-  --rail: #f4f6f7;
-  --panel: #ffffff;
-  --panel-2: #f7f8f9;
-  --panel-3: #e9edf1;
-  --line: #d9dee4;
-  --line-strong: #bbc4ce;
-  --text: #17212b;
-  --muted: #5e6975;
-  --faint: #788491;
-  --blue: #3569d8;
-  --blue-soft: #285dbd;
-  --green: #16844d;
+  --void: #e9e4d9;
+  --rail: #f2efe6;
+  --panel: #f8f4e9;
+  --panel-2: #f2efe6;
+  --panel-3: #e7e2d7;
+  --line: #d2cdc1;
+  --line-strong: #b7b0a3;
+  --text: #1c2722;
+  --muted: #59665f;
+  --faint: #59665f;
+  --blue: #087b43;
+  --blue-soft: #175f42;
+  --green: #087b43;
   --amber: #946200;
   --danger: #be3d3d;
-  --surface-hover: #e9edf2;
-  --nav-active: #e5ebf3;
-  --count-bg: #dce4ed;
-  --count-text: #334454;
-  --button-bg: #f5f7f9;
-  --button-text: #33404d;
-  --message-text: #33404d;
-  --notice-border: #9cb9df;
-  --notice-bg: #edf5ff;
-  --notice-text: #24558f;
-  --card-active-border: #8daed4;
-  --card-active-bg: #edf4fc;
+  --surface-hover: #e9e4d9;
+  --nav-active: #e3eadf;
+  --count-bg: #dce7d9;
+  --count-text: #17392c;
+  --button-bg: #f2efe6;
+  --button-text: #1c2722;
+  --message-text: #26352e;
+  --notice-border: #9bb29f;
+  --notice-bg: #e7eee3;
+  --notice-text: #17392c;
+  --card-active-border: #8eaa95;
+  --card-active-bg: #e7eee3;
   --approval-line: #d0b36f;
   --approval-bg: #fff8e8;
   --approval-copy: #6f6042;
-  --composer-bg: #ffffff;
-  --context-bg: #f7f8fa;
+  --composer-bg: #f8f4e9;
+  --context-bg: #f2efe6;
   --authority-line: #d2bd84;
   --authority-bg: #fff9ea;
   --authority-title: #79520a;
   --authority-copy: #6c6048;
-  --dialog-bg: #ffffff;
+  --dialog-bg: #f8f4e9;
   --dialog-boundary: #5f5648;
   --backdrop: rgba(22, 31, 42, .38);
-  --shadow: rgba(35, 48, 62, .16);
-  --shadow-strong: rgba(35, 48, 62, .24);
-  --support-trigger: #ffffff;
-  --support-panel: #ffffff;
-  --support-message: #f4f6f8;
-  --support-user: #eaf2ff;
-  --support-user-line: #9dbbe2;
-  --support-user-text: #1f4f89;
+  --shadow: rgba(28, 39, 34, .08);
+  --shadow-strong: rgba(28, 39, 34, .12);
+  --support-trigger: #f8f4e9;
+  --support-panel: #f8f4e9;
+  --support-message: #f2efe6;
+  --support-user: #e3eadf;
+  --support-user-line: #9bb29f;
+  --support-user-text: #17392c;
   --support-human-line: #d0b36f;
   --support-human-bg: #fff8e8;
   --support-issue-bg: #fffdf7;
-  --input-bg: #ffffff;
+  --input-bg: #f8f4e9;
   --success-line: #8fc4a7;
   --success-bg: #edf8f1;
   --success-text: #216c43;
+  --avatar-manager: #087b43;
+  --avatar-manager-active: #0a8a4b;
+  --avatar-inventory: #17697a;
+  --avatar-inventory-active: #1e7789;
+  --avatar-purchasing: #a84f32;
+  --avatar-purchasing-active: #b95a3a;
+  --avatar-checkout: #74434a;
+  --avatar-checkout-active: #85515a;
+  --avatar-eye: #f8f4e9;
+  --support-avatar-fill: #496ac7;
+  --support-avatar-eye: #f8f4e9;
   color-scheme: light;
 }
 
@@ -174,7 +196,7 @@
   padding: 19px 18px 8px;
   color: var(--faint);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: .08em;
 }
@@ -194,7 +216,7 @@
   border: 1px solid transparent;
   border-radius: 9px;
   background: transparent;
-  color: #cbd2dc;
+  color: var(--text);
   text-align: left;
   cursor: pointer;
   transition: background-color 160ms var(--ease-brand), border-color 160ms var(--ease-brand);
@@ -220,7 +242,7 @@
 }
 
 .agentCopy strong {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 750;
 }
 
@@ -228,14 +250,14 @@
   margin-top: 5px;
   overflow: hidden;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 11px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .agentState {
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 600;
   white-space: nowrap;
 }
@@ -252,14 +274,23 @@
 }
 
 .idle {
-  color: #78a6d6;
+  color: var(--blue-soft);
+}
+
+.comingSoon {
+  color: var(--muted);
+}
+
+.agentRowComingSoon .agentFace {
+  opacity: .72;
+  filter: grayscale(.35);
 }
 
 .agentFace {
-  --orb-fill: #2b3037;
-  --orb-eye: #ece9e1;
+  --orb-fill: var(--avatar-manager);
+  --orb-eye: var(--avatar-eye);
   --orb-active-fill: var(--blue);
-  --orb-active-eye: #090b0f;
+  --orb-active-eye: var(--avatar-eye);
   position: relative;
   width: 40px;
   height: 40px;
@@ -270,25 +301,23 @@
 }
 
 .agentFace[data-agent="manager"] {
-  --orb-fill: #2f7654;
-  --orb-active-fill: #48a873;
-  --orb-active-eye: #f8f4e9;
+  --orb-fill: var(--avatar-manager);
+  --orb-active-fill: var(--avatar-manager-active);
 }
 
 .agentFace[data-agent="inventory"] {
-  --orb-fill: #2c7180;
-  --orb-active-fill: #46aebe;
+  --orb-fill: var(--avatar-inventory);
+  --orb-active-fill: var(--avatar-inventory-active);
 }
 
 .agentFace[data-agent="purchasing"] {
-  --orb-fill: #8a5738;
-  --orb-active-fill: #c77a46;
+  --orb-fill: var(--avatar-purchasing);
+  --orb-active-fill: var(--avatar-purchasing-active);
 }
 
 .agentFace[data-agent="checkout"] {
-  --orb-fill: #74504f;
-  --orb-active-fill: #a96a66;
-  --orb-active-eye: #f2f0ea;
+  --orb-fill: var(--avatar-checkout);
+  --orb-active-fill: var(--avatar-checkout-active);
 }
 
 .agentAvatar {
@@ -307,6 +336,29 @@
 .agentFace[data-active="true"] {
   --orb-fill: var(--orb-active-fill);
   --orb-eye: var(--orb-active-eye);
+}
+
+.supportFace {
+  width: 40px;
+  height: 40px;
+  display: inline-grid;
+  place-items: center;
+  filter: drop-shadow(0 7px 10px var(--shadow));
+}
+
+.supportFace svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.supportFace svg > g > path,
+.supportFace svg > g > g:not([clip-path]) path {
+  fill: var(--support-avatar-fill) !important;
+}
+
+.supportFace svg > g > g[clip-path] path {
+  fill: var(--support-avatar-eye) !important;
 }
 
 .agentAvatar > svg > g > path,
@@ -340,7 +392,7 @@
   align-items: center;
   border-radius: 6px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .workNav .workNavActive {
@@ -360,7 +412,7 @@
   background: var(--count-bg);
   color: var(--count-text);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
 }
 
 .pharmacyStatus {
@@ -387,13 +439,13 @@
 }
 
 .pharmacyStatus strong {
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .pharmacyStatus small {
   margin-top: 4px;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .shell {
@@ -423,14 +475,14 @@
 }
 
 .topbarAgent strong {
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .topbarAgent small {
   margin-top: 2px;
   overflow: hidden;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 11px;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -441,7 +493,7 @@
   border: 1px solid #5f4c29;
   border-radius: 4px;
   color: var(--amber);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 700;
   white-space: nowrap;
 }
@@ -449,11 +501,11 @@
 .syncTime {
   margin-left: auto;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
   white-space: nowrap;
 }
 
-.modeButton,
+.themeSwitch,
 .moreButton {
   min-height: 44px;
   border: 1px solid var(--line-strong);
@@ -463,9 +515,47 @@
   cursor: pointer;
 }
 
-.modeButton {
-  padding: 0 12px;
-  font-size: 10px;
+.themeSwitch {
+  min-width: 96px;
+  padding: 0 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.themeTrack {
+  position: relative;
+  width: 34px;
+  height: 18px;
+  flex: 0 0 auto;
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+  background: var(--panel-3);
+}
+
+.themeThumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--blue);
+  transition: transform 160ms var(--ease-brand), background-color 160ms var(--ease-brand);
+}
+
+.themeSwitch[data-theme-value="dark"] .themeThumb {
+  transform: translateX(16px);
+  background: var(--blue-soft);
+}
+
+.themeLabel {
+  min-width: 30px;
+  color: var(--button-text);
+  font-size: 11px;
+  font-weight: 700;
+  text-align: left;
 }
 
 .moreButton {
@@ -494,7 +584,7 @@
   margin: 0;
   color: var(--blue-soft);
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: .1em;
 }
@@ -511,7 +601,7 @@
   flex-wrap: wrap;
   gap: 8px 14px;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .agentMessage {
@@ -523,7 +613,7 @@
 
 .sender {
   margin: 0;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
 }
 
@@ -531,7 +621,7 @@
   margin-left: 8px;
   color: var(--faint);
   font-family: var(--font-mono);
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 500;
 }
 
@@ -539,7 +629,7 @@
   max-width: 720px;
   margin: 7px 0 0;
   color: var(--message-text);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.6;
 }
 
@@ -550,7 +640,7 @@
   border-radius: 7px;
   background: var(--notice-bg);
   color: var(--notice-text);
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .taskGrid {
@@ -699,7 +789,7 @@
 .reservationCard header > span:last-child {
   margin-left: auto;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 700;
 }
 
@@ -717,7 +807,7 @@
 .emptyInbox p {
   margin: 0;
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.55;
 }
 
@@ -726,13 +816,58 @@
   padding-top: 11px;
   border-top: 1px solid var(--line);
   color: var(--faint);
-  font-size: 10px;
+  font-size: 11px;
 }
 
 .reservationCard footer time { margin-left: auto; }
 .emptyInbox { padding: 28px; text-align: center; }
 .emptyInbox strong { font-size: 13px; }
 .emptyInbox p { max-width: 420px; margin: 7px auto 0; }
+
+.reservationError {
+  margin: 14px 0 0 52px;
+  padding: 9px 11px;
+  border-left: 2px solid var(--danger);
+  background: color-mix(in srgb, var(--danger) 9%, transparent);
+  color: var(--danger);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.reservationActions {
+  margin-top: 12px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 7px;
+}
+
+.reservationActions button {
+  min-height: 38px;
+  padding: 0 12px;
+  border: 1px solid var(--line-strong);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.reservationActions button:hover:not(:disabled) {
+  border-color: var(--blue-soft);
+  color: var(--text);
+}
+
+.reservationActions .reservationPrimaryAction {
+  border-color: var(--blue);
+  background: var(--blue);
+  color: #fff;
+}
+
+.reservationActions button:disabled {
+  cursor: wait;
+  opacity: .5;
+}
 
 .composer {
   min-height: 60px;
@@ -753,7 +888,7 @@
   outline: 0;
   background: transparent;
   color: var(--text);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .composer input::placeholder {
@@ -999,7 +1134,7 @@
   .agentList {
     padding: 0 12px 12px;
     display: grid;
-    grid-template-columns: repeat(4, minmax(70px, 1fr));
+    grid-template-columns: repeat(5, minmax(62px, 1fr));
     gap: 6px;
   }
 
@@ -1014,6 +1149,11 @@
   }
 
   .agentRow .agentFace {
+    width: 30px;
+    height: 30px;
+  }
+
+  .agentRow .supportFace {
     width: 30px;
     height: 30px;
   }
@@ -1046,7 +1186,13 @@
   }
 
   .moreButton {
+    margin-left: 0;
+  }
+
+  .themeSwitch {
+    min-width: 84px;
     margin-left: auto;
+    padding: 0 8px;
   }
 
   .workspace {
@@ -1062,8 +1208,17 @@
   .sharedWorkNotice,
   .taskGrid,
   .approvalBar,
-  .reservationList {
+  .reservationList,
+  .reservationError {
     margin-left: 0;
+  }
+
+  .reservationActions {
+    justify-content: stretch;
+  }
+
+  .reservationActions button {
+    flex: 1;
   }
 
   .taskGrid {
