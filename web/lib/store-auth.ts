@@ -159,16 +159,23 @@ export async function isStoreSessionActive(
   session: StoreSession,
   findIdentity: typeof findActiveStoreIdentity = findActiveStoreIdentity,
 ): Promise<boolean> {
+  return Boolean(await resolveStoreSessionIdentity(session, findIdentity));
+}
+
+export async function resolveStoreSessionIdentity(
+  session: StoreSession,
+  findIdentity: typeof findActiveStoreIdentity = findActiveStoreIdentity,
+): Promise<StoreIdentity | null> {
   const identity = await findIdentity({
     userId: session.userId,
     membershipId: session.membershipId,
     pharmacyId: session.pharmacyId,
   });
-  return Boolean(
+  return (
     identity &&
     identity.storeSlug === session.storeSlug &&
-    identity.role === session.role,
-  );
+    identity.role === session.role
+  ) ? identity : null;
 }
 
 export const STORE_SESSION_MAX_AGE = SESSION_TTL_SECONDS;
