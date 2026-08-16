@@ -899,21 +899,10 @@ export function StoreOsShell({
                     <p>RESERVATIONS / FOREST</p>
                     <h1>{english ? "Store forest" : "門市森林"}</h1>
                     <div>
-                      <span>{english ? "Every reservation grows a tree" : "每筆預留單長成一棵樹"}</span>
-                      <span>{english ? "Bigger order, bigger tree" : "金額越大,樹越大"}</span>
-                      <span>{english ? "Amber trees are waiting for you" : "橘色的樹在等你確認"}</span>
-                      <span>{english ? "Rain means a recent pickup" : "下雨代表最近有人完成取貨"}</span>
+                      <span>{english ? `${liveReservations.length} reservations, growing together` : `${liveReservations.length} 筆預留，一起長成這片森林`}</span>
+                      <span>{english ? "Order value sets tree size" : "樹的大小代表訂單金額"}</span>
                     </div>
                   </div>
-                  <section className={styles.agentMessage} aria-live="polite">
-                    <AgentOrb id="manager" active animated={!prefersReducedMotion} />
-                    <div>
-                      <p className={styles.sender}>{english ? "Manager Agent" : "店長 Agent"} <time>{english ? "Now" : "現在"}</time></p>
-                      <p>{english
-                        ? `This forest is the same ${liveReservations.length} reservations, drawn as trees. Drag the timeline to watch it grow; tap a tree for its details.`
-                        : `這片森林就是你的 ${liveReservations.length} 筆預留單。拖曳時間軸可以回看森林長出來的過程;點一棵樹可以看明細。`}</p>
-                    </div>
-                  </section>
                   <ForestView
                     reservations={liveReservations}
                     animate={!prefersReducedMotion}
