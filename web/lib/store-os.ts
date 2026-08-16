@@ -134,3 +134,7 @@ export function storeAgent(id: StoreAgentId): StoreAgent {
   if (!agent) throw new Error(`Unknown Store Agent: ${id}`);
   return agent;
 }
+
+export function isStoreAgentAvailable(id: StoreAgentId, demoMode: boolean): boolean {
+  return id === "manager" || demoMode;
+}

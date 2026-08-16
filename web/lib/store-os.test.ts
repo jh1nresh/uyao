@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { RESTOCK_WORK_ITEM, STORE_AGENTS, storeAgent } from "@/lib/store-os";
+import {
+  RESTOCK_WORK_ITEM,
+  STORE_AGENTS,
+  isStoreAgentAvailable,
+  storeAgent,
+} from "@/lib/store-os";
 
 describe("Store OS prototype truth boundaries", () => {
   it("keeps every agent id unique and queryable", () => {
@@ -19,5 +24,13 @@ describe("Store OS prototype truth boundaries", () => {
       (step) => step.agentId === "inventory",
     );
     expect(inventoryStep?.detail).toContain("可用數量仍需人員確認");
+  });
+
+  it("exposes the multi-agent demo only inside the demo account", () => {
+    expect(isStoreAgentAvailable("manager", false)).toBe(true);
+    expect(isStoreAgentAvailable("inventory", false)).toBe(false);
+    expect(isStoreAgentAvailable("purchasing", false)).toBe(false);
+    expect(isStoreAgentAvailable("checkout", false)).toBe(false);
+    expect(STORE_AGENTS.every((agent) => isStoreAgentAvailable(agent.id, true))).toBe(true);
   });
 });
