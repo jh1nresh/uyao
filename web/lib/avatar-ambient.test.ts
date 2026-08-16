@@ -116,7 +116,7 @@ const createStubElement = (): StubElement => {
   return element;
 };
 
-const mountAmbientAvatar = () => {
+const mountAmbientAvatar = (autoplay = true) => {
   let now = 0;
   const rafCallbacks = new Map<number, (time: number) => void>();
   let nextRafId = 1;
@@ -157,7 +157,7 @@ const mountAmbientAvatar = () => {
   ) as (target: StubElement, options: Record<string, unknown>) => void;
 
   const host = createStubElement();
-  mountAvatar(host, { animation: "ambient", autoplay: true, loop: true, size: "100%" });
+  mountAvatar(host, { animation: "ambient", autoplay, loop: true, size: "100%" });
 
   const advance = (ms: number, onFrame?: () => void) => {
     const target = now + ms;
@@ -191,6 +191,13 @@ const mountAmbientAvatar = () => {
 };
 
 describe("sprout ambient runtime", () => {
+  it("stays still when autoplay is disabled", () => {
+    const { advance, readMotion } = mountAmbientAvatar(false);
+    const before = readMotion();
+    advance(3000);
+    expect(readMotion()).toEqual(before);
+  });
+
   it("keeps body drift continuous across a mood-beat transition", () => {
     const { advance, readMotion } = mountAmbientAvatar();
     // First beat holds until 7900ms, then transitions for 900ms; sample well

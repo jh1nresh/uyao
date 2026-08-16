@@ -408,7 +408,7 @@ function StoreOsPreview({
             {/* The real Store OS sidebar leads with the brand mark, not an agent
                 avatar; always the reverse mark because this rail stays dark in
                 both themes. */}
-            <Image aria-hidden alt="" src="/brand/uyao-mark-reverse.svg" width={28} height={28} className="flex-none" unoptimized />
+            <Image aria-hidden alt="" src="/brand/uyao-mark-v4-reverse.svg" width={28} height={28} className="flex-none" unoptimized />
             <strong className="text-[14px]">uYao Store OS</strong>
           </div>
           <div className="num px-4 pb-2 pt-5 text-[10px] tracking-[.1em] text-on-dark/55">AGENTS</div>
