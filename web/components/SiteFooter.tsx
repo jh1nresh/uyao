@@ -55,10 +55,10 @@ export async function SiteFooter({ note }: { note?: string }) {
               {locale === "en" ? "TRUST" : "信任與證據"}
             </h2>
             <div className="mt-2 flex flex-col items-start">
-              <a href={`${SITE_URL}/zh-tw/evidence`} className="inline-flex min-h-11 items-center text-forest hover:text-green">
+              <a href={companyPath("/evidence")} className="inline-flex min-h-11 items-center text-forest hover:text-green">
                 {locale === "en" ? "Product evidence" : "產品證據"}
               </a>
-              <a href={`${SITE_URL}/zh-tw/evidence#partners`} className="inline-flex min-h-11 items-center text-forest hover:text-green">
+              <a href={`${companyPath("/evidence")}#partners`} className="inline-flex min-h-11 items-center text-forest hover:text-green">
                 {locale === "en" ? "WeStrong partnership" : "WeStrong 合作"}
               </a>
             </div>
@@ -70,10 +70,10 @@ export async function SiteFooter({ note }: { note?: string }) {
             </h2>
             <div className="mt-2 flex flex-col items-start">
               <a href={X_URL} rel="me" className="inline-flex min-h-11 items-center text-forest hover:text-green">
-                X（@uyaohealth）
+                {locale === "en" ? "X (@uyaohealth)" : "X（@uyaohealth）"}
               </a>
               <a href={`mailto:${CONTACT_EMAIL}`} className="inline-flex min-h-11 items-center text-forest hover:text-green">
-                Email
+                {locale === "en" ? "Email" : "電子郵件"}
               </a>
               <a href={companyHome} className="inline-flex min-h-11 items-center text-forest hover:text-green">
                 {locale === "en" ? "About uYao" : "關於 uYao"}
@@ -96,6 +96,7 @@ export async function SiteFooter({ note }: { note?: string }) {
             </span>
             <LanguageSwitch />
           </div>
+          <p className="num mb-0 mt-4 text-[11px] text-muted-2">© 2026 uYao</p>
         </div>
       </div>
     </footer>
