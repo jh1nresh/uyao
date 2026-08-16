@@ -280,16 +280,23 @@ export async function bumpNoShow(phone: string): Promise<number> {
 export async function updateStatus(
   code: string,
   status: ReservationStatus,
+  expectedStatus?: ReservationStatus,
 ): Promise<StoredReservation | null> {
-  const r = await getByCode(code);
-  if (!r) return null;
-  const now = new Date().toISOString();
-  const next: StoredReservation = {
-    ...r,
-    status,
-    confirmedAt: status === "confirmed" ? now : r.confirmedAt,
-    pickedUpAt: status === "picked_up" ? now : r.pickedUpAt,
-  };
-  await set(`r:${next.token}`, JSON.stringify(next));
-  return next;
+  const lockKey = `reservation-transition:${code}`;
+  if (!(await kv.setIfAbsent(lockKey, "1", 10))) return null;
+  try {
+    const r = await getByCode(code);
+    if (!r || (expectedStatus && r.status !== expectedStatus)) return null;
+    const now = new Date().toISOString();
+    const next: StoredReservation = {
+      ...r,
+      status,
+      confirmedAt: status === "confirmed" ? now : r.confirmedAt,
+      pickedUpAt: status === "picked_up" ? now : r.pickedUpAt,
+    };
+    await set(`r:${next.token}`, JSON.stringify(next));
+    return next;
+  } finally {
+    await kv.del(lockKey).catch(() => undefined);
+  }
 }
