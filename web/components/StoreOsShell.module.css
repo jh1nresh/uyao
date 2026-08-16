@@ -223,31 +223,10 @@
   transition: fill 180ms var(--ease-brand);
 }
 
-.orbHalo {
-  position: absolute;
-  z-index: 0;
-  inset: 2px;
-  border: 1.3px solid var(--amber);
-  border-radius: 50%;
-  opacity: 0;
-  pointer-events: none;
-  transform-origin: center;
-}
-
-.agentFace[data-animated="true"][data-state="approval"] .orbHalo {
-  animation: orbApprovalPulse 3s ease-out infinite;
-}
-
 .smallFace {
   width: 28px;
   height: 28px;
   filter: none;
-}
-
-@keyframes orbApprovalPulse {
-  0%, 58%, 100% { opacity: 0; transform: scale(.88); }
-  68% { opacity: .72; transform: scale(1); }
-  84% { opacity: 0; transform: scale(1.08); }
 }
 
 .workNav {
@@ -1012,10 +991,6 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .orbHalo {
-    animation: none !important;
-  }
-
   .agentRow,
   .taskCard,
   .approvalBar button,
