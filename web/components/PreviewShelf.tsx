@@ -20,9 +20,29 @@ import type { Store } from "@/lib/types";
  *    後端改走 previewOffers 驗證、整筆標示 demo，並只送進 uYao Store
  *    sandbox。公開 preview 永遠不觸發真實藥局的 LINE。
  */
-export function PreviewShelf({ store, items }: { store: Store; items: DrugRow[] }) {
+export function PreviewShelf({
+  store,
+  items,
+  initialDrugSlug,
+}: {
+  store: Store;
+  items: DrugRow[];
+  initialDrugSlug?: string;
+}) {
   const locale = useLocale();
-  const [target, setTarget] = useState<ReserveTarget | null>(null);
+  function reserveTarget(item: DrugRow): ReserveTarget {
+    const drug = drugCopy(item.drug, locale);
+    return {
+      drug: { slug: item.drug.slug, name: drug.name, spec: drug.spec },
+      store,
+      priceTwd: item.priceTwd,
+      badge: item.badge,
+    };
+  }
+  const [target, setTarget] = useState<ReserveTarget | null>(() => {
+    const item = initialDrugSlug ? items.find((candidate) => candidate.drug.slug === initialDrugSlug) : undefined;
+    return item ? reserveTarget(item) : null;
+  });
 
   return (
     <>
@@ -48,12 +68,7 @@ export function PreviewShelf({ store, items }: { store: Store; items: DrugRow[] 
             <button
               type="button"
               onClick={() =>
-                setTarget({
-                  drug: { slug: it.drug.slug, name: drug.name, spec: drug.spec },
-                  store,
-                  priceTwd: it.priceTwd,
-                  badge: it.badge,
-                })
+                setTarget(reserveTarget(it))
               }
               // 44px 觸控目標：這顆是拿手機遞給藥局老闆自己按的那一顆，
               // 漏掉它等於整場示範卡在最後一步。桌機用 sm: 還原原本的密度。

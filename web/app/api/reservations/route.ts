@@ -12,6 +12,7 @@ import { isConfigured, push, reservationFlex, text } from "@/lib/line";
 import { checkReservation } from "@/lib/rate-limit";
 import { getStoreDemoSandbox } from "@/lib/store-demo";
 import { appendRecord } from "@/lib/record";
+import { parseReservationIntake } from "@/lib/reservation-intake";
 import {
   NO_SHOW_LIMIT,
   getByToken,
@@ -34,6 +35,7 @@ interface Body {
   storeSlug?: unknown;
   contact?: unknown;
   demo?: unknown;
+  intake?: unknown;
 }
 
 /**
@@ -66,6 +68,10 @@ export async function POST(request: Request) {
   const storeSlug = typeof body.storeSlug === "string" ? body.storeSlug : "";
   const rawContact = typeof body.contact === "string" ? body.contact : "";
   const demo = body.demo === true;
+  const intakeResult = parseReservationIntake(body.intake);
+  if (!intakeResult.ok) {
+    return NextResponse.json({ error: intakeResult.error }, { status: 422 });
+  }
 
   const drug = getDrug(drugSlug);
   const store = demo ? getStoreDemoSandbox(storeSlug) : getStore(storeSlug);
@@ -143,12 +149,16 @@ export async function POST(request: Request) {
     createdAt: new Date().toISOString(),
     confirmedAt: null,
     holdHours: HOLD_HOURS,
+    ...(intakeResult.intake ? { intake: intakeResult.intake } : {}),
     // 示範單不能混進真單 —— 取貨頁也要看得出來
     ...(demo ? { demo: true as const } : {}),
   };
 
   // 兩個去處各有職責：record sink 是給你看的通知，store 是取貨頁要讀的。
-  await appendRecord("reservations", { ...record, stockTier: offer.badge.tier });
+  // 症狀／需求描述是健康脈絡，只留在受 Store OS 身分保護的 reservation KV。
+  // record sink 可能接 webhook 或 log；絕不能因為新增欄位就把內容外送。
+  const { intake: _privateIntake, ...recordWithoutIntake } = record;
+  await appendRecord("reservations", { ...recordWithoutIntake, stockTier: offer.badge.tier });
   try {
     await saveReservation(record);
   } catch (err) {
@@ -208,6 +218,7 @@ export async function POST(request: Request) {
     code,
     token,
     holdHours: HOLD_HOURS,
+    intakeShared: Boolean(record.intake),
     // 示範專用診斷。真單不帶這個欄位。
     ...(demo ? { notify } : {}),
     priceTwd: offer.priceTwd,

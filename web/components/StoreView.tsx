@@ -27,7 +27,17 @@ import {
  * 藥局頁本體。`preview` 由路由決定而不是 query string —— 用 searchParams
  * 會讓整條 /store/[slug] 變成動態渲染，店家 SEO 頁面就靜態不了了。
  */
-export async function StoreView({ store, preview, demo = false }: { store: Store; preview: boolean; demo?: boolean }) {
+export async function StoreView({
+  store,
+  preview,
+  demo = false,
+  initialDrugSlug,
+}: {
+  store: Store;
+  preview: boolean;
+  demo?: boolean;
+  initialDrugSlug?: string;
+}) {
   const locale = await getRequestLocale();
   const displayArea = areaCopy(getArea(store.area), locale);
   const baseItems = demo ? previewDrugsForStore(store) : drugsForStore(store.slug, preview);
@@ -171,7 +181,7 @@ export async function StoreView({ store, preview, demo = false }: { store: Store
             </p>
           </div>
           {/* 示範是封閉世界：卡片不連到讀真庫存的 /drug/[slug]，預留直接在卡上 */}
-          <PreviewShelf store={store} items={items} />
+          <PreviewShelf store={store} items={items} initialDrugSlug={initialDrugSlug} />
           </div>
         </section>
       ) : partner && partner.confirmedProducts.length > 0 ? (

@@ -1,6 +1,5 @@
-import Link from "next/link";
-
 import { NotifyMe } from "./NotifyMe";
+import { SearchResultLink } from "./SearchResultLink";
 import { StockBadge } from "./StockBadge";
 import type { DrugSearchMatch, DrugSummary } from "@/lib/data";
 import { drugCopy, localizedPath } from "@/lib/i18n";
@@ -104,9 +103,11 @@ export async function DrugResults({
         const reason = r.match ? matchReason(r.match, locale) : drug.nutritionFocus;
         const source = sourceSummary(r, locale);
         return (
-          <Link
+          <SearchResultLink
             key={r.drug.slug}
             href={`${localizedPath(`/drug/${r.drug.slug}`, locale)}?area=${area}`}
+            drugSlug={r.drug.slug}
+            query={query}
             className="history-link group block bg-paper px-5 py-5 no-underline transition-[background-color,transform] hover:-translate-y-px hover:bg-surface-hover sm:px-6"
           >
             <span className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
@@ -131,7 +132,7 @@ export async function DrugResults({
                 →
               </span>
             </span>
-          </Link>
+          </SearchResultLink>
         );
       })}
     </div>

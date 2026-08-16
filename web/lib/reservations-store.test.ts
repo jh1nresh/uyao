@@ -70,14 +70,33 @@ describe("取貨憑證的鍵", () => {
   });
 
   it("門市 inbox 只回自己的單，而且不洩漏完整手機或 consumer token", async () => {
-    await saveReservation(make({ code: "A-111", storeSlug: "A 藥局", contact: "0911222333" }));
+    await saveReservation(make({
+      code: "A-111",
+      storeSlug: "A 藥局",
+      contact: "0911222333",
+      intake: {
+        source: "shop_search",
+        searchQuery: "睡不好",
+        note: "請藥師協助判斷",
+        consentedAt: "2026-08-16T00:00:00.000Z",
+      },
+    }));
     await saveReservation(make({ code: "B-222", storeSlug: "B 藥局", contact: "0999888777" }));
     const rows = await listStoreReservations("A 藥局");
 
     expect(rows).toHaveLength(1);
-    expect(rows[0]).toMatchObject({ code: "A-111", contactTail: "333" });
+    expect(rows[0]).toMatchObject({
+      code: "A-111",
+      contactTail: "333",
+      intake: {
+        source: "shop_search",
+        searchQuery: "睡不好",
+        note: "請藥師協助判斷",
+      },
+    });
     expect(rows[0]).not.toHaveProperty("contact");
     expect(rows[0]).not.toHaveProperty("token");
+    expect(rows[0].intake).not.toHaveProperty("consentedAt");
   });
 
   it("正式 inbox 不混入 preview demo 單", async () => {
@@ -92,6 +111,11 @@ describe("取貨憑證的鍵", () => {
       storeName: "A 藥局",
       contact: "0911222444",
       demo: true,
+      intake: {
+        source: "reservation_note",
+        note: "希望現場詢問藥師",
+        consentedAt: "2026-08-16T00:00:00.000Z",
+      },
     }));
     await saveReservation(make({ code: "R-333", storeSlug: "uyao-demo" }));
 
@@ -102,6 +126,10 @@ describe("取貨憑證的鍵", () => {
       contactTail: "444",
       demo: true,
       sourceStoreName: "A 藥局",
+      intake: {
+        source: "reservation_note",
+        note: "希望現場詢問藥師",
+      },
     });
     expect(rows[0]).not.toHaveProperty("contact");
     expect(rows[0]).not.toHaveProperty("token");

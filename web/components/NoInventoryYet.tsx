@@ -6,6 +6,7 @@ import { formatDistance } from "@/lib/format";
 import { hoursSummary } from "@/lib/hours";
 import { localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
+import { STORE_DEMO_SANDBOX_SLUG } from "@/lib/store-demo";
 import type { AreaSlug, Store } from "@/lib/types";
 
 /**
@@ -36,6 +37,12 @@ export async function NoInventoryYet({
         <p className="mt-1 text-[14.5px] leading-[1.7] text-muted">
           {locale === "en" ? `Availability comes from in-store scanners. No pharmacy in ${areaLabel} has installed the box yet. Call a pharmacy below to ask for “${drugName}”.` : <>庫存來自藥局店內掃描器，{areaLabel}還沒有藥局裝上盒子。下面是這一區的藥局，可以直接打電話問有沒有「{drugName}」。</>}
         </p>
+        <Link
+          href={`${localizedPath(`/demo/${STORE_DEMO_SANDBOX_SLUG}`, locale)}?drug=${encodeURIComponent(drugSlug)}`}
+          className="action-secondary mt-3 min-h-11 px-4 text-[13px] font-bold"
+        >
+          {locale === "en" ? "Continue in the demo pharmacy →" : "用示範藥局完成預留 →"}
+        </Link>
       </div>
 
       <NotifyMe

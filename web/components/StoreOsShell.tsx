@@ -83,6 +83,7 @@ function ReservationInbox({
   onAction: (code: string, action: StoreReservationAction) => void;
 }) {
   const waiting = reservations.filter((reservation) => reservation.status === "pending_store_confirm");
+  const withIntake = reservations.filter((reservation) => reservation.intake).length;
   return (
     <>
       <div className={styles.workHeading}>
@@ -91,6 +92,7 @@ function ReservationInbox({
         <div>
           <span>{waiting.length} 筆等待確認</span>
           <span>{reservations.length} 筆近期單號</span>
+          <span>{withIntake} 筆附需求脈絡</span>
           <span>完整電話未顯示</span>
         </div>
       </div>
@@ -127,6 +129,27 @@ function ReservationInbox({
               {reservation.drugSpec} · NT$ {reservation.priceTwd}
               {reservation.sourceStoreName ? ` · 來源頁 ${reservation.sourceStoreName}` : ""}
             </p>
+            {reservation.intake && (
+              <section className={styles.reservationIntake} aria-label="顧客需求脈絡">
+                <header>
+                  <strong>顧客需求脈絡</strong>
+                  <span>顧客已同意提供</span>
+                </header>
+                {reservation.intake.searchQuery && (
+                  <div>
+                    <span>Shop 原始搜尋</span>
+                    <p>{reservation.intake.searchQuery}</p>
+                  </div>
+                )}
+                {reservation.intake.note && (
+                  <div>
+                    <span>顧客補充描述</span>
+                    <p>{reservation.intake.note}</p>
+                  </div>
+                )}
+                <small>僅供藥師到店詢問與判斷，不代表系統診斷或品項適用性。</small>
+              </section>
+            )}
             <footer>
               <span>手機末三碼 {reservation.contactTail}</span>
               <time dateTime={reservation.createdAt}>{taipeiTime(reservation.createdAt)}</time>
@@ -584,8 +607,8 @@ export function StoreOsShell({
                 <li>
                   <AgentOrb id="inventory" small />
                   <div>
-                    <strong>預留資料已同步</strong>
-                    <p>{liveReservations.length} 筆近期單號；完整手機與取貨連結不會送到瀏覽器。</p>
+                    <strong>預留資料與需求脈絡已同步</strong>
+                    <p>{liveReservations.length} 筆近期單號；只顯示顧客同意提供的描述，完整手機與取貨連結不會送到瀏覽器。</p>
                   </div>
                 </li>
               </ol>

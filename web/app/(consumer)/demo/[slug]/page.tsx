@@ -19,11 +19,14 @@ export function generateStaticParams() {
 
 export default async function StoreDemoPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ drug?: string }>;
 }) {
   const { slug } = await params;
+  const { drug } = await searchParams;
   if (slug !== STORE_DEMO_SANDBOX_SLUG) notFound();
 
-  return <StoreView store={STORE_DEMO_STORE} preview demo />;
+  return <StoreView store={STORE_DEMO_STORE} preview demo initialDrugSlug={drug} />;
 }

@@ -45,6 +45,11 @@ describe("demo reservation sandbox", () => {
         storeSlug: store.slug,
         contact: "0912345678",
         demo: true,
+        intake: {
+          searchQuery: "睡不好",
+          note: "最近三天比較明顯，希望藥師協助判斷",
+          consent: true,
+        },
       }),
     }));
     const body = await response.json() as { code: string; token: string; notify: string };
@@ -61,8 +66,24 @@ describe("demo reservation sandbox", () => {
         demo: true,
         sourceStoreName: store.name,
         contactTail: "678",
+        intake: {
+          source: "shop_search",
+          searchQuery: "睡不好",
+          note: "最近三天比較明顯，希望藥師協助判斷",
+        },
       }),
     ]);
+    expect(mocks.appendRecord).toHaveBeenCalledWith(
+      "reservations",
+      expect.not.objectContaining({ intake: expect.anything() }),
+    );
+    expect(await reservationStore.getByToken(body.token)).toMatchObject({
+      intake: {
+        source: "shop_search",
+        searchQuery: "睡不好",
+        note: "最近三天比較明顯，希望藥師協助判斷",
+      },
+    });
     expect(await reservationStore.listStoreReservations(allStores()[0].slug)).toEqual([]);
 
     const cancelled = await DELETE(new Request("http://localhost/api/reservations", {
@@ -98,6 +119,30 @@ describe("demo reservation sandbox", () => {
     expect(await response.json()).toMatchObject({ error: "示範預留未送達，請再試一次" });
     expect(mocks.userForStore).not.toHaveBeenCalled();
     expect(mocks.push).not.toHaveBeenCalled();
+  });
+
+  it("rejects health context without explicit consent before creating an order", async () => {
+    const store = STORE_DEMO_STORE;
+    const offer = previewOffers(store.slug)[0];
+    const response = await POST(new Request("http://localhost/api/reservations", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-forwarded-for": "127.0.0.23",
+      },
+      body: JSON.stringify({
+        drugSlug: offer.drugSlug,
+        storeSlug: store.slug,
+        contact: "0912345678",
+        demo: true,
+        intake: { searchQuery: "睡不好" },
+      }),
+    }));
+
+    expect(response.status).toBe(422);
+    expect(await response.json()).toMatchObject({ error: expect.stringContaining("同意") });
+    expect(await reservationStore.listStoreReservations("uyao-demo")).toEqual([]);
+    expect(mocks.appendRecord).not.toHaveBeenCalled();
   });
 
   it("rejects demo mode for a real pharmacy identity", async () => {
