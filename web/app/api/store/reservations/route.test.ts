@@ -78,7 +78,15 @@ describe("GET /api/store/reservations", () => {
   });
 
   it("returns only the signed-in pharmacy's orders and masks the phone", async () => {
-    await saveReservation(reservation("A 藥局", "A-111", "0911222333"));
+    await saveReservation({
+      ...reservation("A 藥局", "A-111", "0911222333"),
+      intake: {
+        source: "shop_search",
+        searchQuery: "睡不好",
+        note: "最近三天比較明顯",
+        consentedAt: "2026-08-16T00:00:00.000Z",
+      },
+    });
     await saveReservation(reservation("B 藥局", "B-222", "0999888777"));
     const response = await handleGetReservations(
       requestWithSession(createStoreSessionToken(user)),
@@ -88,7 +96,15 @@ describe("GET /api/store/reservations", () => {
 
     expect(response.status).toBe(200);
     expect(body.reservations).toHaveLength(1);
-    expect(body.reservations[0]).toMatchObject({ code: "A-111", contactTail: "333" });
+    expect(body.reservations[0]).toMatchObject({
+      code: "A-111",
+      contactTail: "333",
+      intake: {
+        source: "shop_search",
+        searchQuery: "睡不好",
+        note: "最近三天比較明顯",
+      },
+    });
     expect(body.reservations[0]).not.toHaveProperty("contact");
     expect(body.reservations[0]).not.toHaveProperty("token");
   });
