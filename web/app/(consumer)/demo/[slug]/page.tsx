@@ -2,10 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
 import { StoreView } from "@/components/StoreView";
-import { getStore } from "@/lib/data";
 import {
+  STORE_DEMO_STORE,
   STORE_DEMO_SANDBOX_SLUG,
-  STORE_DEMO_SOURCE_STORE_SLUG,
 } from "@/lib/store-demo";
 
 export const metadata: Metadata = {
@@ -26,8 +25,5 @@ export default async function StoreDemoPage({
   const { slug } = await params;
   if (slug !== STORE_DEMO_SANDBOX_SLUG) notFound();
 
-  const store = getStore(STORE_DEMO_SOURCE_STORE_SLUG);
-  if (!store) notFound();
-
-  return <StoreView store={store} preview />;
+  return <StoreView store={STORE_DEMO_STORE} preview demo />;
 }
