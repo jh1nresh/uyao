@@ -33,3 +33,11 @@ of that license is included as `AGPL-3.0.txt` in this directory.
   export data. The landing footer uses it to raise and shorten the eyes
   (`components/landing/footerSproutData.ts`) so the mascot survives being
   cropped at its mid-line; every other Sprout still renders `sprout.avatar.ts`.
+- Sprout also carries a hand-written `ambient` animation for that footer, where
+  the character is drawn ~1000px tall and the generated `listening` loop reads
+  as a frozen sticker. Idle, curious, idle, settled, idle, bright, on 4-7s
+  beats, over `bodyMotion: "slowDrift"` (about a degree of head drift) and
+  `eyeMotion: "microSaccades"`. Every beat keeps the same motion signature,
+  because the runtime restarts its ambient clocks whenever that signature
+  changes. `lib/avatar-ambient.test.ts` pins the contract. Re-exporting Sprout
+  from Avatar Lab drops `ambient`; re-add it before shipping.

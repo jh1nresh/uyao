@@ -647,8 +647,12 @@ function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; loc
               transitionTimingFunction: "cubic-bezier(0.32, 0.72, 0, 1)",
             }}
           >
+            {/* `ambient`, not the default `listening`: at ~1000px the stock
+                loop reads as a frozen sticker, so the body drifts about a
+                degree and the gaze cycles through mood beats. */}
             <Sprout
               data={footerSproutData}
+              animation="ambient"
               playing={!reducedMotion}
               loop
               size="100%"
