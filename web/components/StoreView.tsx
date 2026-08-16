@@ -5,13 +5,14 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { StockBadge } from "@/components/StockBadge";
 import { PreviewShelf } from "@/components/PreviewShelf";
 import { StorePreviewBanner } from "@/components/StorePreviewBanner";
-import { drugsForStore, getArea } from "@/lib/data";
+import { drugsForStore, getArea, previewDrugsForStore } from "@/lib/data";
 import { scanSummary } from "@/lib/box";
 import type { Store } from "@/lib/types";
 import { formatDistance } from "@/lib/format";
 import { areaCopy, localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
 import { partnerForStore } from "@/lib/partners";
+import { STORE_DEMO_SANDBOX_SLUG } from "@/lib/store-demo";
 import { stockBadge } from "@/lib/stock";
 import {
   businessStatusWarning,
@@ -26,10 +27,10 @@ import {
  * 藥局頁本體。`preview` 由路由決定而不是 query string —— 用 searchParams
  * 會讓整條 /store/[slug] 變成動態渲染，店家 SEO 頁面就靜態不了了。
  */
-export async function StoreView({ store, preview }: { store: Store; preview: boolean }) {
+export async function StoreView({ store, preview, demo = false }: { store: Store; preview: boolean; demo?: boolean }) {
   const locale = await getRequestLocale();
   const displayArea = areaCopy(getArea(store.area), locale);
-  const baseItems = drugsForStore(store.slug, preview);
+  const baseItems = demo ? previewDrugsForStore(store) : drugsForStore(store.slug, preview);
   const scans = preview ? await scanSummary() : [];
   const received = new Map(
     scans
@@ -50,16 +51,20 @@ export async function StoreView({ store, preview }: { store: Store; preview: boo
   return (
     <>
       <SiteHeader area={store.area} locatable />
-      {preview && <StorePreviewBanner storeName={store.name} storeSlug={store.slug} />}
+      {preview && <StorePreviewBanner storeName={store.name} storeSlug={store.slug} demo={demo} />}
 
       <section className="border-b border-line bg-ivory">
         <div className="shop-shell py-10 sm:py-14">
-          <p className="shop-kicker mb-3">PHARMACY RECORD</p>
+          <p className="shop-kicker mb-3">{demo ? "DEMO PHARMACY" : "PHARMACY RECORD"}</p>
           <div className="flex flex-col gap-7 border border-line bg-paper p-5 sm:p-7 lg:flex-row lg:gap-10">
         <div className="flex flex-1 flex-col gap-2.5">
           <div className="flex flex-wrap items-center gap-2.5">
             <h1 className="editorial-display m-0 text-[32px] leading-[1.2] sm:text-[42px]">{store.name}</h1>
-            {preview ? (
+            {demo ? (
+              <span className="border border-green-tint-line bg-green-tint px-2 py-0.5 text-[13px] font-bold text-green">
+                {locale === "en" ? "Demo pharmacy" : "示範藥局"}
+              </span>
+            ) : preview ? (
               <span className="border border-green-tint-line bg-green-tint px-2 py-0.5 text-[13px] font-bold text-green">
                 {locale === "en" ? "Pickup available" : "本店可預留"}
               </span>
@@ -101,14 +106,16 @@ export async function StoreView({ store, preview }: { store: Store; preview: boo
           )}
 
           <div className="mt-1.5 flex flex-wrap gap-2.5">
-            <a
-              href={store.mapsUrl}
-              target="_blank"
-              rel="noreferrer noopener"
-              className="action-secondary h-11 px-3.5 text-xs"
-            >
-              {locale === "en" ? "Open in Google Maps ↗" : "在 Google Maps 開啟 ↗"}
-            </a>
+            {!demo && (
+              <a
+                href={store.mapsUrl}
+                target="_blank"
+                rel="noreferrer noopener"
+                className="action-secondary h-11 px-3.5 text-xs"
+              >
+                {locale === "en" ? "Open in Google Maps ↗" : "在 Google Maps 開啟 ↗"}
+              </a>
+            )}
             {store.phone && (
               <a
                 href={`tel:${store.phone.split("、")[0].replace(/-/g, "")}`}
@@ -228,7 +235,7 @@ export async function StoreView({ store, preview }: { store: Store; preview: boo
                 {locale === "en" ? "I run this pharmacy · Apply for a free pilot" : "我是這家藥局 · 申請免費試裝"}
               </Link>
               <Link
-                href={localizedPath(`/store/${store.slug}/preview`, locale)}
+                href={localizedPath(`/demo/${STORE_DEMO_SANDBOX_SLUG}`, locale)}
                 className="action-secondary min-h-11 px-4 text-xs font-medium"
               >
                 {locale === "en" ? "Preview the connected experience →" : "預覽裝上盒子後的樣子 →"}
@@ -241,7 +248,9 @@ export async function StoreView({ store, preview }: { store: Store; preview: boo
 
       <SiteFooter
         note={
-          preview
+          demo
+            ? locale === "en" ? "This is a synthetic pharmacy. Products are selected from the website catalog; store identity, availability, and prices are simulated and are not connected to any real pharmacy." : "這是獨立示範藥局。品項取自網站目錄；門市身分、供應狀態與售價皆為模擬，不代表任何真實合作藥局。"
+            : preview
             ? locale === "en" ? "Demo data. Product names come from the partner-provided catalog; availability and prices are simulated. Receiving-scan freshness comes from the demo pipeline. Consumer pages do not show medicine prices." : "以上為示範資料。品項名稱來自合作藥局提供的目錄；供應狀態與售價為模擬資料，進貨掃描新鮮度來自 demo pipeline。消費端不顯示藥品價格。"
             : locale === "en" ? "Store records come from Taiwan government open data. Contact us to correct errors. Ask a pharmacist in store about prescription medicines." : "藥局基本資料來自食藥署與健保署開放資料，如有錯誤請來信更正。處方藥請至門市洽詢藥師。"
         }
