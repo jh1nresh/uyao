@@ -387,18 +387,29 @@
   border-top: 1px solid var(--line);
 }
 
-.workNav span {
+.workNav button {
+  width: 100%;
   min-height: 40px;
   padding: 0 7px;
   display: flex;
   align-items: center;
+  border: 0;
   border-radius: 6px;
+  background: transparent;
   color: var(--muted);
+  text-align: left;
   font-size: 13px;
   font-weight: 600;
+  cursor: pointer;
 }
 
-.workNav .workNavActive {
+.workNav button:hover {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.workNav .workNavActive,
+.workNav .workNavActive:hover {
   background: var(--nav-active);
   color: var(--text);
   font-weight: 700;

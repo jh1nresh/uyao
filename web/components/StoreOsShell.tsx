@@ -39,6 +39,7 @@ type ExportedAvatar = ComponentType<{
 
 type StoreTheme = "light" | "dark";
 type ComposerNoticeTone = "answer" | "success" | "warning";
+type StoreWorkView = "attention" | "all" | "completed";
 
 const AGENT_AVATARS: Record<StoreAgentId, ExportedAvatar> = {
   manager: Sprout,
@@ -55,6 +56,13 @@ const STATUS_LABELS: Record<StoreReservationSummary["status"], string> = {
   picked_up: "已取貨",
   expired: "已逾期",
 };
+
+const COMPLETED_RESERVATION_STATUSES = new Set<StoreReservationSummary["status"]>([
+  "rejected_no_stock",
+  "cancelled_by_user",
+  "picked_up",
+  "expired",
+]);
 
 function taipeiTime(iso: string): string {
   const parts = new Intl.DateTimeFormat("en-CA", {
@@ -73,27 +81,47 @@ function taipeiTime(iso: string): string {
 
 function ReservationInbox({
   reservations,
+  view,
   animate,
   busyCode,
   actionError,
   onAction,
 }: {
   reservations: StoreReservationSummary[];
+  view: StoreWorkView;
   animate: boolean;
   busyCode: string;
   actionError: string;
   onAction: (code: string, action: StoreReservationAction) => void;
 }) {
   const waiting = reservations.filter((reservation) => reservation.status === "pending_store_confirm");
-  const withIntake = reservations.filter((reservation) => reservation.intake).length;
+  const completed = reservations.filter((reservation) => COMPLETED_RESERVATION_STATUSES.has(reservation.status));
+  const visibleReservations = view === "attention"
+    ? waiting
+    : view === "completed"
+      ? completed
+      : reservations;
+  const withIntake = visibleReservations.filter((reservation) => reservation.intake).length;
+  const heading = view === "attention" ? "需要你" : view === "completed" ? "完成紀錄" : "全部工作";
+  const eyebrow = view === "attention" ? "ACTION" : view === "completed" ? "CLOSED" : "ALL";
+  const emptyTitle = view === "attention"
+    ? "目前沒有需要確認的預留"
+    : view === "completed"
+      ? "還沒有完成紀錄"
+      : "還沒有預留單";
+  const emptyDetail = view === "attention"
+    ? "新的預留建立後，會直接出現在這裡等你確認。"
+    : view === "completed"
+      ? "已取貨、缺貨、取消或逾期的預留會保留在這裡。"
+      : "客戶從 uYao 完成預留後，單號會直接出現在這裡，不需要另外接收 LINE 通知。";
   return (
     <>
       <div className={styles.workHeading}>
-        <p>RESERVATIONS / LIVE</p>
-        <h1>客戶預留</h1>
+        <p>RESERVATIONS / {eyebrow}</p>
+        <h1>{heading}</h1>
         <div>
           <span>{waiting.length} 筆等待確認</span>
-          <span>{reservations.length} 筆近期單號</span>
+          <span>{visibleReservations.length} 筆目前顯示</span>
           <span>{withIntake} 筆附需求脈絡</span>
           <span>完整電話未顯示</span>
         </div>
@@ -104,9 +132,11 @@ function ReservationInbox({
         <div>
           <p className={styles.sender}>店長 Agent <time>現在</time></p>
           <p>
-            {waiting.length > 0
-              ? `有 ${waiting.length} 筆新預留等你確認。我只顯示到店核對所需的手機末三碼。`
-              : "目前沒有等待確認的新預留；新單建立後會直接出現在這裡。"}
+            {view === "completed"
+              ? `目前顯示 ${completed.length} 筆已結束預留；紀錄只保留店務核對所需資訊。`
+              : waiting.length > 0
+                ? `有 ${waiting.length} 筆新預留等你確認。我只顯示到店核對所需的手機末三碼。`
+                : "目前沒有等待確認的新預留；新單建立後會直接出現在這裡。"}
           </p>
         </div>
       </section>
@@ -114,12 +144,12 @@ function ReservationInbox({
       {actionError && <p className={styles.reservationError} role="alert">{actionError}</p>}
 
       <section className={styles.reservationList} aria-label="門市預留單">
-        {reservations.length === 0 ? (
+        {visibleReservations.length === 0 ? (
           <div className={styles.emptyInbox}>
-            <strong>還沒有預留單</strong>
-            <p>客戶從 uYao 完成預留後，單號會直接出現在這裡，不需要另外接收 LINE 通知。</p>
+            <strong>{emptyTitle}</strong>
+            <p>{emptyDetail}</p>
           </div>
-        ) : reservations.map((reservation) => (
+        ) : visibleReservations.map((reservation) => (
           <article className={styles.reservationCard} key={reservation.code}>
             <header>
               <span className={styles.reservationCode}>{reservation.code}</span>
@@ -235,6 +265,7 @@ export function StoreOsShell({
   const [message, setMessage] = useState("");
   const [composerNotice, setComposerNotice] = useState("");
   const [composerNoticeTone, setComposerNoticeTone] = useState<ComposerNoticeTone>("answer");
+  const [workView, setWorkView] = useState<StoreWorkView>("attention");
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [resolvedTheme, setResolvedTheme] = useState<StoreTheme>("dark");
   const [liveReservations, setLiveReservations] = useState(reservations);
@@ -245,6 +276,14 @@ export function StoreOsShell({
   const draftButtonRef = useRef<HTMLButtonElement>(null);
   const activeAgent = storeAgent(activeAgentId);
   const activeAgentAvailable = isStoreAgentAvailable(activeAgentId, demoMode);
+  const waitingCount = liveReservations.filter((reservation) => reservation.status === "pending_store_confirm").length;
+  const completedCount = liveReservations.filter((reservation) => COMPLETED_RESERVATION_STATUSES.has(reservation.status)).length;
+
+  function openWorkView(view: StoreWorkView) {
+    setSupportOpen(false);
+    setActiveAgentId("manager");
+    setWorkView(view);
+  }
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -435,9 +474,24 @@ export function StoreOsShell({
 
         <p className={styles.sectionLabel}>工作</p>
         <nav className={styles.workNav} aria-label="工作分類">
-          <span className={styles.workNavActive}>需要你 <b>{liveReservations.filter((r) => r.status === "pending_store_confirm").length}</b></span>
-          <span>全部工作 <b>{liveReservations.length}</b></span>
-          <span>完成紀錄</span>
+          <button
+            type="button"
+            className={workView === "attention" && !supportOpen && activeAgentId === "manager" ? styles.workNavActive : ""}
+            aria-current={workView === "attention" && !supportOpen && activeAgentId === "manager" ? "page" : undefined}
+            onClick={() => openWorkView("attention")}
+          >需要你 <b>{waitingCount}</b></button>
+          <button
+            type="button"
+            className={workView === "all" && !supportOpen && activeAgentId === "manager" ? styles.workNavActive : ""}
+            aria-current={workView === "all" && !supportOpen && activeAgentId === "manager" ? "page" : undefined}
+            onClick={() => openWorkView("all")}
+          >全部工作 <b>{liveReservations.length}</b></button>
+          <button
+            type="button"
+            className={workView === "completed" && !supportOpen && activeAgentId === "manager" ? styles.workNavActive : ""}
+            aria-current={workView === "completed" && !supportOpen && activeAgentId === "manager" ? "page" : undefined}
+            onClick={() => openWorkView("completed")}
+          >完成紀錄 <b>{completedCount}</b></button>
         </nav>
 
         <div className={styles.sidebarSupport}>
@@ -517,6 +571,7 @@ export function StoreOsShell({
             {!supportOpen && (activeAgentId === "manager" ? (
               <ReservationInbox
                 reservations={liveReservations}
+                view={workView}
                 animate={!prefersReducedMotion}
                 busyCode={reservationBusyCode}
                 actionError={reservationActionError}
