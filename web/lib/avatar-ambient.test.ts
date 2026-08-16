@@ -7,9 +7,9 @@ import {
 import { avatarData } from "@/components/avatar-lab/sprout.avatar";
 
 /**
- * The landing footer plays Sprout's `ambient` animation, modelled on the
- * x.ai/bot footer character: it never enters, it just keeps living — the body
- * drifts, the gaze cycles through mood beats, and every mood returns to idle.
+ * Sprout retains the experimental `ambient` animation for compatibility. The
+ * landing footer deliberately does not use it because its procedural body
+ * drift is too visible when the avatar is rendered at 1000px.
  */
 const ambient = avatarData.animations.ambient;
 const expressions: Record<string, (typeof avatarData.expressions)[keyof typeof avatarData.expressions]> =
