@@ -197,7 +197,7 @@ export function SupportAgent({
 
           <form className={styles.composer} data-store-composer onSubmit={submitQuestion}>
             <span className={`${styles.avatar} ${styles.composerAvatar}`} aria-hidden="true">
-              <Strobi animation="listening" playing={animate} size="100%" />
+              <Strobi animation="resting" playing={animate} size="100%" />
             </span>
             <label className={styles.visuallyHidden} htmlFor="support-question">{english ? "Enter a question" : "輸入問題"}</label>
             <span className={styles.composerField}>
