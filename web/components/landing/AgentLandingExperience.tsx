@@ -421,7 +421,11 @@ function StoreOsPreview({
                     active ? "border-green bg-on-dark/10" : "border-transparent hover:bg-on-dark/5"
                   }`}
                 >
-                  <Avatar id={agent.id} size={40} playing={active && !reducedMotion} />
+                  {/* Every agent idles on its own; selection is a state of the
+                      workspace, not of the team. Gating motion on `active` made
+                      the preview read as one live agent and three stickers --
+                      the same flaw #126 fixed in the real Store OS sidebar. */}
+                  <Avatar id={agent.id} size={40} playing={!reducedMotion} />
                   <span className="hidden min-w-0 flex-1 lg:block">
                     <strong className="block truncate text-[13px]">{agent.name}</strong>
                     <small className="num mt-1 block text-[9px] text-on-dark/65">{agent.state}</small>
