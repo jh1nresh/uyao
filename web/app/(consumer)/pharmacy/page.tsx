@@ -1,128 +1,197 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 import { PilotForm } from "@/components/PilotForm";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { localizedPath } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
 import { indexablePageRobots } from "@/lib/seo-server";
-import { SHOP_URL } from "@/lib/shop";
+
+type PharmacyPageCopy = {
+  title: string;
+  description: string;
+  kicker: string;
+  heroTitle: string;
+  heroBody: string;
+  facts: { value: string; unit: string; label: string }[];
+  workflowTitle: string;
+  workflowBody: string;
+  workflow: { number: string; title: string; body: string }[];
+  boundaryTitle: string;
+  boundaryBody: string;
+  boundaries: { label: string; body: string }[];
+  applicationTitle: string;
+  applicationBody: string;
+  partnerTitle: string;
+  partnerBody: string;
+};
+
+const COPY: Record<Locale, PharmacyPageCopy> = {
+  zh: {
+    title: "藥局 Agent 試點｜從一個真實店務流程開始｜uYao",
+    description: "從一間藥局、一個反覆發生的店務流程開始；uYao 沿用現有工具，讓 Agent 整理工作並在關鍵決定前等待藥師批准。",
+    kicker: "藥局試點",
+    heroTitle: "先把一個店務流程，交給你的 Agent 團隊。",
+    heroBody: "uYao 把掃描、效期、預留與補貨訊號整理成同一張工作單。店長 Agent 協調角色；遇到採購、退貨或其他關鍵決定時停下來，等藥師批准。",
+    facts: [
+      { value: "1", unit: "個流程", label: "先選一個會反覆發生的真實店務工作" },
+      { value: "現有", unit: "工具", label: "沿用藥局的掃描器與通訊流程" },
+      { value: "藥師", unit: "批准", label: "關鍵決定不交給 Agent 自行送出" },
+    ],
+    workflowTitle: "沿用現在的工具，先跑通一張工作單。",
+    workflowBody: "試點不要求先換掉既有系統，也不從一整套後台開始。我們會一起選定一個痛點，把來源、Agent 分工、人員確認與實際結果串成可重播的流程。",
+    workflow: [
+      { number: "01", title: "接入現有訊號", body: "從掃描、預留或人工更正中，選一個已經存在的來源。" },
+      { number: "02", title: "店長整理工作", body: "把來源、差異與下一步整理成同一張工作單。" },
+      { number: "03", title: "角色分工接力", body: "庫存、採購與結帳 Agent 只處理各自需要的狀態。" },
+      { number: "04", title: "藥師決定並留存結果", body: "需要人員批准時停下來，處理後記錄實際結果。" },
+    ],
+    boundaryTitle: "Agent 負責整理與協調，不代替藥師。",
+    boundaryBody: "試點的重點不是讓系統自行決定，而是減少追資料、重複整理與漏掉下一步的時間。",
+    boundaries: [
+      { label: "可以先做", body: "整理來源、標出差異、準備固定草稿與提醒需要處理的工作。" },
+      { label: "必須停下", body: "採購送出、退貨確認、品項判斷與其他高影響決定。" },
+      { label: "留下結果", body: "每一步保留來源、人員回覆與最後結果，供下一次檢查。" },
+    ],
+    applicationTitle: "選一個你真的想解決的流程。",
+    applicationBody: "留下藥局與聯絡方式，再勾選最常發生的問題。我們會先一起確認流程與可驗證結果，不會直接開通正式操作。",
+    partnerTitle: "已經是合作藥局？",
+    partnerBody: "試點會一起確認哪些提醒適合留在日常通訊流程，哪些工作需要進 Store OS 查看來源、草稿與批准狀態。",
+  },
+  en: {
+    title: "Pharmacy Agent pilot | Start with one real workflow | uYao",
+    description: "Start with one pharmacy and one recurring workflow. uYao keeps existing tools, organizes the work with Agents, and waits for pharmacist approval before consequential actions.",
+    kicker: "PHARMACY PILOT",
+    heroTitle: "Give one pharmacy workflow to your Agent team.",
+    heroBody: "uYao organizes scan, expiry, reservation, and reorder signals into one WorkItem. The Manager Agent coordinates roles and stops for pharmacist approval before returns, purchasing, or other consequential decisions.",
+    facts: [
+      { value: "1", unit: "workflow", label: "Start with one recurring pharmacy job" },
+      { value: "Existing", unit: "tools", label: "Keep the pharmacy scanner and communication flow" },
+      { value: "Pharmacist", unit: "approval", label: "Agents do not submit consequential decisions alone" },
+    ],
+    workflowTitle: "Keep your tools. Prove one complete WorkItem.",
+    workflowBody: "The pilot does not begin with a system replacement or another daily dashboard. We choose one pain point and connect its source, Agent roles, human checkpoint, and real outcome into a replayable workflow.",
+    workflow: [
+      { number: "01", title: "Use an existing signal", body: "Start with a scan, reservation, or manual correction that already exists." },
+      { number: "02", title: "Let the Manager organize it", body: "Keep the source, discrepancy, and next step in one WorkItem." },
+      { number: "03", title: "Hand work across roles", body: "Inventory, Purchasing, and Checkout Agents see only the state they need." },
+      { number: "04", title: "Approve and record the outcome", body: "Stop for staff approval, then record what actually happened." },
+    ],
+    boundaryTitle: "Agents organize and coordinate. Pharmacists decide.",
+    boundaryBody: "The pilot is not about autonomous pharmacy decisions. It reduces time spent chasing evidence, rebuilding context, and missing the next step.",
+    boundaries: [
+      { label: "Agents can prepare", body: "Organize sources, flag discrepancies, prepare fixed drafts, and surface work that needs attention." },
+      { label: "Agents must stop", body: "Supplier submission, return confirmation, product judgment, and other consequential decisions." },
+      { label: "The workflow records", body: "Sources, staff responses, and the final outcome remain available for review." },
+    ],
+    applicationTitle: "Choose a workflow you actually want to fix.",
+    applicationBody: "Leave the pharmacy and contact details, then select the problems that happen most often. We first confirm the workflow and a verifiable outcome; this does not activate live operations.",
+    partnerTitle: "Already a partner pharmacy?",
+    partnerBody: "The pilot defines which reminders stay in the pharmacy's normal communication flow and which tasks open in Store OS for sources, drafts, and approval state.",
+  },
+};
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getRequestLocale();
-  const robots = await indexablePageRobots();
-  const alternates = {
-    canonical: locale === "en" ? "/en/pharmacy" : "/zh-tw/pharmacy",
-    languages: {
-      "zh-TW": "/zh-tw/pharmacy",
-      en: "/en/pharmacy",
-      "x-default": "/zh-tw/pharmacy",
+  const copy = COPY[locale];
+  return {
+    title: { absolute: copy.title },
+    description: copy.description,
+    alternates: {
+      canonical: locale === "en" ? "/en/pharmacy" : "/zh-tw/pharmacy",
+      languages: {
+        "zh-TW": "/zh-tw/pharmacy",
+        en: "/en/pharmacy",
+        "x-default": "/zh-tw/pharmacy",
+      },
     },
+    robots: await indexablePageRobots(),
   };
-  return locale === "en"
-    ? {
-        title: { absolute: "Pharmacy pilot | Expiry, return, reorder, and demand workflows | uYao" },
-        description: "Expiry and local demand signals from the scanner workflow pharmacies already use, with actions delivered in Store OS.",
-        alternates,
-        robots,
-      }
-    : {
-        title: { absolute: "獨立藥局試點｜效期、退貨、補貨與需求工作流｜uYao" },
-        description: "效期雷達：快過退貨期限的品項提前 30 天提醒，過期藥從丟錢變退回藥商。一個盒子串在現有條碼掃描器上，掃描流程不用改。",
-        alternates,
-        robots,
-      };
 }
-
-const STATS = [
-  { value: "30", unit: "天前", label: "退貨窗口關掉前主動警報" },
-  { value: "0", unit: "改變", label: "現有掃描流程不動" },
-  { value: "5", unit: "分鐘", label: "裝上就開始" },
-];
 
 export default async function PharmacyPage() {
   const locale = await getRequestLocale();
-  const stats = locale === "en"
-    ? [
-        { value: "30", unit: "days", label: "warning before a return window closes" },
-        { value: "0", unit: "changes", label: "to the existing scan workflow" },
-        { value: "5", unit: "min", label: "to install the pilot box" },
-      ]
-    : STATS;
+  const copy = COPY[locale];
+
   return (
     <>
       <SiteHeader showSearch={false} />
 
-      <section className="shop-shell max-w-[960px] py-12 sm:py-16">
-        <p className="shop-kicker mb-3">FOR PHARMACY OWNERS</p>
-        <h1 className="editorial-display m-0 max-w-[14em] text-[36px] leading-[1.22] sm:text-[48px]">
-          {locale === "en" ? "Expired medicine should not become disposal cost" : "過期藥不該是丟錢，還要再付清運費"}
+      <section className="shop-shell max-w-[1040px] py-14 sm:py-20">
+        <p className="shop-kicker mb-4">{copy.kicker}</p>
+        <h1 className="editorial-display m-0 max-w-[13em] text-[42px] leading-[1.12] sm:text-[58px]">
+          {copy.heroTitle}
         </h1>
-        <p className="mt-2.5 text-[15px] leading-[1.75] text-muted">
-          {locale === "en" ? "uYao captures lot and expiry data from receiving scans, then creates the next action in Store OS before a supplier return window closes." : "效期雷達 — 快過退貨期限的品項，在窗口關掉前主動提醒你。過期藥從「丟錢 + 付清運費」變成「退回藥商」。"}
+        <p className="mb-0 mt-6 max-w-[48em] text-[16px] leading-[1.85] text-muted sm:text-[17px]">
+          {copy.heroBody}
         </p>
 
-        <div className="mt-7 grid gap-x-6 gap-y-5 sm:grid-cols-3">
-          {stats.map((s) => (
-            <div key={s.label} className="border-t-2 border-green pt-3">
-              <div className="flex items-baseline gap-1.5">
-                <span className="num text-[30px] font-black leading-none text-ink">
-                  {s.value}
-                </span>
-                <span className="text-[16px] font-black text-ink">{s.unit}</span>
+        <div className="mt-10 grid gap-6 sm:grid-cols-3">
+          {copy.facts.map((fact) => (
+            <div key={fact.label} className="border-t-2 border-green pt-4">
+              <div className="flex items-baseline gap-2">
+                <span className="editorial-display text-[32px] leading-none text-ink">{fact.value}</span>
+                <span className="text-[14px] font-bold text-ink">{fact.unit}</span>
               </div>
-              <div className="mt-2 text-xs leading-[1.5] text-muted">{s.label}</div>
+              <p className="mb-0 mt-3 text-[13px] leading-[1.6] text-muted">{fact.label}</p>
             </div>
           ))}
         </div>
       </section>
 
       <section className="border-t border-line bg-surface">
-        <div className="shop-shell max-w-[960px] py-10 sm:py-12">
-          <h2 className="editorial-display mb-4 text-[28px]">{locale === "en" ? "What the box does" : "盒子做什麼"}</h2>
-          <p className="text-[15px] leading-[1.8] text-ink-2">
-            {locale === "en" ? <>A small inline box sits between the existing barcode scanner and POS. Receiving and dispensing continue normally. It records lot and expiry data, then creates time-sensitive work in Store OS and can alert subscribed devices.</> : <>一個小盒子串在你現有的條碼掃描器和電腦之間。對電腦來說它就是原本那支掃描器，進貨、調劑照掃。盒子在旁邊把每批藥的效期記下來 —— 快過退貨期限就送進 Store OS，並可提醒已開啟通知的裝置。</>}
-          </p>
+        <div className="shop-shell max-w-[1040px] py-12 sm:py-16">
+          <div className="max-w-[48em]">
+            <h2 className="editorial-display m-0 text-[32px] leading-[1.25] sm:text-[38px]">{copy.workflowTitle}</h2>
+            <p className="mb-0 mt-5 text-[15px] leading-[1.85] text-ink-2">{copy.workflowBody}</p>
+          </div>
+          <div className="mt-10 grid border-l border-t border-line sm:grid-cols-2 lg:grid-cols-4">
+            {copy.workflow.map((step) => (
+              <div key={step.number} className="border-b border-r border-line bg-paper p-5">
+                <span className="num text-[10px] font-bold text-green">{step.number}</span>
+                <h3 className="mb-0 mt-5 text-[16px] font-bold text-ink">{step.title}</h3>
+                <p className="mb-0 mt-3 text-[13px] leading-[1.7] text-muted">{step.body}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
-      <section>
-        <div className="shop-shell max-w-[960px] py-10 sm:py-12">
-          <h2 className="editorial-display mb-4 text-[28px]">{locale === "en" ? "Turn receiving scans into local availability" : "順便被附近的人搜到"}</h2>
-          <p className="mb-3 text-[15px] leading-[1.8] text-ink-2">
-            {locale === "en" ? "The same receiving scan becomes a fresh availability signal. Nearby customers can see that the item was " : "同一批掃描紀錄會變成你店裡的現貨狀態。附近的人搜一個藥，看到你這裡"}
-            {/* 內文連結加底線：只靠綠色跟周圍文字的對比不到 3:1，色盲看不出是連結 */}
-            <Link href={localizedPath("/stock-badges", locale)} className="mx-1 text-green underline underline-offset-2">
-              {locale === "en" ? "received today" : "今日掃描確認"}
-            </Link>
-            {locale === "en" ? "and reserve it for pharmacist-confirmed pickup. This is not e-commerce." : "就會按預留、到店付款取貨 —— 不是網購，藥師照樣當面交付。"}
-          </p>
-          <p className="text-[13px] leading-[1.7] text-muted-2">
-            {locale === "en" ? "We never claim an exact quantity; we show only signal freshness." : "我們永遠不顯示確切數量，只顯示掃描新鮮度。"}
-            <Link href={`${SHOP_URL}${localizedPath("/", locale)}`} className="ml-1 text-green underline underline-offset-2">
-              {locale === "en" ? "See the consumer experience →" : "看消費端長什麼樣 →"}
-            </Link>
-          </p>
+      <section className="border-t border-line bg-ivory">
+        <div className="shop-shell grid max-w-[1040px] gap-10 py-12 sm:py-16 lg:grid-cols-[.9fr_1.1fr] lg:gap-16">
+          <div>
+            <h2 className="editorial-display m-0 text-[32px] leading-[1.25] sm:text-[38px]">{copy.boundaryTitle}</h2>
+            <p className="mb-0 mt-5 text-[15px] leading-[1.85] text-ink-2">{copy.boundaryBody}</p>
+          </div>
+          <div className="border-t border-line-strong">
+            {copy.boundaries.map((item) => (
+              <div key={item.label} className="grid gap-2 border-b border-line-strong py-5 sm:grid-cols-[150px_1fr] sm:gap-5">
+                <strong className="text-[13px] text-oxblood">{item.label}</strong>
+                <p className="m-0 text-[14px] leading-[1.7] text-muted">{item.body}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       <section className="border-t border-line bg-paper">
-        <div className="shop-shell max-w-[960px] py-10 sm:py-12">
-          <h2 className="editorial-display mb-1 text-[28px]">{locale === "en" ? "Apply for a free pilot" : "申請免費試點"}</h2>
-          <p className="mb-3.5 text-[13px] text-muted-2">
-            {locale === "en" ? "We install the box in about five minutes." : "我們帶盒子到店裡接上，現場大約 5 分鐘。"}
-          </p>
-          <PilotForm />
+        <div className="shop-shell max-w-[1040px] py-12 sm:py-16">
+          <div className="max-w-[46em]">
+            <h2 className="editorial-display m-0 text-[32px] leading-[1.25] sm:text-[38px]">{copy.applicationTitle}</h2>
+            <p className="mb-0 mt-4 text-[14px] leading-[1.8] text-muted">{copy.applicationBody}</p>
+          </div>
+          <div className="mt-8 border border-line-strong bg-ivory p-5 sm:p-7">
+            <PilotForm locale={locale} />
+          </div>
         </div>
       </section>
 
       <section className="border-t border-line">
-        <div className="shop-shell max-w-[960px] py-8">
-        <div className="border border-line bg-surface px-5 py-4 text-[15px] leading-[1.7] text-ink-2">
-          <div className="mb-1 font-bold text-ink">{locale === "en" ? "Already a partner pharmacy?" : "已經是合作藥局？"}</div>
-          {locale === "en" ? "Reservation decisions arrive under Needs you in Store OS. One tap confirms the hold, and optional Web Push alerts subscribed devices when Store OS is closed." : "預留確認直接進 Store OS 的「需要你」：消費者送出預留後，店家在同一個工作面確認；Store OS 關閉時可用 Web Push 提醒已訂閱裝置。"}
-        </div>
+        <div className="shop-shell max-w-[1040px] py-8">
+          <div className="border-l-2 border-green bg-surface px-5 py-4 text-[15px] leading-[1.75] text-ink-2">
+            <div className="mb-1 font-bold text-ink">{copy.partnerTitle}</div>
+            {copy.partnerBody}
+          </div>
         </div>
       </section>
 

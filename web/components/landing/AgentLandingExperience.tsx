@@ -558,8 +558,38 @@ function StoreOsPreview({
 function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; locale: Locale; reducedMotion: boolean }) {
   const stageRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
+  const introTimerRef = useRef<number | null>(null);
+  const [entered, setEntered] = useState(reducedMotion);
+  const [introPeeking, setIntroPeeking] = useState(false);
+  const [engaged, setEngaged] = useState(false);
   const pilotHref = locale === "en" ? "/en/pharmacy" : "/zh-tw/pharmacy";
   const evidenceHref = locale === "en" ? "/en/evidence" : "/zh-tw/evidence";
+
+  useEffect(() => {
+    if (reducedMotion) {
+      setEntered(true);
+      setIntroPeeking(false);
+      return;
+    }
+
+    const stage = stageRef.current;
+    if (!stage) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        setEntered(true);
+        setIntroPeeking(true);
+        introTimerRef.current = window.setTimeout(() => setIntroPeeking(false), 1400);
+        observer.disconnect();
+      },
+      { threshold: 0.25 },
+    );
+    observer.observe(stage);
+    return () => {
+      observer.disconnect();
+      if (introTimerRef.current !== null) window.clearTimeout(introTimerRef.current);
+    };
+  }, [reducedMotion]);
 
   const setEyeOffset = (x: number, y: number) => {
     avatarRef.current
@@ -572,6 +602,16 @@ function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; loc
     const x = Math.max(-1, Math.min(1, ((event.clientX - rect.left) / rect.width) * 2 - 1));
     const y = Math.max(-1, Math.min(1, ((event.clientY - rect.top) / rect.height) * 2 - 1));
     setEyeOffset(x * 5, y * 3);
+  };
+  const peeking = !reducedMotion && (introPeeking || engaged);
+  const peekState = reducedMotion ? "reduced" : !entered ? "hidden" : peeking ? "peeking" : "resting";
+  const bodyOffset = reducedMotion ? 13 : !entered ? 34 : peeking ? -2 : 13;
+  const engage = () => {
+    if (!reducedMotion) setEngaged(true);
+  };
+  const rest = () => {
+    setEngaged(false);
+    setEyeOffset(0, 0);
   };
 
   return (
@@ -588,17 +628,44 @@ function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; loc
         </div>
         <div
           ref={stageRef}
+          role="button"
+          tabIndex={0}
+          aria-label={locale === "en" ? "Wake the Manager Agent" : "叫店長 Agent 探頭"}
+          aria-pressed={engaged}
+          data-testid="footer-manager-stage"
+          data-peek-state={peekState}
+          onPointerEnter={(event) => {
+            if (event.pointerType === "mouse") engage();
+          }}
           onPointerMove={followEyes}
-          onPointerLeave={() => setEyeOffset(0, 0)}
-          className="relative mt-8 h-[345px] w-full sm:mt-10 sm:h-[560px]"
+          onPointerLeave={rest}
+          onPointerUp={(event) => {
+            if (event.pointerType !== "mouse" && !reducedMotion) setEngaged((current) => !current);
+          }}
+          onFocus={engage}
+          onBlur={rest}
+          onKeyDown={(event) => {
+            if ((event.key === "Enter" || event.key === " ") && !reducedMotion) {
+              event.preventDefault();
+              setEngaged((current) => !current);
+            }
+          }}
+          className="relative mt-8 h-[345px] w-full cursor-pointer overflow-hidden outline-none focus-visible:ring-2 focus-visible:ring-green focus-visible:ring-offset-4 focus-visible:ring-offset-paper sm:mt-10 sm:h-[560px]"
         >
           <div
             ref={avatarRef}
             data-testid="footer-manager-body"
-            className="absolute left-1/2 top-0 h-[540px] w-[540px] -translate-x-1/2 drop-shadow-[0_30px_28px_rgba(28,39,34,.10)] sm:h-[900px] sm:w-[900px]"
+            className="absolute left-1/2 top-0 h-[540px] w-[540px] drop-shadow-[0_30px_28px_rgba(28,39,34,.10)] will-change-transform sm:h-[900px] sm:w-[900px]"
+            style={{
+              transform: `translate3d(-50%, ${bodyOffset}%, 0)`,
+              transitionProperty: "transform",
+              transitionDuration: reducedMotion ? "0ms" : peeking ? "520ms" : "260ms",
+              transitionTimingFunction: "cubic-bezier(0.32, 0.72, 0, 1)",
+            }}
           >
             <Avatar id="manager" size="100%" playing={!reducedMotion} />
           </div>
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-10 border-t border-line bg-paper sm:h-14" aria-hidden />
         </div>
       </div>
     </section>
