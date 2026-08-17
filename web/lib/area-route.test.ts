@@ -57,7 +57,10 @@ describe("首波店家縣市與行政區分組", () => {
         areas: [
           { area: "林口區", stores: ["美得心藥局"] },
           { area: "蘆洲區", stores: ["萊康連鎖藥局", "萊康中華健保藥局"] },
-          { area: "新莊區", stores: ["祥好大藥局", "樂活健保藥局"] },
+          {
+            area: "新莊區",
+            stores: ["祥好大藥局", "樂活健保藥局", "喜來樂中西藥局"],
+          },
         ],
       },
       { countyCity: "臺中市", areas: [{ area: "西屯區", stores: ["永遠藥師藥局"] }] },
@@ -71,6 +74,6 @@ describe("首波店家縣市與行政區分組", () => {
       },
     ]);
 
-    expect(groups.flatMap((group) => group.areas).flatMap((entry) => entry.stores)).toHaveLength(12);
+    expect(groups.flatMap((group) => group.areas).flatMap((entry) => entry.stores)).toHaveLength(13);
   });
 });
