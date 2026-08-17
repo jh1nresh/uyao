@@ -41,6 +41,13 @@ export async function SiteFooter({ note }: { note?: string }) {
               <Link href={shopHome} className="inline-flex min-h-11 items-center text-forest hover:text-green">
                 {locale === "en" ? "Medicine finder" : "附近找藥"}
               </Link>
+              {/* 指南目前只有中文版，兩個語系都指向 /zh-tw canonical，內部連結不分流。 */}
+              <a href={`${SITE_URL}/zh-tw/guides/find-medicine-nearby`} className="inline-flex min-h-11 items-center text-forest hover:text-green">
+                {locale === "en" ? "How to find medicine nearby" : "附近藥局找藥步驟"}
+              </a>
+              <a href={`${SITE_URL}/zh-tw/guides/medicine-out-of-stock`} className="inline-flex min-h-11 items-center text-forest hover:text-green">
+                {locale === "en" ? "When medicine is out of stock" : "藥品缺貨怎麼辦"}
+              </a>
               <a href={joinGuideUrl} className="inline-flex min-h-11 items-center text-forest hover:text-green">
                 {locale === "en" ? "How pharmacies join" : "藥局如何加入"}
               </a>
