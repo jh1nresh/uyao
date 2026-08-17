@@ -16,7 +16,8 @@ export type PartnerStoreSlug =
   | "萊康連鎖藥局"
   | "萊康中華健保藥局"
   | "永遠藥師藥局"
-  | "發元藥局";
+  | "發元藥局"
+  | "喜來樂中西藥局";
 
 export interface PartnerPharmacy {
   readonly storeSlug: PartnerStoreSlug;
@@ -136,6 +137,12 @@ export const PARTNER_PHARMACIES = {
       "舒維-600魚油 60粒",
       "百益膠囊食品 60粒",
     ],
+  },
+  喜來樂中西藥局: {
+    storeSlug: "喜來樂中西藥局",
+    // 店家與健保署登記名稱都沒有「新莊」，但在地習慣連著行政區一起講。
+    aliases: ["喜來樂中西藥局", "新莊喜來樂中西藥局", "喜來樂藥局"],
+    confirmedProducts: [],
   },
 } as const satisfies Record<PartnerStoreSlug, PartnerPharmacy>;
 

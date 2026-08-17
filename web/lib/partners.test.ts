@@ -74,6 +74,7 @@ const EXPECTED_PRODUCTS = {
     "舒維-600魚油 60粒",
     "百益膠囊食品 60粒",
   ],
+  喜來樂中西藥局: [],
 } as const;
 
 const REQUIRED_ALIASES = {
@@ -89,6 +90,7 @@ const REQUIRED_ALIASES = {
   萊康中華健保藥局: ["萊康藥局", "來康", "來康藥局", "萊康中華", "萊康中華店"],
   永遠藥師藥局: ["永遠大藥局", "永遠藥局"],
   發元藥局: ["發元藥局", "發元西藥房", "發元藥房"],
+  喜來樂中西藥局: ["喜來樂中西藥局", "新莊喜來樂中西藥局", "喜來樂藥局"],
 } as const;
 
 const PARTNER_LOCATIONS = [
@@ -104,14 +106,15 @@ const PARTNER_LOCATIONS = [
   ["萊康中華健保藥局", "luzhou", "新北市蘆洲區中華街45-1號1樓", "5931143051"],
   ["永遠藥師藥局", "xitun", "臺中市西屯區西屯路二段28之2號1樓", "5903271648"],
   ["發元藥局", "miaoli", "苗栗縣苗栗市中正路908號", null],
+  ["喜來樂中西藥局", "xinzhuang", "新北市新莊區昌平街20號1樓", "593106B134"],
 ] as const;
 
 describe("合作藥局人工確認資料", () => {
-  it("收錄十二個已確認合作的正式藥局 slug", () => {
+  it("收錄十三個已確認合作的正式藥局 slug", () => {
     expect(Object.keys(PARTNER_PHARMACIES)).toEqual(
       Object.keys(EXPECTED_PRODUCTS),
     );
-    expect(PARTNER_PHARMACY_COUNT).toBe(12);
+    expect(PARTNER_PHARMACY_COUNT).toBe(13);
   });
 
   it("首頁合作藥局列沿用正式店名與行政區", () => {
@@ -128,6 +131,7 @@ describe("合作藥局人工確認資料", () => {
       { name: "萊康中華健保藥局", district: "蘆洲區" },
       { name: "永遠藥師藥局", district: "西屯區" },
       { name: "發元藥局", district: "苗栗市" },
+      { name: "喜來樂中西藥局", district: "新莊區" },
     ]);
   });
 
