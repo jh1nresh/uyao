@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Mono } from "next/font/google";
 import localFont from "next/font/local";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { MotionSystem } from "@/components/MotionSystem";
 import { LocaleProvider } from "@/components/LocaleProvider";
@@ -89,6 +90,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <LocaleProvider locale={locale}>
           <div className="min-h-screen bg-ivory">{children}</div>
         </LocaleProvider>
+        {/*
+          Core Web Vitals（LCP/CLS/INP/FCP/TTFB）真實使用者量測。
+          AEO v1 的 live-evidence gate 要看部署後的實際數字，
+          在此之前站上沒有任何 RUM 訊號。beacon 走 Vercel 同源
+          /_vercel/speed-insights，不引入第三方 analytics domain。
+        */}
+        <SpeedInsights />
       </body>
     </html>
   );
