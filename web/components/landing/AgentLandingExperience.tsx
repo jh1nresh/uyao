@@ -22,6 +22,7 @@ import { Sprout } from "@/components/avatar-lab/Sprout";
 import { CompanyFooter } from "@/components/landing/CompanyFooter";
 import {
   FOOTER_MANAGER_ANIMATION,
+  FOOTER_MANAGER_TRANSFORM,
   footerSproutData,
 } from "@/components/landing/footerSproutData";
 import { SHOP_URL } from "@/lib/shop";
@@ -571,31 +572,9 @@ function StoreOsPreview({
 }
 
 function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; locale: Locale; reducedMotion: boolean }) {
-  const stageRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLDivElement>(null);
-  const [entered, setEntered] = useState(reducedMotion);
   const pilotHref = locale === "en" ? "/en/pharmacy" : "/zh-tw/pharmacy";
   const evidenceHref = locale === "en" ? "/en/evidence" : "/zh-tw/evidence";
-
-  useEffect(() => {
-    if (reducedMotion) {
-      setEntered(true);
-      return;
-    }
-
-    const stage = stageRef.current;
-    if (!stage) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-        setEntered(true);
-        observer.disconnect();
-      },
-      { threshold: 0.25 },
-    );
-    observer.observe(stage);
-    return () => observer.disconnect();
-  }, [reducedMotion]);
 
   const setEyeOffset = (x: number, y: number, settleMs: number) => {
     const eyes = avatarRef.current?.querySelector<SVGGElement>("svg g[clip-path]");
@@ -634,10 +613,9 @@ function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; loc
           </div>
         </div>
         <div
-          ref={stageRef}
           aria-hidden
           data-testid="footer-manager-stage"
-          data-manager-state={entered ? "resting" : "entering"}
+          data-manager-state="resting"
           className="relative mt-8 h-[320px] w-full overflow-hidden sm:mt-10 sm:h-[556px]"
         >
           <div
@@ -646,17 +624,13 @@ function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; loc
             // The line lands on the head's mid-plane (y=0 of the -150..150 viewBox), burying
             // half the mascot. Mobile size is capped by the artwork's width rather than its
             // height, because the stage sits inside the px-5 container.
-            className="absolute left-1/2 top-0 h-[560px] w-[560px] drop-shadow-[0_30px_28px_rgba(28,39,34,.10)] will-change-transform sm:h-[1000px] sm:w-[1000px]"
+            className="absolute left-1/2 top-0 h-[560px] w-[560px] drop-shadow-[0_30px_28px_rgba(28,39,34,.10)] sm:h-[1000px] sm:w-[1000px]"
             style={{
-              transform: `translate3d(-49.4%, ${entered ? 0 : 24}%, 0)`,
-              transitionProperty: "transform",
-              transitionDuration: reducedMotion ? "0ms" : "760ms",
-              transitionTimingFunction: "cubic-bezier(0.32, 0.72, 0, 1)",
+              transform: FOOTER_MANAGER_TRANSFORM,
             }}
           >
-            {/* Use Bible Strong's generated `listening` sequence here. Its body
-                poses transition smoothly without procedural drift, which the
-                1000px footer scale would otherwise magnify into visible sway. */}
+            {/* Footer-only Bible Strong data: one fixed head/body pose with
+                blink. Pointer movement is the only gaze motion. */}
             <Sprout
               data={footerSproutData}
               animation={FOOTER_MANAGER_ANIMATION}

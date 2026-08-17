@@ -1,10 +1,9 @@
 import { avatarData, type AnimationName } from "@/components/avatar-lab/sprout.avatar";
 import type { AvatarData } from "@/components/avatar-lab/avatar-runtime";
 
-// Keep the large footer mascot on the generated Bible Strong sequence. Unlike
-// the hand-written ambient experiment, `listening` has no procedural body
-// drift, so scaling Sprout to 1000px does not amplify sub-pixel movement.
 export const FOOTER_MANAGER_ANIMATION = "listening" as const;
+export const FOOTER_MANAGER_EXPRESSION_ID = "expression-footer-manager";
+export const FOOTER_MANAGER_TRANSFORM = "translateX(-50%)";
 
 /**
  * Footer-only Sprout: the landing footer crops the mascot at its waist, and the
@@ -26,6 +25,10 @@ const EYE_SPACING_SCALE = 0.92;
 const arcForCentre = (centreY: number) => 120 * Math.asin(centreY / 120);
 
 type Expression = Record<string, unknown> & {
+  id: string;
+  headX: number;
+  headY: number;
+  headZ: number;
   heightLeft: number;
   heightRight: number;
   positionYLeft: number;
@@ -42,6 +45,34 @@ const liftEyes = (expression: Expression): Expression => ({
   spacing: expression.spacing * EYE_SPACING_SCALE,
 });
 
+export const footerManagerExpression = {
+  ...liftEyes(avatarData.expressions["expression-10"] as Expression),
+  id: FOOTER_MANAGER_EXPRESSION_ID,
+  eyeMotion: "none",
+  bodyMotion: "none",
+} as const;
+
+export const footerManagerAnimation = {
+  name: "uYao footer manager",
+  description: "One stable footer pose with blink; pointer tracking is supplied by uYao.",
+  playbackMode: "loop",
+  blink: {
+    enabled: true,
+    initialDelayMs: 2200,
+    minIntervalMs: 4800,
+    maxIntervalMs: 7200,
+    durationMs: 240,
+  },
+  steps: [
+    {
+      expressionId: FOOTER_MANAGER_EXPRESSION_ID,
+      holdMs: 60000,
+      transitionMs: 0,
+      transition: "smooth",
+    },
+  ],
+} as const;
+
 /**
  * Stable module-level value: `loadAvatarRuntime` caches compiled runtimes in a
  * WeakMap keyed by this object, so rebuilding it per render would compile and
@@ -49,10 +80,17 @@ const liftEyes = (expression: Expression): Expression => ({
  */
 export const footerSproutData = {
   ...avatarData,
-  expressions: Object.fromEntries(
-    Object.entries(avatarData.expressions).map(([id, expression]) => [
-      id,
-      liftEyes(expression as Expression),
-    ]),
-  ),
+  expressions: {
+    ...Object.fromEntries(
+      Object.entries(avatarData.expressions).map(([id, expression]) => [
+        id,
+        liftEyes(expression as Expression),
+      ]),
+    ),
+    [FOOTER_MANAGER_EXPRESSION_ID]: footerManagerExpression,
+  },
+  animations: {
+    ...avatarData.animations,
+    [FOOTER_MANAGER_ANIMATION]: footerManagerAnimation,
+  },
 } as unknown as AvatarData<AnimationName>;
