@@ -70,8 +70,13 @@ export const AEO_PAGES = {
     directAnswer:
       "先搜尋藥名、成分或症狀，選擇地區並查看附近公開藥局資料；如果沒有可確認的供應資訊，可以留下找藥需求，再由藥局或藥師確認。",
     datePublished: "2026-08-12",
-    dateModified: "2026-08-12",
-    benchmarkQueries: ["附近藥局怎麼找藥？", "怎麼查附近哪間藥局可能有藥？"],
+    dateModified: "2026-08-17",
+    benchmarkQueries: [
+      "附近藥局怎麼找藥？",
+      "怎麼查附近哪間藥局可能有藥？",
+      "附近 24 小時藥局怎麼找？",
+      "走路範圍內的藥局怎麼找？",
+    ],
   },
   medicineOutOfStock: {
     path: "/zh-tw/guides/medicine-out-of-stock",
@@ -79,8 +84,12 @@ export const AEO_PAGES = {
     directAnswer:
       "先請原藥局確認是否能調貨或由藥師判斷替代方案，也可以查詢附近公開藥局並逐店確認。不要自行更換處方藥、劑量或用法。",
     datePublished: "2026-08-12",
-    dateModified: "2026-08-12",
-    benchmarkQueries: ["藥品缺貨時可以怎麼處理？", "藥局沒有我要的藥怎麼辦？"],
+    dateModified: "2026-08-17",
+    benchmarkQueries: [
+      "藥品缺貨時可以怎麼處理？",
+      "藥局沒有我要的藥怎麼辦？",
+      "藥品停產或全台缺貨去哪查？",
+    ],
   },
   joinUyao: {
     path: "/zh-tw/guides/join-uyao",

@@ -10,6 +10,8 @@ type FooterCopy = {
   trustHeading: string;
   contactHeading: string;
   medicineFinder: string;
+  findMedicineGuide: string;
+  outOfStockGuide: string;
   joinGuide: string;
   pilot: string;
   evidence: string;
@@ -26,6 +28,8 @@ const COPY: Record<"zh" | "en", FooterCopy> = {
     trustHeading: "信任與證據",
     contactHeading: "社群與聯絡",
     medicineFinder: "附近找藥",
+    findMedicineGuide: "附近藥局找藥步驟",
+    outOfStockGuide: "藥品缺貨怎麼辦",
     joinGuide: "藥局如何加入",
     pilot: "申請試點",
     evidence: "產品證據",
@@ -41,6 +45,8 @@ const COPY: Record<"zh" | "en", FooterCopy> = {
     trustHeading: "Trust and evidence",
     contactHeading: "Social and contact",
     medicineFinder: "Medicine finder",
+    findMedicineGuide: "How to find medicine nearby",
+    outOfStockGuide: "When medicine is out of stock",
     joinGuide: "How pharmacies join",
     pilot: "Join the pilot",
     evidence: "Product evidence",
@@ -98,6 +104,9 @@ export function CompanyFooter({
             </h2>
             <div className="mt-2 flex flex-col items-start">
               <FooterLink href={shopUrl}>{copy.medicineFinder}</FooterLink>
+              {/* 指南目前只有中文版，兩個語系都指向 /zh-tw canonical，內部連結不分流。 */}
+              <FooterLink href="/zh-tw/guides/find-medicine-nearby">{copy.findMedicineGuide}</FooterLink>
+              <FooterLink href="/zh-tw/guides/medicine-out-of-stock">{copy.outOfStockGuide}</FooterLink>
               <FooterLink href={joinGuideUrl}>{copy.joinGuide}</FooterLink>
               <FooterLink href={`${companyPrefix}/pharmacy`}>{copy.pilot}</FooterLink>
             </div>

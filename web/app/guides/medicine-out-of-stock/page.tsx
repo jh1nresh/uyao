@@ -28,6 +28,11 @@ const FAQ = [
     answer:
       "目前不能。uYao 提供試營運目錄、公開藥局資料與找藥需求紀錄，實際供應、預留時間與領取方式仍須由藥局確認。",
   },
+  {
+    question: "藥品停產或全台缺貨，去哪裡查公告？",
+    answer:
+      "可先查詢衛福部食藥署的藥品供應資訊平台，短缺藥品與後續處理方式會在該平台公告。處方藥請回原醫療院所或原藥局討論替代安排，不要自行停藥或換藥。",
+  },
 ] as const;
 
 export async function generateMetadata(): Promise<Metadata> {
