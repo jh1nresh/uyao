@@ -34,8 +34,9 @@ of that license is included as `AGPL-3.0.txt` in this directory.
   (`components/landing/footerSproutData.ts`) so the mascot survives being
   cropped at its mid-line; every other Sprout still renders `sprout.avatar.ts`.
 - Sprout still carries the generated `listening` sequence and the earlier
-  hand-written `ambient` experiment. The large footer adds Bible Strong's live
-  Sprout `idle` preset (expressions 00 and 08, original timing and blink
-  parameters) instead of a custom motion correction. Only the footer eye crop
-  is adapted; uYao's pointer tracking remains active.
+  hand-written `ambient` experiment. The large footer holds the resting pose
+  of Bible Strong's Sprout `idle` preset (expression 00, original blink
+  parameters) statically: the preset's second beat yaws the head, which read
+  as periodic sway at footer scale. Only the footer eye crop is adapted;
+  uYao's pointer tracking remains active.
   `lib/footer-sprout.test.ts` pins this footer-only contract.

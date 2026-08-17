@@ -4,9 +4,12 @@ import type { AvatarData } from "@/components/avatar-lab/avatar-runtime";
 export const FOOTER_MANAGER_ANIMATION = "idle" as const;
 export const FOOTER_MANAGER_TRANSFORM = "translateX(-50%)";
 
-// Bible Strong Avatar Lab's live Sprout preview defaults to this exact `idle`
-// sequence. The exported Sprout eye defaults are already applied here (the
-// stock behavior eye widths minus 3.8, heights minus 5, spacing plus 15).
+// Resting pose of Bible Strong Avatar Lab's Sprout `idle` preset. The footer
+// holds only this pose: the preset's second beat (expression-08) yaws the head
+// ~45°, and because the body silhouette rotates with the head orientation, the
+// tween read as a periodic sway at the footer's 1000px render size. The
+// exported Sprout eye defaults are already applied here (the stock behavior
+// eye widths minus 3.8, heights minus 5, spacing plus 15).
 export const BIBLE_STRONG_SPROUT_IDLE_EXPRESSIONS = {
   "expression-00": {
     id: "expression-00",
@@ -28,31 +31,11 @@ export const BIBLE_STRONG_SPROUT_IDLE_EXPRESSIONS = {
     eyeMotion: "none",
     bodyMotion: "none",
   },
-  "expression-08": {
-    id: "expression-08",
-    headX: -12.303515625,
-    headY: -17.601171875,
-    headZ: 5.9109375,
-    widthLeft: 16.805859375,
-    widthRight: 16.805859375,
-    heightLeft: 42.769921875,
-    heightRight: 42.769921875,
-    spacing: 69.9,
-    positionXLeft: 0,
-    positionXRight: 0,
-    positionYLeft: 0,
-    positionYRight: 0,
-    leftAngle: 23.523046875,
-    rightAngle: -24.042578125,
-    perspective: 1,
-    eyeMotion: "none",
-    bodyMotion: "none",
-  },
 } as const;
 
 export const BIBLE_STRONG_SPROUT_IDLE = {
   name: "idle",
-  description: "Slow micro-movements, expressions 00 and 08, infrequent blinking.",
+  description: "Holds the resting pose; only blinking and pointer eye-follow move.",
   playbackMode: "loop",
   blink: {
     enabled: true,
@@ -61,9 +44,10 @@ export const BIBLE_STRONG_SPROUT_IDLE = {
     maxIntervalMs: 6200,
     durationMs: 280,
   },
+  // One step with a zero-length transition: the runtime re-applies an
+  // identical pose on each loop, so no frame ever moves the head or body.
   steps: [
-    { expressionId: "expression-00", holdMs: 5200, transitionMs: 500, transition: "smooth" },
-    { expressionId: "expression-08", holdMs: 5200, transitionMs: 500, transition: "smooth" },
+    { expressionId: "expression-00", holdMs: 60000, transitionMs: 0, transition: "smooth" },
   ],
 } as const;
 
