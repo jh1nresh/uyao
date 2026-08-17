@@ -629,8 +629,8 @@ function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; loc
               transform: FOOTER_MANAGER_TRANSFORM,
             }}
           >
-            {/* Grok Bot-style footer motion: one fixed head/body pose while
-                the eyes micro-saccade, blink and follow the pointer. */}
+            {/* Use Bible Strong's generated three-pose `listening` sequence.
+                The outer footer container stays fixed while the head animates. */}
             <Sprout
               data={footerSproutData}
               animation={FOOTER_MANAGER_ANIMATION}
