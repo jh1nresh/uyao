@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
-import { AEO_ANSWER_PAGES, AEO_PAGES, aeoLastModified } from "./aeo";
+import { AEO_ANSWER_PAGES, AEO_PAGES, sitemapLastModified } from "./aeo";
 import { INDEXABLE_PATHS } from "./seo";
 
 const PAGE_SOURCE = {
@@ -59,10 +59,22 @@ describe("AEO answer contract", () => {
       expect(page.datePublished).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       expect(page.dateModified).toMatch(/^\d{4}-\d{2}-\d{2}$/);
       expect(page.dateModified >= page.datePublished).toBe(true);
-      expect(aeoLastModified(page.path)).toBe(page.dateModified);
+      expect(sitemapLastModified(page.path)).toBe(page.dateModified);
     }
-    expect(aeoLastModified("/en/evidence")).toBe(AEO_PAGES.evidence.dateModified);
-    expect(aeoLastModified("/zh-tw")).toBeUndefined();
+    expect(sitemapLastModified("/en/evidence")).toBe(AEO_PAGES.evidence.dateModified);
+  });
+
+  it("sitemap-lastmod covers every indexable path", () => {
+    for (const path of INDEXABLE_PATHS) {
+      expect(sitemapLastModified(path), `missing lastmod for ${path}`).toMatch(
+        /^\d{4}-\d{2}-\d{2}$/,
+      );
+    }
+  });
+
+  it("reports no freshness for paths that are not indexable", () => {
+    expect(sitemapLastModified("/zh-tw/search")).toBeUndefined();
+    expect(sitemapLastModified("/store-os")).toBeUndefined();
   });
 
   it("makes registry copy the visible answer and metadata source on every page", () => {

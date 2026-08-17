@@ -22,6 +22,7 @@ import {
   indexingAllowed,
   jsonLdGraph,
   organizationJsonLd,
+  socialPreviewAudience,
   socialPreviewImages,
   softwareApplicationJsonLd,
   webSiteJsonLd,
@@ -59,6 +60,21 @@ describe("social preview metadata", () => {
         expect(JSON.stringify(metadata)).not.toContain("opengraph-image.png");
       }
     }
+  });
+});
+
+describe("socialPreviewAudience", () => {
+  it("gives the shop host the consumer card", () => {
+    expect(socialPreviewAudience(SHOP_CANONICAL_HOST)).toBe("shop");
+    expect(socialPreviewAudience(`${SHOP_CANONICAL_HOST}:443`)).toBe("shop");
+    expect(socialPreviewAudience(SHOP_CANONICAL_HOST.toUpperCase())).toBe("shop");
+  });
+
+  it("falls back to the company card so no page shares without an image", () => {
+    expect(socialPreviewAudience(CANONICAL_HOST)).toBe("company");
+    expect(socialPreviewAudience("uyao-abc123.vercel.app")).toBe("company");
+    expect(socialPreviewAudience(null)).toBe("company");
+    expect(socialPreviewAudience(undefined)).toBe("company");
   });
 });
 
@@ -192,6 +208,21 @@ describe("json-ld", () => {
     const graph = JSON.parse(jsonLdGraph([article]));
     expect(graph["@context"]).toBe("https://schema.org");
     expect(graph["@graph"][0].datePublished).toBe("2026-08-12");
+  });
+
+  it("gives every article an absolute rich-result image", () => {
+    const base = {
+      headline: "t",
+      description: "d",
+      path: "/zh-tw/guides/x",
+      datePublished: "2026-08-12",
+      dateModified: "2026-08-12",
+    };
+    expect(articleJsonLd(base).image).toBe(SOCIAL_PREVIEW_IMAGES.company.zh.url);
+    expect(articleJsonLd(base).image).toMatch(/^https:\/\//);
+    expect(articleJsonLd({ ...base, image: `${SITE_URL}/brand/own.png` }).image).toBe(
+      `${SITE_URL}/brand/own.png`,
+    );
   });
 
   it("keeps Consumer schema on the shop host and within the product boundary", () => {

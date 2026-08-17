@@ -108,7 +108,24 @@ const AEO_PAGE_BY_PATH = new Map<string, AeoAnswerPage>(
   AEO_ANSWER_PAGES.map((page) => [page.path, page]),
 );
 
-export function aeoLastModified(path: string): IsoDate | undefined {
+/**
+ * Indexable pages that carry no AEO answer still need sitemap freshness.
+ * Hand-maintained exactly like AEO_PAGES: bump when the page's visible copy
+ * changes, not when styling or motion changes. `sitemap-lastmod covers every
+ * indexable path` in aeo.test.ts fails if a new indexable route skips this.
+ */
+const NON_AEO_LAST_MODIFIED = {
+  "/zh-tw": "2026-08-16",
+  "/en": "2026-08-16",
+  "/zh-tw/pharmacy": "2026-08-16",
+  "/en/pharmacy": "2026-08-16",
+} as const satisfies Partial<Record<IndexablePath, IsoDate>>;
+
+/** Sitemap `lastmod` for any company indexable path. */
+export function sitemapLastModified(path: string): IsoDate | undefined {
   if (path === "/en/evidence") return AEO_PAGES.evidence.dateModified;
-  return AEO_PAGE_BY_PATH.get(path)?.dateModified;
+  return (
+    AEO_PAGE_BY_PATH.get(path)?.dateModified
+    ?? NON_AEO_LAST_MODIFIED[path as keyof typeof NON_AEO_LAST_MODIFIED]
+  );
 }
