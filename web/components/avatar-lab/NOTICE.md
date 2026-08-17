@@ -36,6 +36,7 @@ of that license is included as `AGPL-3.0.txt` in this directory.
 - Sprout still carries the generated `listening` sequence and the earlier
   hand-written `ambient` experiment. The large footer overrides `listening`
   inside its own data object with one stable expression: no entrance, head
-  transition, procedural body drift, or automatic eye drift. Blink and uYao's
-  pointer tracking keep it responsive without moving the 1000px silhouette.
+  transition or procedural body drift. Grok Bot-style micro-saccades, blink,
+  and uYao's pointer tracking keep it responsive without moving the 1000px
+  silhouette.
   `lib/footer-sprout.test.ts` pins this footer-only contract.
