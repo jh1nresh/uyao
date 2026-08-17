@@ -424,6 +424,59 @@
         "資料來源：合作藥局提供"
       ],
       "status": "listed"
+    },
+    {
+      "slug": "喜來樂中西藥局",
+      "name": "喜來樂中西藥局",
+      "area": "xinzhuang",
+      "district": "新莊區",
+      "address": "新北市新莊區昌平街20號1樓",
+      "phone": "02-2991-2068",
+      "owner": "林麗喬",
+      "nhiCode": "593106B134",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": 25.052800200000004,
+      "lng": 121.4548948,
+      "distanceM": 2959,
+      "placeId": "ChIJo6MdkIeoQjQR2xnPrvUG_fg",
+      "businessStatus": "OPERATIONAL",
+      "mapsUrl": "https://maps.google.com/?cid=17941504142783486427&g_mp=Cidnb29nbGUubWFwcy5wbGFjZXMudjEuUGxhY2VzLlNlYXJjaFRleHQQAhgEIAA",
+      "hours": [
+        {
+          "label": "週一",
+          "hours": "09:00–21:30"
+        },
+        {
+          "label": "週二",
+          "hours": "09:00–21:30"
+        },
+        {
+          "label": "週三",
+          "hours": "09:00–21:30"
+        },
+        {
+          "label": "週四",
+          "hours": "09:00–21:30"
+        },
+        {
+          "label": "週五",
+          "hours": "09:00–21:30"
+        },
+        {
+          "label": "週六",
+          "hours": "09:00–21:30"
+        },
+        {
+          "label": "週日",
+          "hours": "09:00–21:30"
+        }
+      ],
+      "hoursSource": "google",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
     }
   ]
 }
