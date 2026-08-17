@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  ANCHORED_BROWSER_RUNTIME_SOURCE,
+  BROWSER_RUNTIME_SOURCE,
   ENGINE_SOURCE,
 } from "@/components/avatar-lab/avatar-runtime";
 import { avatarData } from "@/components/avatar-lab/sprout.avatar";
@@ -133,7 +133,7 @@ const mountAmbientAvatar = (autoplay = true) => {
     "cancelAnimationFrame",
     "setTimeout",
     "clearTimeout",
-    `${ANCHORED_BROWSER_RUNTIME_SOURCE}\nreturn mountAvatar;`,
+    `${BROWSER_RUNTIME_SOURCE}\nreturn mountAvatar;`,
   )(
     engine,
     avatarData,

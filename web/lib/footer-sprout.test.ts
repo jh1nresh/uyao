@@ -2,41 +2,37 @@ import { describe, expect, it } from "vitest";
 
 import { avatarData } from "@/components/avatar-lab/sprout.avatar";
 import {
+  BIBLE_STRONG_SPROUT_IDLE,
+  BIBLE_STRONG_SPROUT_IDLE_EXPRESSIONS,
   FOOTER_MANAGER_ANIMATION,
-  FOOTER_MANAGER_POSE_ANCHORS,
   FOOTER_MANAGER_TRANSFORM,
   footerSproutData,
 } from "@/components/landing/footerSproutData";
 
 describe("footer manager animation", () => {
-  it("uses Bible Strong's generated listening sequence", () => {
-    expect(FOOTER_MANAGER_ANIMATION).toBe("listening");
-    expect(footerSproutData.animations.listening).toBe(avatarData.animations.listening);
-    expect(avatarData.animations.listening.steps).toHaveLength(3);
-  });
-
-  it("keeps the footer layout fixed without disabling Bible Strong's poses", () => {
-    expect(FOOTER_MANAGER_TRANSFORM).toBe("translateX(-50%)");
-    expect(avatarData.animations.listening.steps.map(({ expressionId }) => expressionId)).toEqual([
-      "expression-10",
-      "expression-01",
-      "expression-19",
+  it("uses Bible Strong's live Sprout idle sequence", () => {
+    expect(FOOTER_MANAGER_ANIMATION).toBe("idle");
+    expect(footerSproutData.animations.idle).toBe(BIBLE_STRONG_SPROUT_IDLE);
+    expect(BIBLE_STRONG_SPROUT_IDLE.steps).toEqual([
+      { expressionId: "expression-00", holdMs: 5200, transitionMs: 500, transition: "smooth" },
+      { expressionId: "expression-08", holdMs: 5200, transitionMs: 500, transition: "smooth" },
     ]);
+    expect(BIBLE_STRONG_SPROUT_IDLE.blink).toEqual({
+      enabled: true,
+      initialDelayMs: 2600,
+      minIntervalMs: 3400,
+      maxIntervalMs: 6200,
+      durationMs: 280,
+    });
   });
 
-  it("anchors each Bible Strong pose around the same footer centre", () => {
-    for (const [expressionId, anchor] of Object.entries(FOOTER_MANAGER_POSE_ANCHORS)) {
-      expect(footerSproutData.expressions[expressionId]).toEqual(
-        expect.objectContaining({
-          anchorX: anchor.x,
-          anchorY: anchor.y,
-          anchorArcX: anchor.arcX,
-          anchorArcY: anchor.arcY,
-        }),
-      );
-      expect(avatarData.expressions[expressionId as keyof typeof avatarData.expressions]).not.toHaveProperty(
-        "anchorX",
-      );
-    }
+  it("keeps the footer layout fixed while preserving the official poses", () => {
+    expect(FOOTER_MANAGER_TRANSFORM).toBe("translateX(-50%)");
+    expect(Object.keys(BIBLE_STRONG_SPROUT_IDLE_EXPRESSIONS)).toEqual([
+      "expression-00",
+      "expression-08",
+    ]);
+    expect(avatarData.expressions).not.toHaveProperty("expression-00");
+    expect(footerSproutData.expressions).toHaveProperty("expression-00");
   });
 });
