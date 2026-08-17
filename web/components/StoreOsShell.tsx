@@ -10,7 +10,6 @@ import {
 
 import { BrandMark } from "@/components/BrandMark";
 import { SupportAgent } from "@/components/SupportAgent";
-import { ForestView } from "@/components/store-os/ForestView";
 import {
   ApprovalCard,
   TaskRows,
@@ -55,7 +54,7 @@ type ExportedAvatar = ComponentType<{
 
 type StoreTheme = "light" | "dark";
 type ComposerNoticeTone = "answer" | "success" | "warning";
-type StoreWorkView = "attention" | "all" | "completed" | "forest";
+type StoreWorkView = "attention" | "all" | "completed";
 type PushState = "checking" | "available" | "enabling" | "enabled" | "disabling" | "denied" | "unsupported" | "unconfigured" | "error";
 
 function applicationServerKey(value: string): Uint8Array {
@@ -797,12 +796,6 @@ export function StoreOsShell({
             aria-current={workView === "completed" && !supportOpen && activeAgentId === "manager" ? "page" : undefined}
             onClick={() => openWorkView("completed")}
           >{english ? "Completed" : "完成紀錄"} <b>{completedCount}</b></button>
-          <button
-            type="button"
-            className={workView === "forest" && !supportOpen && activeAgentId === "manager" ? styles.workNavActive : ""}
-            aria-current={workView === "forest" && !supportOpen && activeAgentId === "manager" ? "page" : undefined}
-            onClick={() => openWorkView("forest")}
-          >{english ? "Forest" : "森林"} <b>{liveReservations.length}</b></button>
         </nav>
 
         <div className={styles.sidebarSupport}>
@@ -893,24 +886,6 @@ export function StoreOsShell({
               defaultReplyEmail={operatorEmail}
             />
             {!supportOpen && (activeAgentId === "manager" ? (
-              workView === "forest" ? (
-                <>
-                  <div className={styles.workHeading}>
-                    <p>RESERVATIONS / FOREST</p>
-                    <h1>{english ? "Store forest" : "門市森林"}</h1>
-                    <div>
-                      <span>{english ? `${liveReservations.length} reservations, growing together` : `${liveReservations.length} 筆預留，一起長成這片森林`}</span>
-                      <span>{english ? "Order value sets tree size" : "樹的大小代表訂單金額"}</span>
-                    </div>
-                  </div>
-                  <ForestView
-                    reservations={liveReservations}
-                    animate={!prefersReducedMotion}
-                    locale={locale}
-                    statusLabels={english ? STATUS_LABELS_EN : STATUS_LABELS}
-                  />
-                </>
-              ) : (
               <ReservationInbox
                 reservations={liveReservations}
                 view={workView}
@@ -920,7 +895,6 @@ export function StoreOsShell({
                 locale={locale}
                 onAction={(code, action) => { void updateReservation(code, action); }}
               />
-              )
             ) : !activeAgentAvailable ? (
               <>
                 <div className={styles.workHeading}>
