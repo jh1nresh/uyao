@@ -35,7 +35,7 @@ of that license is included as `AGPL-3.0.txt` in this directory.
   cropped at its mid-line; every other Sprout still renders `sprout.avatar.ts`.
 - Sprout still carries the generated `listening` sequence and the earlier
   hand-written `ambient` experiment. The large footer uses Bible Strong's full
-  three-pose `listening` animation while its outer layout transform stays fixed.
-  The generated expressions keep procedural body drift disabled; blink and
-  uYao's pointer tracking remain active. `lib/footer-sprout.test.ts` pins this
-  footer-only contract.
+  three-pose `listening` animation with pose-specific viewBox anchors that keep
+  its enlarged visual centre planted. The generated expressions keep
+  procedural body drift disabled; blink and uYao's pointer tracking remain
+  active. `lib/footer-sprout.test.ts` pins this footer-only contract.

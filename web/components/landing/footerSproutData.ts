@@ -4,9 +4,15 @@ import type { AvatarData } from "@/components/avatar-lab/avatar-runtime";
 export const FOOTER_MANAGER_ANIMATION = "listening" as const;
 export const FOOTER_MANAGER_TRANSFORM = "translateX(-50%)";
 
-// Use Bible Strong's generated three-pose sequence without replacing its
-// timing or head movement. The fixed outer transform keeps the footer layout
-// anchored while the avatar animates inside it.
+// Bible Strong rotates Sprout's whole generated model, including the three
+// lower body nodes. At the 1000px footer scale that moves the visible centre by
+// up to ~21px even though the outer box is fixed. These viewBox-unit offsets
+// counter that pose-specific displacement without reading layout every frame.
+export const FOOTER_MANAGER_POSE_ANCHORS = {
+  "expression-10": { x: 0, y: 0, arcX: -1.45, arcY: -0.83 },
+  "expression-01": { x: 5.26, y: 4.43, arcX: -3.25, arcY: 0 },
+  "expression-19": { x: 0.33, y: 2.82, arcX: 0, arcY: 0.5 },
+} as const;
 
 /**
  * Footer-only Sprout: the landing footer crops the mascot at its waist, and the
@@ -44,6 +50,17 @@ const liftEyes = (expression: Expression): Expression => ({
   spacing: expression.spacing * EYE_SPACING_SCALE,
 });
 
+const anchorPose = (id: string, expression: Expression): Expression => {
+  const anchor = FOOTER_MANAGER_POSE_ANCHORS[id as keyof typeof FOOTER_MANAGER_POSE_ANCHORS];
+  return {
+    ...liftEyes(expression),
+    anchorX: anchor?.x ?? 0,
+    anchorY: anchor?.y ?? 0,
+    anchorArcX: anchor?.arcX ?? 0,
+    anchorArcY: anchor?.arcY ?? 0,
+  };
+};
+
 /**
  * Stable module-level value: `loadAvatarRuntime` caches compiled runtimes in a
  * WeakMap keyed by this object, so rebuilding it per render would compile and
@@ -54,7 +71,7 @@ export const footerSproutData = {
   expressions: Object.fromEntries(
     Object.entries(avatarData.expressions).map(([id, expression]) => [
       id,
-      liftEyes(expression as Expression),
+      anchorPose(id, expression as Expression),
     ]),
   ),
 } as unknown as AvatarData<AnimationName>;
