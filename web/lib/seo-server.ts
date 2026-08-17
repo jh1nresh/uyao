@@ -3,7 +3,13 @@ import "server-only";
 import { headers } from "next/headers";
 import type { Metadata } from "next";
 
-import { consumerIndexingAllowed, indexingAllowed } from "./seo";
+import type { SocialPreviewLocale } from "./seo";
+import {
+  consumerIndexingAllowed,
+  indexingAllowed,
+  socialPreviewAudience,
+  socialPreviewImages,
+} from "./seo";
 
 /**
  * 允許 index 的 route 用這個算 robots：只有 production canonical host
@@ -15,6 +21,18 @@ export async function indexablePageRobots(): Promise<NonNullable<Metadata["robot
   return indexingAllowed(host)
     ? { index: true, follow: true }
     : { index: false, follow: false };
+}
+
+/**
+ * Root-layout social card default. Next.js replaces `openGraph`/`twitter`
+ * wholesale when a page declares its own, so pages that already call
+ * socialPreviewImages() keep their card and everything else — guides,
+ * evidence, compare, pharmacy, and the noindex consumer routes — inherits
+ * the card for its own host instead of sharing as bare text.
+ */
+export async function defaultSocialPreview(locale: SocialPreviewLocale) {
+  const host = (await headers()).get("host");
+  return socialPreviewImages(socialPreviewAudience(host), locale);
 }
 
 /** Consumer homepage only: production shop canonical host may index. */

@@ -7,6 +7,7 @@ import { LocaleProvider } from "@/components/LocaleProvider";
 import { getRequestLocale } from "@/lib/locale-server";
 import { PUBLIC_THEME_INIT_SCRIPT } from "@/lib/public-theme";
 import { BRAND_NAME, SITE_URL } from "@/lib/seo";
+import { defaultSocialPreview } from "@/lib/seo-server";
 
 import "./globals.css";
 
@@ -39,6 +40,7 @@ const plexMono = IBM_Plex_Mono({
 
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getRequestLocale();
+  const images = await defaultSocialPreview(locale === "en" ? "en" : "zh");
   return {
     metadataBase: new URL(SITE_URL),
     title: locale === "en"
@@ -51,6 +53,11 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: BRAND_NAME,
       locale: locale === "en" ? "en_US" : "zh_TW",
       type: "website",
+      images: images.openGraph,
+    },
+    twitter: {
+      card: "summary_large_image",
+      images: images.twitter,
     },
     // 預設 noindex：只有 SEO v1 白名單頁面自己 override 成
     // indexablePageRobots()（production canonical host 才 index）。
