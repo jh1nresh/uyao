@@ -20,7 +20,7 @@ export const BRAND_SHORT_NAME = "uYao";
 export const BRAND_ALTERNATE_NAMES = [BRAND_SHORT_NAME, "有藥"] as const;
 export const ORGANIZATION_LOGO_URL = `${SITE_URL}/brand/uyao-logo-640x640.png`;
 
-type SocialPreviewAudience = "company" | "shop";
+export type SocialPreviewAudience = "company" | "shop";
 
 export type SocialPreviewLocale = "zh" | "en";
 
@@ -69,6 +69,18 @@ export const SOCIAL_PREVIEW_IMAGES = {
   SocialPreviewAudience,
   Record<SocialPreviewLocale, SocialPreviewImage>
 >;
+
+/**
+ * Which brand card a host shares. The shop host owns the consumer card; every
+ * other host (company, preview, deployment URL) falls back to the company one
+ * so no page can end up with no card at all.
+ */
+export function socialPreviewAudience(
+  requestHost: string | null | undefined,
+): SocialPreviewAudience {
+  const host = (requestHost ?? "").toLowerCase().split(":")[0];
+  return host === SHOP_CANONICAL_HOST ? "shop" : "company";
+}
 
 export function socialPreviewImages(
   audience: SocialPreviewAudience,
@@ -247,6 +259,7 @@ export function articleJsonLd(input: {
   path: string;
   datePublished: string;
   dateModified: string;
+  image?: string;
 }): JsonLd {
   return {
     "@type": "Article",
@@ -254,6 +267,10 @@ export function articleJsonLd(input: {
     description: input.description,
     url: `${SITE_URL}${input.path}`,
     mainEntityOfPage: `${SITE_URL}${input.path}`,
+    // Article rich results need a ≥1200px image. Knowledge pages have no own
+    // artwork, so they reuse the same card that gets shared on X/LINE —
+    // pass `image` once a page owns a real illustration.
+    image: input.image ?? SOCIAL_PREVIEW_IMAGES.company.zh.url,
     inLanguage: "zh-Hant-TW",
     datePublished: input.datePublished,
     dateModified: input.dateModified,
