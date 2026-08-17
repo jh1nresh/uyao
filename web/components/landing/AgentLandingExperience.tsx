@@ -629,8 +629,9 @@ function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; loc
               transform: FOOTER_MANAGER_TRANSFORM,
             }}
           >
-            {/* Bible Strong's live Sprout `idle` sequence; only the eye crop is
-                adapted so the face remains visible above the footer line. */}
+            {/* Bible Strong's Sprout `idle` resting pose, held statically so the
+                footer never sways; only the eye crop is adapted so the face
+                remains visible above the footer line. */}
             <Sprout
               data={footerSproutData}
               animation={FOOTER_MANAGER_ANIMATION}
