@@ -48,13 +48,13 @@ const liftEyes = (expression: Expression): Expression => ({
 export const footerManagerExpression = {
   ...liftEyes(avatarData.expressions["expression-10"] as Expression),
   id: FOOTER_MANAGER_EXPRESSION_ID,
-  eyeMotion: "none",
+  eyeMotion: "microSaccades",
   bodyMotion: "none",
 } as const;
 
 export const footerManagerAnimation = {
   name: "uYao footer manager",
-  description: "One stable footer pose with blink; pointer tracking is supplied by uYao.",
+  description: "One stable footer pose with micro-saccades, blink and uYao pointer tracking.",
   playbackMode: "loop",
   blink: {
     enabled: true,

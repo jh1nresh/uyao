@@ -629,8 +629,8 @@ function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; loc
               transform: FOOTER_MANAGER_TRANSFORM,
             }}
           >
-            {/* Footer-only Bible Strong data: one fixed head/body pose with
-                blink. Pointer movement is the only gaze motion. */}
+            {/* Grok Bot-style footer motion: one fixed head/body pose while
+                the eyes micro-saccade, blink and follow the pointer. */}
             <Sprout
               data={footerSproutData}
               animation={FOOTER_MANAGER_ANIMATION}
