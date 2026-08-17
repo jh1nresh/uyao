@@ -34,9 +34,8 @@ of that license is included as `AGPL-3.0.txt` in this directory.
   (`components/landing/footerSproutData.ts`) so the mascot survives being
   cropped at its mid-line; every other Sprout still renders `sprout.avatar.ts`.
 - Sprout still carries the generated `listening` sequence and the earlier
-  hand-written `ambient` experiment. The large footer overrides `listening`
-  inside its own data object with one stable expression: no entrance, head
-  transition or procedural body drift. Grok Bot-style micro-saccades, blink,
-  and uYao's pointer tracking keep it responsive without moving the 1000px
-  silhouette.
-  `lib/footer-sprout.test.ts` pins this footer-only contract.
+  hand-written `ambient` experiment. The large footer uses Bible Strong's full
+  three-pose `listening` animation while its outer layout transform stays fixed.
+  The generated expressions keep procedural body drift disabled; blink and
+  uYao's pointer tracking remain active. `lib/footer-sprout.test.ts` pins this
+  footer-only contract.
