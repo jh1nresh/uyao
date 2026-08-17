@@ -680,8 +680,7 @@ export function AgentLandingExperience({ locale }: { locale: Locale }) {
 
       <main>
         <header className="mx-auto flex min-h-[500px] max-w-[1120px] flex-col items-center justify-center px-5 py-16 text-center sm:min-h-[560px] sm:px-8 sm:py-20">
-          <span className="num text-[11px] font-bold tracking-[.1em] text-green">uYao STORE OS · PROTOTYPE</span>
-          <h1 className="editorial-display mb-0 mt-5 max-w-[980px] text-[clamp(46px,7vw,88px)] leading-[1.08]">
+          <h1 className="editorial-display mb-0 mt-0 max-w-[980px] text-[clamp(46px,7vw,88px)] leading-[1.08]">
             {copy.heroTitleBefore}{" "}
             <Avatar id="manager" size="1.08em" playing={!reducedMotion} className="align-[-.2em]" />{" "}
             {copy.heroTitleAfter}
