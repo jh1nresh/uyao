@@ -1,12 +1,71 @@
 import { avatarData, type AnimationName } from "@/components/avatar-lab/sprout.avatar";
 import type { AvatarData } from "@/components/avatar-lab/avatar-runtime";
 
-export const FOOTER_MANAGER_ANIMATION = "listening" as const;
+export const FOOTER_MANAGER_ANIMATION = "idle" as const;
 export const FOOTER_MANAGER_TRANSFORM = "translateX(-50%)";
 
-// Use Bible Strong's generated three-pose sequence without replacing its
-// timing or head movement. The fixed outer transform keeps the footer layout
-// anchored while the avatar animates inside it.
+// Bible Strong Avatar Lab's live Sprout preview defaults to this exact `idle`
+// sequence. The exported Sprout eye defaults are already applied here (the
+// stock behavior eye widths minus 3.8, heights minus 5, spacing plus 15).
+export const BIBLE_STRONG_SPROUT_IDLE_EXPRESSIONS = {
+  "expression-00": {
+    id: "expression-00",
+    headX: 7.3,
+    headY: 27.8,
+    headZ: -16.1,
+    widthLeft: 18.701171875,
+    widthRight: 18.701171875,
+    heightLeft: 37.377734375,
+    heightRight: 37.377734375,
+    spacing: 69.3,
+    positionXLeft: 0,
+    positionXRight: 0,
+    positionYLeft: -20.5,
+    positionYRight: -20.5,
+    leftAngle: 0,
+    rightAngle: 0,
+    perspective: 1,
+    eyeMotion: "none",
+    bodyMotion: "none",
+  },
+  "expression-08": {
+    id: "expression-08",
+    headX: -12.303515625,
+    headY: -17.601171875,
+    headZ: 5.9109375,
+    widthLeft: 16.805859375,
+    widthRight: 16.805859375,
+    heightLeft: 42.769921875,
+    heightRight: 42.769921875,
+    spacing: 69.9,
+    positionXLeft: 0,
+    positionXRight: 0,
+    positionYLeft: 0,
+    positionYRight: 0,
+    leftAngle: 23.523046875,
+    rightAngle: -24.042578125,
+    perspective: 1,
+    eyeMotion: "none",
+    bodyMotion: "none",
+  },
+} as const;
+
+export const BIBLE_STRONG_SPROUT_IDLE = {
+  name: "idle",
+  description: "Slow micro-movements, expressions 00 and 08, infrequent blinking.",
+  playbackMode: "loop",
+  blink: {
+    enabled: true,
+    initialDelayMs: 2600,
+    minIntervalMs: 3400,
+    maxIntervalMs: 6200,
+    durationMs: 280,
+  },
+  steps: [
+    { expressionId: "expression-00", holdMs: 5200, transitionMs: 500, transition: "smooth" },
+    { expressionId: "expression-08", holdMs: 5200, transitionMs: 500, transition: "smooth" },
+  ],
+} as const;
 
 /**
  * Footer-only Sprout: the landing footer crops the mascot at its waist, and the
@@ -52,9 +111,13 @@ const liftEyes = (expression: Expression): Expression => ({
 export const footerSproutData = {
   ...avatarData,
   expressions: Object.fromEntries(
-    Object.entries(avatarData.expressions).map(([id, expression]) => [
-      id,
-      liftEyes(expression as Expression),
-    ]),
+    Object.entries({
+      ...avatarData.expressions,
+      ...BIBLE_STRONG_SPROUT_IDLE_EXPRESSIONS,
+    }).map(([id, expression]) => [id, liftEyes(expression as Expression)]),
   ),
-} as unknown as AvatarData<AnimationName>;
+  animations: {
+    ...avatarData.animations,
+    idle: BIBLE_STRONG_SPROUT_IDLE,
+  },
+} as unknown as AvatarData<AnimationName | typeof FOOTER_MANAGER_ANIMATION>;

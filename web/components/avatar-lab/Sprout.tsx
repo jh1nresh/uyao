@@ -48,7 +48,9 @@ export const Sprout = forwardRef<AvatarHandle, AvatarProps>(function Sprout(
     if (!host.current) return
     let disposed = false
     let avatar: RuntimeAvatar<AnimationName> | null = null
-    void loadAvatarRuntime<AnimationName>(data).then(runtime => {
+    // `idle` is provided by the footer's alternate Bible Strong export; the
+    // bundled data still only contains its original listening/ambient pair.
+    void loadAvatarRuntime<AnimationName>(data as AvatarData<AnimationName>).then(runtime => {
       if (disposed || !host.current) return
       avatar = runtime.createAvatar(host.current, {
         animation: animationRef.current,
