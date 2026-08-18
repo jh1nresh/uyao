@@ -20,11 +20,15 @@ import {
   storesInArea,
   toAreaSlug,
 } from "@/lib/data";
+import { JsonLd } from "@/components/JsonLd";
 import { areaCopy, categoryName, drugCopy, localizedPath } from "@/lib/i18n";
 import { hasAmounts, ingredientRows } from "@/lib/ingredients";
 import { getRequestLocale } from "@/lib/locale-server";
 import { partnersForProduct } from "@/lib/partners";
+import { consumerBreadcrumbJsonLd, consumerProductJsonLd } from "@/lib/seo";
+import { consumerIndexablePageRobots } from "@/lib/seo-server";
 import { SHOP_URL } from "@/lib/shop";
+import { isIndexableCatalogItemSlug } from "@/lib/shop-index";
 
 export function generateStaticParams() {
   return allDrugs().map((d) => ({ slug: d.slug }));
@@ -47,6 +51,13 @@ export async function generateMetadata({
   const displayDrug = drugCopy(drug, locale);
   const label = drug.spec === "規格待確認" ? displayDrug.name : `${displayDrug.name} ${displayDrug.spec}`;
   const partnerProvidedDetails = drug.source?.kind === "partner";
+  // metadataBase 是公司站，所以 consumer canonical 必須寫成絕對網址，
+  // 否則 /zh-tw/drug/x 會被解析成 uyaohealth.com 上不存在的頁面。
+  //
+  // 沒有英文品名時，/en 這頁其實就是中文頁 —— canonical 指回 zh-tw，
+  // 不要留一個自我 canonical 的英文副本。補上 nameEn 就會自動分家。
+  const canonicalLocale = locale === "en" && !drug.nameEn ? "zh" : locale;
+  const canonicalUrl = `${SHOP_URL}${localizedPath(`/drug/${drug.slug}`, canonicalLocale)}`;
   return {
     title: locale === "en" ? `${label} — partner-listed item` : `${label}｜合作藥局提供品項`,
     description: partnerProvidedDetails
@@ -60,8 +71,21 @@ export async function generateMetadata({
       : locale === "en"
         ? `${label} is a partner-listed item whose product details still await public-source verification; live supply still requires pharmacy confirmation.`
         : `${label}由合作藥局提供並收錄於 uYao 試營運目錄；產品資料來源仍待驗證，即時供應仍待藥局確認。`,
-    // 藥品 identity/source/freshness 尚未通過 Drug Page Admission Gate。
-    robots: { index: false, follow: true },
+    // `?area=` 只換附近藥局清單，不換品項內容 —— canonical 一律指沒有
+    // query 的乾淨網址，否則十個服務區會變成同一頁的十份副本。
+    alternates: {
+      canonical: canonicalUrl,
+      languages: {
+        "zh-TW": `${SHOP_URL}/zh-tw/drug/${drug.slug}`,
+        ...(drug.nameEn ? { en: `${SHOP_URL}/en/drug/${drug.slug}` } : {}),
+        "x-default": `${SHOP_URL}/zh-tw/drug/${drug.slug}`,
+      },
+    },
+    // Drug Page Admission Gate：只有帶來源或自有實拍的品項可以收錄，
+    // 其餘仍是資料待驗證的 placeholder，維持 noindex（見 lib/shop-index.ts）。
+    robots: isIndexableCatalogItemSlug(drug.slug, locale)
+      ? await consumerIndexablePageRobots()
+      : { index: false, follow: true },
   };
 }
 
@@ -109,8 +133,41 @@ export default async function DrugPage({
   const alternatives = alternativesFor(drug.slug, area);
   const category = getCategory(drug.category);
 
+  const canonicalPath = localizedPath(`/drug/${drug.slug}`, locale);
+
   return (
     <>
+      {isIndexableCatalogItemSlug(drug.slug, locale) && (
+        <JsonLd
+          nodes={[
+            consumerProductJsonLd({
+              name: displayLabel,
+              // Same sentence the page shows, minus any claim about supply.
+              description: displayDrug.nutritionFocus
+                ?? (locale === "en"
+                  ? "Partner-listed catalog item. Product details and supply require pharmacy confirmation."
+                  : "合作藥局提供的目錄品項；產品資料與供應狀態仍須由藥局確認。"),
+              path: canonicalPath,
+              inLanguage: locale === "en" ? "en" : "zh-Hant-TW",
+              image: drug.image?.src,
+              category: category
+                ? categoryName(category.slug, category.name, locale)
+                : undefined,
+            }),
+            consumerBreadcrumbJsonLd([
+              { name: locale === "en" ? "Home" : "首頁", path: localizedPath("/", locale) },
+              ...(category
+                ? [{
+                    name: categoryName(category.slug, category.name, locale),
+                    path: localizedPath(`/category/${category.slug}`, locale),
+                  }]
+                : []),
+              { name: displayLabel, path: canonicalPath },
+            ]),
+          ]}
+        />
+      )}
+
       <SiteHeader query={displayDrug.name} showTagline area={area} preserveAreaPath locatable />
 
       <div className="shop-shell pt-3 md:hidden">

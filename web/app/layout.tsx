@@ -99,6 +99,10 @@ export async function generateMetadata(): Promise<Metadata> {
     // indexablePageRobots()（production canonical host 才 index）。
     // 消費端 demo 資料頁在 consumer SEO spec 完成前一律不收錄。
     robots: { index: false, follow: false },
+    // Bing 有已驗證的預設值，Google 沒有：GSC 的 tag 是每個資源不同的
+    // 一次性字串，沒有可以寫死的值。線上沒有 google-site-verification meta
+    // 是正常的 —— uyaohealth.com 走 DNS TXT 驗證（見 .env.example），
+    // 不要因為「看起來少一個 meta」就去補一個假值。
     verification: {
       google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
       other: {
