@@ -1,7 +1,7 @@
 # 電商產品圖產生器
 
 上架用的 1000×1000 商品圖。版面來自 Claude Design 專案「電商產品圖製作」
-（`電商產品圖.dc.html`）。
+（`電商產品圖.dc.html`），涵蓋設計稿全部 21 項產品、58 張圖卡。
 
 ```bash
 cd web
@@ -34,16 +34,35 @@ swift scripts/packshot-cleanup.swift 原圖.png .tmp/ecom-assets/defense-front.p
 缺素材的版位會印出紅色斜線的「素材未到位」標記，不會靜默輸出空白圖，收尾也會
 在 stderr 列出缺哪幾張。**看到標記就不要上架那一張。**
 
-目前缺三張，需要店家補拍：
+前八項（Defense～珊瑚鈣）的素材已到位，跑起來就是成品。**第 9～21 項共 13 個
+key 還缺**，那 35 張現在印的是缺件標記：
 
-| key | 缺什麼 | 影響 |
+| key | 產品 | 缺件影響 |
 |---|---|---|
-| `defense-back` | Defense 背面標示照 | `defense-3-ingredients` |
-| `yi-back` | 憶元素 營養標示照 | `yiyuansu-3-ingredients` |
-| `aob` | AOB 商品照 | `aob-1-main`、`aob-2-features` |
+| `kurozu` | 東洋 熟成黑酢膠囊 | 2 張 |
+| `biostand` | BIO-STAND 挺液鈣 | 3 張 |
+| `congshen` | 聰身景麴 | 3 張 |
+| `richingsheng` | 賢士 日清勝 | 3 張 |
+| `guguanjian` | 固關鍵 UC II | 3 張 |
+| `jinguguanjian` | TERYLEAF 金固關健 | 3 張 |
+| `youweining` | 佑衛寧 高麗菜 | 3 張 |
+| `glutamine` | 賜利康 L-Glutamine | 3 張 |
+| `mg` | 新優力超級鎂 | 2 張 |
+| `arginine` | L-Arginine 一氧化氮 | 2 張 |
+| `guerhgan` | 中美 顧爾肝 | 3 張 |
+| `sbenlin` | 益聖靈-P 軟膠囊 | 2 張 |
+| `maca` | 歐業 勁勇 MEN'S MACA | 3 張 |
 
-補齊後把檔案放進 `.tmp/ecom-assets/`，在 `ecommerce_content.py` 把對應的
-`hero` / `usp_art` / `ing_art` 從 `None` 改成 key，重跑即可。
+這 13 張的去背圖只存在 Claude Design 專案的 `assets/cut-<key>.png`，每張都超過
+design 同步工具單檔 256 KiB 的讀取上限，**沒辦法用工具拉進 repo**，要從瀏覽器
+手動下載，或用 `packshot-cleanup.swift` 從實拍重做。
+
+檔名去掉 `cut-` 前綴放進 `.tmp/ecom-assets/`（`assets/cut-kurozu.png` →
+`.tmp/ecom-assets/kurozu.png`），重跑上面那行指令就會出圖，`ecommerce_content.py`
+不用再改 —— 版位已經指向這些 key 了。
+
+素材到位後要看一次成品：`hero_h` 是照設計稿的 `max-height` 填的，包裝比例差太多
+的品項可能要微調 `hero_h` / `usp_art_w`。
 
 ## 上架前要確認的事
 
@@ -58,3 +77,13 @@ swift scripts/packshot-cleanup.swift 原圖.png .tmp/ecom-assets/defense-front.p
    腳本能補的。
 4. 食品不得宣稱療效。目前文案都取自包裝既有敘述，沒有新增功效宣稱 —— 之後改
    `ecommerce_content.py` 時請維持這條界線。
+5. **L-Glutamine 成分卡的四顆訴求 chip**（`ing_chips`）照設計稿收了「消化道機能・
+   保護力・運動恢復・健康維持」。特色卡上的原句是「幫助維持消化道機能」這種有
+   限定語的寫法，chip 把限定語拿掉了，宣稱強度比原句高 —— 跟第 2 點的 FDA chip
+   同一類問題。要不要留是行銷決定。
+6. **第 9～21 項的素材疑似影像模型產出**：design 專案的 `raw/mg.png` 帶 `caBX`
+   （C2PA content credentials）chunk，`uploads/` 裡對應的來源檔名是
+   「ChatGPT Image 2026年8月18日…」。`assets/cut-*.png` 是它們去背後的版本。
+   本檔案上面那條「中文不交給影像模型」的理由同樣適用在包裝照本身 —— 影像模型
+   會改寫盒上的字。這 13 項在上架前要拿實體包裝逐一核對，或直接改用實拍照
+   （`packshot-cleanup.swift`）。
