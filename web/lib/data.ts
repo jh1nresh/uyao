@@ -564,8 +564,8 @@ const DRUGS: Drug[] = [
       width: 900,
       height: 1125,
       kind: "illustration",
-      alt: "示意圖：深藍色紙盒搭配紅色斜帶與白色補充品瓶身，包裝面無任何印刷字樣；下方排有品名「益固康 Elgucare」",
-      altEn: "Illustration: a navy carton with a red diagonal band beside a white supplement bottle, all surfaces unprinted; the product name 益固康 Elgucare is typeset below",
+      alt: "示意圖：白藍配色紙盒與大白罐，中間有金邊紅色人字帶與一個綠色圓標，包裝面無任何印刷字樣；下方排有品名「益固康 Elgucare」",
+      altEn: "Illustration: a white-and-blue carton and large white jar with a gold-edged red chevron band and a plain green disc, all surfaces unprinted; the product name 益固康 Elgucare is typeset below",
     },
   }),
   partnerProvidedProduct({
@@ -651,8 +651,8 @@ const DRUGS: Drug[] = [
       width: 900,
       height: 1125,
       kind: "illustration",
-      alt: "示意圖：金黃色紙盒搭配白色補充品瓶身，包裝面無任何印刷字樣；下方排有品名「憶元素 天麻100膠囊」",
-      altEn: "Illustration: a golden-amber carton beside a white supplement bottle, all surfaces unprinted; the product name 憶元素 天麻100膠囊 is typeset below",
+      alt: "示意圖：金黃到橘色漸層紙盒與同色標籤的白色瓶身，底紋是淡色六角形線條，包裝面無任何印刷字樣；下方排有品名「憶元素 天麻100膠囊」",
+      altEn: "Illustration: a gold-to-orange gradient carton and a white bottle with a matching label, both carrying a faint hexagonal line pattern and no printing; the product name 憶元素 天麻100膠囊 is typeset below",
     },
   }),
   partnerProvidedProduct({
@@ -673,8 +673,8 @@ const DRUGS: Drug[] = [
       width: 900,
       height: 1125,
       kind: "illustration",
-      alt: "示意圖：白色紙盒搭配綠色上部色塊與橘色橫紋，旁邊是白色膠囊鋁箔片，包裝面無任何印刷字樣；下方排有品名「強抗力優 450+ Defense」",
-      altEn: "Illustration: a white carton with a green upper field and orange stripe beside a blister of white capsules, all surfaces unprinted; the product name 強抗力優 450+ Defense is typeset below",
+      alt: "示意圖：白色寬版紙盒，上下各有綠色橫帶與橘、金色細紋，旁邊是白色膠囊鋁箔片，包裝面無任何印刷字樣；下方排有品名「強抗力優 450+ Defense」",
+      altEn: "Illustration: a wide white carton with green bands top and bottom plus orange and gold pinstripes, beside a blister of white capsules, all surfaces unprinted; the product name 強抗力優 450+ Defense is typeset below",
     },
   }),
 ];
