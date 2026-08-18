@@ -25,7 +25,7 @@ export const AEO_PAGES = {
     directAnswer:
       "目前已在程式與自動化測試中驗證條碼解析、離線暫存、消費端預留、Store OS 與 Web Push 等能力；掃描器、Store OS 工作流與找藥服務仍包含 prototype，真實現場退貨閉環、節省金額與即時庫存尚未驗證。",
     datePublished: "2026-08-12",
-    dateModified: "2026-08-12",
+    dateModified: "2026-08-18",
     benchmarkQueries: ["uYao 目前做到什麼？", "uYao 有哪些能力已經驗證？"],
   },
   aiToolsPharmacyInventory: {
