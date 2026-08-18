@@ -71,6 +71,9 @@ function partnerProvidedProduct({
   manufacturer,
   origin,
   image,
+  highlights,
+  dosage,
+  cautions,
 }: {
   slug: string;
   name: string;
@@ -83,6 +86,9 @@ function partnerProvidedProduct({
   manufacturer: string;
   origin: string;
   image?: DrugImage;
+  highlights?: Drug["highlights"];
+  dosage?: string;
+  cautions?: string;
 }): Drug {
   return {
     slug,
@@ -101,6 +107,9 @@ function partnerProvidedProduct({
     manufacturer,
     origin,
     image,
+    highlights,
+    dosage,
+    cautions,
     source: { label: "合作藥局提供商品資料", kind: "partner" },
   };
 }
@@ -559,6 +568,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["黃耆", "大棗", "丹參", "紅景天", "伸筋草"],
     manufacturer: "綠杏生物科技有限公司／綠加科技（LHBcare）",
     origin: "台灣",
+    highlights: [
+      { title: "中醫藥專家研製", body: "集多年經驗，依人體生理機能需要特別研製的保健配方" },
+      { title: "八種草本萃取複方", body: "黃耆・紅棗・丹參・雞屎藤・伸筋草・玉竹・紅景天・甘草" },
+      { title: "生活挺立、能量豐沛", body: "日常保健，可讓生活挺立、豐沛人體能量" },
+      { title: "全素可食", body: "素食者可安心食用，兩種容量規格自由選擇" },
+    ],
+    dosage: "保健：每日 2 次，每次 1~2 粒。加強：每日 2 次，每次 2~3 粒。飯前空腹食用最佳，多食無益。",
+    cautions: "避免孩童自行取用，請置於陰涼處、避免陽光直射。",
     image: {
       src: "/products/greenplus-elgucare.webp",
       width: 900,
@@ -651,6 +668,11 @@ const DRUGS: Drug[] = [
     nutritionFocus: "營養補充定位待確認",
     nutritionFocusEn: "Nutrition positioning pending verification",
     searchTerms: [],
+    highlights: [
+      { title: "健全體調", body: "包裝標示「健全體調」" },
+      { title: "美容增進", body: "包裝標示「美容增進」" },
+      { title: "45 包條狀隨身包", body: "單包分裝的鋁袋條狀包，免量取" },
+    ],
   },
   partnerProvidedProduct({
     slug: "chungchi-yiyuansu-gastrodia-100",
@@ -664,6 +686,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["龍眼花", "天麻", "綠蜂膠", "維生素B群", "蜂王乳", "魚油"],
     manufacturer: "中旗生物科技股份有限公司",
     origin: "台灣",
+    highlights: [
+      { title: "龍眼花＋天麻 雙萃取", body: "每粒含龍眼花萃取物 200 mg、天麻萃取物 100 mg" },
+      { title: "綜合維生素B群 75 mg", body: "B1・B2・B6・B12、菸鹼醯胺、葉酸、生物素" },
+      { title: "蜂王乳・魚油・黑豆複方", body: "蜂王乳粉 50 mg、魚油粉 30 mg、黑豆粉 10 mg" },
+      { title: "SGS 檢驗合格", body: "每日 1 粒，本包裝含 60 份" },
+    ],
+    dosage: "每日 1 粒。",
+    cautions: "本品含乳糖、魚油、黑豆，對其成分過敏者請留意。請置於陰涼乾燥處，避免陽光直射。",
     image: {
       src: "/products/chungchi-yiyuansu-gastrodia-100.webp",
       width: 900,
@@ -686,6 +716,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["酵母葡聚多醣體", "葡聚多醣體", "β-葡聚醣", "Wellmune", "穀胱甘肽"],
     manufacturer: "圓鼎生物科技有限公司",
     origin: "台灣",
+    highlights: [
+      { title: "高純度多醣體", body: "專利技術純化酵母，β-1,3/1,6 長鏈酵母葡聚多醣體純度高達 75% 以上" },
+      { title: "國際原料授權", body: "採用 Wellmune WGP®，屬 Kerry 公司原料授權使用" },
+      { title: "國際獲獎配方", body: "榮獲 2007 年 IFT 美國食品科學學會「創新研究獎」" },
+      { title: "每天 1 顆，輕鬆保養", body: "每顆膠囊含 400 mg β-1,3/1,6 酵母葡聚多醣體，天天食用防護周到" },
+    ],
+    dosage: "每日 1~2 粒，餐後食用。",
+    cautions: "孕婦及授乳中婦女請遵照醫師指示食用；對穀胱甘肽過敏者、孕婦、哺乳婦女及嬰幼兒應避免食用。請保存於陰涼乾燥處，避免熱及陽光直射。",
     image: {
       src: "/products/yuanding-puregps-defense-450.webp",
       width: 900,
