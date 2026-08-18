@@ -20,14 +20,22 @@ import "./globals.css";
  * 會拉進 430 個 @font-face、約 134KB gzip 的 render-blocking CSS。
  * 只包站上用到的字之後剩幾個 @font-face —— 但改文案要重跑 subset。
  *
- * 每個家族切成 core / ext 兩塊：core 是公司首頁那條路徑上的 478 個字，ext 是
- * 其餘全站字符（藥名、藥局名、guides 內文）。globals.css 把兩者串成 fallback
- * chain，瀏覽器只有在頁面真的需要某個字時才去抓對應的檔，所以首頁只付 core
- * 的 204KB，而不是整包 660KB。
+ * 全站字符切成六塊互斥的 slice：core（公司首頁）、common（跨 surface 的
+ * chrome 與共用字）、guides、stores（藥局名與地址）、shop（藥品目錄）、
+ * storeos。globals.css 把它們串成 fallback chain，瀏覽器逐字往後找，缺字
+ * 才會去抓下一塊。實測每頁抓到的量：
  *
- * core 關掉 adjustFontFallback：next/font 會在 CSS 變數裡塞一個
- * 「<family> Fallback」的本機字型，那個 face 排在 ext 前面就可能先接走 CJK，
- * 讓 ext 永遠不被下載。度量補償留給 chain 最後的 ext 做。
+ *   /zh-tw 221KB ／ /zh-tw/guides/* 427KB ／ /zh-tw/evidence 450KB
+ *   （切之前一律 738KB；數字含 IBM Plex Mono 的 20KB）
+ *
+ * 這裡刻意不加 unicode-range。加了之後 Chrome 會改成「範圍有交集就抓」，
+ * 連沒有 render 的文字（JSON-LD、prefetch 的內容）都算進去，首頁反而從
+ * 201KB 變成 430KB —— 交給預設的「缺字才往下找」比較準。
+ *
+ * 除了 chain 最後一塊之外都關掉 adjustFontFallback：next/font 會在 CSS 變數
+ * 裡塞一個「<family> Fallback」的本機字型，那個 face 排在後面的 slice 前面就
+ * 可能先接走 CJK，讓後面的檔永遠不被下載。度量補償留給 chain 最後的 storeos。
+ * 非 core 的 slice 一律 preload: false —— 首頁用不到，不能進關鍵路徑。
  */
 const notoSansTC = localFont({
   src: "./fonts/noto-sans-tc-core.woff2",
@@ -37,12 +45,47 @@ const notoSansTC = localFont({
   adjustFontFallback: false,
 });
 
-const notoSansTCExt = localFont({
-  src: "./fonts/noto-sans-tc-ext.woff2",
+const notoSansTCCommon = localFont({
+  src: "./fonts/noto-sans-tc-common.woff2",
   weight: "100 900",
-  variable: "--font-noto-sans-tc-ext",
+  variable: "--font-noto-sans-tc-common",
   display: "swap",
-  // 首頁用不到，絕對不要 preload 進關鍵路徑。
+  adjustFontFallback: false,
+  preload: false,
+});
+
+const notoSansTCGuides = localFont({
+  src: "./fonts/noto-sans-tc-guides.woff2",
+  weight: "100 900",
+  variable: "--font-noto-sans-tc-guides",
+  display: "swap",
+  adjustFontFallback: false,
+  preload: false,
+});
+
+const notoSansTCStores = localFont({
+  src: "./fonts/noto-sans-tc-stores.woff2",
+  weight: "100 900",
+  variable: "--font-noto-sans-tc-stores",
+  display: "swap",
+  adjustFontFallback: false,
+  preload: false,
+});
+
+const notoSansTCShop = localFont({
+  src: "./fonts/noto-sans-tc-shop.woff2",
+  weight: "100 900",
+  variable: "--font-noto-sans-tc-shop",
+  display: "swap",
+  adjustFontFallback: false,
+  preload: false,
+});
+
+const notoSansTCStoreOs = localFont({
+  src: "./fonts/noto-sans-tc-storeos.woff2",
+  weight: "100 900",
+  variable: "--font-noto-sans-tc-storeos",
+  display: "swap",
   preload: false,
 });
 
@@ -59,13 +102,66 @@ const notoSerifTC = localFont({
   adjustFontFallback: false,
 });
 
-const notoSerifTCExt = localFont({
-  src: "./fonts/noto-serif-tc-ext.woff2",
+const notoSerifTCCommon = localFont({
+  src: "./fonts/noto-serif-tc-common.woff2",
   weight: "600",
-  variable: "--font-noto-serif-tc-ext",
+  variable: "--font-noto-serif-tc-common",
+  display: "swap",
+  adjustFontFallback: false,
+  preload: false,
+});
+
+const notoSerifTCGuides = localFont({
+  src: "./fonts/noto-serif-tc-guides.woff2",
+  weight: "600",
+  variable: "--font-noto-serif-tc-guides",
+  display: "swap",
+  adjustFontFallback: false,
+  preload: false,
+});
+
+const notoSerifTCStores = localFont({
+  src: "./fonts/noto-serif-tc-stores.woff2",
+  weight: "600",
+  variable: "--font-noto-serif-tc-stores",
+  display: "swap",
+  adjustFontFallback: false,
+  preload: false,
+});
+
+const notoSerifTCShop = localFont({
+  src: "./fonts/noto-serif-tc-shop.woff2",
+  weight: "600",
+  variable: "--font-noto-serif-tc-shop",
+  display: "swap",
+  adjustFontFallback: false,
+  preload: false,
+});
+
+const notoSerifTCStoreOs = localFont({
+  src: "./fonts/noto-serif-tc-storeos.woff2",
+  weight: "600",
+  variable: "--font-noto-serif-tc-storeos",
   display: "swap",
   preload: false,
 });
+
+const FONT_VARIABLES = [
+  notoSansTC,
+  notoSansTCCommon,
+  notoSansTCGuides,
+  notoSansTCStores,
+  notoSansTCShop,
+  notoSansTCStoreOs,
+  notoSerifTC,
+  notoSerifTCCommon,
+  notoSerifTCGuides,
+  notoSerifTCStores,
+  notoSerifTCShop,
+  notoSerifTCStoreOs,
+]
+  .map((font) => font.variable)
+  .join(" ");
 
 const plexMono = IBM_Plex_Mono({
   subsets: ["latin"],
@@ -118,7 +214,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html
       lang={locale === "en" ? "en-US" : "zh-Hant-TW"}
-      className={`${notoSansTC.variable} ${notoSansTCExt.variable} ${notoSerifTC.variable} ${notoSerifTCExt.variable} ${plexMono.variable}`}
+      className={`${FONT_VARIABLES} ${plexMono.variable}`}
       suppressHydrationWarning
     >
       <head>

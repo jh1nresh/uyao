@@ -5,10 +5,15 @@
 /* 字型由 app/layout.tsx 的 next/font 掛上（自架 subset，見 scripts/subset-fonts.py）。
    subset 沒涵蓋到的字（例如使用者在搜尋框打的字）會落到後面的系統中文字型。 */
 :root {
-  /* core 在前、ext 在後：瀏覽器逐字往後找，首頁的字全在 core 裡就不會去抓 ext。 */
-  --font-sans: var(--font-noto-sans-tc), var(--font-noto-sans-tc-ext),
+  /* 六個 slice 互斥（見 scripts/subset-fonts.py 的 partition assert），瀏覽器
+     逐字往後找、只抓真正需要的檔：首頁的字全在 core 裡，就不會去碰後面五塊。 */
+  --font-sans: var(--font-noto-sans-tc), var(--font-noto-sans-tc-common),
+    var(--font-noto-sans-tc-guides), var(--font-noto-sans-tc-stores),
+    var(--font-noto-sans-tc-shop), var(--font-noto-sans-tc-storeos),
     -apple-system, BlinkMacSystemFont, "PingFang TC", "Microsoft JhengHei", sans-serif;
-  --font-serif: var(--font-noto-serif-tc), var(--font-noto-serif-tc-ext),
+  --font-serif: var(--font-noto-serif-tc), var(--font-noto-serif-tc-common),
+    var(--font-noto-serif-tc-guides), var(--font-noto-serif-tc-stores),
+    var(--font-noto-serif-tc-shop), var(--font-noto-serif-tc-storeos),
     "Songti TC", "Noto Serif TC", serif;
   --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
   --ease-brand: cubic-bezier(0.23, 1, 0.32, 1);
@@ -49,6 +54,7 @@ html {
   color-scheme: light;
   background: rgb(var(--color-ivory));
 }
+
 
 /* Lenis 只在 pointer: fine 載入（見 components/MotionSystem.tsx），觸控裝置的
    #anchor 捲動改由原生 smooth 接手。條件跟那邊的 matchMedia 對齊，確保兩套
