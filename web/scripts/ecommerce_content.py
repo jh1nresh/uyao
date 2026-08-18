@@ -770,6 +770,8 @@ PRODUCTS = [
             ("內容量", "30 包/盒", True),
             ("分類", "膳食補充食品", True),
         ],
+        # 設計稿在成分表下面多一排訴求 chip —— 全 21 項只有這張有
+        "ing_chips": ["消化道機能", "保護力", "運動恢復", "健康維持"],
         "ing_art": "glutamine",
         "ing_art_bg": "#f1f6fb",
         "note_bg": "#e8f1fb",
