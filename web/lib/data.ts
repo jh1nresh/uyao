@@ -718,6 +718,21 @@ const DRUGS: Drug[] = [
     // 盒面沒有產地標示，店家提供的資料也沒有。空著比猜一個國家好。
     origin: "產地待確認",
   }),
+  partnerProvidedProduct({
+    slug: "gaoyouzhi-vitamin-b-60",
+    name: "高優質維他命B群",
+    aliases: ["高優質維他命B群", "高優質B群", "維他命B群軟膠囊"],
+    form: "軟膠囊",
+    spec: "60粒",
+    ingredients: ["維生素B1", "維生素B2", "維生素B6", "維生素B12", "生物素", "葉酸", "薑黃萃取物（盒面標示 95%）", "啤酒酵母", "五味子"],
+    // 「DSM 德國廠」是盒面的原料來源宣告，不是製造廠，別把它寫進 manufacturer。
+    nutritionFocus: "維生素 B 群，搭配薑黃萃取物、啤酒酵母與五味子的產品組成；盒面標示原料採 DSM 德國廠",
+    searchTerms: ["維他命B群", "維生素B群", "B群", "薑黃", "啤酒酵母", "五味子", "葉酸", "生物素"],
+    // 盒面正面只有品名與訴求，沒有印製造廠或代理商，店家也還沒給。兩欄都
+    // 留待確認 —— 可查證的公司識別不猜。
+    manufacturer: "廠商待確認",
+    origin: "產地待確認",
+  }),
 ];
 
 const STORES: Store[] = generated.stores as Store[];
