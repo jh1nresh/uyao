@@ -12,10 +12,15 @@ const MAX_BYTES = 200 * 1024;
 const withImage = allDrugs().filter((drug) => drug.image);
 
 describe("品項圖", () => {
-  it("目前只有一銘藥局的三個品項有圖", () => {
-    expect(withImage.map((drug) => drug.slug)).toEqual([
-      "greenplus-elgucare",
+  it("有圖的就是這八個品項", () => {
+    expect(withImage.map((drug) => drug.slug).sort()).toEqual([
+      "aob-vitality-beauty-45",
+      "chungchi-ganmeijia-coral-ca",
       "chungchi-yiyuansu-gastrodia-100",
+      "gaoyouzhi-vitamin-b-60",
+      "greenplus-elgucare",
+      "huamao-progifted-lp28",
+      "tianxia-chan-c-80",
       "yuanding-puregps-defense-450",
     ]);
   });
@@ -54,11 +59,9 @@ describe("品項圖", () => {
     }
   });
 
-  it("目前三張都是合作藥局提供的實拍", () => {
-    expect(withImage.map((drug) => drug.image!.kind)).toEqual([
-      "packshot",
-      "packshot",
-      "packshot",
-    ]);
+  it("目前每一張都是合作藥局提供的實拍", () => {
+    // 用「全部都是」而不是逐一列舉 —— 之後新增品項不必再改這個 fixture，
+    // 但只要有人塞一張生成圖進來就會被擋下。
+    expect(withImage.every((drug) => drug.image!.kind === "packshot")).toBe(true);
   });
 });

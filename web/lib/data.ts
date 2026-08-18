@@ -668,6 +668,14 @@ const DRUGS: Drug[] = [
     nutritionFocus: "營養補充定位待確認",
     nutritionFocusEn: "Nutrition positioning pending verification",
     searchTerms: [],
+    image: {
+      src: "/products/aob-vitality-beauty-45.webp",
+      width: 900,
+      height: 1125,
+      kind: "packshot",
+      alt: "合作藥局提供的包裝照片：New AOB Vitality Beauty 淺綠色紙盒與三支鋁袋條狀隨身包，盒面標示 45包、健全体調美容増進",
+      altEn: "Partner-provided packaging photo: the pale-green New AOB Vitality Beauty carton with three aluminium stick sachets",
+    },
     highlights: [
       { title: "健全體調", body: "包裝標示「健全體調」" },
       { title: "美容增進", body: "包裝標示「美容增進」" },
@@ -746,6 +754,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["鎂", "甘胺酸鎂", "珊瑚鈣", "維生素K2", "MK-7", "維生素D3"],
     manufacturer: "中旗生物科技股份有限公司",
     origin: "加拿大（包裝標示 MADE IN CANADA）",
+    image: {
+      src: "/products/chungchi-ganmeijia-coral-ca.webp",
+      width: 900,
+      height: 1125,
+      kind: "packshot",
+      alt: "合作藥局提供的包裝照片：甘鎂佳珊瑚鈣淺藍色紙盒正面，標示 Magnesium Glycinate Coral Ca、K2(MK-7)、D3、Mg 與 60 TABLETS、MADE IN CANADA",
+      altEn: "Partner-provided packaging photo: the light-blue Magnesium Glycinate Coral Ca carton front, marked K2 (MK-7), D3, Mg and 60 tablets",
+    },
     highlights: [
       { title: "珊瑚鈣 Coral Ca", body: "以珊瑚鈣為鈣質來源" },
       { title: "甘胺酸鎂 Magnesium Glycinate", body: "鎂與鈣搭配補充" },
@@ -767,6 +783,14 @@ const DRUGS: Drug[] = [
     // 不把代理商當成製造廠。
     manufacturer: "井田國際醫藥廠股份有限公司（天下生物科技股份有限公司總代理）",
     origin: "台灣",
+    image: {
+      src: "/products/tianxia-chan-c-80.webp",
+      width: 900,
+      height: 1125,
+      kind: "packshot",
+      alt: "合作藥局提供的包裝照片：強喜錠 Chan-C 黃色紙盒正面，標示維他命C＋B6、草莓添加β胡蘿蔔素、80 Tab 與國家品質標章",
+      altEn: "Partner-provided packaging photo: the yellow 強喜錠 Chan-C carton front, marked vitamin C+B6 and 80 tablets",
+    },
     highlights: [
       { title: "維生素 C ＋ B6 複方", body: "維生素C（抗壞血酸）、抗壞血酸鈉搭配維生素B6" },
       { title: "添加 β-胡蘿蔔素", body: "另含泛酸鈣，營養更完整" },
@@ -786,6 +810,14 @@ const DRUGS: Drug[] = [
     manufacturer: "華貿行實業股份有限公司",
     // 盒面沒有產地標示，店家提供的資料也沒有。空著比猜一個國家好。
     origin: "產地待確認",
+    image: {
+      src: "/products/huamao-progifted-lp28.webp",
+      width: 900,
+      height: 1125,
+      kind: "packshot",
+      alt: "合作藥局提供的包裝照片：Progifted LP-28 綠白色紙盒正面，標示第4代專利三層包埋、120×10⁸ cfu/2g 與 30 包蘋果口味",
+      altEn: "Partner-provided packaging photo: the green-and-white Progifted LP-28 carton front, marked 120×10⁸ cfu/2g and 30 sachets",
+    },
     highlights: [
       { title: "第4代專利三層包埋", body: "三層包埋技術，通過耐胃酸、耐膽鹽與活力穩定試驗" },
       { title: "120億・15種共生型菌株", body: "含 LP-28® 等 15 種三層包埋複合乳酸菌，每包 120×10⁸ cfu" },
@@ -807,6 +839,14 @@ const DRUGS: Drug[] = [
     // 留待確認 —— 可查證的公司識別不猜。
     manufacturer: "廠商待確認",
     origin: "產地待確認",
+    image: {
+      src: "/products/gaoyouzhi-vitamin-b-60.webp",
+      width: 900,
+      height: 1125,
+      kind: "packshot",
+      alt: "合作藥局提供的包裝照片：高優質維他命B群紅白色紙盒正面，標示原料嚴選 DSM 德國廠、95% 薑黃、啤酒酵母、五味子與 60粒軟膠囊",
+      altEn: "Partner-provided packaging photo: the red-and-white 高優質維他命B群 carton front, marked DSM ingredients and 60 softgels",
+    },
     highlights: [
       { title: "原料嚴選 DSM 德國廠", body: "維生素原料來自 DSM 德國廠" },
       { title: "完整 B 群", body: "B1・B2・B6・B12、葉酸、生物素一次補足" },
