@@ -14,7 +14,7 @@ vi.mock("@/lib/pilot-email", () => ({
 
 import { POST } from "@/app/api/pilot/route";
 
-function request(): Request {
+function request(extra: Record<string, unknown> = {}): Request {
   return new Request("http://localhost/api/pilot", {
     method: "POST",
     headers: { "content-type": "application/json" },
@@ -23,6 +23,7 @@ function request(): Request {
       area: "中山區",
       contact: "line-id",
       problems: ["經常缺貨"],
+      ...extra,
     }),
   });
 }
@@ -60,5 +61,47 @@ describe("POST /api/pilot email 通知", () => {
       "Error: provider unavailable",
     );
     log.mockRestore();
+  });
+});
+
+describe("POST /api/pilot 廣告歸因", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mocks.checkForm.mockResolvedValue({ ok: true });
+    mocks.appendRecord.mockResolvedValue(undefined);
+    mocks.sendPilotApplicationEmail.mockResolvedValue("sent");
+  });
+
+  it("藥局 lead 也記得住是哪則廣告帶來的", async () => {
+    await POST(request({
+      source: { utm_source: "google", utm_medium: "cpc", utm_campaign: "pharmacy_b2b", gclid: "GCL123" },
+    }));
+
+    expect(mocks.appendRecord).toHaveBeenCalledWith("pilot", expect.objectContaining({
+      name: "中山藥局",
+      source: { utm_source: "google", utm_medium: "cpc", utm_campaign: "pharmacy_b2b", gclid: "GCL123" },
+    }));
+  });
+
+  it("歸因不進通知信——收信的人不需要 utm_content", async () => {
+    await POST(request({ source: { utm_source: "google" } }));
+
+    const [application] = mocks.sendPilotApplicationEmail.mock.calls[0] as [Record<string, unknown>];
+    expect(application).not.toHaveProperty("source");
+  });
+
+  it("白名單之外的欄位不准跟著 lead 落地", async () => {
+    await POST(request({ source: { utm_source: "google", contact: "偷渡的聯絡方式" } }));
+
+    const [, record] = mocks.appendRecord.mock.calls[0] as [string, Record<string, unknown>];
+    expect(record.source).toEqual({ utm_source: "google" });
+    expect(record.contact).toBe("line-id");
+  });
+
+  it("沒有歸因時不留空欄位", async () => {
+    await POST(request());
+
+    const [, record] = mocks.appendRecord.mock.calls[0] as [string, Record<string, unknown>];
+    expect(record).not.toHaveProperty("source");
   });
 });

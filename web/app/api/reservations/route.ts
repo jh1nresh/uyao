@@ -2,6 +2,7 @@ import { randomInt } from "node:crypto";
 
 import { NextResponse } from "next/server";
 
+import { normalizeAdSource } from "@/lib/attribution";
 import { logConsole } from "@/lib/box";
 import { getDrug, getStore, previewOffers, storesForDrug } from "@/lib/data";
 import { hoursSummary } from "@/lib/hours";
@@ -34,6 +35,8 @@ interface Body {
   contact?: unknown;
   demo?: unknown;
   intake?: unknown;
+  /** UTM／click id 歸因，見 lib/attribution.ts。使用者可控，一律當不可信輸入。 */
+  source?: unknown;
 }
 
 /**
@@ -154,6 +157,13 @@ export async function POST(request: Request) {
   // 兩個去處各有職責：record sink 是營運紀錄，store 是 Store OS 與取貨頁要讀的。
   // 症狀／需求描述是健康脈絡，只留在受 Store OS 身分保護的 reservation KV。
   // record sink 可能接 webhook 或 log；絕不能因為新增欄位就把內容外送。
+  // 歸因只進營運紀錄，不進 StoredReservation —— Store OS 與取貨頁是給藥師和
+  // 消費者看的，他們不需要知道這個人是哪則廣告帶來的。
+  //
+  // 別跟 `intake.source` 搞混：那個是「這筆需求從哪個站內流程來的」
+  // （shop_search 等），跟廣告歸因無關，而且它跟著 intake 一起被擋在 sink 外。
+  const source = normalizeAdSource(body.source);
+
   const { intake: _privateIntake, ...recordWithoutIntake } = record;
   try {
     await saveReservation(record);
@@ -162,7 +172,11 @@ export async function POST(request: Request) {
     // Store OS 是唯一店務入口；寫不進去就不能假裝預留已送達。
     return NextResponse.json({ error: demo ? "示範預留未送達，請再試一次" : "預留未送達藥局，請再試一次" }, { status: 503 });
   }
-  await appendRecord("reservations", { ...recordWithoutIntake, stockTier: offer.badge.tier });
+  await appendRecord("reservations", {
+    ...recordWithoutIntake,
+    stockTier: offer.badge.tier,
+    ...(source ? { source } : {}),
+  });
 
   // 預留已經安全寫入 Store OS；Web Push 只是離站提醒，失敗不影響 inbox。
   // Demo 單只提醒 uYao Store sandbox，不得觸發任何真實藥局裝置。

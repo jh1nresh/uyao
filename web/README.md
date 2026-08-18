@@ -56,8 +56,57 @@ box ingest → 庫存／效期狀態 → 消費端搜尋與 console
 | Web Push | `WEB_PUSH_PUBLIC_KEY`、`WEB_PUSH_PRIVATE_KEY`、`WEB_PUSH_SUBJECT` |
 | Email | `RESEND_API_KEY`、`PILOT_EMAIL_FROM`、`PILOT_EMAIL_TO` |
 | Record sinks | `RECORD_WEBHOOK_URL`、`PILOT_WEBHOOK_URL` |
+| 廣告量測（選填） | `NEXT_PUBLIC_GA4_ID`、`NEXT_PUBLIC_META_PIXEL_ID` |
 
 不要把實際值、Vercel sensitive pull 結果、Push subscription endpoint 或私鑰寫進 README。
+
+## 廣告歸因與轉換量測
+
+投錢之前的硬前置（`specs/ads-launch-v1.md` §8）。分兩層，**下層不依賴上層**：
+
+| 層 | 檔案 | 開關 |
+|---|---|---|
+| 第一方歸因 | `lib/attribution.ts`、`lib/attribution-client.ts` | 永遠開著 |
+| GA4 / Meta Pixel | `lib/analytics.ts`、`components/Analytics.tsx` | 設了 `NEXT_PUBLIC_*` ID 才載入 |
+
+第一方歸因把落地網址上的 `utm_*` 與 `gclid`／`fbclid`／`ttclid`／`msclkid` 收進
+sessionStorage，之後三個轉換 endpoint 都帶著它落進 `source` 欄位：
+
+| Endpoint | 意義 | 歸因去處 |
+|---|---|---|
+| `POST /api/demand` | 落空搜尋與到貨通知登記 | record sink |
+| `POST /api/pilot` | 藥局試點 lead | record sink（**不進通知信**） |
+| `POST /api/reservations` | 預留 | record sink（**不進 Store OS／取貨頁**） |
+
+**不放 cookie、不記 IP、不做指紋**，referrer 只留主機名 —— 與
+`specs/demand-capture.md` 的承諾一致。歸因模型是 session 內的 last non-direct click。
+
+`source` 只在伺服器端走白名單（`normalizeAdSource`）；前端塞任何其他欄位都會被丟掉。
+兩個「不進」是刻意的邊界，各有測試釘住：通知信是給人看的，收信的藥局不需要
+`utm_content`；Store OS 與取貨頁是藥師與消費者的工作介面，不該顯示這個人是哪則
+廣告帶來的。
+
+轉換事件（`lib/analytics.ts` 的 `track()`）：
+
+| 事件 | 觸發點 | Meta 標準事件 |
+|---|---|---|
+| `demand_recorded` | `NotifyMe` 掛載（落空搜尋被記錄） | 不映射 |
+| `notify_signup` | 到貨通知登記成功 | `Lead` |
+| `concierge_request` | **尚未接線** | `Contact` |
+
+藥局試點申請與預留刻意**不發事件**：這一輪不投 B2B 廣告
+（`specs/ads-launch-v1.md` §5.3），而 `OFFERS` 是空的、預留現在根本產生不出來。
+多一個沒有 campaign 對應、或結構上不可能觸發的優化目標只是雜訊。
+兩者的歸因照樣存進紀錄，之後要投、或第一台盒子上線時就量得到。
+
+`demand_recorded` 刻意不映射到標準事件：它是被動記錄不是使用者意圖，
+拿它當出價目標會買到一群必然落空的流量。
+
+`concierge_request` 的事件與映射都已就緒，但站上還沒有代問入口
+（`specs/ads-launch-v1.md` §3 的 IG DM 是 W1 要上的）。入口做出來時，
+在送出成功的地方呼叫 `track("concierge_request", { area })` 即可，不需要動這一層。
+
+沒設 ID 時站上不會出現任何第三方 analytics 網域，`track()` 是純 no-op。
 
 ## 產品邊界
 
