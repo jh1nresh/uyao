@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AreaSwitch } from "@/components/AreaSwitch";
-import { CatalogItemGrid } from "@/components/CatalogItemGrid";
+import { CatalogCarousel } from "@/components/CatalogCarousel";
 import { JsonLd } from "@/components/JsonLd";
 import { SearchInput } from "@/components/SearchInput";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -15,7 +15,7 @@ import {
   storesInArea,
   toAreaSlug,
 } from "@/lib/data";
-import { CATALOG_GROUPS, featuredCatalogDrugs } from "@/lib/catalog-groups";
+import { CATALOG_GROUPS } from "@/lib/catalog-groups";
 import { areaCopy, categoryName, localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
 import { PARTNER_STORE_ITEMS } from "@/lib/partner-stores";
@@ -118,7 +118,11 @@ export default async function HomePage({
   const area = toAreaSlug(rawArea);
   const storeCount = storesInArea(area).length;
   const drugs = allDrugs();
-  const featuredDrugs = featuredCatalogDrugs(drugs).slice(0, 4);
+  // 有商品圖的排前面 —— 橫向列第一眼要看到商品，不是一排文字卡。
+  // 同組內維持目錄原順序，才不會每次進站順序都在跳。
+  const catalogRail = [...drugs].sort(
+    (a, b) => Number(Boolean(b.image)) - Number(Boolean(a.image)),
+  );
   const currentArea = areaCopy(getArea(area), locale);
   const steps = locale === "en" ? STEPS_EN : STEPS_ZH;
 
@@ -182,7 +186,7 @@ export default async function HomePage({
         evidenceHref={`${SITE_URL}${locale === "en" ? "/en" : "/zh-tw"}/evidence#partners`}
       />
 
-      {/* 首頁只放固定精選；完整目錄交給可搜尋、可分類的列表頁。 */}
+      {/* 首頁直接橫向瀏覽整個目錄；要搜尋與篩選時再進列表頁。 */}
       <section className="bg-ivory">
         <div className="shop-shell py-14 sm:py-20">
           <div className="mb-6 max-w-[720px]">
@@ -204,7 +208,13 @@ export default async function HomePage({
               </Link>
             ))}
           </nav>
-          <CatalogItemGrid drugs={featuredDrugs} area={area} locale={locale} featured />
+          {/* 整個目錄橫向瀏覽：有圖的品項排前面，讓第一眼就看到商品而不是文字卡。 */}
+          <CatalogCarousel
+            drugs={catalogRail}
+            area={area}
+            locale={locale}
+            label={locale === "en" ? "Catalog items" : "目錄品項"}
+          />
           <div className="mt-6 flex justify-end">
             <Link
               href={`${localizedPath("/category/partner-item", locale)}?area=${area}`}

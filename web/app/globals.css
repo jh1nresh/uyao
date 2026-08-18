@@ -369,3 +369,16 @@ html[data-theme="dark"] .theme-logo-dark {
   outline: 2px solid rgb(var(--color-green));
   outline-offset: 1px;
 }
+
+/* 目錄橫向瀏覽：捲軸細一點，不要在卡片下方壓出一條粗灰帶。
+   scrollbar-width 是標準屬性，::-webkit- 那條給 Safari 與 Chrome。 */
+.catalog-rail {
+  scrollbar-width: thin;
+  scrollbar-color: rgb(var(--color-line)) transparent;
+}
+.catalog-rail::-webkit-scrollbar { height: 6px; }
+.catalog-rail::-webkit-scrollbar-track { background: transparent; }
+.catalog-rail::-webkit-scrollbar-thumb {
+  background: rgb(var(--color-line));
+  border-radius: 3px;
+}
