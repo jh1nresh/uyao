@@ -79,6 +79,7 @@ const EXPECTED_PRODUCTS = {
     "益固康 Elgucare",
     "憶元素 天麻100膠囊 60粒",
     "強抗力優 450+ Defense 60粒",
+    "New AOB Vitality Beauty 45包",
   ],
 } as const;
 

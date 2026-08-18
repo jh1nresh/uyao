@@ -63,6 +63,9 @@ const GROUP_BY_DRUG_SLUG: Record<string, Exclude<CatalogGroupSlug, "all">> = {
   "greenplus-vasopower": "botanical-blends",
   "puda-grape-seed": "botanical-blends",
   "puda-green-tea-compound": "botanical-blends",
+  // 成分未知的品項沿用複方桶 —— 護智慷 60 粒也在這裡。這一格是「複方／其他」
+  // 的實際用途，不是在宣稱 AOB 是植物萃取。
+  "aob-vitality-beauty-45": "botanical-blends",
   "chungchi-yiyuansu-gastrodia-100": "botanical-blends",
   // 酵母來源的葡聚多醣體不是植物萃取，但複方分類是目前唯一放得下的瀏覽群。
   "yuanding-puregps-defense-450": "botanical-blends",
