@@ -41,7 +41,7 @@ NOTE = {
 }
 
 
-def render(shot: Path, name: str, meta: str, out: Path, kind: str, focus: str) -> None:
+def render(shot: Path, name: str, meta: str, out: Path, kind: str, focus: str, fit: str) -> None:
     template = (web_root() / "scripts" / "product-plate.html").read_text(encoding="utf-8")
     html = (
         template.replace("__SHOT__", shot.resolve().as_uri())
@@ -49,6 +49,7 @@ def render(shot: Path, name: str, meta: str, out: Path, kind: str, focus: str) -
         .replace("__META__", meta)
         .replace("__NOTE__", NOTE[kind])
         .replace("__FOCUS__", focus)
+        .replace("__FIT__", fit)
     )
 
     with tempfile.TemporaryDirectory() as tmp:
@@ -95,6 +96,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--meta", required=True, help="劑型 · 規格 · 廠商")
     ap.add_argument("--kind", choices=sorted(NOTE), default="illustration",
                     help="packshot = 可代表實際包裝的實拍；illustration = 生成示意圖")
+    ap.add_argument("--fit", choices=("cover", "contain"), default="cover",
+                    help="去背過的圖用 contain（完整入鏡）；未去背的原始照用 cover")
     ap.add_argument("--focus", default="50% 50%",
                     help="CSS object-position，用來把商品框進畫面，例如 \"45% 55%\"")
     args = ap.parse_args(argv)
@@ -110,7 +113,7 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     out = web_root() / "public" / "products" / f"{args.slug}.webp"
-    render(args.shot, args.name, args.meta, out, args.kind, args.focus)
+    render(args.shot, args.name, args.meta, out, args.kind, args.focus, args.fit)
     print(f"{out.relative_to(web_root())}  {WIDTH}×{HEIGHT}  {out.stat().st_size // 1024} KB")
     return 0
 

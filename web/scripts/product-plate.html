@@ -27,10 +27,10 @@
     font-family: "Noto Sans TC", sans-serif;
     -webkit-font-smoothing: antialiased;
   }
-  /* cover 而不是 contain：來源照的底色跟 #F2EFE6 有色差，contain 會在兩側
-     留下看得出接縫的空白帶。來源四周留白夠多，裁掉不會切到產品。 */
-  .shot { flex: 1; min-height: 0; overflow: hidden; }
-  .shot img { width: 100%; height: 100%; object-fit: cover; object-position: __FOCUS__; display: block; }
+  /* 去背過的圖底色已經是 #F2EFE6，用 contain 不會有接縫，商品也不會被裁到。
+     沒去背的原始照要用 cover，否則兩側會露出跟頁面對不起來的底色。 */
+  .shot { flex: 1; min-height: 0; overflow: hidden; padding: 30px 40px 10px; }
+  .shot img { width: 100%; height: 100%; object-fit: __FIT__; object-position: __FOCUS__; display: block; }
   .plate {
     flex: none;
     border-top: 1px solid #D2CDC1;
