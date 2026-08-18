@@ -62,8 +62,9 @@ ${line("Medicine finder", `${SHOP_URL}/en`, CONSUMER_DESCRIPTION.en)}
 
 ## Machine-readable
 
+${line("OpenAPI", `${SITE_URL}/openapi.json`, "Read-only catalog and pharmacy endpoints. Write endpoints are listed but marked x-internal: they back this site's own forms and are not a public contract.")}
 ${line("Sitemap", `${SITE_URL}/sitemap.xml`, "Every indexable company URL in both locales.")}
-${line("Robots", `${SITE_URL}/robots.txt`, "Crawl policy. /api/, /console, and /store-os are disallowed.")}
+${line("Robots", `${SITE_URL}/robots.txt`, "Crawl policy. /console and /store-os are disallowed; the two read endpoints are allowed.")}
 
 ## Contact
 
@@ -105,6 +106,8 @@ ${items.join("\n")}
 
 ## Machine-readable
 
+${line("OpenAPI", `${SHOP_URL}/openapi.json`, "Read-only catalog and pharmacy endpoints. No price, stock, or availability is ever returned.")}
+${line("Catalog API", `${SHOP_URL}/api/catalog`, "Every catalog record as JSON, in one request.")}
 ${line("Sitemap", `${SHOP_URL}/sitemap.xml`, "Every indexable consumer URL in both locales.")}
 ${line("Robots", `${SHOP_URL}/robots.txt`, "Crawl policy for the consumer host.")}
 

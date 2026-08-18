@@ -25,7 +25,10 @@ export default async function robots(): Promise<MetadataRoute.Robots> {
   return {
     rules: {
       userAgent: "*",
-      allow: "/",
+      // /api/ 整段不給爬，但兩條公開唯讀端點要開 —— openapi.json 對外宣告
+      // 它們可用，robots 又擋著的話，守規矩的 agent 會拒絕抓，等於發了一份
+      // 自己擋住自己的規格。Allow 比 Disallow 更精確，優先生效。
+      allow: ["/", "/api/catalog", "/api/pharmacies"],
       disallow: ["/api/", "/console", "/store-os", "/zh-tw/store-os", "/en/store-os"],
     },
     sitemap: `${canonicalBase}/sitemap.xml`,

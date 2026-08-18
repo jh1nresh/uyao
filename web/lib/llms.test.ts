@@ -23,6 +23,14 @@ describe("llms.txt", () => {
     expect(company).toContain(`${SITE_URL}/en/guides`);
   });
 
+  it("points agents at the OpenAPI document from both hosts", () => {
+    expect(company).toContain(`${SITE_URL}/openapi.json`);
+    expect(shop).toContain(`${SHOP_URL}/openapi.json`);
+    expect(shop).toContain(`${SHOP_URL}/api/catalog`);
+    // The write endpoints must never be advertised as a usable surface here.
+    expect(company).toMatch(/x-internal/);
+  });
+
   it("lists only catalog items that passed the admission gate, on a URL that exists", () => {
     const admitted = indexableCatalogItems("zh");
     expect(admitted.length).toBeGreaterThan(0);

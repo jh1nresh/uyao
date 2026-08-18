@@ -63,6 +63,7 @@ function partnerProvidedProduct({
   slug,
   name,
   aliases = [],
+  nameEn,
   form,
   spec = "規格待確認",
   ingredients,
@@ -79,6 +80,8 @@ function partnerProvidedProduct({
   slug: string;
   name: string;
   aliases?: string[];
+  /** 廠商登記的英文品名。沒有就留空 —— 音譯或自行翻譯會變成假的商品名。 */
+  nameEn?: string;
   form: string;
   spec?: string;
   ingredients: string[];
@@ -96,6 +99,7 @@ function partnerProvidedProduct({
     slug,
     name,
     aliases,
+    nameEn,
     form,
     spec,
     licenseNo: "",
@@ -541,6 +545,7 @@ const DRUGS: Drug[] = [
     slug: "greenplus-vasopower",
     name: "舒絡寶 Vasopower",
     aliases: ["舒絡寶", "Vasopower"],
+    nameEn: "Vasopower",
     form: "劑型待確認",
     ingredients: ["人參", "當歸", "刺五加", "雞屎藤", "木瓜", "桂枝", "白朮", "紅棗", "甘草"],
     nutritionFocus: "人參、當歸與多種植物萃取物的產品組成",
@@ -552,6 +557,7 @@ const DRUGS: Drug[] = [
     slug: "greenplus-discpower",
     name: "龍固寶 DiscPower",
     aliases: ["龍固寶", "DiscPower"],
+    nameEn: "DiscPower",
     form: "劑型待確認",
     ingredients: ["黃耆萃取", "木瓜萃取", "丹參萃取", "雞屎藤萃取", "玉竹萃取", "紅景天萃取", "天麻萃取", "紅棗萃取", "甘草萃取"],
     nutritionFocus: "黃耆、木瓜、丹參與多種植物萃取物的產品組成",
@@ -563,6 +569,7 @@ const DRUGS: Drug[] = [
     slug: "greenplus-elgucare",
     name: "益固康 Elgucare",
     aliases: ["益固康", "Elgucare"],
+    nameEn: "Elgucare",
     form: "劑型待確認",
     // 成分照包裝背面的 Supplement Facts 與中文成分欄逐項核對：是伸筋草
     // （Lycopodium clavatum），不是木瓜 —— 木瓜在舒絡寶與龍固寶才有。
@@ -652,6 +659,7 @@ const DRUGS: Drug[] = [
     slug: "luhsin-l-glutamine",
     name: "賜利康療養素－左旋麩醯胺酸",
     aliases: ["賜利康療養素", "左旋麩醯胺酸", "L-Glutamine"],
+    nameEn: "L-Glutamine",
     form: "劑型待確認",
     ingredients: ["左旋麩醯胺酸（L-Glutamine）"],
     nutritionFocus: "左旋麩醯胺酸的產品組成",
@@ -666,6 +674,7 @@ const DRUGS: Drug[] = [
     slug: "aob-vitality-beauty-45",
     name: "New AOB Vitality Beauty",
     aliases: ["AOB", "AOB Vitality Beauty", "新AOB"],
+    nameEn: "AOB Vitality Beauty",
     form: "劑型待確認",
     spec: "45包",
     licenseNo: "",
@@ -732,6 +741,7 @@ const DRUGS: Drug[] = [
     slug: "yuanding-puregps-defense-450",
     name: "強抗力優 450+ Defense",
     aliases: ["強抗力優", "強抗力優450", "PUREGPS", "PUREGPS Defense", "Defense"],
+    nameEn: "PUREGPS Defense",
     form: "植物膠囊",
     spec: "60粒",
     // 每粒 450 毫克；非水溶性 250 mg ＋ 水溶性 150 mg 合為原廠標示的
@@ -767,6 +777,7 @@ const DRUGS: Drug[] = [
     slug: "chungchi-ganmeijia-coral-ca",
     name: "甘鎂佳珊瑚鈣",
     aliases: ["甘鎂佳", "珊瑚鈣", "Coral Ca", "Magnesium Glycinate Coral Ca"],
+    nameEn: "Magnesium Glycinate Coral Ca",
     form: "錠劑",
     spec: "60錠",
     // 盒面只列成分名與 K2／D3／Mg 三個標示圈，沒有每錠含量；沒有背標之前
@@ -801,6 +812,7 @@ const DRUGS: Drug[] = [
     slug: "tianxia-chan-c-80",
     name: "強喜錠 Chan-C",
     aliases: ["強喜錠", "強喜", "Chan-C", "Chan-C Tablets"],
+    nameEn: "Chan-C Tablets",
     form: "錠劑",
     spec: "80錠",
     ingredients: ["維生素C（抗壞血酸）", "抗壞血酸鈉", "泛酸鈣", "維生素B6", "β-胡蘿蔔素", "蔗糖", "氧化澱粉", "草莓香料"],
@@ -834,6 +846,7 @@ const DRUGS: Drug[] = [
     slug: "huamao-progifted-lp28",
     name: "Progifted LP-28 益生菌",
     aliases: ["Progifted", "LP-28", "LP28", "Progifted LP-28"],
+    nameEn: "Progifted LP-28",
     form: "粉末（隨身包）",
     spec: "30包",
     ingredients: ["15種三層包埋複合乳酸菌（含 LP-28®）", "日本天野（Amano）3種綜合酵素", "β-葡聚多醣（多國專利）", "菊糖", "蘋果口味"],

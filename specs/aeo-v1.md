@@ -47,6 +47,35 @@ first job is to carry the product boundaries — not an online pharmacy, not a
 POS replacement, no live inventory, guides not pharmacist-reviewed — into any
 summary an agent writes.
 
+## Machine-readable API surface
+
+`/openapi.json` (`web/lib/openapi.ts`) describes two kinds of endpoint, and the
+distinction is the point:
+
+- `GET /api/catalog`, `/api/catalog/{slug}`, `/api/pharmacies` are a public
+  read contract. They return only fields the corresponding pages already
+  render, carry a `disclaimer` string in every response, and never return
+  price, stock, availability, or `daysSinceScan` — uYao has no live inventory
+  and a machine-readable stock field would be read as one.
+- The intake endpoints (`/api/demand`, `/api/pilot`, `/api/reservations`) are
+  listed but marked `x-internal: true`, with each description stating that they
+  back this site's own forms and are not a public contract. They accept
+  personal contact details and `POST /api/reservations` creates work in a real
+  pharmacy's Store OS and can trigger a push notification. The marking is
+  documentation, not a control; the real defences are the per-client and
+  per-number rate limits, whitelist validation, and no-show blocking already in
+  those routes.
+
+`Store.owner` (the pharmacist-in-charge name) is never serialized. No page
+displays it, so the API must not become the one place it can be bulk-extracted.
+
+`robots.txt` allows `/api/catalog` and `/api/pharmacies` while `/api/` stays
+disallowed: publishing a spec for endpoints that robots blocks would make
+well-behaved agents refuse to fetch them.
+
+`web/lib/openapi.test.ts` and `web/lib/public-api.test.ts` are the regression
+gates for both the `x-internal` marking and the no-inventory/no-PII rules.
+
 ## Consumer admission gate
 
 The consumer host indexes its two homepages, both category pages, and one
@@ -55,6 +84,14 @@ product-data source or uYao's own packshot; the English URL additionally
 requires English copy (`nameEn`), or the page would enter the English index
 with a Chinese title as a near-duplicate of the zh-tw one. Untranslated `/en`
 item pages canonicalize to `/zh-tw`.
+
+`nameEn` is only ever the manufacturer's registered Latin-script product name,
+copied from that item's own `aliases`. Never transliterate or translate one: a
+fabricated English product name is the same class of error as a fabricated
+licence number. Verified 一般食品 keep `nameEn` empty regardless, because the
+field renders as a mono product code and reads as a drug identifier on a
+非藥品 item (`web/lib/catalog.test.ts` enforces this). Those items stay
+zh-tw-only until a real English name exists.
 
 Never admitted: `/search` (no stable content, one URL per query), `/store/*`
 (shows supply no pharmacy has confirmed), and `/r/*` (private reservation
