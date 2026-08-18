@@ -55,6 +55,10 @@ const EXPECTED_CATALOG = [
   { slug: "aob-vitality-beauty-45", label: "New AOB Vitality Beauty 45包" },
   { slug: "chungchi-yiyuansu-gastrodia-100", label: "憶元素 天麻100膠囊 60粒" },
   { slug: "yuanding-puregps-defense-450", label: "強抗力優 450+ Defense 60粒" },
+  { slug: "chungchi-ganmeijia-coral-ca", label: "甘鎂佳珊瑚鈣 60錠" },
+  { slug: "tianxia-chan-c-80", label: "強喜錠 Chan-C 80錠" },
+  { slug: "huamao-progifted-lp28", label: "Progifted LP-28 益生菌 30包" },
+  { slug: "gaoyouzhi-vitamin-b-60", label: "高優質維他命B群 60粒" },
 ] as const;
 
 const OLD_SAMPLE_SLUGS = [
@@ -86,7 +90,7 @@ function catalogLabel(drug: ReturnType<typeof allDrugs>[number]): string {
 }
 
 describe("合作藥局常見品項目錄", () => {
-  it("公開目錄剛好只有店家確認的四十個品項", () => {
+  it("公開目錄剛好只有店家確認的四十三個品項", () => {
     expect(allDrugs().map((drug) => ({ slug: drug.slug, label: catalogLabel(drug) }))).toEqual(
       EXPECTED_CATALOG,
     );
@@ -121,7 +125,7 @@ describe("合作藥局常見品項目錄", () => {
   it("合作藥局提供的新增品項保留資料來源、廠商、產地與分類待確認邊界", () => {
     const partnerProvided = allDrugs().filter((drug) => drug.source?.kind === "partner");
 
-    expect(partnerProvided).toHaveLength(27);
+    expect(partnerProvided).toHaveLength(31);
     for (const drug of partnerProvided) {
       expect(drug.drugClass).toBe("待確認");
       expect(drug.ingredients.length).toBeGreaterThan(0);
