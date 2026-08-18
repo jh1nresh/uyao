@@ -1,7 +1,6 @@
 import { CATEGORIES, allDrugs } from "./data";
 import type { Locale } from "./i18n";
-import type { Drug } from "./types";
-import { SHOP_INDEXABLE_PATHS } from "./seo";
+import type { Drug, IsoDate } from "./types";
 
 /**
  * Consumer admission gate, in code.
@@ -40,19 +39,49 @@ const LOCALES = ["zh", "en"] as const;
 const LOCALE_PREFIX: Record<Locale, string> = { zh: "/zh-tw", en: "/en" };
 
 /**
- * Every consumer URL the shop sitemap publishes: both localized homepages,
- * both locales of each category, and each admitted item in the locales whose
- * copy actually exists.
+ * 消費端首頁自己的文案更新日。品項改動會經由下面的 `latest()` 帶進來，
+ * 這個常數只負責首頁上不是目錄的那些字。改文案才動它。
  */
+const SHOP_HOME_COPY_UPDATED: IsoDate = "2026-08-18";
+
+export type ShopSitemapEntry = { path: string; lastModified: IsoDate };
+
+/** ISO 日期字串比大小就是時序比大小，不用 Date（render 期不碰時鐘）。 */
+function latest(dates: IsoDate[], fallback: IsoDate): IsoDate {
+  return dates.reduce((newest, date) => (date > newest ? date : newest), fallback);
+}
+
+/**
+ * Every consumer URL the shop sitemap publishes, each with real freshness:
+ * both localized homepages, both locales of each category, and each admitted
+ * item in the locales whose copy actually exists.
+ *
+ * `lastmod` 的重點是「哪幾頁變了」。品項頁用自己的 `updatedOn`；品類頁與
+ * 首頁取底下品項的最新日期，因為它們的內容就是那些品項。整批同一天不是
+ * 問題 —— 那是事實；一旦只改一筆，就只有那一頁的日期會動。
+ */
+export function shopSitemapEntries(): ShopSitemapEntry[] {
+  return LOCALES.flatMap((locale) => {
+    const prefix = LOCALE_PREFIX[locale];
+    const items = indexableCatalogItems(locale);
+    const itemDates = items.map((drug) => drug.updatedOn);
+    const catalogUpdated = latest(itemDates, SHOP_HOME_COPY_UPDATED);
+
+    return [
+      { path: prefix, lastModified: latest([catalogUpdated], SHOP_HOME_COPY_UPDATED) },
+      ...CATEGORIES.map((category) => ({
+        path: `${prefix}/category/${category.slug}`,
+        lastModified: catalogUpdated,
+      })),
+      ...items.map((drug) => ({
+        path: `${prefix}/drug/${drug.slug}`,
+        lastModified: drug.updatedOn,
+      })),
+    ];
+  });
+}
+
+/** 只要路徑的呼叫端用這個。順序與 `shopSitemapEntries()` 一致。 */
 export function shopIndexablePaths(): string[] {
-  return [
-    ...SHOP_INDEXABLE_PATHS,
-    ...LOCALES.flatMap((locale) => {
-      const prefix = LOCALE_PREFIX[locale];
-      return [
-        ...CATEGORIES.map((category) => `${prefix}/category/${category.slug}`),
-        ...indexableCatalogItems(locale).map((drug) => `${prefix}/drug/${drug.slug}`),
-      ];
-    }),
-  ];
+  return shopSitemapEntries().map((entry) => entry.path);
 }
