@@ -71,6 +71,7 @@ function partnerProvidedProduct({
   manufacturer,
   origin,
   image,
+  detailImages,
   highlights,
   dosage,
   cautions,
@@ -86,6 +87,7 @@ function partnerProvidedProduct({
   manufacturer: string;
   origin: string;
   image?: DrugImage;
+  detailImages?: Drug["detailImages"];
   highlights?: Drug["highlights"];
   dosage?: string;
   cautions?: string;
@@ -107,6 +109,7 @@ function partnerProvidedProduct({
     manufacturer,
     origin,
     image,
+    detailImages,
     highlights,
     dosage,
     cautions,
@@ -576,6 +579,11 @@ const DRUGS: Drug[] = [
     ],
     dosage: "保健：每日 2 次，每次 1~2 粒。加強：每日 2 次，每次 2~3 粒。飯前空腹食用最佳，多食無益。",
     cautions: "避免孩童自行取用，請置於陰涼處、避免陽光直射。",
+    detailImages: [
+      { src: "/products/detail/elgucare-1-main.webp", alt: "主圖：益固康 Elgucare 的商品主視覺，含品名、規格與重點標示", altEn: "Product hero image for 益固康 Elgucare, showing the name, pack size and key callouts" },
+      { src: "/products/detail/elgucare-2-features.webp", alt: "產品特色：益固康 Elgucare 的原廠標示重點條列", altEn: "Feature summary for 益固康 Elgucare, listing the manufacturer's own stated points" },
+      { src: "/products/detail/elgucare-3-ingredients.webp", alt: "成分與規格：益固康 Elgucare 的成分含量、規格、產地與注意事項", altEn: "Ingredient and specification table for 益固康 Elgucare, with origin and cautions" },
+    ],
     image: {
       src: "/products/greenplus-elgucare.webp",
       width: 900,
@@ -668,6 +676,10 @@ const DRUGS: Drug[] = [
     nutritionFocus: "營養補充定位待確認",
     nutritionFocusEn: "Nutrition positioning pending verification",
     searchTerms: [],
+    detailImages: [
+      { src: "/products/detail/aob-1-main.webp", alt: "主圖：New AOB Vitality Beauty 的商品主視覺，含品名、規格與重點標示", altEn: "Product hero image for New AOB Vitality Beauty, showing the name, pack size and key callouts" },
+      { src: "/products/detail/aob-2-features.webp", alt: "產品特色：New AOB Vitality Beauty 的原廠標示重點條列", altEn: "Feature summary for New AOB Vitality Beauty, listing the manufacturer's own stated points" },
+    ],
     image: {
       src: "/products/aob-vitality-beauty-45.webp",
       width: 900,
@@ -702,6 +714,11 @@ const DRUGS: Drug[] = [
     ],
     dosage: "每日 1 粒。",
     cautions: "本品含乳糖、魚油、黑豆，對其成分過敏者請留意。請置於陰涼乾燥處，避免陽光直射。",
+    detailImages: [
+      { src: "/products/detail/yiyuansu-1-main.webp", alt: "主圖：憶元素 天麻100膠囊 的商品主視覺，含品名、規格與重點標示", altEn: "Product hero image for 憶元素 天麻100膠囊, showing the name, pack size and key callouts" },
+      { src: "/products/detail/yiyuansu-2-features.webp", alt: "產品特色：憶元素 天麻100膠囊 的原廠標示重點條列", altEn: "Feature summary for 憶元素 天麻100膠囊, listing the manufacturer's own stated points" },
+      { src: "/products/detail/yiyuansu-3-ingredients.webp", alt: "成分與規格：憶元素 天麻100膠囊 的成分含量、規格、產地與注意事項", altEn: "Ingredient and specification table for 憶元素 天麻100膠囊, with origin and cautions" },
+    ],
     image: {
       src: "/products/chungchi-yiyuansu-gastrodia-100.webp",
       width: 900,
@@ -732,6 +749,11 @@ const DRUGS: Drug[] = [
     ],
     dosage: "每日 1~2 粒，餐後食用。",
     cautions: "孕婦及授乳中婦女請遵照醫師指示食用；對穀胱甘肽過敏者、孕婦、哺乳婦女及嬰幼兒應避免食用。請保存於陰涼乾燥處，避免熱及陽光直射。",
+    detailImages: [
+      { src: "/products/detail/defense-1-main.webp", alt: "主圖：強抗力優 450+ Defense 的商品主視覺，含品名、規格與重點標示", altEn: "Product hero image for 強抗力優 450+ Defense, showing the name, pack size and key callouts" },
+      { src: "/products/detail/defense-2-features.webp", alt: "產品特色：強抗力優 450+ Defense 的原廠標示重點條列", altEn: "Feature summary for 強抗力優 450+ Defense, listing the manufacturer's own stated points" },
+      { src: "/products/detail/defense-3-ingredients.webp", alt: "成分與規格：強抗力優 450+ Defense 的成分含量、規格、產地與注意事項", altEn: "Ingredient and specification table for 強抗力優 450+ Defense, with origin and cautions" },
+    ],
     image: {
       src: "/products/yuanding-puregps-defense-450.webp",
       width: 900,
@@ -754,6 +776,11 @@ const DRUGS: Drug[] = [
     searchTerms: ["鎂", "甘胺酸鎂", "珊瑚鈣", "維生素K2", "MK-7", "維生素D3"],
     manufacturer: "中旗生物科技股份有限公司",
     origin: "加拿大（包裝標示 MADE IN CANADA）",
+    detailImages: [
+      { src: "/products/detail/coralca-1-main.webp", alt: "主圖：甘鎂佳珊瑚鈣 的商品主視覺，含品名、規格與重點標示", altEn: "Product hero image for 甘鎂佳珊瑚鈣, showing the name, pack size and key callouts" },
+      { src: "/products/detail/coralca-2-features.webp", alt: "產品特色：甘鎂佳珊瑚鈣 的原廠標示重點條列", altEn: "Feature summary for 甘鎂佳珊瑚鈣, listing the manufacturer's own stated points" },
+      { src: "/products/detail/coralca-3-ingredients.webp", alt: "成分與規格：甘鎂佳珊瑚鈣 的成分含量、規格、產地與注意事項", altEn: "Ingredient and specification table for 甘鎂佳珊瑚鈣, with origin and cautions" },
+    ],
     image: {
       src: "/products/chungchi-ganmeijia-coral-ca.webp",
       width: 900,
@@ -783,6 +810,11 @@ const DRUGS: Drug[] = [
     // 不把代理商當成製造廠。
     manufacturer: "井田國際醫藥廠股份有限公司（天下生物科技股份有限公司總代理）",
     origin: "台灣",
+    detailImages: [
+      { src: "/products/detail/chanc-1-main.webp", alt: "主圖：強喜錠 Chan-C 的商品主視覺，含品名、規格與重點標示", altEn: "Product hero image for 強喜錠 Chan-C, showing the name, pack size and key callouts" },
+      { src: "/products/detail/chanc-2-features.webp", alt: "產品特色：強喜錠 Chan-C 的原廠標示重點條列", altEn: "Feature summary for 強喜錠 Chan-C, listing the manufacturer's own stated points" },
+      { src: "/products/detail/chanc-3-ingredients.webp", alt: "成分與規格：強喜錠 Chan-C 的成分含量、規格、產地與注意事項", altEn: "Ingredient and specification table for 強喜錠 Chan-C, with origin and cautions" },
+    ],
     image: {
       src: "/products/tianxia-chan-c-80.webp",
       width: 900,
@@ -810,6 +842,11 @@ const DRUGS: Drug[] = [
     manufacturer: "華貿行實業股份有限公司",
     // 盒面沒有產地標示，店家提供的資料也沒有。空著比猜一個國家好。
     origin: "產地待確認",
+    detailImages: [
+      { src: "/products/detail/progifted-1-main.webp", alt: "主圖：Progifted LP-28 益生菌 的商品主視覺，含品名、規格與重點標示", altEn: "Product hero image for Progifted LP-28 益生菌, showing the name, pack size and key callouts" },
+      { src: "/products/detail/progifted-2-features.webp", alt: "產品特色：Progifted LP-28 益生菌 的原廠標示重點條列", altEn: "Feature summary for Progifted LP-28 益生菌, listing the manufacturer's own stated points" },
+      { src: "/products/detail/progifted-3-ingredients.webp", alt: "成分與規格：Progifted LP-28 益生菌 的成分含量、規格、產地與注意事項", altEn: "Ingredient and specification table for Progifted LP-28 益生菌, with origin and cautions" },
+    ],
     image: {
       src: "/products/huamao-progifted-lp28.webp",
       width: 900,
@@ -839,6 +876,11 @@ const DRUGS: Drug[] = [
     // 留待確認 —— 可查證的公司識別不猜。
     manufacturer: "廠商待確認",
     origin: "產地待確認",
+    detailImages: [
+      { src: "/products/detail/bgroup-1-main.webp", alt: "主圖：高優質維他命B群 的商品主視覺，含品名、規格與重點標示", altEn: "Product hero image for 高優質維他命B群, showing the name, pack size and key callouts" },
+      { src: "/products/detail/bgroup-2-features.webp", alt: "產品特色：高優質維他命B群 的原廠標示重點條列", altEn: "Feature summary for 高優質維他命B群, listing the manufacturer's own stated points" },
+      { src: "/products/detail/bgroup-3-ingredients.webp", alt: "成分與規格：高優質維他命B群 的成分含量、規格、產地與注意事項", altEn: "Ingredient and specification table for 高優質維他命B群, with origin and cautions" },
+    ],
     image: {
       src: "/products/gaoyouzhi-vitamin-b-60.webp",
       width: 900,

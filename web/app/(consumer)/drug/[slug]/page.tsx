@@ -390,6 +390,42 @@ export default async function DrugPage({
         </section>
       )}
 
+      {/* 電商版型算繪的商品說明圖。是實拍加排版文字的行銷素材，不是包裝實拍，
+          所以標「商品說明圖」而不是沿用 image 的 packshot 宣告。 */}
+      {drug.detailImages && drug.detailImages.length > 0 && (
+        <section className="border-b border-line bg-ivory" aria-labelledby="detail-images-heading">
+          <div className="shop-shell py-8 sm:py-10">
+            <div className="flex max-w-[900px] flex-wrap items-baseline gap-x-3 gap-y-1">
+              <h2 id="detail-images-heading" className="editorial-display m-0 text-[26px] leading-[1.3] sm:text-[32px]">
+                {locale === "en" ? "Product detail images" : "商品說明圖"}
+              </h2>
+              <span className="border border-oxblood px-[7px] py-px text-[13px] font-bold text-oxblood">
+                {locale === "en" ? "MANUFACTURER'S OWN WORDING" : "原廠標示，非 uYao 評價"}
+              </span>
+            </div>
+            <div className="mt-5 grid max-w-[900px] gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {drug.detailImages.map((item) => (
+                <div key={item.src} className="border border-line bg-paper">
+                  <Image
+                    src={item.src}
+                    alt={locale === "en" ? item.altEn : item.alt}
+                    width={1000}
+                    height={1000}
+                    sizes="(min-width: 1024px) 290px, (min-width: 640px) 45vw, 100vw"
+                    className="block h-auto w-full"
+                  />
+                </div>
+              ))}
+            </div>
+            <p className="mb-0 mt-4 max-w-[900px] border-l-2 border-oxblood pl-3 text-[14px] leading-[1.75] text-muted">
+              {locale === "en"
+                ? "These images combine partner-supplied product photos with typeset text taken from the package or the manufacturer's own material. uYao has not independently verified the claims in them, and they are not an endorsement."
+                : "這些圖是合作藥局提供的商品照，加上照抄自包裝或原廠資料的排版文字；uYao 未獨立驗證其中的說法，也不構成背書。"}
+            </p>
+          </div>
+        </section>
+      )}
+
       {alternatives.length > 0 && (
         <section className="bg-ivory">
           <div className="shop-shell py-10 sm:py-14">
