@@ -52,6 +52,8 @@ const EXPECTED_CATALOG = [
   { slug: "youquan-super-magnesium", label: "新優力超級鎂" },
   { slug: "chung-jih-youweining", label: "佑衛寧 高麗菜濃縮複方膠囊" },
   { slug: "luhsin-l-glutamine", label: "賜利康療養素－左旋麩醯胺酸" },
+  { slug: "chungchi-yiyuansu-gastrodia-100", label: "憶元素 天麻100膠囊 60粒" },
+  { slug: "yuanding-puregps-defense-450", label: "強抗力優 450+ Defense 60粒" },
 ] as const;
 
 const OLD_SAMPLE_SLUGS = [
@@ -83,7 +85,7 @@ function catalogLabel(drug: ReturnType<typeof allDrugs>[number]): string {
 }
 
 describe("合作藥局常見品項目錄", () => {
-  it("公開目錄剛好只有店家確認的三十七個品項", () => {
+  it("公開目錄剛好只有店家確認的三十九個品項", () => {
     expect(allDrugs().map((drug) => ({ slug: drug.slug, label: catalogLabel(drug) }))).toEqual(
       EXPECTED_CATALOG,
     );
@@ -118,7 +120,7 @@ describe("合作藥局常見品項目錄", () => {
   it("合作藥局提供的新增品項保留資料來源、廠商、產地與分類待確認邊界", () => {
     const partnerProvided = allDrugs().filter((drug) => drug.source?.kind === "partner");
 
-    expect(partnerProvided).toHaveLength(25);
+    expect(partnerProvided).toHaveLength(27);
     for (const drug of partnerProvided) {
       expect(drug.drugClass).toBe("待確認");
       expect(drug.ingredients.length).toBeGreaterThan(0);
