@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 
 import { StockBadge } from "./StockBadge";
 import { useLocale } from "./LocaleProvider";
+import { captureAdSource } from "@/lib/attribution-client";
 import { PRICE_NOTICE } from "@/lib/pricing";
 import { hoursSummary } from "@/lib/hours";
 import { localizedPath } from "@/lib/i18n";
@@ -120,6 +121,7 @@ export function ReserveSheet({
           drugSlug: target.drug.slug,
           storeSlug: target.store.slug,
           contact,
+          source: captureAdSource(),
           ...(hasIntake && shareIntake ? {
             intake: {
               ...(searchQuery ? { searchQuery } : {}),

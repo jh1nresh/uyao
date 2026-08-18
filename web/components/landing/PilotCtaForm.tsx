@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { captureAdSource } from "@/lib/attribution-client";
+
 /** 問題選項的 canonical value（中文），與 /api/pilot 的白名單同步，改一邊記得改另一邊。 */
 export interface PilotFormCopy {
   locale: "zh" | "en";
@@ -54,7 +56,7 @@ export function PilotCtaForm({ copy }: { copy: PilotFormCopy }) {
       const res = await fetch("/api/pilot", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ name, area, contact, problems: picked }),
+        body: JSON.stringify({ name, area, contact, problems: picked, source: captureAdSource() }),
       });
       const data = (await res.json()) as { ok?: boolean; error?: string };
       if (!res.ok) {

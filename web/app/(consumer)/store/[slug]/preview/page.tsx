@@ -20,7 +20,19 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-export default async function StorePreviewPage() {
+export default async function StorePreviewPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
   const locale = await getRequestLocale();
-  redirect(localizedPath(`/demo/${STORE_DEMO_SANDBOX_SLUG}`, locale));
+  // 查詢字串要跟著轉址走：掉了 utm 就等於掉了歸因，而歸因掉了不會有任何
+  // 錯誤訊息 —— 只會看到一筆來源不明的紀錄（web/lib/attribution.ts）。
+  const query = new URLSearchParams();
+  for (const [key, value] of Object.entries(await searchParams)) {
+    if (typeof value === "string") query.append(key, value);
+    else if (Array.isArray(value)) for (const v of value) query.append(key, v);
+  }
+  const search = query.toString();
+  redirect(localizedPath(`/demo/${STORE_DEMO_SANDBOX_SLUG}`, locale) + (search ? `?${search}` : ""));
 }

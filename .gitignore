@@ -1,5 +1,6 @@
 # 本機 agent 設定與藥局資料不進版控
 /.claude/
+/.claude-ads/
 /data/
 __pycache__/
 *.pyc

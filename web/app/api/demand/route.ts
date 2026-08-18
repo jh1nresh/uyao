@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { checkForm } from "@/lib/rate-limit";
 
+import { normalizeAdSource } from "@/lib/attribution";
 import { AREAS, DEFAULT_AREA, getDrug } from "@/lib/data";
 import { appendRecord } from "@/lib/record";
 import type { AreaSlug } from "@/lib/types";
@@ -24,6 +25,8 @@ interface Body {
   drugSlug?: unknown;
   area?: unknown;
   contact?: unknown;
+  /** UTM／click id 歸因，見 lib/attribution.ts。使用者可控，一律當不可信輸入。 */
+  source?: unknown;
 }
 
 function str(raw: unknown, max: number): string {
@@ -69,6 +72,11 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "找不到這個藥品" }, { status: 404 });
   }
 
+  // 沒有這個欄位就答不出「這筆訊號是哪則廣告帶來的」，訊號成本也就算不出來
+  // （specs/ads-launch-v1.md §8）。白名單收斂在 normalizeAdSource，
+  // 這裡拿到的已經是可以直接落地的形狀。
+  const source = normalizeAdSource(body.source);
+
   await appendRecord("demand", {
     at: new Date().toISOString(),
     kind,
@@ -77,6 +85,7 @@ export async function POST(request: Request) {
     area: toArea(body.area),
     // 只有主動登記才有；被動記錄不帶任何個資
     ...(str(body.contact, 80) ? { contact: str(body.contact, 80) } : {}),
+    ...(source ? { source } : {}),
   });
 
   return NextResponse.json({ ok: true });

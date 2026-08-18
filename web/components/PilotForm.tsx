@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { captureAdSource } from "@/lib/attribution-client";
 import type { Locale } from "@/lib/i18n";
 
 const INPUT =
@@ -112,7 +113,7 @@ export function PilotForm({ locale }: { locale: Locale }) {
       const res = await fetch("/api/pilot", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ name, area, contact, problems }),
+        body: JSON.stringify({ name, area, contact, problems, source: captureAdSource() }),
       });
       const data = (await res.json()) as { ok?: boolean; error?: string };
       if (!res.ok) {
