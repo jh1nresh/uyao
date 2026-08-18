@@ -274,10 +274,9 @@ export default async function HomePage({
           </dl>
           <details className="mt-8 max-w-[900px] bg-paper px-5 py-4">
             <summary className="cursor-pointer text-[14px] font-bold text-forest">
-              {locale === "en" ? "Sources, freshness, and partnership notes" : "資料來源、更新與合作說明"}
+              {locale === "en" ? "Sources and freshness" : "資料來源與更新說明"}
             </summary>
-            <div className="mt-5 grid gap-5 sm:grid-cols-[1fr,1fr]">
-            <div>
+            <div className="mt-5 max-w-[38em]">
               <h3 className="m-0 text-[16px] font-bold text-ink">{locale === "en" ? "Sources and freshness" : "資料來源與更新"}</h3>
               <p className="mb-0 mt-2 text-[14px] leading-[1.75] text-muted">
                 {locale === "en" ? `Trial catalog and public pharmacy records. This page was last updated ${UPDATED_AT}.` : `試營運藥品目錄與公開藥局資料；本頁最後更新：${UPDATED_AT}。`}{" "}
@@ -285,20 +284,6 @@ export default async function HomePage({
                   {locale === "en" ? "Read product evidence" : "查看產品證據"}
                 </a>
               </p>
-            </div>
-            <div>
-              <h3 className="m-0 text-[16px] font-bold text-ink">{locale === "en" ? "Biotech partner" : "生技合作夥伴"}</h3>
-              <p className="mb-0 mt-2 text-[14px] leading-[1.75] text-muted">
-                {locale === "en" ? "uYao partners with WE STRONG CO., LTD. (維淳有限公司). This does not imply product availability, online sales, or medical endorsement." : "uYao 與維淳有限公司（WeStrong／WE STRONG CO., LTD.）為合作夥伴；這不代表任何商品已有庫存、可在線購買或構成醫療背書。"}{" "}
-                <a href={`${SITE_URL}/zh-tw/evidence#partners`} className="text-forest underline underline-offset-2 hover:text-green">
-                  {locale === "en" ? "Partnership evidence" : "合作與證據"}
-                </a>
-                {" · "}
-                <a href="https://taiwanwestrong.com/info.html" className="text-forest underline underline-offset-2 hover:text-green">
-                  {locale === "en" ? "Public website" : "公開網站"}
-                </a>
-              </p>
-            </div>
             </div>
           </details>
         </div>

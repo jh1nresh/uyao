@@ -119,13 +119,6 @@ const CONTENT = {
         ],
       },
     ],
-    partnershipsHeading: "已公開合作關係",
-    partnershipIntroBefore: "uYao 已與生技公司",
-    partnershipIntroAfter:
-      "建立合作關係。uYao 負責本站、找藥服務與藥局工作流產品；現階段公開資訊只確認 WeStrong 的公司層級合作夥伴身分，未公開的合作細節不由本站推定。",
-    partnershipDisclosure:
-      "維淳的公司層級合作關係不代表其與下列合作藥局有直接合作，也不代表已安裝設備、任何商品已有即時庫存、可透過 uYao 購買，或構成醫療與用藥背書。維淳統一編號為 16816971；可查閱其",
-    publicWebsite: "公開網站",
     pilotHeading: "目前試點進度",
     pilotIntro: "目前已確認",
     partnerLocationLabel: "個合作藥局據點",
@@ -137,7 +130,7 @@ const CONTENT = {
       "尚無真實藥局的金額結果；所有節省或成效數字在取得前不會出現在本站",
       "需求訊號目前來自 prototype 環境，規模與代表性尚待試點驗證",
     ],
-    changelog: `evidence ladder 與試點狀態同步；合作藥局據點更新為 ${PARTNER_PHARMACY_COUNT} 個，並保留設備安裝與即時庫存的未驗證狀態。`,
+    changelog: `移除已公開合作關係一節；本站目前不揭露任何公司層級合作夥伴。合作藥局據點為 ${PARTNER_PHARMACY_COUNT} 個，設備安裝與即時庫存仍未驗證。`,
     companyLink: "公司介紹",
     pilotLink: "藥局試點說明與申請",
     consumerLink: "消費者找藥（Consumer Web）",
@@ -206,13 +199,6 @@ const CONTENT = {
         ],
       },
     ],
-    partnershipsHeading: "Publicly disclosed partnerships",
-    partnershipIntroBefore: "uYao has a company-level partnership with biotech company",
-    partnershipIntroAfter:
-      "uYao operates this site, the medicine finder, and the pharmacy workflow product. Public information confirms only WeStrong's company-level partner status; this site does not infer undisclosed terms.",
-    partnershipDisclosure:
-      "WeStrong's company-level partnership does not mean it partners directly with the pharmacies listed below. It also does not imply installed devices, live inventory, online availability, or medical endorsement. Its Taiwan business registration number is 16816971; see its",
-    publicWebsite: "public website",
     pilotHeading: "Current pilot status",
     pilotIntro: "We have confirmed",
     partnerLocationLabel: "partner pharmacy locations",
@@ -224,7 +210,7 @@ const CONTENT = {
       "No real-pharmacy financial outcome is available; savings or performance figures will not appear until verified",
       "Demand signals currently come from a prototype environment, so their scale and representativeness remain unverified",
     ],
-    changelog: `Evidence ladder and pilot status synchronized; partner pharmacy locations updated to ${PARTNER_PHARMACY_COUNT}, while device installation and live inventory remain unverified.`,
+    changelog: `The disclosed-partnerships section was removed; this site currently discloses no company-level partner. Partner pharmacy locations stand at ${PARTNER_PHARMACY_COUNT}, while device installation and live inventory remain unverified.`,
     companyLink: "Company overview",
     pilotLink: "Pharmacy pilot details and application",
     consumerLink: "Consumer medicine finder",
@@ -319,23 +305,9 @@ export default async function EvidencePage() {
         </div>
       </section>
 
+      {/* 既有的 /evidence#partners 連結（兩個 footer、藥局跑馬燈、消費端）都指到這裡，
+          所以錨點留在試點段 —— 現在頁面上唯一還在的合作證據就是這些藥局據點。 */}
       <section id="partners" className="mt-12 scroll-mt-24">
-        <h2 className="editorial-display mb-4 mt-0 text-[26px] leading-[1.4]">{copy.partnershipsHeading}</h2>
-        <p className="m-0 max-w-[38em] text-[15px] leading-[1.85] text-ink-2">
-          {copy.partnershipIntroBefore}{" "}
-          <b className="text-ink">維淳有限公司（WeStrong／WE STRONG CO., LTD.）</b>{" "}
-          {copy.partnershipIntroAfter}
-        </p>
-        <p className="mb-0 mt-3 max-w-[38em] text-[15px] leading-[1.85] text-ink-2">
-          {copy.partnershipDisclosure}{" "}
-          <a href="https://taiwanwestrong.com/info.html" className="text-forest underline underline-offset-2 hover:text-green">
-            {copy.publicWebsite}
-          </a>
-          {locale === "en" ? "." : "。"}
-        </p>
-      </section>
-
-      <section className="mt-12">
         <h2 className="editorial-display mb-4 mt-0 text-[26px] leading-[1.4]">{copy.pilotHeading}</h2>
         <p className="m-0 max-w-[38em] text-[15px] leading-[1.85] text-ink-2">
           {copy.pilotIntro}{" "}

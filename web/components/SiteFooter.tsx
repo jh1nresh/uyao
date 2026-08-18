@@ -66,7 +66,7 @@ export async function SiteFooter({ note }: { note?: string }) {
                 {locale === "en" ? "Product evidence" : "產品證據"}
               </a>
               <a href={`${companyPath("/evidence")}#partners`} className="inline-flex min-h-11 items-center text-forest hover:text-green">
-                {locale === "en" ? "WeStrong partnership" : "WeStrong 合作"}
+                {locale === "en" ? "Partner pharmacies" : "合作藥局據點"}
               </a>
             </div>
           </nav>
