@@ -27,9 +27,15 @@ const notoSansTC = localFont({
   display: "swap",
 });
 
+/**
+ * serif 只服務 globals.css 的 .editorial-display（font-weight: 600），是
+ * `--font-serif` 唯一的使用者，所以 subset 之後再把 wght 軸固定成 600：
+ * 少掉整張 delta 表，501KB → 284KB。字型是這頁最大的一筆下載，行動網路上
+ * 878KB 的字型佔了整頁 1.1MB 的八成。
+ */
 const notoSerifTC = localFont({
-  src: "./fonts/noto-serif-tc-var.woff2",
-  weight: "100 900",
+  src: "./fonts/noto-serif-tc-600.woff2",
+  weight: "600",
   variable: "--font-noto-serif-tc",
   display: "swap",
 });
