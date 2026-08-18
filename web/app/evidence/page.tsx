@@ -3,13 +3,13 @@ import Link from "next/link";
 
 import { JsonLd } from "@/components/JsonLd";
 import { KnowledgeShell } from "@/components/landing/KnowledgeShell";
-import { AEO_PAGES } from "@/lib/aeo";
+import { AEO_PAGES, aeoPath } from "@/lib/aeo";
+import { aeoPageMetadata } from "@/lib/aeo-server";
 import { allStores } from "@/lib/data";
-import { localizedPath } from "@/lib/i18n";
+import { localizedPath, type Locale } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
 import { PARTNER_PHARMACY_COUNT, partnerForStore } from "@/lib/partners";
 import { ENTITY_DESCRIPTION, breadcrumbJsonLd, webPageJsonLd } from "@/lib/seo";
-import { indexablePageRobots } from "@/lib/seo-server";
 import { SHOP_URL } from "@/lib/shop";
 
 /**
@@ -19,48 +19,25 @@ import { SHOP_URL } from "@/lib/shop";
  */
 
 const PAGE = AEO_PAGES.evidence;
-const {
-  dateModified: EVIDENCE_DATE,
-  question: TITLE,
-  directAnswer: DESCRIPTION,
-} = PAGE;
-const EN_PATH = "/en/evidence";
-const EN_TITLE = "What has uYao built? Product evidence and pilot status";
-const EN_DESCRIPTION =
-  "Code and automated tests currently verify barcode parsing, offline buffering, consumer reservations, Store OS, and Web Push. The scanner connector, Store OS workflow, and medicine finder still include prototypes; real pharmacy return outcomes, savings, and live inventory remain unverified.";
+const { dateModified: EVIDENCE_DATE } = PAGE;
+const EN_PATH = PAGE.enPath;
 const PARTNER_LOCATIONS = allStores().filter((store) => partnerForStore(store.slug));
 
+/** SERP titles differ from the H1 question on purpose (spec §5). */
+const TITLES: Record<Locale, string> = {
+  zh: "uYao 目前做到什麼？產品證據與試點進度",
+  en: "What has uYao built? Product evidence and pilot status",
+};
+
 export async function generateMetadata(): Promise<Metadata> {
-  const locale = await getRequestLocale();
-  const robots = await indexablePageRobots();
-  const languages = {
-    "zh-TW": PAGE.path,
-    en: EN_PATH,
-    "x-default": PAGE.path,
-  };
-
-  if (locale === "en") {
-    return {
-      title: { absolute: EN_TITLE },
-      description: EN_DESCRIPTION,
-      alternates: { canonical: EN_PATH, languages },
-      robots,
-    };
-  }
-
-  return {
-    title: { absolute: "uYao 目前做到什麼？產品證據與試點進度" },
-    description: DESCRIPTION,
-    alternates: { canonical: PAGE.path, languages },
-    robots,
-  };
+  return aeoPageMetadata(PAGE, await getRequestLocale(), TITLES);
 }
 
 /** Evidence ladder status labels stay fixed; only the supporting copy changes by locale. */
 const CONTENT = {
   zh: {
-    title: TITLE,
-    description: DESCRIPTION,
+    title: PAGE.zh.question,
+    description: PAGE.zh.directAnswer,
     kicker: "產品證據",
     updatedLabel: "證據更新日期",
     aboutHeading: "uYao 是什麼",
@@ -137,8 +114,8 @@ const CONTENT = {
     compareLink: "uYao 與 POS 的差異",
   },
   en: {
-    title: EN_TITLE,
-    description: EN_DESCRIPTION,
+    title: PAGE.en.question,
+    description: PAGE.en.directAnswer,
     kicker: "Product evidence",
     updatedLabel: "Evidence last updated",
     aboutHeading: "What uYao is",
@@ -221,21 +198,14 @@ const CONTENT = {
 export default async function EvidencePage() {
   const locale = await getRequestLocale();
   const copy = CONTENT[locale];
-  const pagePath = locale === "en" ? EN_PATH : PAGE.path;
-  const pageSchema = locale === "en"
-    ? webPageJsonLd({
-        name: EN_TITLE,
-        description: EN_DESCRIPTION,
-        path: EN_PATH,
-        dateModified: EVIDENCE_DATE,
-        inLanguage: "en",
-      })
-    : webPageJsonLd({
-        name: TITLE,
-        description: DESCRIPTION,
-        path: PAGE.path,
-        dateModified: EVIDENCE_DATE,
-      });
+  const pagePath = aeoPath(PAGE, locale);
+  const pageSchema = webPageJsonLd({
+    name: PAGE[locale].question,
+    description: PAGE[locale].directAnswer,
+    path: pagePath,
+    dateModified: EVIDENCE_DATE,
+    inLanguage: locale === "en" ? "en" : "zh-Hant-TW",
+  });
 
   return (
     <KnowledgeShell kicker={copy.kicker} locale={locale}>

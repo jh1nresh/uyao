@@ -23,8 +23,44 @@ An AEO answer page must:
 7. have at least two benchmark query phrasings without generating duplicate
    long-tail pages.
 
+Every answer page is registered in both locales. `/zh-tw/...` and `/en/...`
+are the same answer in two languages: they share `datePublished` and
+`dateModified`, point hreflang at each other, and must not repeat each other's
+text. A locale-specific URL is published only when its own copy exists.
+
 `web/lib/aeo.test.ts` is the regression gate for registry coverage, visible
 answer wiring, query uniqueness, and freshness.
+
+## Discovery surface
+
+`/guides` is the pillar page for the knowledge cluster and the only sitewide
+link into it. Without it, `/compare/uyao-vs-pos` and the operations guides sit
+behind a single in-body link on `/evidence`, which put
+`/guides/pharmacy-return-window` four hops from the homepage. Keep the hub in
+the footer.
+
+`/llms.txt` is generated from the same registry (`web/lib/llms.ts`) and served
+on both canonical hosts. It exists for agents that read pages, not for Google:
+Google states it does not use the file for Search or generative Search
+features, so no Google-visibility claim may be made from publishing it. Its
+first job is to carry the product boundaries — not an online pharmacy, not a
+POS replacement, no live inventory, guides not pharmacist-reviewed — into any
+summary an agent writes.
+
+## Consumer admission gate
+
+The consumer host indexes its two homepages, both category pages, and one
+catalog item at a time. An item is admitted when it carries a cited
+product-data source or uYao's own packshot; the English URL additionally
+requires English copy (`nameEn`), or the page would enter the English index
+with a Chinese title as a near-duplicate of the zh-tw one. Untranslated `/en`
+item pages canonicalize to `/zh-tw`.
+
+Never admitted: `/search` (no stable content, one URL per query), `/store/*`
+(shows supply no pharmacy has confirmed), and `/r/*` (private reservation
+receipts). Filtered category URLs (`q`, `group`, `page`) stay `noindex, follow`
+and canonicalize to the clean path. `web/lib/shop-index.test.ts` is the
+regression gate.
 
 ## Measurement baseline
 
@@ -50,11 +86,11 @@ present.
 
 ## Intentional non-goals
 
-- No `llms.txt` for Google visibility: Google says it does not use the file for
-  Search or generative Search features.
 - No AEO-only schema: keep truthful schema.org markup aligned with visible
-  content; do not add `HowTo`, `Product`, ratings, prices, or availability just
-  to target answer engines.
+  content; do not add `HowTo`, ratings, prices, or availability just to target
+  answer engines. `Product` is allowed on catalog item pages only, because
+  those pages really are products, and only without `offers`, price, or
+  availability — uYao cannot assert any of the three.
 - No AI-only rewrites, artificial chunking, mass query pages, or invented
   third-party mentions.
 - No change to the GPTBot training policy. The existing `User-agent: *` rule

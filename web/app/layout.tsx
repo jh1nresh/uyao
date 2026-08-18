@@ -64,6 +64,10 @@ export async function generateMetadata(): Promise<Metadata> {
     // indexablePageRobots()（production canonical host 才 index）。
     // 消費端 demo 資料頁在 consumer SEO spec 完成前一律不收錄。
     robots: { index: false, follow: false },
+    // Bing 有已驗證的預設值，Google 沒有：GSC 的 tag 是每個資源不同的
+    // 一次性字串，沒有可以寫死的值。沒設 NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+    // 時這個 meta 就不會輸出——若 GSC 走 DNS TXT 驗證那是正確的，
+    // 若走 HTML tag 驗證就會顯示未驗證。設定說明見 .env.example。
     verification: {
       google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
       other: {

@@ -19,8 +19,13 @@ import {
   getCategory,
   toAreaSlug,
 } from "@/lib/data";
-import { areaCopy, categoryName, localizedPath } from "@/lib/i18n";
+import { JsonLd } from "@/components/JsonLd";
+import { areaCopy, categoryName, drugCopy, localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
+import { consumerBreadcrumbJsonLd, consumerItemListJsonLd } from "@/lib/seo";
+import { SHOP_URL } from "@/lib/shop";
+import { consumerIndexablePageRobots } from "@/lib/seo-server";
+import { indexableCatalogItems } from "@/lib/shop-index";
 
 export function generateStaticParams() {
   return CATEGORIES.map((c) => ({ slug: c.slug }));
@@ -28,10 +33,13 @@ export function generateStaticParams() {
 
 export async function generateMetadata({
   params,
+  searchParams,
 }: {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ area?: string; group?: string; q?: string; page?: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
+  const filters = await searchParams;
   const locale = await getRequestLocale();
   const category = getCategory(slug);
   if (!category) {
@@ -41,13 +49,32 @@ export async function generateMetadata({
     };
   }
   const name = categoryName(category.slug, category.name, locale);
+  // metadataBase 是公司站，consumer canonical 必須是絕對網址。
+  const canonicalUrl = `${SHOP_URL}${localizedPath(`/category/${category.slug}`, locale)}`;
+  // 只有沒有任何篩選的乾淨網址進索引。q／group／page 都是同一批品項的
+  // facet，收錄它們等於自己製造重複內容，但仍 follow 讓品項頁被爬到。
+  const filtered = Boolean(
+    filters.q?.trim()
+    || (filters.group && filters.group !== "all")
+    || (filters.page && filters.page !== "1"),
+  );
+
   return {
     title: locale === "en" ? `${name} | Early-access catalog` : `${name}｜試營運品項瀏覽`,
     description: locale === "en"
       ? `Browse ${name.toLowerCase()} in the uYao Medicine Finder prototype catalog. Live inventory is not available; confirm products and supply with a pharmacist.`
       : `瀏覽 uYao 找藥試營運目錄中的${name}。即時庫存尚未啟用，品項與供應狀態請向藥局或藥師確認。`,
-    // v1 category pages 目前只有品項連結，未通過獨特 editorial value gate。
-    robots: { index: false, follow: true },
+    alternates: {
+      canonical: canonicalUrl,
+      languages: {
+        "zh-TW": `${SHOP_URL}/zh-tw/category/${category.slug}`,
+        en: `${SHOP_URL}/en/category/${category.slug}`,
+        "x-default": `${SHOP_URL}/zh-tw/category/${category.slug}`,
+      },
+    },
+    robots: filtered
+      ? { index: false, follow: true }
+      : await consumerIndexablePageRobots(),
   };
 }
 
@@ -83,8 +110,35 @@ export default async function CategoryPage({
     return `${localizedPath("/category/partner-item", locale)}?${queryParams.toString()}`;
   }
 
+  const canonicalPath = localizedPath(`/category/${category.slug}`, locale);
+
   return (
     <>
+      {/*
+        ItemList 只列通過 admission gate 的品項 —— schema 不該宣告一堆
+        資料待驗證、且本身 noindex 的 placeholder 頁。
+      */}
+      <JsonLd
+        nodes={[
+          consumerItemListJsonLd({
+            name: displayCategory,
+            description: locale === "en"
+              ? "Catalog records provided by partner pharmacies. Not live inventory."
+              : "合作藥局提供的目錄品項紀錄；這不是即時庫存。",
+            path: canonicalPath,
+            inLanguage: locale === "en" ? "en" : "zh-Hant-TW",
+            items: indexableCatalogItems(locale).map((drug) => ({
+              name: drugCopy(drug, locale).name,
+              path: localizedPath(`/drug/${drug.slug}`, locale),
+            })),
+          }),
+          consumerBreadcrumbJsonLd([
+            { name: locale === "en" ? "Home" : "首頁", path: localizedPath("/", locale) },
+            { name: displayCategory, path: canonicalPath },
+          ]),
+        ]}
+      />
+
       <SiteHeader showTagline area={area} preserveAreaPath locatable />
 
       <main className="min-h-[calc(100svh-11rem)]">
