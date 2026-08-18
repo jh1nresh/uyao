@@ -477,6 +477,35 @@
         "健保特約"
       ],
       "status": "listed"
+    },
+    {
+      "slug": "一銘藥局",
+      "name": "一銘藥局",
+      "area": "xinzhuang",
+      "district": "新莊區",
+      "address": "新北市新莊區幸福路542號(1樓)",
+      "phone": "02-2996-1050",
+      "owner": "曾建方",
+      "nhiCode": "593106C319",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=一銘藥局+新北市新莊區幸福路542號(1樓)",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
     }
   ]
 }

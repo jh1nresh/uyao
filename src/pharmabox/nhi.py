@@ -157,7 +157,13 @@ class NhiIndex:
         self._by_key: dict[tuple[str, str], NhiRecord] = {}
         self._by_name: dict[str, list[NhiRecord]] = {}
         for r in records:
-            self._by_key.setdefault((r.name, normalize_address(r.address)), r)
+            key = (r.name, normalize_address(r.address))
+            held = self._by_key.get(key)
+            # 同一個門牌可能有多筆合約，例如藥師自營約終止後換成藥劑生自營約
+            # （一銘藥局就是這樣）。CSV 順序不保證新約在前，取第一筆會讓還在
+            # 營業的店被標成「合約已終止」—— 有效約一律優先。
+            if held is None or (held.is_terminated and not r.is_terminated):
+                self._by_key[key] = r
             self._by_name.setdefault(r.name, []).append(r)
 
     def lookup(self, name: str, full_address: str, district: str) -> NhiRecord | None:
