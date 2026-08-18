@@ -733,6 +733,88 @@ const DRUGS: Drug[] = [
       altEn: "Partner-provided packaging photo: the PUREGPS Defense 450+ carton front, marked 60 Capsules",
     },
   }),
+  partnerProvidedProduct({
+    slug: "chungchi-ganmeijia-coral-ca",
+    name: "甘鎂佳珊瑚鈣",
+    aliases: ["甘鎂佳", "珊瑚鈣", "Coral Ca", "Magnesium Glycinate Coral Ca"],
+    form: "錠劑",
+    spec: "60錠",
+    // 盒面只列成分名與 K2／D3／Mg 三個標示圈，沒有每錠含量；沒有背標之前
+    // 不補 mg 數 —— 劑量是可查證的事實，猜錯跟填假字號同一種錯。
+    ingredients: ["甘胺酸鎂（Magnesium Glycinate）", "珊瑚鈣（Coral Ca）", "維生素K2（MK-7）", "維生素D3"],
+    nutritionFocus: "甘胺酸鎂與珊瑚鈣，搭配維生素 K2（MK-7）與 D3 的產品組成",
+    searchTerms: ["鎂", "甘胺酸鎂", "珊瑚鈣", "維生素K2", "MK-7", "維生素D3"],
+    manufacturer: "中旗生物科技股份有限公司",
+    origin: "加拿大（包裝標示 MADE IN CANADA）",
+    highlights: [
+      { title: "珊瑚鈣 Coral Ca", body: "以珊瑚鈣為鈣質來源" },
+      { title: "甘胺酸鎂 Magnesium Glycinate", body: "鎂與鈣搭配補充" },
+      { title: "維生素 K2（MK-7）＋ D3", body: "K2 選用 MK-7 形式，搭配維生素 D3" },
+      { title: "加拿大製造", body: "Made in Canada，60 錠裝" },
+    ],
+    cautions: "請置於陰涼乾燥處，避免孩童自行取用。孕婦及慢性病患者食用前請諮詢專業人員。",
+  }),
+  partnerProvidedProduct({
+    slug: "tianxia-chan-c-80",
+    name: "強喜錠 Chan-C",
+    aliases: ["強喜錠", "強喜", "Chan-C", "Chan-C Tablets"],
+    form: "錠劑",
+    spec: "80錠",
+    ingredients: ["維生素C（抗壞血酸）", "抗壞血酸鈉", "泛酸鈣", "維生素B6", "β-胡蘿蔔素", "蔗糖", "氧化澱粉", "草莓香料"],
+    nutritionFocus: "維生素 C、B6 與 β-胡蘿蔔素的產品組成",
+    searchTerms: ["維生素C", "維他命C", "維生素B6", "β-胡蘿蔔素", "抗壞血酸"],
+    // 包裝上是兩家公司：井田是製造廠，天下是總代理。合併寫在同一欄，
+    // 不把代理商當成製造廠。
+    manufacturer: "井田國際醫藥廠股份有限公司（天下生物科技股份有限公司總代理）",
+    origin: "台灣",
+    highlights: [
+      { title: "維生素 C ＋ B6 複方", body: "維生素C（抗壞血酸）、抗壞血酸鈉搭配維生素B6" },
+      { title: "添加 β-胡蘿蔔素", body: "另含泛酸鈣，營養更完整" },
+      { title: "草莓風味咀嚼錠", body: "草莓香料調味，大人小孩都好接受" },
+      { title: "國家品質標章", body: "台灣製造，井田國際醫藥廠生產" },
+    ],
+  }),
+  partnerProvidedProduct({
+    slug: "huamao-progifted-lp28",
+    name: "Progifted LP-28 益生菌",
+    aliases: ["Progifted", "LP-28", "LP28", "Progifted LP-28"],
+    form: "粉末（隨身包）",
+    spec: "30包",
+    ingredients: ["15種三層包埋複合乳酸菌（含 LP-28®）", "日本天野（Amano）3種綜合酵素", "β-葡聚多醣（多國專利）", "菊糖", "蘋果口味"],
+    nutritionFocus: "15 種三層包埋乳酸菌，搭配綜合酵素、β-葡聚多醣與菊糖的產品組成；盒面標示 120×10⁸ cfu／2g",
+    searchTerms: ["益生菌", "乳酸菌", "LP-28", "綜合酵素", "葡聚多醣", "菊糖"],
+    manufacturer: "華貿行實業股份有限公司",
+    // 盒面沒有產地標示，店家提供的資料也沒有。空著比猜一個國家好。
+    origin: "產地待確認",
+    highlights: [
+      { title: "第4代專利三層包埋", body: "三層包埋技術，通過耐胃酸、耐膽鹽與活力穩定試驗" },
+      { title: "120億・15種共生型菌株", body: "含 LP-28® 等 15 種三層包埋複合乳酸菌，每包 120×10⁸ cfu" },
+      { title: "多國專利葡聚多醣", body: "獨家添加美國專利 β-葡聚多醣與菊糖" },
+      { title: "日本天野綜合酵素", body: "添加日本天野製藥（Amano）3 種綜合酵素" },
+    ],
+  }),
+  partnerProvidedProduct({
+    slug: "gaoyouzhi-vitamin-b-60",
+    name: "高優質維他命B群",
+    aliases: ["高優質維他命B群", "高優質B群", "維他命B群軟膠囊"],
+    form: "軟膠囊",
+    spec: "60粒",
+    ingredients: ["維生素B1", "維生素B2", "維生素B6", "維生素B12", "生物素", "葉酸", "薑黃萃取物（盒面標示 95%）", "啤酒酵母", "五味子"],
+    // 「DSM 德國廠」是盒面的原料來源宣告，不是製造廠，別把它寫進 manufacturer。
+    nutritionFocus: "維生素 B 群，搭配薑黃萃取物、啤酒酵母與五味子的產品組成；盒面標示原料採 DSM 德國廠",
+    searchTerms: ["維他命B群", "維生素B群", "B群", "薑黃", "啤酒酵母", "五味子", "葉酸", "生物素"],
+    // 盒面正面只有品名與訴求，沒有印製造廠或代理商，店家也還沒給。兩欄都
+    // 留待確認 —— 可查證的公司識別不猜。
+    manufacturer: "廠商待確認",
+    origin: "產地待確認",
+    highlights: [
+      { title: "原料嚴選 DSM 德國廠", body: "維生素原料來自 DSM 德國廠" },
+      { title: "完整 B 群", body: "B1・B2・B6・B12、葉酸、生物素一次補足" },
+      { title: "95% 薑黃・啤酒酵母・五味子", body: "加強版配方，複方協同" },
+      { title: "一天一粒，方便持續", body: "軟膠囊好吞食，60 粒約一個月份" },
+    ],
+    cautions: "請置於陰涼乾燥處，避免高溫與陽光直射；開封後請儘早食用。",
+  }),
 ];
 
 const STORES: Store[] = generated.stores as Store[];

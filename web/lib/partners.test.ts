@@ -57,6 +57,9 @@ const EXPECTED_PRODUCTS = {
     "護谷鈣素 100粒",
     "勝康寧 150粒",
     "恩體能 230粒",
+    "甘鎂佳珊瑚鈣 60錠",
+    "強喜錠 Chan-C 80錠",
+    "Progifted LP-28 益生菌 30包",
   ],
   萊康中華健保藥局: [
     "克氣清膠囊",
@@ -65,6 +68,9 @@ const EXPECTED_PRODUCTS = {
     "護谷鈣素 100粒",
     "勝康寧 150粒",
     "恩體能 230粒",
+    "甘鎂佳珊瑚鈣 60錠",
+    "強喜錠 Chan-C 80錠",
+    "Progifted LP-28 益生菌 30包",
   ],
   永遠藥師藥局: [],
   發元藥局: [
@@ -80,6 +86,7 @@ const EXPECTED_PRODUCTS = {
     "憶元素 天麻100膠囊 60粒",
     "強抗力優 450+ Defense 60粒",
     "New AOB Vitality Beauty 45包",
+    "高優質維他命B群 60粒",
   ],
 } as const;
 
