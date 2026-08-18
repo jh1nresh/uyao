@@ -26,19 +26,27 @@ import sys
 import urllib.request
 from pathlib import Path
 
+from fontTools.ttLib import TTFont
+
 WEB_ROOT = Path(__file__).resolve().parent.parent
 OUT_DIR = WEB_ROOT / "app" / "fonts"
 CACHE = WEB_ROOT / ".font-cache"
+# instance_wght：把可變字型固定成單一字重的靜態字型，wght 軸的 delta 表就整個
+# 拿掉。serif 只服務 .editorial-display（globals.css 裡唯一的 --font-serif 使用
+# 者，font-weight: 600），所以固定成 600 之後檔案少一半，畫面完全不變。
+# sans 介面上要 400/500/700/900 四個字重，必須保持可變。
 FONTS = (
     (
         "NotoSansTC-var.ttf",
         "https://github.com/google/fonts/raw/main/ofl/notosanstc/NotoSansTC%5Bwght%5D.ttf",
         "noto-sans-tc-var.woff2",
+        None,
     ),
     (
         "NotoSerifTC-var.ttf",
         "https://github.com/google/fonts/raw/main/ofl/notoseriftc/NotoSerifTC%5Bwght%5D.ttf",
-        "noto-serif-tc-var.woff2",
+        "noto-serif-tc-600.woff2",
+        600,
     ),
 )
 SOURCE_DIRS = ("app", "components", "lib")
@@ -91,24 +99,44 @@ def main() -> int:
     text_file = CACHE / "glyphs.txt"
     text_file.write_text("".join(sorted(chars)), encoding="utf-8")
 
-    # 保留 wght 軸不切成靜態實例：sans 用於介面，serif 只用於敘事標題；
-    # 兩者共用實際字符集，避免載入完整 CJK 字型。
-    for cache_name, url, output_name in FONTS:
+    # 兩個字型共用同一份實際字符集，避免載入完整 CJK 字型。
+    for cache_name, url, output_name, instance_wght in FONTS:
         var_font = fetch_variable_font(cache_name, url)
         out = OUT_DIR / output_name
+        # 先 subset 成 ttf；要固定字重的話還得再過 instancer，woff2 壓縮放最後。
+        subset_ttf = CACHE / f"{Path(output_name).stem}-subset.ttf"
         subprocess.run(
             [
                 sys.executable, "-m", "fontTools.subset", str(var_font),
                 f"--text-file={text_file}",
-                "--flavor=woff2",
                 # 用預設 layout features：--layout-features=* 會多帶一堆
                 # 這站用不到的 GPOS/GSUB
-                f"--output-file={out}",
+                f"--output-file={subset_ttf}",
             ],
             check=True,
             stdout=subprocess.DEVNULL,
         )
-        print(f"完成 — {out.name} {out.stat().st_size / 1024:.0f} KB（可變字型）")
+
+        source = subset_ttf
+        if instance_wght is not None:
+            static_ttf = CACHE / f"{Path(output_name).stem}-static.ttf"
+            subprocess.run(
+                [
+                    sys.executable, "-m", "fontTools.varLib.instancer", str(subset_ttf),
+                    f"wght={instance_wght}",
+                    "-o", str(static_ttf),
+                ],
+                check=True,
+                stdout=subprocess.DEVNULL,
+            )
+            source = static_ttf
+
+        font = TTFont(source)
+        font.flavor = "woff2"
+        font.save(out)
+        font.close()
+        kind = f"靜態 wght={instance_wght}" if instance_wght is not None else "可變字型"
+        print(f"完成 — {out.name} {out.stat().st_size / 1024:.0f} KB（{kind}）")
     return 0
 
 

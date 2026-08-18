@@ -12,8 +12,9 @@ import {
 import { indexablePageRobots } from "@/lib/seo-server";
 
 const TITLE = "uYao | The AI Operating System for Independent Pharmacies";
+// Keep this in the 120-160 char window SEO audits check for.
 const DESCRIPTION =
-  "uYao turns inventory, expiry, and local demand into pharmacist-approved return, reorder, and reservation workflows.";
+  "uYao turns pharmacy scans, expiry, and nearby demand into supply signals, then proposes return, reorder, and reservation work pharmacists approve in Store OS.";
 
 export async function generateMetadata(): Promise<Metadata> {
   const images = socialPreviewImages("company", "en");

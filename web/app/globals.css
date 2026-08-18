@@ -48,6 +48,15 @@ html {
   background: rgb(var(--color-ivory));
 }
 
+/* Lenis 只在 pointer: fine 載入（見 components/MotionSystem.tsx），觸控裝置的
+   #anchor 捲動改由原生 smooth 接手。條件跟那邊的 matchMedia 對齊，確保兩套
+   平滑捲動永遠不會同時作用在同一台裝置上。 */
+@media (pointer: coarse) and (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
 html[data-theme="dark"] {
   color-scheme: dark;
   --color-ink: 241 238 229;
