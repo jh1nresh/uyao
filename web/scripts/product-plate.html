@@ -30,7 +30,7 @@
   /* cover 而不是 contain：來源照的底色跟 #F2EFE6 有色差，contain 會在兩側
      留下看得出接縫的空白帶。來源四周留白夠多，裁掉不會切到產品。 */
   .shot { flex: 1; min-height: 0; overflow: hidden; }
-  .shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .shot img { width: 100%; height: 100%; object-fit: cover; object-position: __FOCUS__; display: block; }
   .plate {
     flex: none;
     border-top: 1px solid #D2CDC1;
@@ -64,5 +64,5 @@
 <div class="plate">
   <div class="name">__NAME__</div>
   <div class="meta">__META__</div>
-  <div class="note">示意圖，非實際包裝</div>
+  <div class="note">__NOTE__</div>
 </div>

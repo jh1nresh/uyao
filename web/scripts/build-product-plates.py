@@ -34,12 +34,21 @@ def web_root() -> Path:
     return Path(__file__).resolve().parent.parent
 
 
-def render(shot: Path, name: str, meta: str, out: Path) -> None:
+NOTE = {
+    # kind 決定這行字，也決定 data.ts 要標哪一種 —— 兩邊必須一致。
+    "packshot": "合作藥局提供的包裝照片",
+    "illustration": "示意圖，非實際包裝",
+}
+
+
+def render(shot: Path, name: str, meta: str, out: Path, kind: str, focus: str) -> None:
     template = (web_root() / "scripts" / "product-plate.html").read_text(encoding="utf-8")
     html = (
         template.replace("__SHOT__", shot.resolve().as_uri())
         .replace("__NAME__", name)
         .replace("__META__", meta)
+        .replace("__NOTE__", NOTE[kind])
+        .replace("__FOCUS__", focus)
     )
 
     with tempfile.TemporaryDirectory() as tmp:
@@ -84,6 +93,10 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--shot", type=Path, required=True, help="無字的包裝照")
     ap.add_argument("--name", required=True, help="品名，照 data.ts 的 name")
     ap.add_argument("--meta", required=True, help="劑型 · 規格 · 廠商")
+    ap.add_argument("--kind", choices=sorted(NOTE), default="illustration",
+                    help="packshot = 可代表實際包裝的實拍；illustration = 生成示意圖")
+    ap.add_argument("--focus", default="50% 50%",
+                    help="CSS object-position，用來把商品框進畫面，例如 \"45% 55%\"")
     args = ap.parse_args(argv)
 
     if not args.shot.exists():
@@ -97,7 +110,7 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     out = web_root() / "public" / "products" / f"{args.slug}.webp"
-    render(args.shot, args.name, args.meta, out)
+    render(args.shot, args.name, args.meta, out, args.kind, args.focus)
     print(f"{out.relative_to(web_root())}  {WIDTH}×{HEIGHT}  {out.stat().st_size // 1024} KB")
     return 0
 
