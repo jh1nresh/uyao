@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import { Fragment } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -20,6 +21,7 @@ import {
   toAreaSlug,
 } from "@/lib/data";
 import { areaCopy, categoryName, drugCopy, localizedPath } from "@/lib/i18n";
+import { hasAmounts, ingredientRows } from "@/lib/ingredients";
 import { getRequestLocale } from "@/lib/locale-server";
 import { partnersForProduct } from "@/lib/partners";
 import { SHOP_URL } from "@/lib/shop";
@@ -244,9 +246,23 @@ export default async function DrugPage({
                       ? locale === "en" ? "INGREDIENTS PROVIDED BY THE PHARMACY" : "合作藥局提供的成分"
                       : locale === "en" ? "MAIN INGREDIENTS LISTED BY SOURCE" : "公開商品資料所列主要成分"}
                   </p>
-                  <p className="mb-0 mt-2 text-[14.5px] leading-[1.75] text-muted">
-                    {displayDrug.ingredients.join(locale === "en" ? ", " : "、")}
-                  </p>
+                  {/* 有標示含量就排成對照表，看得出每項各多少；沒有含量的維持一行式列舉。 */}
+                  {hasAmounts(displayDrug.ingredients) ? (
+                    <dl className="mb-0 mt-2 grid grid-cols-[1fr_max-content] gap-x-3 text-[14.5px] leading-[1.75]">
+                      {ingredientRows(displayDrug.ingredients).map((row) => (
+                        <Fragment key={row.name}>
+                          <dt className="border-b border-line-soft py-1 text-muted">{row.name}</dt>
+                          <dd className="num m-0 border-b border-line-soft py-1 text-right font-bold text-forest">
+                            {row.amount ?? ""}
+                          </dd>
+                        </Fragment>
+                      ))}
+                    </dl>
+                  ) : (
+                    <p className="mb-0 mt-2 text-[14.5px] leading-[1.75] text-muted">
+                      {displayDrug.ingredients.join(locale === "en" ? ", " : "、")}
+                    </p>
+                  )}
                   <p className="mb-0 mt-3 text-[14px] leading-[1.7] text-muted-2">
                     {locale === "en" ? "Product source: " : "產品資料來源："}
                     {drug.source.url ? (
@@ -313,6 +329,66 @@ export default async function DrugPage({
           </p>
         </div>
       </section>
+
+      {/* 產品特色、建議用量與注意事項全部照包裝或原廠標示逐條收，不是 uYao 的評價。
+          標題上的「原廠標示」標籤是宣告，不是裝飾 —— 把廠商說法呈現成本站說法會誤導。 */}
+      {(drug.highlights?.length || drug.dosage || drug.cautions) && (
+        <section className="border-b border-line bg-paper" aria-labelledby="pack-detail-heading">
+          <div className="shop-shell py-8 sm:py-10">
+            <div className="flex max-w-[900px] flex-wrap items-baseline gap-x-3 gap-y-1">
+              <h2 id="pack-detail-heading" className="editorial-display m-0 text-[26px] leading-[1.3] sm:text-[32px]">
+                {locale === "en" ? "As stated on the package" : "包裝標示內容"}
+              </h2>
+              <span className="border border-oxblood px-[7px] py-px text-[13px] font-bold text-oxblood">
+                {locale === "en" ? "MANUFACTURER'S OWN WORDING" : "原廠標示，非 uYao 評價"}
+              </span>
+            </div>
+
+            {drug.highlights && drug.highlights.length > 0 && (
+              <ol className="m-0 mt-6 grid max-w-[900px] list-none gap-4 p-0 sm:grid-cols-2">
+                {drug.highlights.map((item, i) => (
+                  <li key={item.title} className="flex gap-3 border border-line bg-ivory px-4 py-3.5">
+                    <span className="num flex h-7 w-7 flex-none items-center justify-center rounded-full bg-forest text-[13px] font-bold text-paper">
+                      {i + 1}
+                    </span>
+                    <span>
+                      <span className="block text-[16px] font-bold text-ink">{item.title}</span>
+                      <span className="mt-1 block text-[14.5px] leading-[1.7] text-muted">{item.body}</span>
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            )}
+
+            {(drug.dosage || drug.cautions) && (
+              <div className="mt-5 grid max-w-[900px] gap-4 sm:grid-cols-2">
+                {drug.dosage && (
+                  <div className="border-l-2 border-forest bg-ivory px-4 py-3.5">
+                    <p className="m-0 text-[14px] font-bold text-forest">
+                      {locale === "en" ? "SUGGESTED USE" : "建議用量"}
+                    </p>
+                    <p className="mb-0 mt-1.5 text-[14.5px] leading-[1.75] text-ink-2">{drug.dosage}</p>
+                  </div>
+                )}
+                {drug.cautions && (
+                  <div className="border-l-2 border-oxblood bg-ivory px-4 py-3.5">
+                    <p className="m-0 text-[14px] font-bold text-oxblood">
+                      {locale === "en" ? "CAUTIONS AND ALLERGENS" : "注意事項與過敏原"}
+                    </p>
+                    <p className="mb-0 mt-1.5 text-[14.5px] leading-[1.75] text-ink-2">{drug.cautions}</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            <p className="mb-0 mt-5 max-w-[900px] border-l-2 border-oxblood pl-3 text-[14px] leading-[1.75] text-muted">
+              {locale === "en"
+                ? "The wording above is copied from the product package or the manufacturer's own material. uYao has not independently verified it, and it is not an endorsement. Food and supplement wording cannot be read as prevention or treatment of disease — check the actual package and ask a pharmacist."
+                : "以上文字照抄自產品包裝或原廠資料，uYao 未獨立驗證，也不構成背書。食品與營養補充品的文字不能解讀為預防或治療疾病；請以實際包裝為準並向藥師確認。"}
+            </p>
+          </div>
+        </section>
+      )}
 
       {alternatives.length > 0 && (
         <section className="bg-ivory">
