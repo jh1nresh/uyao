@@ -103,6 +103,15 @@ export interface Drug {
    * 語句，也不得補上包裝沒有的功效。
    */
   highlights?: readonly { title: string; body: string }[];
+  /**
+   * 電商版型算繪出來的商品說明圖（1000×1000）。**不是包裝實拍** ——
+   * 是實拍加上排版文字的行銷素材，所以不套用 `DrugImage.kind`，
+   * 畫面上另外標「商品說明圖」並沿用原廠標示的歸屬。
+   *
+   * 由 `scripts/build-ecommerce-images.py` 產生，來源版面在 Claude Design
+   * 專案「電商產品圖製作」。
+   */
+  detailImages?: readonly { src: string; alt: string; altEn: string }[];
   /** 建議用量／食用方法，照包裝標示。 */
   dosage?: string;
   /** 注意事項與過敏原，照包裝標示。過敏原對使用者是安全資訊，優先收。 */
