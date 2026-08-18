@@ -61,17 +61,21 @@ export function KnowledgeShell({
 /** Guide 頁固定顯示的內容出處欄位（spec §5 content provenance）。 */
 export function ProvenanceBox({
   fields,
+  locale = "zh",
 }: {
   fields: { label: string; value: React.ReactNode }[];
+  locale?: Locale;
 }) {
+  const heading = locale === "en" ? "Sources and review status" : "內容出處與審閱狀態";
+
   return (
-    <section aria-label="內容出處與審閱狀態" className="mt-12 border border-line-strong bg-surface p-6">
+    <section aria-label={heading} className="mt-12 border border-line-strong bg-surface p-6">
       <h2 className="num m-0 mb-4 text-[12px] font-semibold tracking-[.1em] text-muted">
-        內容出處與審閱狀態
+        {heading}
       </h2>
       <dl className="m-0 grid gap-x-8 gap-y-3 text-[14px] leading-[1.7] sm:grid-cols-2">
         {fields.map((f) => (
-          <div key={f.label} className="grid grid-cols-[7.5em,1fr] gap-2">
+          <div key={f.label} className="grid grid-cols-[9.5em,1fr] gap-2">
             <dt className="font-bold text-ink">{f.label}</dt>
             <dd className="m-0 text-ink-2">{f.value}</dd>
           </div>
@@ -82,13 +86,24 @@ export function ProvenanceBox({
 }
 
 /** 知識頁唯一主 CTA（spec §7：一頁一個，不混同義按鈕）。 */
-export function KnowledgeCta({ title, body }: { title: string; body: string }) {
+export function KnowledgeCta({
+  title,
+  body,
+  locale = "zh",
+}: {
+  title: string;
+  body: string;
+  locale?: Locale;
+}) {
   return (
     <section className="mt-12 border border-forest bg-sage p-7">
       <h2 className="editorial-display m-0 text-[24px] leading-[1.4]">{title}</h2>
       <p className="mb-5 mt-2 max-w-[36em] text-[15px] leading-[1.8] text-ink-2">{body}</p>
-      <Link href="/zh-tw/pharmacy" className="action-primary inline-flex px-7 py-3.5 text-[15px]">
-        申請試點
+      <Link
+        href={localizedPath("/pharmacy", locale)}
+        className="action-primary inline-flex px-7 py-3.5 text-[15px]"
+      >
+        {locale === "en" ? "Join the pilot" : "申請試點"}
       </Link>
     </section>
   );

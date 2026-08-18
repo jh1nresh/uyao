@@ -115,7 +115,11 @@ export function consumerIndexingAllowed(
   return host === SHOP_CANONICAL_HOST;
 }
 
-/** 允許 index 的 canonical 公開路徑 —— robots meta 與 sitemap 的唯一來源。 */
+/**
+ * 允許 index 的 canonical 公開路徑 —— robots meta 與 sitemap 的唯一來源。
+ * 每個知識頁都有 zh-tw 與 en 兩個 canonical，彼此以 hreflang 互指
+ * （來源見 lib/aeo.ts 的雙語 registry）。
+ */
 export const INDEXABLE_PATHS = [
   "/zh-tw",
   "/en",
@@ -123,18 +127,31 @@ export const INDEXABLE_PATHS = [
   "/en/pharmacy",
   "/zh-tw/evidence",
   "/en/evidence",
+  "/zh-tw/guides",
+  "/en/guides",
   "/zh-tw/guides/ai-tools-pharmacy-inventory",
+  "/en/guides/ai-tools-pharmacy-inventory",
   "/zh-tw/guides/pharmacy-expiry-management",
+  "/en/guides/pharmacy-expiry-management",
   "/zh-tw/guides/pharmacy-return-window",
+  "/en/guides/pharmacy-return-window",
   "/zh-tw/guides/find-medicine-nearby",
+  "/en/guides/find-medicine-nearby",
   "/zh-tw/guides/medicine-out-of-stock",
+  "/en/guides/medicine-out-of-stock",
   "/zh-tw/guides/join-uyao",
+  "/en/guides/join-uyao",
   "/zh-tw/compare/uyao-vs-pos",
+  "/en/compare/uyao-vs-pos",
 ] as const;
 
 export type IndexablePath = (typeof INDEXABLE_PATHS)[number];
 
-/** Consumer v1 先只開首頁；drug/store/category 仍須逐頁通過 admission gate。 */
+/**
+ * Consumer 可收錄的靜態路徑。品類與品項頁是動態的，由
+ * `lib/shop-index.ts` 依目錄資料展開；search 與 store 頁維持 noindex
+ * （search 沒有穩定內容，store 頁會顯示尚未確認的供應資訊）。
+ */
 export const SHOP_INDEXABLE_PATHS = ["/zh-tw", "/en"] as const;
 
 /** Spec §3 的 stable entity description —— 全站與 schema 共用，不得改寫成 marketplace／POS／電商。 */
@@ -235,6 +252,81 @@ export function breadcrumbJsonLd(items: { name: string; path: string }[]): JsonL
   };
 }
 
+/** Breadcrumbs for consumer routes, anchored on the shop canonical host. */
+export function consumerBreadcrumbJsonLd(items: { name: string; path: string }[]): JsonLd {
+  return {
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: item.name,
+      item: `${SHOP_URL}${item.path}`,
+    })),
+  };
+}
+
+/**
+ * Catalog listing schema. Deliberately carries no `Offer`, price, or
+ * availability: the catalog records what a partner pharmacy listed, not what is
+ * purchasable or in stock right now.
+ */
+export function consumerItemListJsonLd(input: {
+  name: string;
+  description: string;
+  path: string;
+  inLanguage: "zh-Hant-TW" | "en";
+  items: { name: string; path: string }[];
+}): JsonLd {
+  return {
+    "@type": "CollectionPage",
+    "@id": `${SHOP_URL}${input.path}#webpage`,
+    name: input.name,
+    description: input.description,
+    url: `${SHOP_URL}${input.path}`,
+    inLanguage: input.inLanguage,
+    isPartOf: { "@id": `${SHOP_URL}/#website` },
+    mainEntity: {
+      "@type": "ItemList",
+      numberOfItems: input.items.length,
+      itemListElement: input.items.map((item, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: item.name,
+        url: `${SHOP_URL}${item.path}`,
+      })),
+    },
+  };
+}
+
+/**
+ * Catalog item schema. `Product` only — never a medical type, and never an
+ * `Offer`: uYao does not sell online and cannot assert live availability.
+ */
+export function consumerProductJsonLd(input: {
+  name: string;
+  description: string;
+  path: string;
+  inLanguage: "zh-Hant-TW" | "en";
+  image?: string;
+  manufacturer?: string;
+  category?: string;
+}): JsonLd {
+  return {
+    "@type": "Product",
+    "@id": `${SHOP_URL}${input.path}#product`,
+    name: input.name,
+    description: input.description,
+    url: `${SHOP_URL}${input.path}`,
+    inLanguage: input.inLanguage,
+    ...(input.image ? { image: `${SHOP_URL}${input.image}` } : {}),
+    ...(input.manufacturer
+      ? { manufacturer: { "@type": "Organization", name: input.manufacturer } }
+      : {}),
+    ...(input.category ? { category: input.category } : {}),
+    isRelatedTo: { "@id": `${SHOP_URL}/#website` },
+  };
+}
+
 export function webPageJsonLd(input: {
   name: string;
   description: string;
@@ -260,7 +352,9 @@ export function articleJsonLd(input: {
   datePublished: string;
   dateModified: string;
   image?: string;
+  inLanguage?: "zh-Hant-TW" | "en";
 }): JsonLd {
+  const locale = input.inLanguage ?? "zh-Hant-TW";
   return {
     "@type": "Article",
     headline: input.headline,
@@ -270,11 +364,11 @@ export function articleJsonLd(input: {
     // Article rich results need a ≥1200px image. Knowledge pages have no own
     // artwork, so they reuse the same card that gets shared on X/LINE —
     // pass `image` once a page owns a real illustration.
-    image: input.image ?? SOCIAL_PREVIEW_IMAGES.company.zh.url,
-    inLanguage: "zh-Hant-TW",
+    image: input.image ?? SOCIAL_PREVIEW_IMAGES.company[locale === "en" ? "en" : "zh"].url,
+    inLanguage: locale,
     datePublished: input.datePublished,
     dateModified: input.dateModified,
-    author: { "@type": "Organization", name: "uYao 團隊" },
+    author: { "@type": "Organization", name: locale === "en" ? "uYao team" : "uYao 團隊" },
     publisher: { "@id": `${SITE_URL}/#organization` },
   };
 }

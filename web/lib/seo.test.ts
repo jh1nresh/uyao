@@ -124,6 +124,21 @@ describe("indexable paths", () => {
     );
   });
 
+  it("publishes the guides pillar page that keeps the cluster one hop from home", () => {
+    expect(INDEXABLE_PATHS).toEqual(expect.arrayContaining(["/zh-tw/guides", "/en/guides"]));
+  });
+
+  it("carries every knowledge page in both locales", () => {
+    const knowledge = INDEXABLE_PATHS.filter((path) =>
+      /^\/(zh-tw|en)\/(evidence|guides|compare)/.test(path),
+    );
+    const zh = knowledge.filter((path) => path.startsWith("/zh-tw/"));
+    const en = knowledge.filter((path) => path.startsWith("/en/"));
+
+    expect(zh.length).toBeGreaterThan(0);
+    expect(en.map((path) => path.replace(/^\/en/, "/zh-tw")).sort()).toEqual(zh.slice().sort());
+  });
+
   it("only contains locale-prefixed canonical routes", () => {
     for (const path of INDEXABLE_PATHS) {
       expect(path).toMatch(/^\/(zh-tw|en)(\/|$)/);
@@ -136,7 +151,7 @@ describe("indexable paths", () => {
     }
   });
 
-  it("admits only the two localized Consumer homepages", () => {
+  it("keeps the two localized Consumer homepages as the static shop entries", () => {
     expect(SHOP_INDEXABLE_PATHS).toEqual(["/zh-tw", "/en"]);
   });
 });

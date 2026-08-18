@@ -10,6 +10,7 @@ type FooterCopy = {
   trustHeading: string;
   contactHeading: string;
   medicineFinder: string;
+  guidesHub: string;
   findMedicineGuide: string;
   outOfStockGuide: string;
   joinGuide: string;
@@ -28,6 +29,7 @@ const COPY: Record<"zh" | "en", FooterCopy> = {
     trustHeading: "信任與證據",
     contactHeading: "社群與聯絡",
     medicineFinder: "附近找藥",
+    guidesHub: "藥局營運與找藥指南",
     findMedicineGuide: "附近藥局找藥步驟",
     outOfStockGuide: "藥品缺貨怎麼辦",
     joinGuide: "藥局如何加入",
@@ -45,6 +47,7 @@ const COPY: Record<"zh" | "en", FooterCopy> = {
     trustHeading: "Trust and evidence",
     contactHeading: "Social and contact",
     medicineFinder: "Medicine finder",
+    guidesHub: "Pharmacy and medicine guides",
     findMedicineGuide: "How to find medicine nearby",
     outOfStockGuide: "When medicine is out of stock",
     joinGuide: "How pharmacies join",
@@ -82,7 +85,6 @@ export function CompanyFooter({
   const copy = COPY[locale];
   const shopUrl = `${SHOP_URL.replace(/\/$/, "")}${locale === "en" ? "/en" : "/zh-tw"}`;
   const companyPrefix = locale === "en" ? "/en" : "/zh-tw";
-  const joinGuideUrl = locale === "en" ? "/en#how" : "/zh-tw/guides/join-uyao";
 
   return (
     <footer className="bg-paper">
@@ -104,10 +106,14 @@ export function CompanyFooter({
             </h2>
             <div className="mt-2 flex flex-col items-start">
               <FooterLink href={shopUrl}>{copy.medicineFinder}</FooterLink>
-              {/* 指南目前只有中文版，兩個語系都指向 /zh-tw canonical，內部連結不分流。 */}
-              <FooterLink href="/zh-tw/guides/find-medicine-nearby">{copy.findMedicineGuide}</FooterLink>
-              <FooterLink href="/zh-tw/guides/medicine-out-of-stock">{copy.outOfStockGuide}</FooterLink>
-              <FooterLink href={joinGuideUrl}>{copy.joinGuide}</FooterLink>
+              {/*
+                指南 hub 必須留在 footer：它是整個知識叢集唯一的 sitewide 入口，
+                拿掉的話 compare 與四篇營運指南又會退回「只有內文一條連結」的孤島。
+              */}
+              <FooterLink href={`${companyPrefix}/guides`}>{copy.guidesHub}</FooterLink>
+              <FooterLink href={`${companyPrefix}/guides/find-medicine-nearby`}>{copy.findMedicineGuide}</FooterLink>
+              <FooterLink href={`${companyPrefix}/guides/medicine-out-of-stock`}>{copy.outOfStockGuide}</FooterLink>
+              <FooterLink href={`${companyPrefix}/guides/join-uyao`}>{copy.joinGuide}</FooterLink>
               <FooterLink href={`${companyPrefix}/pharmacy`}>{copy.pilot}</FooterLink>
             </div>
           </nav>
