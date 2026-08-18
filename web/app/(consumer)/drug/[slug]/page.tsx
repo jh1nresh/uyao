@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import { Fragment } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -7,6 +6,7 @@ import { notFound } from "next/navigation";
 import { AreaSwitch } from "@/components/AreaSwitch";
 import { NoInventoryYet } from "@/components/NoInventoryYet";
 import { PharmacyList } from "@/components/PharmacyList";
+import { ProductGallery, type GalleryImage } from "@/components/ProductGallery";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import {
@@ -86,6 +86,25 @@ export default async function DrugPage({
     .map((partner) => getStore(partner.storeSlug))
     .filter((store): store is NonNullable<typeof store> => store !== undefined);
 
+  // 圖廊 = 包裝實拍 +（電商）商品說明圖。實拍排第一，那才是「這盒長什麼樣」。
+  const galleryImages: GalleryImage[] = [
+    ...(drug.image
+      ? [{
+          src: drug.image.src,
+          alt: locale === "en" ? drug.image.altEn : drug.image.alt,
+          label: locale === "en" ? "Packaging photo" : "包裝照",
+        }]
+      : []),
+    ...(drug.detailImages ?? []).map((item, i) => ({
+      src: item.src,
+      alt: locale === "en" ? item.altEn : item.alt,
+      label:
+        locale === "en"
+          ? ["Hero", "Features", "Ingredients"][i] ?? `Image ${i + 1}`
+          : ["主圖", "產品特色", "成分規格"][i] ?? `圖 ${i + 1}`,
+    })),
+  ];
+
   const rows = storesForDrug(drug.slug, area);
   const alternatives = alternativesFor(drug.slug, area);
   const category = getCategory(drug.category);
@@ -118,7 +137,34 @@ export default async function DrugPage({
       </nav>
 
       <section className="border-b border-line bg-paper">
-      <div className="shop-shell grid max-w-[900px] gap-6 py-8 sm:py-10 md:grid-cols-[minmax(0,1fr)_280px] md:items-start">
+      <div className="shop-shell grid max-w-[1040px] gap-7 py-8 sm:py-10 lg:grid-cols-[minmax(0,520px)_minmax(0,1fr)] lg:items-start">
+        {galleryImages.length > 0 && (
+          <div className="flex flex-col gap-2.5">
+            <ProductGallery images={galleryImages} locale={locale} />
+            {drug.image && (
+              <p className="m-0 text-xs leading-[1.7] text-muted-2">
+                {drug.image.kind === "packshot"
+                  ? locale === "en"
+                    ? "The first image is packaging supplied by the partner pharmacy, cut out on a transparent background."
+                    : "第一張是合作藥局提供的包裝照片，已去背為透明背景。"
+                  : locale === "en"
+                    ? "Illustration only — not the actual packaging."
+                    : "示意圖，非實際包裝。"}
+              </p>
+            )}
+            {/* 圖廊裡除了包裝實拍，還有排了原廠文案的商品說明圖，歸屬要跟著圖走。 */}
+            {drug.detailImages && drug.detailImages.length > 0 && (
+              <p className="m-0 text-xs leading-[1.7] text-muted-2">
+                <span className="mr-1.5 border border-oxblood px-[5px] py-px text-[11px] font-bold text-oxblood">
+                  {locale === "en" ? "MANUFACTURER'S OWN WORDING" : "原廠標示"}
+                </span>
+                {locale === "en"
+                  ? "Detail images combine partner-supplied product photos with text copied from the package or the manufacturer's own material. uYao has not independently verified those claims."
+                  : "說明圖是合作藥局提供的商品照，加上照抄自包裝或原廠資料的排版文字；uYao 未獨立驗證其中的說法，也不構成背書。"}
+              </p>
+            )}
+          </div>
+        )}
         <div className="flex flex-col gap-2 border-l-2 border-forest pl-4 sm:pl-6">
           <p className="mb-1 text-[14px] font-bold text-forest">
             {locale === "en" ? "Partner-listed item" : "合作藥局提供品項"}
@@ -177,34 +223,6 @@ export default async function DrugPage({
             </p>
           )}
         </div>
-        {/* 標題在 DOM 裡先於圖：手機上 h1 要先進眼，圖再跟上。 */}
-        {drug.image && (
-          <figure className="m-0 max-w-[280px]">
-            <div className="border border-line bg-ivory">
-              <Image
-                src={drug.image.src}
-                alt={locale === "en" ? drug.image.altEn : drug.image.alt}
-                width={drug.image.width}
-                height={drug.image.height}
-                sizes="(min-width: 768px) 280px, 100vw"
-                className="block h-auto w-full"
-                priority
-              />
-            </div>
-            {/* 生成圖一定要標示，否則使用者會以為看到的是實際包裝。 */}
-            <figcaption className="mt-2 text-xs leading-[1.6] text-muted-2">
-              {/* 圖裡已經印了「示意圖，非實際包裝」，這裡不重複同一句，改補
-                  它沒說的部分；純文字版的免責仍在 alt 與這行裡。 */}
-              {drug.image.kind === "illustration"
-                ? locale === "en"
-                  ? "Not the actual packaging. Confirm the product, its package size, and availability in store."
-                  : "非實際包裝；品項、規格與供應以門市實際商品和藥師確認為準。"
-                : locale === "en"
-                  ? "Packaging photo provided by the partner pharmacy."
-                  : "合作藥局提供的包裝照片。"}
-            </figcaption>
-          </figure>
-        )}
       </div>
       </section>
 
@@ -385,42 +403,6 @@ export default async function DrugPage({
               {locale === "en"
                 ? "The wording above is copied from the product package or the manufacturer's own material. uYao has not independently verified it, and it is not an endorsement. Food and supplement wording cannot be read as prevention or treatment of disease — check the actual package and ask a pharmacist."
                 : "以上文字照抄自產品包裝或原廠資料，uYao 未獨立驗證，也不構成背書。食品與營養補充品的文字不能解讀為預防或治療疾病；請以實際包裝為準並向藥師確認。"}
-            </p>
-          </div>
-        </section>
-      )}
-
-      {/* 電商版型算繪的商品說明圖。是實拍加排版文字的行銷素材，不是包裝實拍，
-          所以標「商品說明圖」而不是沿用 image 的 packshot 宣告。 */}
-      {drug.detailImages && drug.detailImages.length > 0 && (
-        <section className="border-b border-line bg-ivory" aria-labelledby="detail-images-heading">
-          <div className="shop-shell py-8 sm:py-10">
-            <div className="flex max-w-[900px] flex-wrap items-baseline gap-x-3 gap-y-1">
-              <h2 id="detail-images-heading" className="editorial-display m-0 text-[26px] leading-[1.3] sm:text-[32px]">
-                {locale === "en" ? "Product detail images" : "商品說明圖"}
-              </h2>
-              <span className="border border-oxblood px-[7px] py-px text-[13px] font-bold text-oxblood">
-                {locale === "en" ? "MANUFACTURER'S OWN WORDING" : "原廠標示，非 uYao 評價"}
-              </span>
-            </div>
-            <div className="mt-5 grid max-w-[900px] gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {drug.detailImages.map((item) => (
-                <div key={item.src} className="border border-line bg-paper">
-                  <Image
-                    src={item.src}
-                    alt={locale === "en" ? item.altEn : item.alt}
-                    width={1000}
-                    height={1000}
-                    sizes="(min-width: 1024px) 290px, (min-width: 640px) 45vw, 100vw"
-                    className="block h-auto w-full"
-                  />
-                </div>
-              ))}
-            </div>
-            <p className="mb-0 mt-4 max-w-[900px] border-l-2 border-oxblood pl-3 text-[14px] leading-[1.75] text-muted">
-              {locale === "en"
-                ? "These images combine partner-supplied product photos with typeset text taken from the package or the manufacturer's own material. uYao has not independently verified the claims in them, and they are not an endorsement."
-                : "這些圖是合作藥局提供的商品照，加上照抄自包裝或原廠資料的排版文字；uYao 未獨立驗證其中的說法，也不構成背書。"}
             </p>
           </div>
         </section>

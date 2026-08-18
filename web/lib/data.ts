@@ -587,9 +587,9 @@ const DRUGS: Drug[] = [
     image: {
       src: "/products/greenplus-elgucare.webp",
       width: 900,
-      height: 1125,
+      height: 1028,
       kind: "packshot",
-      alt: "合作藥局提供的包裝照片，已去背：綠杏 LHBcare 益固康 Elgucare 的 72 粒盒裝與 360 粒罐裝並排，盒面標示「全素可食」與 72 Capsules",
+      alt: "合作藥局提供的包裝照片（已去背，透明背景）：綠杏 LHBcare 益固康 Elgucare 的 72 粒盒裝與 360 粒罐裝並排，盒面標示「全素可食」與 72 Capsules",
       altEn: "Partner-provided packaging photo: the LHBcare Elgucare 72-capsule carton beside the 360-capsule jar",
     },
   }),
@@ -683,7 +683,7 @@ const DRUGS: Drug[] = [
     image: {
       src: "/products/aob-vitality-beauty-45.webp",
       width: 900,
-      height: 1125,
+      height: 928,
       kind: "packshot",
       alt: "合作藥局提供的包裝照片：New AOB Vitality Beauty 淺綠色紙盒與三支鋁袋條狀隨身包，盒面標示 45包、健全体調美容増進",
       altEn: "Partner-provided packaging photo: the pale-green New AOB Vitality Beauty carton with three aluminium stick sachets",
@@ -722,9 +722,9 @@ const DRUGS: Drug[] = [
     image: {
       src: "/products/chungchi-yiyuansu-gastrodia-100.webp",
       width: 900,
-      height: 1125,
+      height: 821,
       kind: "packshot",
-      alt: "合作藥局提供的包裝照片，已去背：憶元素 天麻100膠囊的金黃色盒裝正面，盒面印有品名、天麻100膠囊與分子結構底紋",
+      alt: "合作藥局提供的包裝照片（已去背，透明背景）：憶元素 天麻100膠囊的金黃色盒裝正面，盒面印有品名、天麻100膠囊與分子結構底紋",
       altEn: "Partner-provided packaging photo: the golden carton of 憶元素 天麻100膠囊, front face showing the product name and a molecular-structure motif",
     },
   }),
@@ -757,9 +757,9 @@ const DRUGS: Drug[] = [
     image: {
       src: "/products/yuanding-puregps-defense-450.webp",
       width: 900,
-      height: 1125,
+      height: 760,
       kind: "packshot",
-      alt: "合作藥局提供的包裝照片，已去背：PUREGPS 強抗力優 450+ Defense 盒裝正面，標示 60 Capsules、植物膠囊全素與 wellmune 原廠授權",
+      alt: "合作藥局提供的包裝照片（已去背，透明背景）：PUREGPS 強抗力優 450+ Defense 盒裝正面，標示 60 Capsules、植物膠囊全素與 wellmune 原廠授權",
       altEn: "Partner-provided packaging photo: the PUREGPS Defense 450+ carton front, marked 60 Capsules",
     },
   }),
@@ -784,7 +784,7 @@ const DRUGS: Drug[] = [
     image: {
       src: "/products/chungchi-ganmeijia-coral-ca.webp",
       width: 900,
-      height: 1125,
+      height: 1237,
       kind: "packshot",
       alt: "合作藥局提供的包裝照片：甘鎂佳珊瑚鈣淺藍色紙盒正面，標示 Magnesium Glycinate Coral Ca、K2(MK-7)、D3、Mg 與 60 TABLETS、MADE IN CANADA",
       altEn: "Partner-provided packaging photo: the light-blue Magnesium Glycinate Coral Ca carton front, marked K2 (MK-7), D3, Mg and 60 tablets",
@@ -818,7 +818,7 @@ const DRUGS: Drug[] = [
     image: {
       src: "/products/tianxia-chan-c-80.webp",
       width: 900,
-      height: 1125,
+      height: 1312,
       kind: "packshot",
       alt: "合作藥局提供的包裝照片：強喜錠 Chan-C 黃色紙盒正面，標示維他命C＋B6、草莓添加β胡蘿蔔素、80 Tab 與國家品質標章",
       altEn: "Partner-provided packaging photo: the yellow 強喜錠 Chan-C carton front, marked vitamin C+B6 and 80 tablets",
@@ -850,7 +850,7 @@ const DRUGS: Drug[] = [
     image: {
       src: "/products/huamao-progifted-lp28.webp",
       width: 900,
-      height: 1125,
+      height: 991,
       kind: "packshot",
       alt: "合作藥局提供的包裝照片：Progifted LP-28 綠白色紙盒正面，標示第4代專利三層包埋、120×10⁸ cfu/2g 與 30 包蘋果口味",
       altEn: "Partner-provided packaging photo: the green-and-white Progifted LP-28 carton front, marked 120×10⁸ cfu/2g and 30 sachets",
@@ -884,7 +884,7 @@ const DRUGS: Drug[] = [
     image: {
       src: "/products/gaoyouzhi-vitamin-b-60.webp",
       width: 900,
-      height: 1125,
+      height: 775,
       kind: "packshot",
       alt: "合作藥局提供的包裝照片：高優質維他命B群紅白色紙盒正面，標示原料嚴選 DSM 德國廠、95% 薑黃、啤酒酵母、五味子與 60粒軟膠囊",
       altEn: "Partner-provided packaging photo: the red-and-white 高優質維他命B群 carton front, marked DSM ingredients and 60 softgels",
