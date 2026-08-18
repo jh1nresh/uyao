@@ -562,10 +562,10 @@ const DRUGS: Drug[] = [
     image: {
       src: "/products/greenplus-elgucare.webp",
       width: 900,
-      height: 1118,
+      height: 1125,
       kind: "illustration",
-      alt: "示意圖：未標示品牌的補充品紙盒與兩顆膠囊，旁邊放一段草本枝葉",
-      altEn: "Illustration: an unbranded supplement carton with two capsules and a herbal sprig",
+      alt: "示意圖：深藍色紙盒搭配紅色斜帶與白色補充品瓶身，包裝面無任何印刷字樣；下方排有品名「益固康 Elgucare」",
+      altEn: "Illustration: a navy carton with a red diagonal band beside a white supplement bottle, all surfaces unprinted; the product name 益固康 Elgucare is typeset below",
     },
   }),
   partnerProvidedProduct({
@@ -649,10 +649,10 @@ const DRUGS: Drug[] = [
     image: {
       src: "/products/chungchi-yiyuansu-gastrodia-100.webp",
       width: 900,
-      height: 1118,
+      height: 1125,
       kind: "illustration",
-      alt: "示意圖：未標示品牌的白色補充品瓶身與膠囊鋁箔片，旁邊放乾燥花苞與根片",
-      altEn: "Illustration: an unbranded white supplement bottle and blister card beside dried buds and root slices",
+      alt: "示意圖：金黃色紙盒搭配白色補充品瓶身，包裝面無任何印刷字樣；下方排有品名「憶元素 天麻100膠囊」",
+      altEn: "Illustration: a golden-amber carton beside a white supplement bottle, all surfaces unprinted; the product name 憶元素 天麻100膠囊 is typeset below",
     },
   }),
   partnerProvidedProduct({
@@ -671,10 +671,10 @@ const DRUGS: Drug[] = [
     image: {
       src: "/products/yuanding-puregps-defense-450.webp",
       width: 900,
-      height: 1118,
+      height: 1125,
       kind: "illustration",
-      alt: "示意圖：未標示品牌的直立補充品紙盒與膠囊鋁箔片，旁邊是多醣體分子的線稿",
-      altEn: "Illustration: an unbranded upright supplement carton and blister card beside a line-drawn polysaccharide motif",
+      alt: "示意圖：白色紙盒搭配綠色上部色塊與橘色橫紋，旁邊是白色膠囊鋁箔片，包裝面無任何印刷字樣；下方排有品名「強抗力優 450+ Defense」",
+      altEn: "Illustration: a white carton with a green upper field and orange stripe beside a blister of white capsules, all surfaces unprinted; the product name 強抗力優 450+ Defense is typeset below",
     },
   }),
 ];
