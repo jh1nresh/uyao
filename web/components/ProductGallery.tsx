@@ -85,16 +85,18 @@ export function ProductGallery({
               tabIndex={i === active ? 0 : -1}
               onClick={() => setActive(i)}
               title={image.label}
-              className={`relative aspect-square w-[68px] shrink-0 border outline-offset-2 sm:w-full ${
+              className={`relative aspect-square w-[76px] shrink-0 overflow-hidden border bg-paper outline-offset-2 sm:w-full ${
                 i === active ? "border-forest" : "border-line hover:border-line-strong"
               }`}
             >
+              {/* 說明圖是白底大量留白，縮到 76px 用 contain 幾乎只剩白；
+                  改成填滿縮圖框，內容才看得到。包裝照是去背的，填滿也不會失真。 */}
               <Image
                 src={image.src}
                 alt=""
                 fill
-                sizes="76px"
-                className="object-contain p-1"
+                sizes="84px"
+                className="object-cover"
               />
               <span className="sr-only">{image.label}</span>
             </button>
