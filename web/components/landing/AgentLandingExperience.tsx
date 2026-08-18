@@ -429,11 +429,11 @@ function StoreOsPreview({
                     active ? "border-green bg-on-dark/10" : "border-transparent hover:bg-on-dark/5"
                   }`}
                 >
-                  {/* Every agent idles on its own; selection is a state of the
-                      workspace, not of the team. Gating motion on `active` made
-                      the preview read as one live agent and three stickers --
-                      the same flaw #126 fixed in the real Store OS sidebar. */}
-                  <Avatar id={agent.id} size={40} playing={!reducedMotion} />
+                  {/* 只有被點選的 agent 會動。#126 當初刻意讓四隻各自 idle，
+                      但四隻程序化動畫同時跑在首屏要 ~2.9s script evaluation，
+                      主執行緒滿到連 IntersectionObserver 的 callback 都會被餓死
+                      —— 動畫預算集中給使用者正在看的那一隻 session。 */}
+                  <Avatar id={agent.id} size={40} playing={!reducedMotion && active} />
                   <span className="hidden min-w-0 flex-1 lg:block">
                     <strong className="block truncate text-[13px]">{agent.name}</strong>
                     <small className="num mt-1 block text-[9px] text-on-dark/65">{agent.state}</small>
@@ -635,7 +635,7 @@ function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; loc
             <Sprout
               data={footerSproutData}
               animation={FOOTER_MANAGER_ANIMATION}
-              playing={!reducedMotion}
+              playing={false}
               loop
               size="100%"
               className="agent-theme-eyes"
@@ -682,7 +682,7 @@ export function AgentLandingExperience({ locale }: { locale: Locale }) {
         <header className="mx-auto flex min-h-[500px] max-w-[1120px] flex-col items-center justify-center px-5 py-16 text-center sm:min-h-[560px] sm:px-8 sm:py-20">
           <h1 className="editorial-display mb-0 mt-0 max-w-[980px] text-[clamp(46px,7vw,88px)] leading-[1.08]">
             {copy.heroTitleBefore}{" "}
-            <Avatar id="manager" size="1.08em" playing={!reducedMotion} className="align-[-.2em]" />{" "}
+            <Avatar id="manager" size="1.08em" playing={false} className="align-[-.2em]" />{" "}
             {copy.heroTitleAfter}
           </h1>
           <p className="mb-0 mt-7 max-w-[720px] text-[15px] leading-[1.8] text-muted sm:text-[17px]">{copy.heroLead}</p>
@@ -704,7 +704,7 @@ export function AgentLandingExperience({ locale }: { locale: Locale }) {
             <div className="border border-line-strong bg-paper">
               <div className="num flex justify-between border-b border-line px-5 py-4 text-[10px] text-muted"><span>{manager.name.toUpperCase()} · DIRECT MESSAGE</span><span>09:14</span></div>
               <div className="grid grid-cols-[42px_1fr] gap-4 border-b border-line px-5 py-5"><span className="grid h-[38px] place-items-center bg-brand-surface text-[9px] font-bold text-on-dark">YOU</span><div><b className="text-[12px]">{copy.you}</b><p className="mb-0 mt-2 text-[13px] text-muted">{copy.command}</p></div></div>
-              <div className="grid grid-cols-[48px_1fr] gap-4 border-b border-line px-5 py-5"><Avatar id="manager" size={46} playing={!reducedMotion} /><div><b className="text-[12px]">{manager.name}</b><p className="mb-0 mt-2 text-[13px] leading-[1.7] text-muted">{copy.agentReply}</p></div></div>
+              <div className="grid grid-cols-[48px_1fr] gap-4 border-b border-line px-5 py-5"><Avatar id="manager" size={46} playing={false} /><div><b className="text-[12px]">{manager.name}</b><p className="mb-0 mt-2 text-[13px] leading-[1.7] text-muted">{copy.agentReply}</p></div></div>
               <div className="m-5 flex justify-between border border-line-strong px-4 py-3 text-[11px] text-muted"><span>{copy.messagePlaceholder}</span><b className="text-forest">{copy.send}</b></div>
             </div>
           </div>
@@ -715,7 +715,7 @@ export function AgentLandingExperience({ locale }: { locale: Locale }) {
             <div className="order-2 border border-green-tint-line bg-sage p-6 sm:p-10 lg:order-1">
               <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
                 {copy.agents.map((agent) => (
-                  <div key={agent.id} className="text-center"><Avatar id={agent.id} size={96} playing={!reducedMotion} className="mx-auto" /><strong className="mt-2 block text-[14px]">{agent.name}</strong><span className="num mt-2 inline-flex items-center gap-2 text-[9px] text-muted"><i className={`h-1.5 w-1.5 rounded-full ${agent.color}`} />{agent.state}</span></div>
+                  <div key={agent.id} className="text-center"><Avatar id={agent.id} size={96} playing={false} className="mx-auto" /><strong className="mt-2 block text-[14px]">{agent.name}</strong><span className="num mt-2 inline-flex items-center gap-2 text-[9px] text-muted"><i className={`h-1.5 w-1.5 rounded-full ${agent.color}`} />{agent.state}</span></div>
                 ))}
               </div>
               <div className="mt-12 grid border-y border-forest/20 text-[11px] sm:grid-cols-4">
@@ -733,7 +733,7 @@ export function AgentLandingExperience({ locale }: { locale: Locale }) {
             <div className="border-t border-line">
               {copy.agents.map((agent) => (
                 <div key={agent.id} className="grid gap-5 border-b border-line py-6 sm:grid-cols-[84px_190px_1fr_1fr] sm:items-center sm:gap-6">
-                  <Avatar id={agent.id} size={76} playing={!reducedMotion} />
+                  <Avatar id={agent.id} size={76} playing={false} />
                   <h3 className="editorial-display m-0 text-[21px]"><span className="block">{agent.name}</span><small className="num mt-2 block text-[9px] tracking-[.06em] text-muted">{agent.state}</small></h3>
                   <div><small className="num font-bold text-oxblood">{copy.owns}</small><p className="mb-0 mt-2 text-[13px] leading-[1.6] text-muted">{agent.owns}</p></div>
                   <div><small className="num font-bold text-oxblood">{copy.boundary}</small><p className="mb-0 mt-2 text-[13px] leading-[1.6] text-muted">{agent.boundary}</p></div>
