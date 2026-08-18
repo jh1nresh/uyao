@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { AreaSwitch } from "@/components/AreaSwitch";
+import { CatalogCarousel } from "@/components/CatalogCarousel";
 import { CatalogItemGrid } from "@/components/CatalogItemGrid";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -70,6 +71,22 @@ export default async function CategoryPage({
   const allCatalogDrugs = allDrugs();
   const results = filterCatalogDrugs(allCatalogDrugs, { query, group });
   const catalogPage = paginateCatalogDrugs(results, rawPage);
+
+  // 沒有搜尋也沒選分類時，用「每個分類一條橫向列」瀏覽整個目錄。
+  // 一旦有查詢或指定分類，就回到網格 —— 篩選結果要一次看完，
+  // 橫向列會把結果藏在畫面外，而且分頁的 SEO 連結也還需要網格。
+  const browsingAll = query === "" && group === "all";
+  const groupRails = browsingAll
+    ? CATALOG_GROUPS.filter((item) => item.slug !== "all")
+        .map((item) => ({
+          group: item,
+          // 每條列都讓有圖的排前面，跟首頁一致 —— 一列的開頭要是商品不是文字卡。
+          drugs: filterCatalogDrugs(allCatalogDrugs, { group: item.slug }).sort(
+            (a, b) => Number(Boolean(b.image)) - Number(Boolean(a.image)),
+          ),
+        }))
+        .filter((row) => row.drugs.length > 0)
+    : [];
 
   function groupHref(nextGroup: string): string {
     const queryParams = new URLSearchParams({ area, group: nextGroup });
@@ -148,20 +165,50 @@ export default async function CategoryPage({
             })}
           </nav>
 
-          <div className="mb-4 mt-8 flex flex-wrap items-end justify-between gap-2">
-            <p className="m-0 text-[14px] font-bold text-ink">
-              {locale === "en" ? `${results.length} results` : `${results.length} 項結果`}
-            </p>
-            <p className="m-0 text-[14px] text-muted-2">
-              {locale === "en"
-                ? `Page ${catalogPage.page} of ${catalogPage.pageCount} · ${areaCopy(getArea(area), locale).shortName}`
-                : `第 ${catalogPage.page}／${catalogPage.pageCount} 頁 · ${getArea(area).shortName}`}
-            </p>
-          </div>
+          {browsingAll ? (
+            <div className="mt-10 flex flex-col gap-12">
+              {groupRails.map((row) => (
+                <section key={row.group.slug} aria-labelledby={`rail-${row.group.slug}`}>
+                  <div className="mb-3 flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                    <h2 id={`rail-${row.group.slug}`} className="editorial-display m-0 text-[24px] leading-[1.3] sm:text-[28px]">
+                      {locale === "en" ? row.group.nameEn : row.group.name}
+                    </h2>
+                    <Link
+                      href={groupHref(row.group.slug)}
+                      className="inline-flex min-h-11 items-center border-b border-forest text-[14px] font-bold text-forest no-underline hover:border-green hover:text-green"
+                    >
+                      {locale === "en"
+                        ? `All ${row.drugs.length} →`
+                        : `全部 ${row.drugs.length} 項 →`}
+                    </Link>
+                  </div>
+                  <CatalogCarousel
+                    drugs={row.drugs}
+                    area={area}
+                    locale={locale}
+                    label={locale === "en" ? row.group.nameEn : row.group.name}
+                  />
+                </section>
+              ))}
+            </div>
+          ) : (
+            <>
+              <div className="mb-4 mt-8 flex flex-wrap items-end justify-between gap-2">
+                <p className="m-0 text-[14px] font-bold text-ink">
+                  {locale === "en" ? `${results.length} results` : `${results.length} 項結果`}
+                </p>
+                <p className="m-0 text-[14px] text-muted-2">
+                  {locale === "en"
+                    ? `Page ${catalogPage.page} of ${catalogPage.pageCount} · ${areaCopy(getArea(area), locale).shortName}`
+                    : `第 ${catalogPage.page}／${catalogPage.pageCount} 頁 · ${getArea(area).shortName}`}
+                </p>
+              </div>
 
-          <CatalogItemGrid drugs={catalogPage.drugs} area={area} locale={locale} />
+              <CatalogItemGrid drugs={catalogPage.drugs} area={area} locale={locale} />
+            </>
+          )}
 
-          {catalogPage.pageCount > 1 && (
+          {!browsingAll && catalogPage.pageCount > 1 && (
             <nav
               aria-label={locale === "en" ? "Catalog pages" : "目錄分頁"}
               className="mt-8 grid grid-cols-[1fr_auto_1fr] items-center gap-4"
