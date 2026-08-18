@@ -43,6 +43,7 @@ const GROUP_BY_DRUG_SLUG: Record<string, Exclude<CatalogGroupSlug, "all">> = {
   "youquan-super-magnesium": "vitamins-minerals",
   "chungchi-ganmeijia-coral-ca": "vitamins-minerals",
   "tianxia-chan-c-80": "vitamins-minerals",
+  "gaoyouzhi-vitamin-b-60": "vitamins-minerals",
   "jingcui-huxinan": "vitamins-minerals",
   "toyo-cukang-b": "vitamins-minerals",
   "jinjiweichang-60": "probiotics-digestion",

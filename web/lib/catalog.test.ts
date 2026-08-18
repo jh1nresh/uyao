@@ -58,6 +58,7 @@ const EXPECTED_CATALOG = [
   { slug: "chungchi-ganmeijia-coral-ca", label: "甘鎂佳珊瑚鈣 60錠" },
   { slug: "tianxia-chan-c-80", label: "強喜錠 Chan-C 80錠" },
   { slug: "huamao-progifted-lp28", label: "Progifted LP-28 益生菌 30包" },
+  { slug: "gaoyouzhi-vitamin-b-60", label: "高優質維他命B群 60粒" },
 ] as const;
 
 const OLD_SAMPLE_SLUGS = [
@@ -124,7 +125,7 @@ describe("合作藥局常見品項目錄", () => {
   it("合作藥局提供的新增品項保留資料來源、廠商、產地與分類待確認邊界", () => {
     const partnerProvided = allDrugs().filter((drug) => drug.source?.kind === "partner");
 
-    expect(partnerProvided).toHaveLength(30);
+    expect(partnerProvided).toHaveLength(31);
     for (const drug of partnerProvided) {
       expect(drug.drugClass).toBe("待確認");
       expect(drug.ingredients.length).toBeGreaterThan(0);

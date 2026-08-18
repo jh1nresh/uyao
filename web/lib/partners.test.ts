@@ -60,6 +60,7 @@ const EXPECTED_PRODUCTS = {
     "甘鎂佳珊瑚鈣 60錠",
     "強喜錠 Chan-C 80錠",
     "Progifted LP-28 益生菌 30包",
+    "高優質維他命B群 60粒",
   ],
   萊康中華健保藥局: [
     "克氣清膠囊",
@@ -71,6 +72,7 @@ const EXPECTED_PRODUCTS = {
     "甘鎂佳珊瑚鈣 60錠",
     "強喜錠 Chan-C 80錠",
     "Progifted LP-28 益生菌 30包",
+    "高優質維他命B群 60粒",
   ],
   永遠藥師藥局: [],
   發元藥局: [
