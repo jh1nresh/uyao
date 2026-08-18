@@ -33,7 +33,7 @@ const COPY: Record<"zh" | "en", FooterCopy> = {
     joinGuide: "藥局如何加入",
     pilot: "申請試點",
     evidence: "產品證據",
-    partnership: "WeStrong 合作",
+    partnership: "合作藥局據點",
     xLabel: "X（@uyaohealth）",
     email: "電子郵件",
     disclaimer:
@@ -50,7 +50,7 @@ const COPY: Record<"zh" | "en", FooterCopy> = {
     joinGuide: "How pharmacies join",
     pilot: "Join the pilot",
     evidence: "Product evidence",
-    partnership: "WeStrong partnership",
+    partnership: "Partner pharmacies",
     xLabel: "X (@uyaohealth)",
     email: "Email",
     disclaimer:
