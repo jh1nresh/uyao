@@ -10,7 +10,7 @@
 
 from __future__ import annotations
 
-# 素材檔名 → 是否已備妥。缺的三張需要店家補原始照片。
+# 缺件標記用的說明文字。素材備妥就不會用到，機制保留給之後新增的品項。
 MISSING_NOTE = {
     "defense-back": "缺 Defense 背面標示照",
     "yi-back": "缺 憶元素 營養標示照",
@@ -56,8 +56,7 @@ PRODUCTS = [
             ("規格", "每盒 60 粒", True),
             ("產地", "台灣", True),
         ],
-        "ing_art": None,          # defense-back 尚缺
-        "ing_art_key": "defense-back",
+        "ing_art": "defense-back",
         "ing_art_bg": "#f6f7f4",
         "note_bg": "#eef4e4",
         "note_fg": "#2f5417",
@@ -78,16 +77,14 @@ PRODUCTS = [
         "eyebrow_r": "條狀隨身包",
         "title": "New AOB Vitality Beauty",
         "subtitle": "健全體調・美容增進",
-        "hero": None,             # AOB 商品照尚缺
-        "hero_key": "aob",
+        "hero": "aob",
         "hero_w": "560px",
         "chips": [
             ("45包/盒", "#e7f5f1", "#23695c"),
             ("鋁袋條狀隨身包", "#e7f5f1", "#23695c"),
             ("NEW 配方", "#f5efe2", "#7c6230"),
         ],
-        "usp_art": None,
-        "usp_art_key": "aob",
+        "usp_art": "aob",
         "usp_art_w": "400px",
         "usp_tag": "AOB",
         "usp_title": "產品特色與規格",
@@ -191,8 +188,7 @@ PRODUCTS = [
             ("黑豆粉", "10mg", False),
             ("維生素E粉", "5mg", False),
         ],
-        "ing_art": None,          # yi-back 尚缺
-        "ing_art_key": "yi-back",
+        "ing_art": "yi-back",
         "ing_art_bg": "#f7f6f2",
         "note_bg": "#fdf3da",
         "note_fg": "#7c5606",
