@@ -109,6 +109,9 @@ export const PARTNER_PHARMACIES = {
       "護谷鈣素 100粒",
       "勝康寧 150粒",
       "恩體能 230粒",
+      "甘鎂佳珊瑚鈣 60錠",
+      "強喜錠 Chan-C 80錠",
+      "Progifted LP-28 益生菌 30包",
     ],
   },
   萊康中華健保藥局: {
@@ -121,6 +124,9 @@ export const PARTNER_PHARMACIES = {
       "護谷鈣素 100粒",
       "勝康寧 150粒",
       "恩體能 230粒",
+      "甘鎂佳珊瑚鈣 60錠",
+      "強喜錠 Chan-C 80錠",
+      "Progifted LP-28 益生菌 30包",
     ],
   },
   永遠藥師藥局: {
