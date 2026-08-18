@@ -15,29 +15,56 @@ import { defaultSocialPreview } from "@/lib/seo-server";
 import "./globals.css";
 
 /**
- * 自架的 Noto Sans TC subset（見 scripts/subset-fonts.py）。
+ * 自架的 Noto Sans TC／Noto Serif TC subset（見 scripts/subset-fonts.py）。
  * 走 Google Fonts <link> 的話，繁中字型按 unicode-range 切成上百塊，
  * 會拉進 430 個 @font-face、約 134KB gzip 的 render-blocking CSS。
- * 只包站上用到的字之後剩一個 @font-face —— 但改文案要重跑 subset。
+ * 只包站上用到的字之後剩幾個 @font-face —— 但改文案要重跑 subset。
+ *
+ * 每個家族切成 core / ext 兩塊：core 是公司首頁那條路徑上的 478 個字，ext 是
+ * 其餘全站字符（藥名、藥局名、guides 內文）。globals.css 把兩者串成 fallback
+ * chain，瀏覽器只有在頁面真的需要某個字時才去抓對應的檔，所以首頁只付 core
+ * 的 204KB，而不是整包 660KB。
+ *
+ * core 關掉 adjustFontFallback：next/font 會在 CSS 變數裡塞一個
+ * 「<family> Fallback」的本機字型，那個 face 排在 ext 前面就可能先接走 CJK，
+ * 讓 ext 永遠不被下載。度量補償留給 chain 最後的 ext 做。
  */
 const notoSansTC = localFont({
-  src: "./fonts/noto-sans-tc-var.woff2",
+  src: "./fonts/noto-sans-tc-core.woff2",
   weight: "100 900",
   variable: "--font-noto-sans-tc",
   display: "swap",
+  adjustFontFallback: false,
+});
+
+const notoSansTCExt = localFont({
+  src: "./fonts/noto-sans-tc-ext.woff2",
+  weight: "100 900",
+  variable: "--font-noto-sans-tc-ext",
+  display: "swap",
+  // 首頁用不到，絕對不要 preload 進關鍵路徑。
+  preload: false,
 });
 
 /**
  * serif 只服務 globals.css 的 .editorial-display（font-weight: 600），是
  * `--font-serif` 唯一的使用者，所以 subset 之後再把 wght 軸固定成 600：
- * 少掉整張 delta 表，501KB → 284KB。字型是這頁最大的一筆下載，行動網路上
- * 878KB 的字型佔了整頁 1.1MB 的八成。
+ * 少掉整張 delta 表，同樣字符集少一半體積。
  */
 const notoSerifTC = localFont({
-  src: "./fonts/noto-serif-tc-600.woff2",
+  src: "./fonts/noto-serif-tc-core.woff2",
   weight: "600",
   variable: "--font-noto-serif-tc",
   display: "swap",
+  adjustFontFallback: false,
+});
+
+const notoSerifTCExt = localFont({
+  src: "./fonts/noto-serif-tc-ext.woff2",
+  weight: "600",
+  variable: "--font-noto-serif-tc-ext",
+  display: "swap",
+  preload: false,
 });
 
 const plexMono = IBM_Plex_Mono({
@@ -87,7 +114,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   return (
     <html
       lang={locale === "en" ? "en-US" : "zh-Hant-TW"}
-      className={`${notoSansTC.variable} ${notoSerifTC.variable} ${plexMono.variable}`}
+      className={`${notoSansTC.variable} ${notoSansTCExt.variable} ${notoSerifTC.variable} ${notoSerifTCExt.variable} ${plexMono.variable}`}
       suppressHydrationWarning
     >
       <head>
