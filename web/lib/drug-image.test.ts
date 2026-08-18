@@ -6,8 +6,8 @@ import { describe, expect, it } from "vitest";
 import { allDrugs } from "./data";
 
 const PUBLIC_DIR = path.resolve(import.meta.dirname, "..", "public");
-/** 品項圖是大面積平塗，超過這個大小就是忘了跑 scripts/optimize-product-images.py。 */
-const MAX_BYTES = 120 * 1024;
+/** 超過這個大小就是忘了跑壓縮 —— 手機原圖動輒 2 MB 以上。 */
+const MAX_BYTES = 200 * 1024;
 
 const withImage = allDrugs().filter((drug) => drug.image);
 
@@ -38,13 +38,27 @@ describe("品項圖", () => {
     expect(image.altEn.length).toBeGreaterThan(0);
   });
 
-  it("生成的示意圖不會被標成實拍", () => {
-    // packshot 是「這就是實際包裝」的宣告。目前三張都是 AI 生成的示意圖，
-    // 標成 packshot 會讓使用者以為看到的是真的盒子。
+  it("kind 與替代文字說的是同一件事", () => {
+    // kind 是「這是不是實際包裝」的宣告，不是樣式開關。兩種都必須在替代文字
+    // 裡講清楚 —— 把生成圖標成 packshot 會讓使用者以為看到的是真的盒子，
+    // 跟填假許可證字號是同一種錯。
     for (const drug of withImage) {
-      expect(drug.image!.kind).toBe("illustration");
-      expect(drug.image!.alt).toContain("示意圖");
-      expect(drug.image!.altEn.toLowerCase()).toContain("illustration");
+      const image = drug.image!;
+      if (image.kind === "packshot") {
+        expect(image.alt).toContain("包裝照片");
+        expect(image.altEn.toLowerCase()).toContain("packaging photo");
+      } else {
+        expect(image.alt).toContain("示意圖");
+        expect(image.altEn.toLowerCase()).toContain("illustration");
+      }
     }
+  });
+
+  it("目前三張都是合作藥局提供的實拍", () => {
+    expect(withImage.map((drug) => drug.image!.kind)).toEqual([
+      "packshot",
+      "packshot",
+      "packshot",
+    ]);
   });
 });

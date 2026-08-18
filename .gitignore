@@ -11,4 +11,8 @@ __pycache__/
 
 # 品牌原稿、輸出包與社群素材只留本機；網站執行時素材在 web/public/brand/
 designs/uyao-logo/
+designs/ecommerce/
 .gstack/
+
+# 商品實拍原圖只留本機；上線用的是 web/public/products/ 的壓縮檔
+/photos/

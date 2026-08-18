@@ -562,10 +562,10 @@ const DRUGS: Drug[] = [
     image: {
       src: "/products/greenplus-elgucare.webp",
       width: 900,
-      height: 1118,
-      kind: "illustration",
-      alt: "示意圖：未標示品牌的補充品紙盒與兩顆膠囊，旁邊放一段草本枝葉",
-      altEn: "Illustration: an unbranded supplement carton with two capsules and a herbal sprig",
+      height: 1125,
+      kind: "packshot",
+      alt: "合作藥局提供的包裝照片，已去背：綠杏 LHBcare 益固康 Elgucare 的 72 粒盒裝與 360 粒罐裝並排，盒面標示「全素可食」與 72 Capsules",
+      altEn: "Partner-provided packaging photo: the LHBcare Elgucare 72-capsule carton beside the 360-capsule jar",
     },
   }),
   partnerProvidedProduct({
@@ -649,10 +649,10 @@ const DRUGS: Drug[] = [
     image: {
       src: "/products/chungchi-yiyuansu-gastrodia-100.webp",
       width: 900,
-      height: 1118,
-      kind: "illustration",
-      alt: "示意圖：未標示品牌的白色補充品瓶身與膠囊鋁箔片，旁邊放乾燥花苞與根片",
-      altEn: "Illustration: an unbranded white supplement bottle and blister card beside dried buds and root slices",
+      height: 1125,
+      kind: "packshot",
+      alt: "合作藥局提供的包裝照片，已去背：憶元素 天麻100膠囊的金黃色盒裝正面，盒面印有品名、天麻100膠囊與分子結構底紋",
+      altEn: "Partner-provided packaging photo: the golden carton of 憶元素 天麻100膠囊, front face showing the product name and a molecular-structure motif",
     },
   }),
   partnerProvidedProduct({
@@ -671,10 +671,10 @@ const DRUGS: Drug[] = [
     image: {
       src: "/products/yuanding-puregps-defense-450.webp",
       width: 900,
-      height: 1118,
-      kind: "illustration",
-      alt: "示意圖：未標示品牌的直立補充品紙盒與膠囊鋁箔片，旁邊是多醣體分子的線稿",
-      altEn: "Illustration: an unbranded upright supplement carton and blister card beside a line-drawn polysaccharide motif",
+      height: 1125,
+      kind: "packshot",
+      alt: "合作藥局提供的包裝照片，已去背：PUREGPS 強抗力優 450+ Defense 盒裝正面，標示 60 Capsules、植物膠囊全素與 wellmune 原廠授權",
+      altEn: "Partner-provided packaging photo: the PUREGPS Defense 450+ carton front, marked 60 Capsules",
     },
   }),
 ];
