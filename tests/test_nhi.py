@@ -15,6 +15,16 @@ CSV = (
     ",,20230831,,-,63000,20100101\n"
 )
 
+# 同一個門牌兩筆合約，已終止的排在前面 —— 取自健保署開放資料的真實情形。
+MULTI_CONTRACT_CSV = (
+    "醫事機構代碼,醫事機構名稱,醫事機構種類,電話,地址,分區業務組,特約類別,"
+    "服務項目,診療科別,終止合約或歇業日期,固定看診時段,備註,縣市別代碼,合約起日\n"
+    "593106B143,一銘藥局,藥師自營,(02)29961050,新北市新莊區幸福路５４２號（１樓）,臺北業務組,5,"
+    ",,20260616,星期一上午看診,-,65000,20210118\n"
+    "593106C319,一銘藥局,藥劑生自營,(02)29961050,新北市新莊區幸福路５４２號１樓,臺北業務組,5,"
+    ",,20290615,星期一上午看診,-,65000,20260616\n"
+)
+
 
 class TestNumberNormalization:
     def test_converts_chinese_house_numbers(self):
@@ -78,6 +88,18 @@ class TestIndex:
     def test_returns_none_for_unknown_pharmacy(self):
         """配錯機構代碼會讓 slug 指到別家藥局 —— 寧可留空也不要模糊比對。"""
         assert self.idx.lookup("不存在藥局", "臺北市中山區某路1號", "中山區") is None
+
+    def test_prefers_the_live_contract_at_the_same_address(self):
+        """同址多筆合約時取還有效的那筆。
+
+        一銘藥局的藥師自營約已終止、藥劑生自營約還在，而終止的那筆在 CSV
+        裡排在前面。取第一筆會把還在營業的店標成「合約已終止」。
+        """
+        idx = NhiIndex(parse(MULTI_CONTRACT_CSV, "20260805"))
+        r = idx.lookup("一銘藥局", "新北市新莊區幸福路542號(1樓)", "新莊區")
+        assert r is not None
+        assert r.code == "593106C319"
+        assert r.is_terminated is False
 
 
 class TestArabicNumeralsPreserved:

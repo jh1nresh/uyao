@@ -17,7 +17,8 @@ export type PartnerStoreSlug =
   | "萊康中華健保藥局"
   | "永遠藥師藥局"
   | "發元藥局"
-  | "喜來樂中西藥局";
+  | "喜來樂中西藥局"
+  | "一銘藥局";
 
 export interface PartnerPharmacy {
   readonly storeSlug: PartnerStoreSlug;
@@ -143,6 +144,15 @@ export const PARTNER_PHARMACIES = {
     // 店家與健保署登記名稱都沒有「新莊」，但在地習慣連著行政區一起講。
     aliases: ["喜來樂中西藥局", "新莊喜來樂中西藥局", "喜來樂藥局"],
     confirmedProducts: [],
+  },
+  一銘藥局: {
+    storeSlug: "一銘藥局",
+    aliases: ["一銘藥局", "一銘西藥房", "新莊一銘藥局"],
+    confirmedProducts: [
+      "益固康 Elgucare",
+      "憶元素 天麻100膠囊 60粒",
+      "強抗力優 450+ Defense 60粒",
+    ],
   },
 } as const satisfies Record<PartnerStoreSlug, PartnerPharmacy>;
 

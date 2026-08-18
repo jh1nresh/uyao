@@ -12,7 +12,7 @@ import { allDrugs } from "./data";
 describe("合作藥局品項瀏覽", () => {
   it("每一項都有且只有一個固定瀏覽分類", () => {
     const drugs = allDrugs();
-    expect(drugs).toHaveLength(37);
+    expect(drugs).toHaveLength(39);
     expect(drugs.filter((drug) => catalogGroupForDrug(drug) === undefined)).toEqual([]);
 
     const groupedCount = CATALOG_GROUPS.filter((group) => group.slug !== "all")
@@ -45,6 +45,6 @@ describe("合作藥局品項瀏覽", () => {
     expect(firstPage).toMatchObject({ page: 1, pageCount: 4 });
     expect(firstPage.drugs).toHaveLength(12);
     expect(lastPage).toMatchObject({ page: 4, pageCount: 4 });
-    expect(lastPage.drugs).toHaveLength(1);
+    expect(lastPage.drugs).toHaveLength(3);
   });
 });

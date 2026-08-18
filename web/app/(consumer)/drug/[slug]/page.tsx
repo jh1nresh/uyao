@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -115,8 +116,8 @@ export default async function DrugPage({
       </nav>
 
       <section className="border-b border-line bg-paper">
-      <div className="shop-shell py-8 sm:py-10">
-        <div className="flex max-w-[900px] flex-col gap-2 border-l-2 border-forest pl-4 sm:pl-6">
+      <div className="shop-shell grid max-w-[900px] gap-6 py-8 sm:py-10 md:grid-cols-[minmax(0,1fr)_240px] md:items-start">
+        <div className="flex flex-col gap-2 border-l-2 border-forest pl-4 sm:pl-6">
           <p className="mb-1 text-[14px] font-bold text-forest">
             {locale === "en" ? "Partner-listed item" : "合作藥局提供品項"}
           </p>
@@ -174,6 +175,32 @@ export default async function DrugPage({
             </p>
           )}
         </div>
+        {/* 標題在 DOM 裡先於圖：手機上 h1 要先進眼，圖再跟上。 */}
+        {drug.image && (
+          <figure className="m-0 max-w-[240px]">
+            <div className="border border-line bg-ivory">
+              <Image
+                src={drug.image.src}
+                alt={locale === "en" ? drug.image.altEn : drug.image.alt}
+                width={drug.image.width}
+                height={drug.image.height}
+                sizes="(min-width: 768px) 240px, 100vw"
+                className="block h-auto w-full"
+                priority
+              />
+            </div>
+            {/* 生成圖一定要標示，否則使用者會以為看到的是實際包裝。 */}
+            <figcaption className="mt-2 text-xs leading-[1.6] text-muted-2">
+              {drug.image.kind === "illustration"
+                ? locale === "en"
+                  ? "Illustration only — not the actual packaging. Check the product in store."
+                  : "示意圖，非實際包裝；請以門市實際商品為準。"
+                : locale === "en"
+                  ? "Packaging photo provided by the partner pharmacy."
+                  : "合作藥局提供的包裝照片。"}
+            </figcaption>
+          </figure>
+        )}
       </div>
       </section>
 

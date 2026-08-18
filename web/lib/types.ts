@@ -46,6 +46,24 @@ export interface Area {
   shortName: string;
 }
 
+/**
+ * 品項頁的視覺。`kind` 是可被引用的宣告，不是樣式開關：
+ * - `illustration` → AI 生成的示意圖，畫面上一定標「示意圖，非實際包裝」。
+ * - `packshot`     → 合作藥局或原廠提供、可代表實際包裝的照片。
+ *
+ * 生成圖絕不可標成 `packshot` —— 那會讓使用者以為看到的是真的包裝，
+ * 跟填假許可證字號是同一種錯。
+ */
+export interface DrugImage {
+  src: string;
+  /** 圖片寬高，用來固定版位避免 CLS。 */
+  width: number;
+  height: number;
+  kind: "illustration" | "packshot";
+  alt: string;
+  altEn: string;
+}
+
 export interface Drug {
   slug: string;
   name: string;
@@ -74,6 +92,8 @@ export interface Drug {
   manufacturer?: string;
   /** 成品產地文字照資料來源保留；原料來源不得改寫成成品產地。 */
   origin?: string;
+  /** 品項頁視覺。沒有可用素材時就不放 —— 空著比放錯圖好。 */
+  image?: DrugImage;
   /** 公開核對頁面，或合作藥局提供資料的來源標記。 */
   source?: {
     label: string;

@@ -8,6 +8,7 @@ import type {
   Category,
   CategorySlug,
   Drug,
+  DrugImage,
   Offer,
   StockBadgeSpec,
   Store,
@@ -69,6 +70,7 @@ function partnerProvidedProduct({
   searchTerms,
   manufacturer,
   origin,
+  image,
 }: {
   slug: string;
   name: string;
@@ -80,6 +82,7 @@ function partnerProvidedProduct({
   searchTerms: string[];
   manufacturer: string;
   origin: string;
+  image?: DrugImage;
 }): Drug {
   return {
     slug,
@@ -97,6 +100,7 @@ function partnerProvidedProduct({
     searchTerms,
     manufacturer,
     origin,
+    image,
     source: { label: "合作藥局提供商品資料", kind: "partner" },
   };
 }
@@ -548,11 +552,21 @@ const DRUGS: Drug[] = [
     name: "益固康 Elgucare",
     aliases: ["益固康", "Elgucare"],
     form: "劑型待確認",
-    ingredients: ["黃耆萃取物", "大棗萃取物", "丹參萃取物", "雞屎藤萃取物", "玉竹萃取物", "紅景天萃取物", "甘草萃取物", "木瓜萃取物"],
+    // 成分照包裝背面的 Supplement Facts 與中文成分欄逐項核對：是伸筋草
+    // （Lycopodium clavatum），不是木瓜 —— 木瓜在舒絡寶與龍固寶才有。
+    ingredients: ["黃耆萃取物 210 mg", "大棗萃取物 100 mg", "丹參萃取物 45 mg", "雞屎藤萃取物 35 mg", "伸筋草萃取物 35 mg", "玉竹萃取物 35 mg", "紅景天萃取物 20 mg", "甘草萃取物 20 mg"],
     nutritionFocus: "黃耆、大棗、丹參與多種植物萃取物的產品組成",
-    searchTerms: ["黃耆", "大棗", "丹參", "紅景天", "木瓜"],
-    manufacturer: "綠加科技／綠杏",
+    searchTerms: ["黃耆", "大棗", "丹參", "紅景天", "伸筋草"],
+    manufacturer: "綠杏生物科技有限公司／綠加科技（LHBcare）",
     origin: "台灣",
+    image: {
+      src: "/products/greenplus-elgucare.webp",
+      width: 900,
+      height: 1118,
+      kind: "illustration",
+      alt: "示意圖：未標示品牌的補充品紙盒與兩顆膠囊，旁邊放一段草本枝葉",
+      altEn: "Illustration: an unbranded supplement carton with two capsules and a herbal sprig",
+    },
   }),
   partnerProvidedProduct({
     slug: "puda-grape-seed",
@@ -619,6 +633,49 @@ const DRUGS: Drug[] = [
     searchTerms: ["左旋麩醯胺酸", "L-Glutamine", "麩醯胺酸"],
     manufacturer: "綠心藥品生化科技有限公司",
     origin: "台灣",
+  }),
+  partnerProvidedProduct({
+    slug: "chungchi-yiyuansu-gastrodia-100",
+    name: "憶元素 天麻100膠囊",
+    aliases: ["憶元素", "天麻100", "憶元素天麻100"],
+    form: "膠囊",
+    spec: "60粒",
+    // 每粒含量照包裝背面【內容物】欄；含乳糖、魚油與黑豆，過敏者要看清楚。
+    ingredients: ["龍眼花萃取物 200 mg（含綠蜂膠粉、β-環狀糊精）", "天麻萃取物 100 mg", "綜合維生素B群 75 mg", "蜂王乳粉 50 mg", "魚油粉 30 mg", "乳糖 25.5 mg", "黑豆粉 10 mg", "維生素E粉 5 mg", "二氧化矽 4.5 mg"],
+    nutritionFocus: "龍眼花與天麻萃取物，搭配維生素 B 群、蜂王乳與魚油的產品組成",
+    searchTerms: ["龍眼花", "天麻", "綠蜂膠", "維生素B群", "蜂王乳", "魚油"],
+    manufacturer: "中旗生物科技股份有限公司",
+    origin: "台灣",
+    image: {
+      src: "/products/chungchi-yiyuansu-gastrodia-100.webp",
+      width: 900,
+      height: 1118,
+      kind: "illustration",
+      alt: "示意圖：未標示品牌的白色補充品瓶身與膠囊鋁箔片，旁邊放乾燥花苞與根片",
+      altEn: "Illustration: an unbranded white supplement bottle and blister card beside dried buds and root slices",
+    },
+  }),
+  partnerProvidedProduct({
+    slug: "yuanding-puregps-defense-450",
+    name: "強抗力優 450+ Defense",
+    aliases: ["強抗力優", "強抗力優450", "PUREGPS", "PUREGPS Defense", "Defense"],
+    form: "植物膠囊",
+    spec: "60粒",
+    // 每粒 450 毫克；非水溶性 250 mg ＋ 水溶性 150 mg 合為原廠標示的
+    // Wellmune WGP® 400 mg。原料授權 Kerry。
+    ingredients: ["非水溶性葡聚多醣體 250 mg", "水溶性葡聚多醣體 150 mg", "穀胱甘肽 50 mg", "植物膠（羥丙基甲基纖維素）", "鹿角菜膠", "氯化鉀"],
+    nutritionFocus: "β-1,3/1,6 酵母葡聚多醣體與穀胱甘肽的產品組成",
+    searchTerms: ["酵母葡聚多醣體", "葡聚多醣體", "β-葡聚醣", "Wellmune", "穀胱甘肽"],
+    manufacturer: "圓鼎生物科技有限公司",
+    origin: "台灣",
+    image: {
+      src: "/products/yuanding-puregps-defense-450.webp",
+      width: 900,
+      height: 1118,
+      kind: "illustration",
+      alt: "示意圖：未標示品牌的直立補充品紙盒與膠囊鋁箔片，旁邊是多醣體分子的線稿",
+      altEn: "Illustration: an unbranded upright supplement carton and blister card beside a line-drawn polysaccharide motif",
+    },
   }),
 ];
 
