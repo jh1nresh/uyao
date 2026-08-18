@@ -1,0 +1,68 @@
+<!doctype html>
+<!--
+  品項圖排版模板 —— 由 scripts/build-product-plates.py 填值後用瀏覽器截圖。
+
+  中文品名一律在這裡用真正的字型排，**絕不交給影像模型生成**：影像模型畫
+  出來的繁體中文是變形的假字，在藥局網站上看起來就像仿冒包裝，比空白盒更糟。
+  這裡用的是站上同一組 Noto Serif TC / Noto Sans TC 子集字型。
+-->
+<meta charset="utf-8">
+<style>
+  @font-face {
+    font-family: "Noto Serif TC";
+    src: url("../app/fonts/noto-serif-tc-var.woff2") format("woff2");
+    font-weight: 200 900;
+  }
+  @font-face {
+    font-family: "Noto Sans TC";
+    src: url("../app/fonts/noto-sans-tc-var.woff2") format("woff2");
+    font-weight: 100 900;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 900px; height: 1125px; }
+  body {
+    background: #F2EFE6;
+    display: flex;
+    flex-direction: column;
+    font-family: "Noto Sans TC", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  /* cover 而不是 contain：來源照的底色跟 #F2EFE6 有色差，contain 會在兩側
+     留下看得出接縫的空白帶。來源四周留白夠多，裁掉不會切到產品。 */
+  .shot { flex: 1; min-height: 0; overflow: hidden; }
+  .shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .plate {
+    flex: none;
+    border-top: 1px solid #D2CDC1;
+    padding: 26px 44px 34px;
+  }
+  .name {
+    font-family: "Noto Serif TC", serif;
+    font-weight: 700;
+    font-size: 40px;
+    line-height: 1.24;
+    letter-spacing: -0.01em;
+    color: #1C2722;
+  }
+  .meta {
+    margin-top: 12px;
+    font-size: 21px;
+    font-weight: 500;
+    line-height: 1.5;
+    color: #59665F;
+    font-variant-numeric: tabular-nums;
+  }
+  .note {
+    margin-top: 14px;
+    font-size: 17px;
+    font-weight: 500;
+    color: #74352F;
+    letter-spacing: 0.02em;
+  }
+</style>
+<div class="shot"><img src="__SHOT__" alt=""></div>
+<div class="plate">
+  <div class="name">__NAME__</div>
+  <div class="meta">__META__</div>
+  <div class="note">示意圖，非實際包裝</div>
+</div>
