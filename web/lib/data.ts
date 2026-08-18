@@ -634,6 +634,24 @@ const DRUGS: Drug[] = [
     manufacturer: "綠心藥品生化科技有限公司",
     origin: "台灣",
   }),
+  {
+    // 一銘藥局確認販售，但包裝是日文原裝、照片上讀不到成分與委製廠商，
+    // 台灣通路要求的中文標示也還沒看到。跟護智慷 60 粒同一種處理：
+    // 只收店家確認的品名與規格，其餘一律留空，不從品名推定成分或功效。
+    slug: "aob-vitality-beauty-45",
+    name: "New AOB Vitality Beauty",
+    aliases: ["AOB", "AOB Vitality Beauty", "新AOB"],
+    form: "劑型待確認",
+    spec: "45包",
+    licenseNo: "",
+    drugClass: "待確認",
+    category: "partner-item",
+    ingredients: [],
+    indications: [],
+    nutritionFocus: "營養補充定位待確認",
+    nutritionFocusEn: "Nutrition positioning pending verification",
+    searchTerms: [],
+  },
   partnerProvidedProduct({
     slug: "chungchi-yiyuansu-gastrodia-100",
     name: "憶元素 天麻100膠囊",

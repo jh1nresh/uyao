@@ -52,6 +52,7 @@ const EXPECTED_CATALOG = [
   { slug: "youquan-super-magnesium", label: "新優力超級鎂" },
   { slug: "chung-jih-youweining", label: "佑衛寧 高麗菜濃縮複方膠囊" },
   { slug: "luhsin-l-glutamine", label: "賜利康療養素－左旋麩醯胺酸" },
+  { slug: "aob-vitality-beauty-45", label: "New AOB Vitality Beauty 45包" },
   { slug: "chungchi-yiyuansu-gastrodia-100", label: "憶元素 天麻100膠囊 60粒" },
   { slug: "yuanding-puregps-defense-450", label: "強抗力優 450+ Defense 60粒" },
 ] as const;
@@ -85,7 +86,7 @@ function catalogLabel(drug: ReturnType<typeof allDrugs>[number]): string {
 }
 
 describe("合作藥局常見品項目錄", () => {
-  it("公開目錄剛好只有店家確認的三十九個品項", () => {
+  it("公開目錄剛好只有店家確認的四十個品項", () => {
     expect(allDrugs().map((drug) => ({ slug: drug.slug, label: catalogLabel(drug) }))).toEqual(
       EXPECTED_CATALOG,
     );
@@ -138,7 +139,7 @@ describe("合作藥局常見品項目錄", () => {
     );
   });
 
-  it.each(["huzhikang-60"])(
+  it.each(["huzhikang-60", "aob-vitality-beauty-45"])(
     "%s 沒有公開產品來源前只收品名與規格",
     (slug) => {
       expect(getDrug(slug)).toMatchObject({
