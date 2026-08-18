@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { checkForm } from "@/lib/rate-limit";
 
+import { normalizeAdSource } from "@/lib/attribution";
 import { sendPilotApplicationEmail, type PilotApplication } from "@/lib/pilot-email";
 import { appendRecord } from "@/lib/record";
 
@@ -12,6 +13,8 @@ interface Body {
   area?: unknown;
   contact?: unknown;
   problems?: unknown;
+  /** UTM／click id 歸因，見 lib/attribution.ts。使用者可控，一律當不可信輸入。 */
+  source?: unknown;
 }
 
 /** 與 landing PilotCtaForm 的選項同步 — 只收白名單內的值。 */
@@ -68,10 +71,15 @@ export async function POST(request: Request) {
     createdAt: new Date().toISOString(),
   };
 
+  // 歸因跟著紀錄走，不進 PilotApplication —— 通知信是給人看的，
+  // 收信的人不需要 utm_content，而 email 的型別也不該被廣告欄位污染。
+  const source = normalizeAdSource(body.source);
+
   // 申請先走既有 record sinks，再寄通知。郵件服務失敗時不要求藥局重送。
   await appendRecord("pilot", {
     ...application,
     status: "pending_contact" as const,
+    ...(source ? { source } : {}),
   });
 
   try {

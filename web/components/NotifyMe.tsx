@@ -3,6 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 
 import { useLocale } from "./LocaleProvider";
+import { track } from "@/lib/analytics";
+import { captureAdSource } from "@/lib/attribution-client";
 import { AREAS } from "@/lib/data";
 import { areaCopy } from "@/lib/i18n";
 import type { AreaSlug } from "@/lib/types";
@@ -51,10 +53,14 @@ export function NotifyMe({
     void fetch("/api/demand", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ kind, query, drugSlug, area: routeArea }),
+      body: JSON.stringify({ kind, query, drugSlug, area: routeArea, source: captureAdSource() }),
     }).catch(() => {
       /* 記錄失敗不該影響使用者，安靜吞掉 */
     });
+
+    // 被動記錄，不是使用者意圖——所以刻意不映射到 Meta 標準事件，
+    // 拿它當優化目標只會買到一群必然落空的流量（lib/analytics.ts）。
+    track("demand_recorded", { kind, area: routeArea, ...(drugSlug ? { drug_slug: drugSlug } : {}) });
   }, [kind, query, drugSlug, routeArea]);
 
   async function submit(e: React.FormEvent) {
@@ -66,7 +72,7 @@ export function NotifyMe({
       const res = await fetch("/api/demand", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ kind, query, drugSlug, area, contact }),
+        body: JSON.stringify({ kind, query, drugSlug, area, contact, source: captureAdSource() }),
       });
       const data = (await res.json()) as { ok?: boolean; error?: string };
       if (!res.ok) {
@@ -75,6 +81,9 @@ export function NotifyMe({
       }
       setDone(true);
       setContact("");
+      // 只在真的寫進去之後才送。失敗也送的話，Meta 會拿一堆不存在的
+      // Lead 去找「會按送出但送不成功」的人。
+      track("notify_signup", { kind, area, ...(drugSlug ? { drug_slug: drugSlug } : {}) });
     } catch {
       setError(locale === "en" ? "Connection failed. Please try again." : "連線失敗，請稍後再試");
     } finally {

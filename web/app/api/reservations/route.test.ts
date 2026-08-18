@@ -8,7 +8,8 @@ import { stockBadge } from "@/lib/stock";
 import { STORE_DEMO_STORE } from "@/lib/store-demo";
 
 const mocks = vi.hoisted(() => ({
-  appendRecord: vi.fn(async () => undefined),
+  // 帶上簽章，否則 mock.calls 推成 []，測試裡取不到寫進去的那筆紀錄。
+  appendRecord: vi.fn(async (_kind: string, _record: Record<string, unknown>) => undefined),
   logConsole: vi.fn(),
   sendStorePush: vi.fn(async () => ({ status: "sent", sent: 1, failed: 0, removed: 0 })),
 }));
@@ -194,5 +195,62 @@ describe("Store OS reservation delivery", () => {
     expect(response.status).toBe(404);
     expect(await reservationStore.listStoreReservations("uyao-demo")).toEqual([]);
     expect(mocks.sendStorePush).not.toHaveBeenCalled();
+  });
+});
+
+describe("預留的廣告歸因", () => {
+  function reserve(source: unknown, ip: string) {
+    const store = STORE_DEMO_STORE;
+    const offer = previewOffers(store.slug)[0];
+    return POST(new Request("http://localhost/api/reservations", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-forwarded-for": ip },
+      body: JSON.stringify({
+        drugSlug: offer.drugSlug,
+        storeSlug: store.slug,
+        contact: "0912345678",
+        demo: true,
+        ...(source === undefined ? {} : { source }),
+      }),
+    }));
+  }
+
+  it("預留紀錄記得住是哪則廣告帶來的", async () => {
+    const response = await reserve(
+      { utm_source: "ig", utm_medium: "paid_social", utm_campaign: "datong_w3", fbclid: "FB1" },
+      "127.0.2.1",
+    );
+
+    expect(response.status).toBe(200);
+    const [, record] = mocks.appendRecord.mock.calls[0];
+    expect(record.source).toEqual({
+      utm_source: "ig",
+      utm_medium: "paid_social",
+      utm_campaign: "datong_w3",
+      fbclid: "FB1",
+    });
+  });
+
+  it("歸因不進 Store OS —— 藥師不需要知道客人是哪則廣告來的", async () => {
+    await reserve({ utm_source: "ig", utm_campaign: "datong_w3" }, "127.0.2.2");
+
+    const stored = await reservationStore.listStoreReservations("uyao-demo");
+    expect(stored).toHaveLength(1);
+    expect(stored[0]).not.toHaveProperty("source");
+  });
+
+  it("白名單之外的欄位不准跟著預留落地", async () => {
+    await reserve({ utm_source: "ig", contact: "0900000000", intake: "偷渡的症狀描述" }, "127.0.2.3");
+
+    const [, record] = mocks.appendRecord.mock.calls[0];
+    expect(record.source).toEqual({ utm_source: "ig" });
+    expect(record.contact).toBe("0912345678");
+  });
+
+  it("沒有歸因時不留空欄位", async () => {
+    await reserve(undefined, "127.0.2.4");
+
+    const [, record] = mocks.appendRecord.mock.calls[0];
+    expect(record).not.toHaveProperty("source");
   });
 });

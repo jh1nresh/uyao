@@ -3,6 +3,8 @@ import { IBM_Plex_Mono } from "next/font/google";
 import localFont from "next/font/local";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
+import { Analytics } from "@/components/Analytics";
+import { AttributionCapture } from "@/components/AttributionCapture";
 import { MotionSystem } from "@/components/MotionSystem";
 import { LocaleProvider } from "@/components/LocaleProvider";
 import { getRequestLocale } from "@/lib/locale-server";
@@ -87,6 +89,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body>
         <MotionSystem />
+        <AttributionCapture />
         <LocaleProvider locale={locale}>
           <div className="min-h-screen bg-ivory">{children}</div>
         </LocaleProvider>
@@ -97,6 +100,12 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           /_vercel/speed-insights，不引入第三方 analytics domain。
         */}
         <SpeedInsights />
+        {/*
+          廣告轉換量測。設了 NEXT_PUBLIC_GA4_ID / NEXT_PUBLIC_META_PIXEL_ID
+          才會輸出——上面那句「不引入第三方 analytics domain」在沒設 ID 時
+          依然成立（specs/ads-launch-v1.md §8）。
+        */}
+        <Analytics />
       </body>
     </html>
   );
