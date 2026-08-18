@@ -25,6 +25,15 @@ struct Args {
     var background = CIColor(red: 0.949, green: 0.937, blue: 0.902) // #F2EFE6
     var pad = 0.08
     var largestOnly = false
+    /// 輸出透明背景而不是實色。站上有深色模式，把底色烤進圖裡會在深色主題
+    /// 變成亮塊；透明才能同時吃亮色與深色頁面。
+    var transparent = false
+    /// 白底去背：來源已經是乾淨白背景時用這個，比 Vision saliency 穩。
+    /// 高優質維他命B群那張紅盒在純白上，Vision 找不到前景，只能走這條。
+    var whiteKey = false
+    /// 白底去背的亮度閾值。JPEG 來源的「白」不是純白，直接反轉會留下滿版
+    /// 雜訊斑點；高過這個亮度一律壓成全透明。
+    var whiteKeyThreshold = 0.92
     /// 來源先裁一刀（x,y,w,h，0–1 的比例）。用來丟掉同框的其他東西，
     /// 例如憶元素那張倒放的瓶子。裁切不改變包裝內容，屬允許操作。
     var crop: [Double]? = nil
@@ -48,6 +57,14 @@ func parseArgs() -> Args {
             a.background = CIColor(red: CGFloat((v >> 16) & 0xff) / 255,
                                    green: CGFloat((v >> 8) & 0xff) / 255,
                                    blue: CGFloat(v & 0xff) / 255)
+        case "--whitekey":
+            a.whiteKey = true
+            a.transparent = true
+        case "--whitekey-threshold":
+            i += 1
+            a.whiteKeyThreshold = Double(argv[i]) ?? 0.92
+        case "--transparent":
+            a.transparent = true
         case "--largest":
             // 貨架照常常把隔壁商品一起算成前景。只留最大的那一塊。
             a.largestOnly = true
@@ -108,6 +125,33 @@ if let ev = args.exposure, let f = CIFilter(name: "CIExposureAdjust") {
     if let o = f.outputImage { src = o.cropped(to: src.extent) }
 }
 
+// ── 1a. 白底去背：反轉後 MaskToAlpha，白 → 透明 ────────────────
+if args.whiteKey {
+    guard let invert = CIFilter(name: "CIColorInvert"),
+          let toAlpha = CIFilter(name: "CIMaskToAlpha") else { exit(1) }
+    invert.setValue(src, forKey: kCIInputImageKey)
+    // 把 [threshold, 1] 這段亮度線性拉成 [0, 1]，噪點落在 0 以下被夾掉。
+    let t = args.whiteKeyThreshold
+    let contrast = 1.0 / max(1e-6, 1.0 - t)
+    let brightness = -t / (1.0 - t) + 0.5 * contrast - 0.5
+    guard let ramp = CIFilter(name: "CIColorControls") else { exit(1) }
+    ramp.setValue(invert.outputImage, forKey: kCIInputImageKey)
+    ramp.setValue(contrast, forKey: kCIInputContrastKey)
+    ramp.setValue(brightness, forKey: kCIInputBrightnessKey)
+    toAlpha.setValue(ramp.outputImage, forKey: kCIInputImageKey)
+    guard let alphaMask = toAlpha.outputImage,
+          let blend = CIFilter(name: "CIBlendWithMask") else { exit(1) }
+    blend.setValue(src, forKey: kCIInputImageKey)
+    blend.setValue(CIImage(color: .clear).cropped(to: src.extent), forKey: kCIInputBackgroundImageKey)
+    blend.setValue(alphaMask, forKey: kCIInputMaskImageKey)
+    guard let out = blend.outputImage else { exit(1) }
+    let rep = NSBitmapImageRep(ciImage: out.cropped(to: src.extent))
+    guard let png = rep.representation(using: .png, properties: [:]) else { exit(1) }
+    try png.write(to: URL(fileURLWithPath: args.output))
+    print("\(args.output)  \(Int(src.extent.width))×\(Int(src.extent.height))  (whitekey)")
+    exit(0)
+}
+
 // ── 1. 前景遮罩 ────────────────────────────────────────────────
 let handler = VNImageRequestHandler(ciImage: src, options: [:])
 let request = VNGenerateForegroundInstanceMaskRequest()
@@ -155,8 +199,10 @@ if mask.extent.size != src.extent.size {
         y: src.extent.height / mask.extent.height))
 }
 
-// ── 2. 合成到單色背景 ──────────────────────────────────────────
-let bg = CIImage(color: args.background).cropped(to: src.extent)
+// ── 2. 合成 ────────────────────────────────────────────────────
+// 透明模式用全透明當背景，CIBlendWithMask 會把遮罩外的 alpha 留成 0。
+let bg = CIImage(color: args.transparent ? CIColor.clear : args.background)
+    .cropped(to: src.extent)
 guard let blend = CIFilter(name: "CIBlendWithMask") else { exit(1) }
 blend.setValue(src, forKey: kCIInputImageKey)
 blend.setValue(bg, forKey: kCIInputBackgroundImageKey)
