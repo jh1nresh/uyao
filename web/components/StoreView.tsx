@@ -40,7 +40,13 @@ export async function StoreView({
 }) {
   const locale = await getRequestLocale();
   const displayArea = areaCopy(getArea(store.area), locale);
-  const baseItems = demo ? previewDrugsForStore(store) : drugsForStore(store.slug, preview);
+  // 只有業務示範會有貨架。真實藥局頁不列品項，所以連算都不算 —— 這條漏斗
+  // 是單向的：找藥才看得到藥局，藥局看不到藥。
+  const baseItems = !preview
+    ? []
+    : demo
+    ? previewDrugsForStore(store)
+    : drugsForStore(store.slug, preview);
   const scans = preview ? await scanSummary() : [];
   const received = new Map(
     scans
@@ -184,72 +190,45 @@ export async function StoreView({
           <PreviewShelf store={store} items={items} initialDrugSlug={initialDrugSlug} />
           </div>
         </section>
-      ) : partner && partner.confirmedProducts.length > 0 ? (
-        <section className="bg-paper">
-          <div className="shop-shell py-12 sm:py-16">
-            <p className="shop-kicker mb-3">PARTNER ASSORTMENT</p>
-            <h2 className="editorial-display mb-3 mt-0 text-[30px] sm:text-[38px]">
-              {locale === "en" ? "Partner assortment" : "合作販售品項"}
-            </h2>
-            <p className="mb-6 max-w-[760px] text-[15px] leading-[1.8] text-ink-2">
-              {locale === "en"
-                ? "This list was provided by the pharmacy and is not live inventory. Confirm current stock and price with the pharmacy before visiting."
-                : "以下品項由合作藥局提供，並非即時庫存。前往前請向門市確認目前庫存與價格。"}
-            </p>
-            <ul className="m-0 flex list-none flex-wrap gap-2.5 p-0">
-              {partner.confirmedProducts.map((product) => (
-                <li
-                  key={product}
-                  className="max-w-full break-words border border-line bg-ivory px-3.5 py-2 text-[14px] font-medium text-ink-2"
-                >
-                  {product}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </section>
-      ) : partner ? (
-        <section className="bg-paper">
-          <div className="shop-shell py-12 sm:py-16">
-            <p className="shop-kicker mb-3">PARTNER ASSORTMENT</p>
-            <h2 className="editorial-display mb-6 mt-0 text-[30px] sm:text-[38px]">
-              {locale === "en" ? "Partner assortment" : "合作販售品項"}
-            </h2>
-            <div className="border border-line bg-ivory px-5 py-7 sm:px-7 sm:py-8">
-              <p className="max-w-[760px] text-[15px] leading-[1.8] text-ink-2">
-                {locale === "en"
-                  ? "Our partnership with this pharmacy is confirmed, but its product list and live inventory are not available yet. Please call before visiting."
-                  : "這家藥局的合作關係已確認，但目前尚無販售品項清單與即時庫存。前往前建議先電話確認。"}
-              </p>
-            </div>
-          </div>
-        </section>
       ) : (
+        /* 真實藥局頁刻意不列品項 —— 不論是否合作、有沒有品項清單。漏斗只有
+           一個方向：搜尋品項 → 品項頁列出提供它的合作藥局 → 藥局頁。反向
+           把某家店有什麼藥攤開來，等於替門市公開一份庫存清單。 */
         <section className="bg-paper">
           <div className="shop-shell py-12 sm:py-16">
-          <p className="shop-kicker mb-3">INVENTORY STATUS</p>
-          <h2 className="editorial-display mb-6 mt-0 text-[30px] sm:text-[38px]">{locale === "en" ? "Available products" : "本店有貨商品"}</h2>
+          <p className="shop-kicker mb-3">FIND BY ITEM</p>
+          <h2 className="editorial-display mb-6 mt-0 text-[30px] sm:text-[38px]">{locale === "en" ? "Find pharmacies by item" : "從品項找藥局"}</h2>
           <div className="border border-line bg-ivory px-5 py-7 sm:px-7 sm:py-8">
             <p className="max-w-[760px] text-[15px] leading-[1.8] text-ink-2">
-              {locale === "en" ? "This pharmacy does not have live availability yet." : "這家藥局還沒有即時庫存。"}
+              {locale === "en" ? "This page carries the public pharmacy record only. It does not list what this pharmacy sells or stocks." : "這一頁只提供公開的藥局基本資料，不列出這家藥局賣什麼、有什麼貨。"}
               <br />
               <span className="text-muted">
-                {locale === "en" ? "Availability comes from in-store receiving scans. After installation, recently received products appear here for pickup reservations without changing the pharmacy workflow." : "庫存來自店內掃描器 —— 裝上盒子之後，這裡會自動列出有貨商品，消費者可以直接預留。藥局端不用改任何流程。"}
+                {locale === "en" ? "Search for the item instead. The item page lists the partner pharmacies that provided it, and the pharmacy confirms supply and pickup." : "要找特定品項請從搜尋品項開始 —— 品項頁會列出提供該品項的合作藥局，再由藥局確認供應與領取方式。"}
               </span>
             </p>
             <div className="mt-3.5 flex flex-wrap gap-2.5">
               <Link
-                href={localizedPath("/pharmacy", locale)}
+                href={localizedPath("/", locale)}
                 className="action-primary min-h-11 px-4 text-xs"
               >
-                {locale === "en" ? "I run this pharmacy · Apply for a free pilot" : "我是這家藥局 · 申請免費試裝"}
+                {locale === "en" ? "Search for an item →" : "搜尋品項 →"}
               </Link>
-              <Link
-                href={localizedPath(`/demo/${STORE_DEMO_SANDBOX_SLUG}`, locale)}
-                className="action-secondary min-h-11 px-4 text-xs font-medium"
-              >
-                {locale === "en" ? "Preview the connected experience →" : "預覽裝上盒子後的樣子 →"}
-              </Link>
+              {!partner && (
+                <>
+                  <Link
+                    href={localizedPath("/pharmacy", locale)}
+                    className="action-secondary min-h-11 px-4 text-xs font-medium"
+                  >
+                    {locale === "en" ? "I run this pharmacy · Apply for a free pilot" : "我是這家藥局 · 申請免費試裝"}
+                  </Link>
+                  <Link
+                    href={localizedPath(`/demo/${STORE_DEMO_SANDBOX_SLUG}`, locale)}
+                    className="action-secondary min-h-11 px-4 text-xs font-medium"
+                  >
+                    {locale === "en" ? "Preview the connected experience →" : "預覽裝上盒子後的樣子 →"}
+                  </Link>
+                </>
+              )}
             </div>
           </div>
           </div>
