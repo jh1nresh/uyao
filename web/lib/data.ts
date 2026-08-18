@@ -651,8 +651,8 @@ const DRUGS: Drug[] = [
       width: 900,
       height: 1125,
       kind: "packshot",
-      alt: "合作藥局提供的包裝照片，已去背：憶元素 天麻100膠囊的金黃色盒裝正面，後方是同品項的白色瓶裝",
-      altEn: "Partner-provided packaging photo: the golden carton of 憶元素 天麻100膠囊 beside its white bottle",
+      alt: "合作藥局提供的包裝照片，已去背：憶元素 天麻100膠囊的金黃色盒裝正面，盒面印有品名、天麻100膠囊與分子結構底紋",
+      altEn: "Partner-provided packaging photo: the golden carton of 憶元素 天麻100膠囊, front face showing the product name and a molecular-structure motif",
     },
   }),
   partnerProvidedProduct({
