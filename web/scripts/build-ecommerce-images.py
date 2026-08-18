@@ -116,6 +116,13 @@ def ing_screen(p: dict, assets: Path) -> str:
             f'<div class="ing-k">{html.escape(k)}</div>'
             f'<div class="{cls}"{style}>{html.escape(v)}</div></div>'
         )
+    if p.get("ing_chips"):
+        chips = "".join(
+            f'<div class="ing-chip" style="background:{p["chip_bg"]};color:{p["accent_deep"]}">'
+            f"{html.escape(t)}</div>"
+            for t in p["ing_chips"]
+        )
+        rows += f'<div class="ing-chips">{chips}</div>'
     disclaimer = html.escape(p["disclaimer"]) + html.escape(p.get("company", ""))
     return screen(
         f'<div class="sec-head"><div class="sec-rule" style="background:{p["accent"]}"></div>'
