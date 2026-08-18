@@ -746,6 +746,13 @@ const DRUGS: Drug[] = [
     searchTerms: ["鎂", "甘胺酸鎂", "珊瑚鈣", "維生素K2", "MK-7", "維生素D3"],
     manufacturer: "中旗生物科技股份有限公司",
     origin: "加拿大（包裝標示 MADE IN CANADA）",
+    highlights: [
+      { title: "珊瑚鈣 Coral Ca", body: "以珊瑚鈣為鈣質來源" },
+      { title: "甘胺酸鎂 Magnesium Glycinate", body: "鎂與鈣搭配補充" },
+      { title: "維生素 K2（MK-7）＋ D3", body: "K2 選用 MK-7 形式，搭配維生素 D3" },
+      { title: "加拿大製造", body: "Made in Canada，60 錠裝" },
+    ],
+    cautions: "請置於陰涼乾燥處，避免孩童自行取用。孕婦及慢性病患者食用前請諮詢專業人員。",
   }),
   partnerProvidedProduct({
     slug: "tianxia-chan-c-80",
@@ -760,6 +767,12 @@ const DRUGS: Drug[] = [
     // 不把代理商當成製造廠。
     manufacturer: "井田國際醫藥廠股份有限公司（天下生物科技股份有限公司總代理）",
     origin: "台灣",
+    highlights: [
+      { title: "維生素 C ＋ B6 複方", body: "維生素C（抗壞血酸）、抗壞血酸鈉搭配維生素B6" },
+      { title: "添加 β-胡蘿蔔素", body: "另含泛酸鈣，營養更完整" },
+      { title: "草莓風味咀嚼錠", body: "草莓香料調味，大人小孩都好接受" },
+      { title: "國家品質標章", body: "台灣製造，井田國際醫藥廠生產" },
+    ],
   }),
   partnerProvidedProduct({
     slug: "huamao-progifted-lp28",
@@ -773,6 +786,12 @@ const DRUGS: Drug[] = [
     manufacturer: "華貿行實業股份有限公司",
     // 盒面沒有產地標示，店家提供的資料也沒有。空著比猜一個國家好。
     origin: "產地待確認",
+    highlights: [
+      { title: "第4代專利三層包埋", body: "三層包埋技術，通過耐胃酸、耐膽鹽與活力穩定試驗" },
+      { title: "120億・15種共生型菌株", body: "含 LP-28® 等 15 種三層包埋複合乳酸菌，每包 120×10⁸ cfu" },
+      { title: "多國專利葡聚多醣", body: "獨家添加美國專利 β-葡聚多醣與菊糖" },
+      { title: "日本天野綜合酵素", body: "添加日本天野製藥（Amano）3 種綜合酵素" },
+    ],
   }),
   partnerProvidedProduct({
     slug: "gaoyouzhi-vitamin-b-60",
@@ -788,6 +807,13 @@ const DRUGS: Drug[] = [
     // 留待確認 —— 可查證的公司識別不猜。
     manufacturer: "廠商待確認",
     origin: "產地待確認",
+    highlights: [
+      { title: "原料嚴選 DSM 德國廠", body: "維生素原料來自 DSM 德國廠" },
+      { title: "完整 B 群", body: "B1・B2・B6・B12、葉酸、生物素一次補足" },
+      { title: "95% 薑黃・啤酒酵母・五味子", body: "加強版配方，複方協同" },
+      { title: "一天一粒，方便持續", body: "軟膠囊好吞食，60 粒約一個月份" },
+    ],
+    cautions: "請置於陰涼乾燥處，避免高溫與陽光直射；開封後請儘早食用。",
   }),
 ];
 
