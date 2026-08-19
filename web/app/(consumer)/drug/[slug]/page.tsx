@@ -105,8 +105,9 @@ export default async function DrugPage({
   const drug = getDrug(slug);
   if (!drug) notFound();
   const displayDrug = drugCopy(drug, locale);
-  const productLabel = drug.spec === "規格待確認" ? drug.name : `${drug.name} ${drug.spec}`;
-  const displayLabel = drug.spec === "規格待確認" ? displayDrug.name : `${displayDrug.name} ${displayDrug.spec}`;
+  const specPending = drug.spec === "規格待確認";
+  const productLabel = specPending ? drug.name : `${drug.name} ${drug.spec}`;
+  const displayLabel = specPending ? displayDrug.name : `${displayDrug.name} ${displayDrug.spec}`;
   const partnerProvidedDetails = drug.source?.kind === "partner";
   const partnerStores = partnersForProduct(productLabel)
     .map((partner) => getStore(partner.storeSlug))
@@ -248,8 +249,12 @@ export default async function DrugPage({
             )}
           </h1>
           <div className="flex flex-wrap items-center gap-2.5 text-[15px] text-ink-2">
+            {/*
+              規格不知道就不寫 —— 印「規格待確認」只是把一個空欄位講成一則
+              待辦。目錄卡、輪播與搜尋結果本來就這樣處理，品項頁跟上。
+            */}
             <span>
-              {displayDrug.form} · {displayDrug.spec}
+              {specPending ? displayDrug.form : `${displayDrug.form} · ${displayDrug.spec}`}
             </span>
             {/* 許可證字號在行動端收起來 — 小螢幕先讓「規格 + 藥品分類」站穩 */}
             {drug.licenseNo && (

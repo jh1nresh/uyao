@@ -25,65 +25,30 @@ export const CATALOG_GROUPS: CatalogGroup[] = [
 
 export const CATALOG_PAGE_SIZE = 12;
 
+// 只列目前公開目錄裡的品項。分類清單本身保持完整（品項回來時分得回去），
+// 但這張對照表跟著目錄走 —— 留著已下架品項的分類會讓「每項都有分類」這條
+// 檢查對著不存在的 slug 空轉。
 const GROUP_BY_DRUG_SLUG: Record<string, Exclude<CatalogGroupSlug, "all">> = {
   "hugu-gaishu-100": "joint",
-  "guanlihu-60": "joint",
-  "cm-jinguguanjian-sr": "joint",
-  "rending-gujieyou": "joint",
-  "greenplus-discpower": "joint",
-  "greenplus-elgucare": "joint",
-  "yingkai-guguanjian-ucii": "joint",
   "top-fish-oil-60": "fish-vision",
   "shuwei-600-fish-oil-60": "fish-vision",
   "baiyi-capsule-60": "fish-vision",
-  "wewell-vision-softgel": "fish-vision",
-  "likuo-fish-oil-30": "fish-vision",
-  "jixiang-jishukang": "fish-vision",
-  "bio-stand-calcium-softgel": "vitamins-minerals",
-  "youquan-super-magnesium": "vitamins-minerals",
-  "chungchi-ganmeijia-coral-ca": "vitamins-minerals",
-  "tianxia-chan-c-80": "vitamins-minerals",
-  "gaoyouzhi-vitamin-b-60": "vitamins-minerals",
-  "jingcui-huxinan": "vitamins-minerals",
-  "toyo-cukang-b": "vitamins-minerals",
   "jinjiweichang-60": "probiotics-digestion",
-  "hongren-riqingsheng-lm": "probiotics-digestion",
-  "chung-jih-youweining": "probiotics-digestion",
-  "luhsin-l-glutamine": "probiotics-digestion",
-  "huamao-progifted-lp28": "probiotics-digestion",
   "shengkangning-150": "botanical-blends",
   "entineng-230": "botanical-blends",
   "keqiqing-capsule": "botanical-blends",
-  "huzhikang-60": "botanical-blends",
   "huzhikang-150": "botanical-blends",
-  "kimura-tiancheng-60": "botanical-blends",
-  "cm-sheliwei-softgel": "botanical-blends",
-  "tianxia-yangshen-jingqu": "botanical-blends",
-  "cm-guer-gan-150mg": "botanical-blends",
-  "gude-yishengning-p": "botanical-blends",
-  "icheng-meileshi": "botanical-blends",
-  "icheng-siyunmeng": "botanical-blends",
-  "ouye-jingyong": "botanical-blends",
-  "greenplus-vasopower": "botanical-blends",
-  "puda-grape-seed": "botanical-blends",
-  "puda-green-tea-compound": "botanical-blends",
-  // 成分未知的品項沿用複方桶 —— 護智慷 60 粒也在這裡。這一格是「複方／其他」
-  // 的實際用途，不是在宣稱 AOB 是植物萃取。
-  "aob-vitality-beauty-45": "botanical-blends",
-  "chungchi-yiyuansu-gastrodia-100": "botanical-blends",
-  // 酵母來源的葡聚多醣體不是植物萃取，但複方分類是目前唯一放得下的瀏覽群。
-  "yuanding-puregps-defense-450": "botanical-blends",
 };
 
 const FEATURED_CATALOG_SLUGS = [
   "hugu-gaishu-100",
   "top-fish-oil-60",
-  "bio-stand-calcium-softgel",
-  "hongren-riqingsheng-lm",
-  "cm-sheliwei-softgel",
-  "chung-jih-youweining",
-  "wewell-vision-softgel",
-  "yingkai-guguanjian-ucii",
+  "shuwei-600-fish-oil-60",
+  "baiyi-capsule-60",
+  "jinjiweichang-60",
+  "shengkangning-150",
+  "entineng-230",
+  "keqiqing-capsule",
 ] as const;
 
 function normalizeCatalogText(value: string): string {
@@ -96,6 +61,15 @@ export function isCatalogGroupSlug(value: string | undefined): value is CatalogG
 
 export function catalogGroupForDrug(drug: Drug): Exclude<CatalogGroupSlug, "all"> | undefined {
   return GROUP_BY_DRUG_SLUG[drug.slug];
+}
+
+/**
+ * 導覽只列現在真的有品項的分類。分類清單是固定的分類法，但空分類點進去
+ * 是一頁零結果 —— 品項下架期間不該還掛著那個入口。
+ */
+export function nonEmptyCatalogGroups(drugs: Drug[]): CatalogGroup[] {
+  const populated = new Set(drugs.map((drug) => catalogGroupForDrug(drug)));
+  return CATALOG_GROUPS.filter((group) => group.slug === "all" || populated.has(group.slug));
 }
 
 export function featuredCatalogDrugs(drugs: Drug[]): Drug[] {
