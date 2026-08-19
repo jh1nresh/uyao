@@ -12,6 +12,7 @@ import { drugCopy } from "@/lib/i18n";
 import { stockBadge } from "@/lib/stock";
 import { checkReservation } from "@/lib/rate-limit";
 import { getStoreDemoSandbox, STORE_DEMO_SANDBOX_SLUG } from "@/lib/store-demo";
+import { isStoreOsLive } from "@/lib/store-os-live";
 import { sendStorePush } from "@/lib/store-push";
 import { appendRecord } from "@/lib/record";
 import { parseReservationIntake } from "@/lib/reservation-intake";
@@ -103,6 +104,24 @@ export async function POST(request: Request) {
 
   if (!offer && !confirmedByPartner) {
     return NextResponse.json({ error: "這家藥局沒有這個品項" }, { status: 404 });
+  }
+
+  // 收得下 ≠ 有人接。Store OS 是唯一的店務入口，沒裝的店按下確認的人不存在 ——
+  // 單子會躺在沒人開的收件匣裡，消費者等到 25 分鐘的退路才被叫去打電話。
+  // 那段等待是我們造成的，所以在這裡就擋掉，不要先收一張沒人會處理的單。
+  //
+  // 畫面上同一條規則（見 lib/store-os-live.ts）：非上線店家不出現預留鈕，只給電話。
+  // 這裡再擋一次是因為 API 也給 agent 用 —— 前端藏起來不等於送不出來。
+  // 示範單走 sandbox，不碰真實藥局，不受這道閘影響。
+  if (!demo && !isStoreOsLive(storeSlug)) {
+    return NextResponse.json(
+      {
+        error: store.phone
+          ? `${store.name}目前還沒開放線上預留，請直接來電 ${store.phone.split("、")[0]}。`
+          : `${store.name}目前還沒開放線上預留，請直接前往門市洽詢。`,
+      },
+      { status: 409 },
+    );
   }
 
   const priceTwd = offer ? offer.priceTwd : null;

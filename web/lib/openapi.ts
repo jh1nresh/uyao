@@ -219,7 +219,7 @@ export function openApiDocument(): Record<string, unknown> {
           operationId: "createReservation",
           summary: "Create a pickup reservation",
           description:
-            "Creates work in a real pharmacy's Store OS and can trigger a push notification on that pharmacy's devices. Accepts a Taiwanese mobile number, which must belong to the person collecting the item. `storeSlug` must be a pharmacy that lists this item — see `availableAt` on the catalog item. Every reservation is a request, not a stock guarantee: the pharmacy confirms availability and price in store. Rate limited to 5 per contact number per hour, and numbers with repeated no-shows are blocked. Browser traffic is additionally limited to 20 per IP per hour; assistants and other server-side callers should send an agent key (see `agentKey`) to get their own quota instead of sharing one.",
+            "Creates work in a real pharmacy's Store OS and can trigger a push notification on that pharmacy's devices. Accepts a Taiwanese mobile number, which must belong to the person collecting the item. `storeSlug` must be a pharmacy that lists this item — see `availableAt` on the catalog item. Online reservation is additionally limited to pharmacies already working in Store OS; every other pharmacy returns 409 and must be reached by phone, so tell the person to call the number on the pharmacy record rather than retrying. No pharmacy is onboarded yet, so 409 is currently the expected response for every real pharmacy. Every reservation is a request, not a stock guarantee: the pharmacy confirms availability and price in store. Rate limited to 5 per contact number per hour, and numbers with repeated no-shows are blocked. Browser traffic is additionally limited to 20 per IP per hour; assistants and other server-side callers should send an agent key (see `agentKey`) to get their own quota instead of sharing one.",
           security: [{ agentKey: [] }, {}],
           requestBody: {
             required: true,
@@ -234,6 +234,10 @@ export function openApiDocument(): Record<string, unknown> {
             "400": { description: "Malformed JSON." },
             "403": { description: "Blocked for repeated no-shows." },
             "404": { description: "Unknown item, pharmacy, or no such listing at that pharmacy." },
+            "409": {
+              description:
+                "This pharmacy does not take online reservations yet. `error` carries its phone number; relay it instead of retrying.",
+            },
             "422": { description: "Invalid contact number or intake fields." },
             "429": { description: "Rate limited. Retry after the `retry-after` header." },
           },

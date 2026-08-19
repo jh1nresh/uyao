@@ -11,6 +11,7 @@ import { getArea } from "@/lib/data";
 import { formatDistance } from "@/lib/format";
 import { hoursSummary } from "@/lib/hours";
 import { areaCopy, localizedPath } from "@/lib/i18n";
+import { isStoreOsLive } from "@/lib/store-os-live";
 
 // 拿掉價格欄之後重新配比例
 const COLS = "grid-cols-[1fr_88px_1fr_180px_92px]";
@@ -28,6 +29,7 @@ export function PharmacyList({
 }) {
   const [target, setTarget] = useState<ReserveTarget | null>(null);
   const locale = useLocale();
+  const anyReservable = rows.some((r) => isStoreOsLive(r.store.slug));
 
   return (
     <>
@@ -68,7 +70,7 @@ export function PharmacyList({
                 </div>
                 <div className="text-xs text-muted">{hoursSummary(r.store, locale)}</div>
                 <StockBadge badge={r.badge} className="text-xs" />
-                <ReserveButton row={r} onClick={() => setTarget({ ...r, drug })} />
+                <RowAction row={r} onReserve={() => setTarget({ ...r, drug })} />
               </div>
 
               {/* 行動端：單手可預留 — 主按鈕 44px+ */}
@@ -93,14 +95,17 @@ export function PharmacyList({
                     <StockBadge badge={r.badge} />
                   </div>
                 </div>
-                <ReserveButton row={r} mobile onClick={() => setTarget({ ...r, drug })} />
+                <RowAction row={r} mobile onReserve={() => setTarget({ ...r, drug })} />
               </div>
             </div>
           ))}
       </div>
 
+      {/* 一家都不能預留時就不要教人按預留 —— 那顆鈕根本沒出現。 */}
       <p className="pt-3 text-[14px] leading-[1.65] text-muted-2">
-        {locale === "en" ? "? = no recent receiving scan. Reserve to ask the pharmacy to confirm · Prices and medicine guidance are provided in store · No online checkout" : "？＝該店尚無近期掃描紀錄，按「預留」由藥局確認 · 價格與用藥說明由藥師於門市提供 · 本服務僅供預留，不提供線上交易"}
+        {anyReservable
+          ? locale === "en" ? "? = no recent receiving scan. Reserve to ask the pharmacy to confirm · Prices and medicine guidance are provided in store · No online checkout" : "？＝該店尚無近期掃描紀錄，按「預留」由藥局確認 · 價格與用藥說明由藥師於門市提供 · 本服務僅供預留，不提供線上交易"
+          : locale === "en" ? "? = no recent receiving scan. Call the pharmacy to confirm · Prices and medicine guidance are provided in store · No online checkout" : "？＝該店尚無近期掃描紀錄，請直接打電話向藥局確認 · 價格與用藥說明由藥師於門市提供 · 本服務不提供線上交易"}
       </p>
       </div>
       </section>
@@ -110,26 +115,52 @@ export function PharmacyList({
   );
 }
 
-function ReserveButton({
+/**
+ * 每一列的主要動作。
+ *
+ * 預留只給已經在 Store OS 上接單的店 —— 沒裝的那頭沒有人會按確認，單子會
+ * 躺在沒人開的收件匣裡。那種店給的是電話，因為那個真的通。
+ */
+function RowAction({
   row,
   mobile = false,
-  onClick,
+  onReserve,
 }: {
   row: StoreRow;
   mobile?: boolean;
-  onClick: () => void;
+  onReserve: () => void;
 }) {
   const locale = useLocale();
+  const size = mobile ? "text-[15px]" : "text-xs";
+
+  if (!isStoreOsLive(row.store.slug)) {
+    const phone = row.store.phone ? row.store.phone.split("、")[0] : null;
+    if (!phone) {
+      return (
+        <span className={`flex-none text-muted-2 ${size}`}>
+          {locale === "en" ? "No phone listed" : "未提供電話"}
+        </span>
+      );
+    }
+    return (
+      <a
+        href={`tel:${phone.replace(/-/g, "")}`}
+        aria-label={locale === "en" ? `Call ${row.store.name} at ${phone}` : `打電話問${row.store.name}，號碼 ${phone}`}
+        className={`num inline-flex min-h-11 flex-none items-center border border-forest bg-brand-surface px-3.5 font-bold text-on-dark no-underline transition-[background-color,transform] hover:bg-brand-surface-strong active:translate-y-px ${size}`}
+      >
+        {phone}
+      </a>
+    );
+  }
+
   // 沒有近期掃描紀錄 → 外框樣式：不假裝有貨，這是一次「請藥局幫我確認」。
   const outline = row.badge.tier === "unknown";
   return (
     <button
       type="button"
-      onClick={onClick}
+      onClick={onReserve}
       aria-label={locale === "en" ? `Reserve from ${row.store.name}${outline ? "; pharmacy confirmation required" : ""}` : `向${row.store.name}預留${outline ? "（由藥局確認有無現貨）" : ""}`}
-      className={`min-h-11 flex-none border px-3.5 font-bold transition-[background-color,border-color,transform] active:translate-y-px ${
-        mobile ? "text-[15px]" : "text-xs"
-      } ${
+      className={`min-h-11 flex-none border px-3.5 font-bold transition-[background-color,border-color,transform] active:translate-y-px ${size} ${
         outline
           ? "border-forest bg-paper text-forest hover:bg-surface"
           : "border-forest bg-brand-surface text-on-dark hover:bg-brand-surface-strong"

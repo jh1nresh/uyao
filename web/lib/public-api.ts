@@ -50,8 +50,12 @@ export type CatalogItemDetailPayload = CatalogItemPayload & {
    * 這不是供應狀態，也不是現貨保證 —— 是「這家店把這支列在自己的品項清單
    * 上」，跟品項頁上寫的同一件事。仍然不輸出價格、庫存與掃描新鮮度。
    *
-   * 會輸出是因為少了它，讀 API 的一方（例如 LINE agent）拿不到 storeSlug，
-   * 就沒辦法幫使用者送出預留 —— 只能請他自己回網站點一次。
+   * 會輸出是因為少了它，讀 API 的一方（例如 LINE agent）拿不到 storeSlug 與
+   * 電話，就沒辦法幫使用者接下去 —— 只能請他自己回網站點一次。
+   *
+   * 但列在這裡**不代表收得到線上預留**：那要看藥局有沒有在 Store OS 上接單
+   * （lib/store-os-live.ts），目前一家都還沒有。`POST /api/reservations` 會回 409
+   * 並附上電話，所以 agent 該做的是把電話講給使用者，不是重試。
    */
   availableAt?: PharmacyPayload[];
 };
