@@ -148,11 +148,11 @@ export const INDEXABLE_PATHS = [
 export type IndexablePath = (typeof INDEXABLE_PATHS)[number];
 
 /**
- * Consumer 可收錄的靜態路徑。品類與品項頁是動態的，由
- * `lib/shop-index.ts` 依目錄資料展開；search 與 store 頁維持 noindex
- * （search 沒有穩定內容，store 頁會顯示尚未確認的供應資訊）。
+ * Consumer 那一側的可收錄路徑不在這裡：品類與品項頁是動態的，整份
+ * namespace 由 `lib/shop-index.ts` 依目錄資料與 admission gate 展開，
+ * 連同每頁的 `lastmod`。search 與 store 頁維持 noindex（search 沒有穩定
+ * 內容，store 頁會顯示尚未確認的供應資訊）。
  */
-export const SHOP_INDEXABLE_PATHS = ["/zh-tw", "/en"] as const;
 
 /** Spec §3 的 stable entity description —— 全站與 schema 共用，不得改寫成 marketplace／POS／電商。 */
 export const ENTITY_DESCRIPTION: Record<Locale, string> = {

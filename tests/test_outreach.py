@@ -200,6 +200,30 @@ class TestLabels:
     def test_missing_file_is_not_fatal(self, tmp_path):
         assert load_labels(tmp_path / "nope.ts") == {}
 
+    def test_survives_new_fields_between_slug_and_name(self, tmp_path):
+        """欄位順序會變（nameEn、updatedOn 都是後來加的），撈法不該綁死順序。"""
+        p = tmp_path / "data.ts"
+        p.write_text(
+            "const DRUGS: Drug[] = [\n"
+            '  {\n    slug: "a",\n    updatedOn: "2026-08-18",\n'
+            '    nameEn: "AAA",\n    name: "甲藥",\n    spec: "60粒",\n  },\n'
+            '  {\n    slug: "b",\n    name: "乙藥",\n    spec: "規格待確認",\n  },\n'
+            "];\n",
+            encoding="utf-8",
+        )
+        assert load_labels(p) == {"a": "甲藥 60粒", "b": "乙藥"}
+
+    def test_a_record_without_spec_does_not_borrow_the_next_one(self, tmp_path):
+        p = tmp_path / "data.ts"
+        p.write_text(
+            "const DRUGS: Drug[] = [\n"
+            '  partnerProvidedProduct({\n    slug: "a",\n    name: "甲藥",\n  }),\n'
+            '  {\n    slug: "b",\n    name: "乙藥",\n    spec: "90粒",\n  },\n'
+            "];\n",
+            encoding="utf-8",
+        )
+        assert load_labels(p) == {"a": "甲藥", "b": "乙藥 90粒"}
+
 
 class TestStores:
     def test_missing_file_returns_empty(self, tmp_path):

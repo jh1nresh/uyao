@@ -4,6 +4,7 @@ import { matchSymptom } from "./symptoms";
 import { drugCopy } from "./i18n";
 import type {
   Area,
+  IsoDate,
   AreaSlug,
   Category,
   CategorySlug,
@@ -64,6 +65,7 @@ function partnerProvidedProduct({
   name,
   aliases = [],
   nameEn,
+  updatedOn,
   form,
   spec = "規格待確認",
   ingredients,
@@ -82,6 +84,8 @@ function partnerProvidedProduct({
   aliases?: string[];
   /** 廠商登記的英文品名。沒有就留空 —— 音譯或自行翻譯會變成假的商品名。 */
   nameEn?: string;
+  /** 這筆資料最後改動的日期，見 `Drug.updatedOn`。改可見內容才動它。 */
+  updatedOn: IsoDate;
   form: string;
   spec?: string;
   ingredients: string[];
@@ -100,6 +104,7 @@ function partnerProvidedProduct({
     name,
     aliases,
     nameEn,
+    updatedOn,
     form,
     spec,
     licenseNo: "",
@@ -124,6 +129,7 @@ function partnerProvidedProduct({
 const DRUGS: Drug[] = [
   {
     slug: "hugu-gaishu-100",
+    updatedOn: "2026-08-18",
     name: "護谷鈣素",
     aliases: ["轉谷護谷鈣素", "TRANSBONE", "GLUCALINE MCHC"],
     form: "軟膠囊",
@@ -143,6 +149,7 @@ const DRUGS: Drug[] = [
   },
   {
     slug: "shengkangning-150",
+    updatedOn: "2026-08-18",
     name: "勝康寧",
     aliases: ["GENTALIN", "勝康寧膠囊"],
     form: "膠囊",
@@ -162,6 +169,7 @@ const DRUGS: Drug[] = [
   },
   {
     slug: "entineng-230",
+    updatedOn: "2026-08-18",
     name: "恩體能",
     aliases: ["恩體能-GPH", "恩體能山楂膠囊", "ANTI-NEL GPH"],
     form: "膠囊",
@@ -181,6 +189,7 @@ const DRUGS: Drug[] = [
   },
   {
     slug: "jinjiweichang-60",
+    updatedOn: "2026-08-18",
     name: "進磯為常-D",
     aliases: ["進磯為常", "進磯為常D", "松花青素酵素"],
     form: "膠囊",
@@ -200,6 +209,7 @@ const DRUGS: Drug[] = [
   },
   {
     slug: "keqiqing-capsule",
+    updatedOn: "2026-08-18",
     name: "克氣清膠囊",
     aliases: ["克氣清咳嗽膠囊", "克氣清", "合氣清", "LAKALIN"],
     form: "軟膠囊",
@@ -220,6 +230,7 @@ const DRUGS: Drug[] = [
   {
     // 合作藥局確認的只有品名與規格；150 粒來源不能延伸到這個 60 粒 SKU。
     slug: "huzhikang-60",
+    updatedOn: "2026-08-18",
     name: "護智慷",
     aliases: ["護智康"],
     form: "劑型待確認",
@@ -235,6 +246,7 @@ const DRUGS: Drug[] = [
   },
   {
     slug: "huzhikang-150",
+    updatedOn: "2026-08-18",
     name: "護智慷",
     aliases: ["護智康", "PROMETAN-G"],
     form: "軟膠囊",
@@ -254,6 +266,7 @@ const DRUGS: Drug[] = [
   },
   {
     slug: "top-fish-oil-60",
+    updatedOn: "2026-08-18",
     name: "TOP高單位頂級魚油軟膠囊",
     aliases: ["TOP高單位頂級魚油", "TOP FISH OIL SOFTGEL"],
     form: "軟膠囊",
@@ -274,6 +287,7 @@ const DRUGS: Drug[] = [
   {
     // 發元藥局提供的包裝背面照片可確認食品、劑型、成分與規格；沒有公開網址，所以 source 留空。
     slug: "guanlihu-60",
+    updatedOn: "2026-08-18",
     name: "關立護",
     aliases: ["關立護錠"],
     form: "錠",
@@ -299,6 +313,7 @@ const DRUGS: Drug[] = [
   {
     // 發元藥局提供的包裝背面照片可確認食品、劑型、成分與規格；沒有公開網址，所以 source 留空。
     slug: "kimura-tiancheng-60",
+    updatedOn: "2026-08-18",
     name: "木村 添誠膠囊食品",
     aliases: ["木村添誠", "添誠膠囊食品"],
     form: "膠囊",
@@ -327,6 +342,7 @@ const DRUGS: Drug[] = [
   },
   {
     slug: "shuwei-600-fish-oil-60",
+    updatedOn: "2026-08-18",
     name: "舒維-600魚油",
     aliases: ["舒維600魚油", "舒維－600魚油", "舒維魚油膠囊", "EPA 600 CAPSULES"],
     form: "膠囊",
@@ -346,6 +362,7 @@ const DRUGS: Drug[] = [
   },
   {
     slug: "baiyi-capsule-60",
+    updatedOn: "2026-08-18",
     name: "百益膠囊食品",
     aliases: ["百益膠囊"],
     form: "膠囊",
@@ -365,6 +382,7 @@ const DRUGS: Drug[] = [
   },
   partnerProvidedProduct({
     slug: "cm-sheliwei-softgel",
+    updatedOn: "2026-08-18",
     name: "中美 攝利威軟膠囊",
     aliases: ["攝利威", "攝利威軟膠囊"],
     form: "軟膠囊",
@@ -376,6 +394,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "wewell-vision-softgel",
+    updatedOn: "2026-08-18",
     name: "維維樂 視清／小視清軟膠囊",
     aliases: ["維維樂視清", "小視清", "視清軟膠囊", "小視清軟膠囊"],
     form: "軟膠囊",
@@ -387,6 +406,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "cm-jinguguanjian-sr",
+    updatedOn: "2026-08-18",
     name: "中美 金固關健緩釋錠",
     aliases: ["金固關健", "金固關健緩釋錠"],
     form: "緩釋錠",
@@ -398,6 +418,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "likuo-fish-oil-30",
+    updatedOn: "2026-08-18",
     name: "立國 精粹魚油膠囊",
     aliases: ["精粹魚油", "立國精粹魚油"],
     form: "膠囊",
@@ -410,6 +431,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "tianxia-yangshen-jingqu",
+    updatedOn: "2026-08-18",
     name: "天下生物科技 養身景麴膠囊",
     aliases: ["養身景麴", "養身景麴膠囊"],
     form: "膠囊",
@@ -421,6 +443,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "hongren-riqingsheng-lm",
+    updatedOn: "2026-08-18",
     name: "鴻仁 日清勝 LM機能益生菌",
     aliases: ["日清勝", "LM機能益生菌", "日清勝LM"],
     form: "劑型待確認",
@@ -432,6 +455,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "cm-guer-gan-150mg",
+    updatedOn: "2026-08-18",
     name: "中美 顧爾肝膠囊",
     aliases: ["顧爾肝", "顧爾肝膠囊"],
     form: "膠囊",
@@ -444,6 +468,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "gude-yishengning-p",
+    updatedOn: "2026-08-18",
     name: "益聖寧-P軟膠囊",
     aliases: ["益聖寧P", "益聖寧-P"],
     form: "軟膠囊",
@@ -455,6 +480,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "jingcui-huxinan",
+    updatedOn: "2026-08-18",
     name: "護欣胺微粒膠囊",
     aliases: ["護欣胺"],
     form: "微粒膠囊",
@@ -466,6 +492,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "toyo-cukang-b",
+    updatedOn: "2026-08-18",
     name: "醋康B膠囊",
     aliases: ["醋康B", "東洋醋康B"],
     form: "膠囊",
@@ -477,6 +504,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "icheng-meileshi",
+    updatedOn: "2026-08-18",
     name: "美樂適素食膠囊",
     aliases: ["美樂適"],
     form: "素食膠囊",
@@ -488,6 +516,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "icheng-siyunmeng",
+    updatedOn: "2026-08-18",
     name: "思韻蒙軟膠囊",
     aliases: ["思韻蒙"],
     form: "軟膠囊",
@@ -499,6 +528,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "jixiang-jishukang",
+    updatedOn: "2026-08-18",
     name: "吉舒康軟膠囊",
     aliases: ["吉舒康", "美國吉舒康"],
     form: "軟膠囊",
@@ -510,6 +540,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "bio-stand-calcium-softgel",
+    updatedOn: "2026-08-18",
     name: "Bio-Stand 挺液鈣軟膠囊",
     aliases: ["挺液鈣", "Bio-Stand挺液鈣"],
     form: "軟膠囊",
@@ -521,6 +552,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "rending-gujieyou",
+    updatedOn: "2026-08-18",
     name: "固捷優",
     aliases: ["固捷優膠囊"],
     form: "劑型待確認",
@@ -532,6 +564,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "ouye-jingyong",
+    updatedOn: "2026-08-18",
     name: "勁勇軟膠囊",
     aliases: ["勁勇"],
     form: "軟膠囊",
@@ -543,6 +576,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "greenplus-vasopower",
+    updatedOn: "2026-08-18",
     name: "舒絡寶 Vasopower",
     aliases: ["舒絡寶", "Vasopower"],
     nameEn: "Vasopower",
@@ -555,6 +589,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "greenplus-discpower",
+    updatedOn: "2026-08-18",
     name: "龍固寶 DiscPower",
     aliases: ["龍固寶", "DiscPower"],
     nameEn: "DiscPower",
@@ -567,6 +602,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "greenplus-elgucare",
+    updatedOn: "2026-08-18",
     name: "益固康 Elgucare",
     aliases: ["益固康", "Elgucare"],
     nameEn: "Elgucare",
@@ -602,6 +638,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "puda-grape-seed",
+    updatedOn: "2026-08-18",
     name: "安格雅葡萄籽膠囊",
     aliases: ["安格雅", "安格雅葡萄籽"],
     form: "膠囊",
@@ -613,6 +650,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "puda-green-tea-compound",
+    updatedOn: "2026-08-18",
     name: "普大綠茶複方膠囊",
     aliases: ["綠茶複方膠囊", "普大綠茶複方"],
     form: "膠囊",
@@ -624,6 +662,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "yingkai-guguanjian-ucii",
+    updatedOn: "2026-08-18",
     name: "固關鍵 UC II",
     aliases: ["固關鍵", "固關鍵UC II", "固關鍵UCII"],
     form: "劑型待確認",
@@ -635,6 +674,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "youquan-super-magnesium",
+    updatedOn: "2026-08-18",
     name: "新優力超級鎂",
     aliases: ["超級鎂", "新優力鎂"],
     form: "劑型待確認",
@@ -646,6 +686,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "chung-jih-youweining",
+    updatedOn: "2026-08-18",
     name: "佑衛寧 高麗菜濃縮複方膠囊",
     aliases: ["佑衛寧", "高麗菜濃縮複方膠囊"],
     form: "膠囊",
@@ -657,6 +698,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "luhsin-l-glutamine",
+    updatedOn: "2026-08-18",
     name: "賜利康療養素－左旋麩醯胺酸",
     aliases: ["賜利康療養素", "左旋麩醯胺酸", "L-Glutamine"],
     nameEn: "L-Glutamine",
@@ -672,6 +714,7 @@ const DRUGS: Drug[] = [
     // 台灣通路要求的中文標示也還沒看到。跟護智慷 60 粒同一種處理：
     // 只收店家確認的品名與規格，其餘一律留空，不從品名推定成分或功效。
     slug: "aob-vitality-beauty-45",
+    updatedOn: "2026-08-18",
     name: "New AOB Vitality Beauty",
     aliases: ["AOB", "AOB Vitality Beauty", "新AOB"],
     nameEn: "AOB Vitality Beauty",
@@ -705,6 +748,7 @@ const DRUGS: Drug[] = [
   },
   partnerProvidedProduct({
     slug: "chungchi-yiyuansu-gastrodia-100",
+    updatedOn: "2026-08-18",
     name: "憶元素 天麻100膠囊",
     aliases: ["憶元素", "天麻100", "憶元素天麻100"],
     form: "膠囊",
@@ -739,6 +783,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "yuanding-puregps-defense-450",
+    updatedOn: "2026-08-18",
     name: "強抗力優 450+ Defense",
     aliases: ["強抗力優", "強抗力優450", "PUREGPS", "PUREGPS Defense", "Defense"],
     nameEn: "PUREGPS Defense",
@@ -775,6 +820,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "chungchi-ganmeijia-coral-ca",
+    updatedOn: "2026-08-18",
     name: "甘鎂佳珊瑚鈣",
     aliases: ["甘鎂佳", "珊瑚鈣", "Coral Ca", "Magnesium Glycinate Coral Ca"],
     nameEn: "Magnesium Glycinate Coral Ca",
@@ -810,6 +856,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "tianxia-chan-c-80",
+    updatedOn: "2026-08-18",
     name: "強喜錠 Chan-C",
     aliases: ["強喜錠", "強喜", "Chan-C", "Chan-C Tablets"],
     nameEn: "Chan-C Tablets",
@@ -844,6 +891,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "huamao-progifted-lp28",
+    updatedOn: "2026-08-18",
     name: "Progifted LP-28 益生菌",
     aliases: ["Progifted", "LP-28", "LP28", "Progifted LP-28"],
     nameEn: "Progifted LP-28",
@@ -877,6 +925,7 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "gaoyouzhi-vitamin-b-60",
+    updatedOn: "2026-08-18",
     name: "高優質維他命B群",
     aliases: ["高優質維他命B群", "高優質B群", "維他命B群軟膠囊"],
     form: "軟膠囊",

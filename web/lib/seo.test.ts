@@ -9,7 +9,6 @@ import {
   INDEXABLE_PATHS,
   ORGANIZATION_LOGO_URL,
   SHOP_CANONICAL_HOST,
-  SHOP_INDEXABLE_PATHS,
   SITE_URL,
   SOCIAL_PREVIEW_IMAGES,
   X_URL,
@@ -149,10 +148,6 @@ describe("indexable paths", () => {
     for (const path of INDEXABLE_PATHS) {
       expect(path).not.toMatch(/\/(app|console|search|api|r)\b/);
     }
-  });
-
-  it("keeps the two localized Consumer homepages as the static shop entries", () => {
-    expect(SHOP_INDEXABLE_PATHS).toEqual(["/zh-tw", "/en"]);
   });
 });
 
