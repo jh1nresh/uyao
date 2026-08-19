@@ -1,3 +1,6 @@
+/** `YYYY-MM-DD`. Hand-maintained dates only — never `new Date()` at render time. */
+export type IsoDate = `${number}-${number}-${number}`;
+
 /**
  * 藥品分類。處方藥不進這個型別。
  *
@@ -116,6 +119,15 @@ export interface Drug {
   dosage?: string;
   /** 注意事項與過敏原，照包裝標示。過敏原對使用者是安全資訊，優先收。 */
   cautions?: string;
+  /**
+   * 這筆品項資料最後一次改動的日期，shop sitemap 的 `lastmod` 來源。
+   *
+   * 手動維護，規則跟 `AEO_PAGES` 一樣：**改到頁面上看得見的內容才動它**
+   * ——品名、規格、成分、用量、注意事項、圖、來源。改樣式或搬檔案不算。
+   * 全部品項同一天不是問題，那代表它們真的同一天進來；一旦有人只改一筆，
+   * 這個欄位就會開始發揮作用，Google 才知道只要重爬那一頁。
+   */
+  updatedOn: IsoDate;
   /** 公開核對頁面，或合作藥局提供資料的來源標記。 */
   source?: {
     label: string;

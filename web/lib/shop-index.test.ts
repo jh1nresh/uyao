@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 
 import { allDrugs } from "./data";
-import { SHOP_INDEXABLE_PATHS } from "./seo";
 import {
   indexableCatalogItems,
+  shopSitemapEntries,
   isIndexableCatalogItem,
   isIndexableCatalogItemSlug,
   shopIndexablePaths,
@@ -43,8 +43,8 @@ describe("consumer admission gate", () => {
   it("publishes every admitted item in the locales whose copy exists", () => {
     const paths = shopIndexablePaths();
 
-    for (const entry of SHOP_INDEXABLE_PATHS) {
-      expect(paths).toContain(entry);
+    for (const home of ["/zh-tw", "/en"]) {
+      expect(paths).toContain(home);
     }
     for (const drug of indexableCatalogItems("zh")) {
       expect(paths).toContain(`/zh-tw/drug/${drug.slug}`);
@@ -63,5 +63,22 @@ describe("consumer admission gate", () => {
   it("emits no duplicate URLs", () => {
     const paths = shopIndexablePaths();
     expect(new Set(paths).size).toBe(paths.length);
+  });
+
+  it("dates every catalog item with a real, non-future ISO day", () => {
+    // Seeded from `git log -- lib/data.ts`; from here it is hand-maintained
+    // per item, so a new product without a date is a bug, not a default.
+    const today = process.env.UYAO_TEST_TODAY ?? "2026-08-18";
+
+    for (const drug of allDrugs()) {
+      expect(drug.updatedOn, drug.slug).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(drug.updatedOn <= today, `${drug.slug} is dated in the future`).toBe(true);
+    }
+  });
+
+  it("keeps every sitemap entry's freshness tied to a path it actually publishes", () => {
+    const entries = shopSitemapEntries();
+    expect(entries.map((entry) => entry.path)).toEqual(shopIndexablePaths());
+    expect(entries.every((entry) => /^\d{4}-\d{2}-\d{2}$/.test(entry.lastModified))).toBe(true);
   });
 });

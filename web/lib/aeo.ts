@@ -1,7 +1,8 @@
 import type { Locale } from "./i18n";
 import type { IndexablePath } from "./seo";
 
-export type IsoDate = `${number}-${number}-${number}`;
+export type { IsoDate } from "./types";
+import type { IsoDate } from "./types";
 
 /** One locale's visible answer. Pages render these exact strings. */
 export type AeoAnswerCopy = Readonly<{

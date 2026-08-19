@@ -93,6 +93,14 @@ field renders as a mono product code and reads as a drug identifier on a
 非藥品 item (`web/lib/catalog.test.ts` enforces this). Those items stay
 zh-tw-only until a real English name exists.
 
+Every consumer URL carries a real `lastmod`. Item pages use `Drug.updatedOn`,
+hand-maintained per item exactly like `AEO_PAGES`: bump it when the visible
+product copy changes, not when styling moves. Category pages and the consumer
+homepages take the newest date among the items they list, because that is what
+their content is. A uniform date across the catalog is fine and true when the
+records really did land together — the point is that changing one item moves
+only that item's URLs and the pages that summarise it.
+
 Never admitted: `/search` (no stable content, one URL per query), `/store/*`
 (shows supply no pharmacy has confirmed), and `/r/*` (private reservation
 receipts). Filtered category URLs (`q`, `group`, `page`) stay `noindex, follow`

@@ -128,6 +128,11 @@ def load_labels(path: Path = DATA_TS) -> dict[str, str]:
     但這裡的失敗代價只是報表印出 slug 而不是「護智慷 60粒」——所以刻意
     不做成硬相依，撈不到就退回 slug 原樣。
     真要穩，是等目錄搬進資料庫，不是在這裡寫 TS parser。
+
+    先切成一筆一筆再撈，不要求 `name` 緊接在 `slug` 後面：欄位順序本來就
+    會變（`nameEn`、`updatedOn` 都是後來插進來的），綁死順序等於每次改
+    schema 都要回來修這裡。切開的另一個好處是某筆缺 `spec` 時，不會跨到
+    下一筆去撿一個不屬於它的值。
     """
     if not path.exists():
         return {}
@@ -135,14 +140,21 @@ def load_labels(path: Path = DATA_TS) -> dict[str, str]:
     if "const DRUGS" not in text:
         return {}
     catalog = text.split("const DRUGS", 1)[1].split("];", 1)[0]
-    rows = re.findall(
-        r'slug:\s*"([^"]+)",\s*\n\s*name:\s*"([^"]+)",[\s\S]*?\n\s*spec:\s*"([^"]+)"',
-        catalog,
-    )
-    return {
-        slug: name if spec == "規格待確認" else f"{name} {spec}"
-        for slug, name, spec in rows
-    }
+
+    labels: dict[str, str] = {}
+    # 每筆都以 `slug:` 開頭，切點取下一個 `slug:` 之前。
+    for record in re.split(r'\n(?=\s*slug:\s*")', catalog):
+        slug = re.search(r'^\s*slug:\s*"([^"]+)"', record)
+        name = re.search(r'^\s*name:\s*"([^"]+)"', record, re.MULTILINE)
+        if not slug or not name:
+            continue
+        spec = re.search(r'^\s*spec:\s*"([^"]+)"', record, re.MULTILINE)
+        # 沒寫 spec 的走 partnerProvidedProduct 的預設值。
+        value = spec.group(1) if spec else "規格待確認"
+        labels[slug.group(1)] = (
+            name.group(1) if value == "規格待確認" else f"{name.group(1)} {value}"
+        )
+    return labels
 
 
 def aggregate(records: list[dict]) -> dict[str, AreaDemand]:
