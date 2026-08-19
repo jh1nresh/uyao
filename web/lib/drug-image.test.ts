@@ -11,18 +11,44 @@ const MAX_BYTES = 200 * 1024;
 
 const withImage = allDrugs().filter((drug) => drug.image);
 
+/**
+ * 兩份名單分開列，因為 `kind` 是對使用者的宣告，不是樣式開關。
+ *
+ * PACKSHOTS 是實拍：合作藥局現場拍的包裝照，可以代表真的盒子。
+ * ILLUSTRATIONS 是生成示意圖：畫面上、替代文字裡都標「示意圖，非實際包裝」，
+ * 盒面上的字是模型畫的，不可當成包裝標示引用。
+ *
+ * 把某個 slug 從下面搬到上面，等於宣告「這張是真的包裝」—— 要搬就得先有實拍。
+ */
+const PACKSHOTS = [
+  "aob-vitality-beauty-45",
+  "chungchi-ganmeijia-coral-ca",
+  "chungchi-yiyuansu-gastrodia-100",
+  "gaoyouzhi-vitamin-b-60",
+  "greenplus-elgucare",
+  "huamao-progifted-lp28",
+  "tianxia-chan-c-80",
+  "yuanding-puregps-defense-450",
+];
+
+const ILLUSTRATIONS = [
+  "bio-stand-calcium-softgel",
+  "chung-jih-youweining",
+  "cm-jinguguanjian-sr",
+  "gude-yishengning-p",
+  "hongren-riqingsheng-lm",
+  "luhsin-l-glutamine",
+  "ouye-jingyong",
+  "tianxia-yangshen-jingqu",
+  "toyo-cukang-b",
+  "yingkai-guguanjian-ucii",
+];
+
 describe("品項圖", () => {
-  it("有圖的就是這八個品項", () => {
-    expect(withImage.map((drug) => drug.slug).sort()).toEqual([
-      "aob-vitality-beauty-45",
-      "chungchi-ganmeijia-coral-ca",
-      "chungchi-yiyuansu-gastrodia-100",
-      "gaoyouzhi-vitamin-b-60",
-      "greenplus-elgucare",
-      "huamao-progifted-lp28",
-      "tianxia-chan-c-80",
-      "yuanding-puregps-defense-450",
-    ]);
+  it("有圖的品項就是這兩份名單", () => {
+    expect(withImage.map((drug) => drug.slug).sort()).toEqual(
+      [...PACKSHOTS, ...ILLUSTRATIONS].sort(),
+    );
   });
 
   it.each(withImage)("$slug 的圖檔真的在 public/ 裡且已壓過", (drug) => {
@@ -59,9 +85,12 @@ describe("品項圖", () => {
     }
   });
 
-  it("目前每一張都是合作藥局提供的實拍", () => {
-    // 用「全部都是」而不是逐一列舉 —— 之後新增品項不必再改這個 fixture，
-    // 但只要有人塞一張生成圖進來就會被擋下。
-    expect(withImage.every((drug) => drug.image!.kind === "packshot")).toBe(true);
+  it("每一張都掛在它該掛的那份名單上", () => {
+    // 這條擋的是「生成圖被標成 packshot」—— 那會讓使用者以為看到的是真的盒子，
+    // 跟填假許可證字號是同一種錯。反向也擋：實拍被降級成示意圖同樣是錯的宣告。
+    for (const drug of withImage) {
+      const expected = PACKSHOTS.includes(drug.slug) ? "packshot" : "illustration";
+      expect(drug.image!.kind, drug.slug).toBe(expected);
+    }
   });
 });
