@@ -157,10 +157,9 @@ describe("Store OS reservation delivery", () => {
   it("accepts a reservation for a partner-confirmed item with no scan offer", async () => {
     const partner = PARTNER_PHARMACIES.建利西藥房;
     const store = getStore(partner.storeSlug)!;
+    const confirmed: readonly string[] = partner.confirmedProducts;
     const drug = allDrugs().find((d) =>
-      partner.confirmedProducts.includes(
-        d.spec === "規格待確認" ? d.name : `${d.name} ${d.spec}`,
-      ),
+      confirmed.includes(d.spec === "規格待確認" ? d.name : `${d.name} ${d.spec}`),
     )!;
     // 這一支刻意不 mock storesForDrug：真實情況就是查不到任何 offer。
     expect(data.storesForDrug(drug.slug)).toEqual([]);
@@ -187,10 +186,9 @@ describe("Store OS reservation delivery", () => {
 
   it("still rejects a pharmacy that never confirmed carrying the item", async () => {
     const partner = PARTNER_PHARMACIES.建利西藥房;
+    const confirmed: readonly string[] = partner.confirmedProducts;
     const drug = allDrugs().find((d) =>
-      partner.confirmedProducts.includes(
-        d.spec === "規格待確認" ? d.name : `${d.name} ${d.spec}`,
-      ),
+      confirmed.includes(d.spec === "規格待確認" ? d.name : `${d.name} ${d.spec}`),
     )!;
     // 同一區、但沒有把這支列進 confirmedProducts 的店。
     const outsider = allStores().find(
