@@ -31,7 +31,8 @@ export function PharmacyList({
 
   return (
     <>
-      <section className="bg-paper">
+      {/* id 給 hero 右欄的「附近藥局」卡當錨點；scroll-mt 留給 sticky header 的高度。 */}
+      <section id="pharmacy-list" className="scroll-mt-24 border-b border-line bg-paper">
       <div className="shop-shell py-10 sm:py-14">
       <div className="mb-6 flex flex-wrap items-end gap-3">
         <h2 className="editorial-display m-0 text-[28px] sm:text-[34px]">{locale === "en" ? `${rows.length} nearby pharmacies` : `附近 ${rows.length} 家藥局`}</h2>
@@ -109,7 +110,7 @@ export function PharmacyList({
   );
 }
 
-function ReserveButton({
+export function ReserveButton({
   row,
   mobile = false,
   onClick,

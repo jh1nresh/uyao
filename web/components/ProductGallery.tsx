@@ -27,10 +27,21 @@ export function ProductGallery({
   locale: "zh" | "en";
 }) {
   const [active, setActive] = useState(0);
+  // 放大鏡：滑鼠移入以游標為中心放大（transform-origin 用百分比），
+  // 觸控裝置改成點一下放大、再點一下還原。null = 未放大。
+  const [zoomOrigin, setZoomOrigin] = useState<{ x: number; y: number } | null>(null);
   const railRef = useRef<HTMLDivElement>(null);
 
   if (images.length === 0) return null;
   const current = images[active] ?? images[0];
+
+  function originFromEvent(event: React.PointerEvent<HTMLDivElement>) {
+    const rect = event.currentTarget.getBoundingClientRect();
+    return {
+      x: Math.min(100, Math.max(0, ((event.clientX - rect.left) / rect.width) * 100)),
+      y: Math.min(100, Math.max(0, ((event.clientY - rect.top) / rect.height) * 100)),
+    };
+  }
 
   /** 方向鍵在縮圖列上換圖，換完把焦點帶到新的按鈕，不然鍵盤使用者會迷路。 */
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
@@ -42,6 +53,7 @@ export function ProductGallery({
       ? (active + 1) % images.length
       : (active - 1 + images.length) % images.length;
     setActive(next);
+    setZoomOrigin(null);
     railRef.current
       ?.querySelectorAll<HTMLButtonElement>("button")
       [next]?.focus();
@@ -53,16 +65,49 @@ export function ProductGallery({
     <div className="flex flex-col gap-3 sm:flex-row-reverse sm:items-start">
       {/* 不給實色底：圖是透明去背的，直接吃頁面底色，淺色與深色主題都對。 */}
       <div className="min-w-0 flex-1 border border-line">
-        <div className="relative aspect-square">
-          <Image
-            key={current.src}
-            src={current.src}
-            alt={current.alt}
-            fill
-            sizes="(min-width: 1024px) 460px, (min-width: 640px) 55vw, 100vw"
-            className="object-contain"
-            priority
-          />
+        <div
+          className={`relative aspect-square overflow-hidden ${zoomOrigin ? "cursor-zoom-out" : "cursor-zoom-in"}`}
+          onPointerMove={(event) => {
+            // 滑鼠 hover 即放大並跟著游標平移；觸控的 move 不動作，避免捲頁時誤觸。
+            if (event.pointerType === "mouse") setZoomOrigin(originFromEvent(event));
+          }}
+          onPointerLeave={() => setZoomOrigin(null)}
+          onPointerUp={(event) => {
+            if (event.pointerType !== "mouse") {
+              setZoomOrigin((prev) => (prev ? null : originFromEvent(event)));
+            }
+          }}
+        >
+          <div
+            className="absolute inset-0"
+            style={
+              zoomOrigin
+                ? {
+                    transform: "scale(2.2)",
+                    transformOrigin: `${zoomOrigin.x}% ${zoomOrigin.y}%`,
+                  }
+                : undefined
+            }
+          >
+            <Image
+              key={current.src}
+              src={current.src}
+              alt={current.alt}
+              fill
+              sizes="(min-width: 1024px) 460px, (min-width: 640px) 55vw, 100vw"
+              className="object-contain"
+              priority
+            />
+          </div>
+          {/* 說明圖上的小字縮在 460px 內看不清，提示可以放大；放大中就讓位給圖。 */}
+          {!zoomOrigin && (
+            <span
+              aria-hidden
+              className="pointer-events-none absolute bottom-2 right-2 border border-line bg-paper/90 px-2 py-0.5 text-[11px] text-muted-2"
+            >
+              {locale === "en" ? "Hover or tap to zoom" : "移入或點圖放大"}
+            </span>
+          )}
         </div>
       </div>
 
@@ -83,7 +128,10 @@ export function ProductGallery({
               aria-selected={i === active}
               // roving tabindex：整列只有一個 tab stop，其餘用方向鍵走
               tabIndex={i === active ? 0 : -1}
-              onClick={() => setActive(i)}
+              onClick={() => {
+                setActive(i);
+                setZoomOrigin(null);
+              }}
               title={image.label}
               className={`relative aspect-square w-[76px] shrink-0 overflow-hidden border bg-paper outline-offset-2 sm:w-full ${
                 i === active ? "border-forest" : "border-line hover:border-line-strong"

@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import { AreaSwitch } from "@/components/AreaSwitch";
 import { NoInventoryYet } from "@/components/NoInventoryYet";
 import { PharmacyList } from "@/components/PharmacyList";
+import { PharmacyPeek } from "@/components/PharmacyPeek";
 import { ProductGallery, type GalleryImage } from "@/components/ProductGallery";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -22,6 +23,8 @@ import {
 } from "@/lib/data";
 import { JsonLd } from "@/components/JsonLd";
 import { areaCopy, categoryName, drugCopy, localizedPath } from "@/lib/i18n";
+import { formatDistance } from "@/lib/format";
+import { hoursSummary } from "@/lib/hours";
 import { hasAmounts, ingredientRows } from "@/lib/ingredients";
 import { getRequestLocale } from "@/lib/locale-server";
 import { partnersForProduct } from "@/lib/partners";
@@ -130,6 +133,8 @@ export default async function DrugPage({
   ];
 
   const rows = storesForDrug(drug.slug, area);
+  const areaStores = storesInArea(area);
+  const areaShortName = areaCopy(getArea(area), locale).shortName;
   const alternatives = alternativesFor(drug.slug, area);
   const category = getCategory(drug.category);
 
@@ -290,41 +295,83 @@ export default async function DrugPage({
               ))}
             </p>
           )}
+          {/* 內文與成分摘要直接放右欄：打開頁面第一屏就該知道這是什麼、
+              裡面有什麼 —— 不必捲到頁面下段。成分細節與來源仍在下方區塊。 */}
+          {displayDrug.nutritionFocus && (
+            <p className="mb-0 mt-1 text-[15.5px] leading-[1.85] text-ink-2">
+              {displayDrug.nutritionFocus}
+            </p>
+          )}
+          {drug.source && displayDrug.ingredients.length > 0 && (
+            <p className="m-0 line-clamp-2 text-[14px] leading-[1.7] text-muted">
+              <span className="font-bold text-forest">
+                {locale === "en" ? "Main ingredients: " : "主要成分："}
+              </span>
+              {displayDrug.ingredients.join(locale === "en" ? ", " : "、")}
+            </p>
+          )}
+          {/* 「哪裡拿得到」是這頁的行動點，跟著品名待在第一屏。
+              沒有庫存 rows 時退回列這一區的藥局 —— 跟下方空狀態一樣不假裝有貨。 */}
+          {rows.length > 0 ? (
+            <PharmacyPeek
+              drug={{ slug: drug.slug, name: displayDrug.name, spec: drug.spec }}
+              rows={rows}
+            />
+          ) : (
+            areaStores.length > 0 && (
+              <div className="mt-2 border border-line bg-ivory">
+                <p className="m-0 border-b border-line bg-surface px-3.5 py-2 text-[14px] font-bold text-forest">
+                  {locale === "en"
+                    ? `Pharmacies in ${areaShortName}`
+                    : `${areaShortName}的藥局`}
+                </p>
+                {areaStores.slice(0, 3).map((store) => (
+                  <div
+                    key={store.slug}
+                    className="flex items-baseline gap-2 border-b border-line-soft px-3.5 py-2.5"
+                  >
+                    <Link
+                      href={localizedPath(`/store/${store.slug}`, locale)}
+                      className="history-link min-w-0 truncate text-[15px] font-medium text-ink no-underline"
+                    >
+                      {store.name}
+                    </Link>
+                    <span className="num text-[13px] text-ink-2">
+                      {formatDistance(store.distanceM)}
+                    </span>
+                    <span className="ml-auto whitespace-nowrap text-[13px] text-muted">
+                      {hoursSummary(store, locale)}
+                    </span>
+                  </div>
+                ))}
+                <a
+                  href="#pharmacy-list"
+                  className="flex min-h-11 items-center px-3.5 text-[14px] font-medium text-green no-underline hover:bg-surface-hover"
+                >
+                  {locale === "en"
+                    ? `See all ${areaStores.length} stores with phone numbers ↓`
+                    : `看全部 ${areaStores.length} 家與電話 ↓`}
+                </a>
+              </div>
+            )
+          )}
         </div>
       </div>
       </section>
 
-      {rows.length > 0 ? (
-        <PharmacyList
-          drug={{ slug: drug.slug, name: displayDrug.name, spec: drug.spec }}
-          rows={rows}
-        />
-      ) : (
-        <NoInventoryYet
-          drugName={displayLabel}
-          drugSlug={drug.slug}
-          area={area}
-          areaLabel={areaCopy(getArea(area), locale).shortName}
-          stores={storesInArea(area)}
-        />
-      )}
-
-      <section className="border-b border-line bg-ivory" aria-labelledby="nutrition-focus-heading">
+      {/* 成分與來源緊跟 hero：右欄的摘要在這裡展開成對照表。
+          完整藥局清單移到本區之後 —— 第一屏的精簡卡已經接住「哪裡拿得到」。 */}
+      <section id="ingredients" className="scroll-mt-24 border-b border-line bg-ivory" aria-labelledby="nutrition-focus-heading">
         <div className="shop-shell py-8 sm:py-10">
-          <div className="grid max-w-[900px] gap-6 sm:grid-cols-[1.15fr_.85fr]">
-            <div>
-              <h2 id="nutrition-focus-heading" className="editorial-display m-0 text-[26px] leading-[1.3] sm:text-[32px]">
-                {partnerProvidedDetails
-                  ? locale === "en" ? "Product composition provided by the pharmacy" : "合作藥局提供的產品組成"
-                  : drug.source
-                  ? locale === "en" ? "Nutrition and daily-wellness focus" : "營養補充／日常保養方向"
-                  : locale === "en" ? "Product details pending verification" : "產品資料待驗證"}
-              </h2>
-              <p className="mb-0 mt-3 text-[16px] leading-[1.8] text-ink-2">
-                {displayDrug.nutritionFocus}
-              </p>
-            </div>
-            <div className="border border-line bg-paper px-4 py-4">
+          <h2 id="nutrition-focus-heading" className="editorial-display m-0 max-w-[900px] text-[26px] leading-[1.3] sm:text-[32px]">
+            {partnerProvidedDetails
+              ? locale === "en" ? "Product composition provided by the pharmacy" : "合作藥局提供的產品組成"
+              : drug.source
+              ? locale === "en" ? "Ingredients and product source" : "成分與資料來源"
+              : locale === "en" ? "Product details pending verification" : "產品資料待驗證"}
+          </h2>
+          <div className="mt-5 max-w-[900px]">
+            <div className="max-w-[560px] border border-line bg-paper px-4 py-4">
               {drug.source ? (
                 <>
                   <p className="m-0 text-[14px] font-bold text-forest">
@@ -415,6 +462,21 @@ export default async function DrugPage({
           </p>
         </div>
       </section>
+
+      {rows.length > 0 ? (
+        <PharmacyList
+          drug={{ slug: drug.slug, name: displayDrug.name, spec: drug.spec }}
+          rows={rows}
+        />
+      ) : (
+        <NoInventoryYet
+          drugName={displayLabel}
+          drugSlug={drug.slug}
+          area={area}
+          areaLabel={areaShortName}
+          stores={areaStores}
+        />
+      )}
 
       {/* 產品特色、建議用量與注意事項全部照包裝或原廠標示逐條收，不是 uYao 的評價。
           標題上的「原廠標示」標籤是宣告，不是裝飾 —— 把廠商說法呈現成本站說法會誤導。 */}
