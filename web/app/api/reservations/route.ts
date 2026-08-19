@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import { normalizeAdSource } from "@/lib/attribution";
 import { logConsole } from "@/lib/box";
 import { getDrug, getStore, previewOffers, storesForDrug } from "@/lib/data";
+import { partnersForProduct } from "@/lib/partners";
 import { hoursSummary } from "@/lib/hours";
 import { drugCopy } from "@/lib/i18n";
 import { stockBadge } from "@/lib/stock";
@@ -87,9 +88,24 @@ export async function POST(request: Request) {
         return o ? { priceTwd: o.priceTwd, badge: stockBadge(o.daysSinceScan) } : undefined;
       })()
     : storesForDrug(drugSlug).find((r) => r.store.slug === storeSlug);
-  if (!offer) {
+
+  // 掃描流是唯一能給出價格與新鮮度的來源，但目前沒有任何一家藥局裝盒子 ——
+  // 只認 offer 的話，整站沒有一筆預留送得出去。
+  //
+  // 合作藥局自己確認過販售這個品項，就足以把「請幫我留一份」送到店裡：
+  // 那是一次請求，不是一則有貨保證。價格與現貨仍由藥局在 Store OS 上確認，
+  // 所以這種單的 priceTwd 是 null、庫存標示是 unknown —— 不猜、不填 0。
+  const confirmedByPartner =
+    !demo &&
+    partnersForProduct(drug.spec === "規格待確認" ? drug.name : `${drug.name} ${drug.spec}`)
+      .some((partner) => partner.storeSlug === storeSlug);
+
+  if (!offer && !confirmedByPartner) {
     return NextResponse.json({ error: "這家藥局沒有這個品項" }, { status: 404 });
   }
+
+  const priceTwd = offer ? offer.priceTwd : null;
+  const stockTier = offer ? offer.badge.tier : ("unknown" as const);
 
   const contact = normalizeContact(rawContact);
   if (!contact) {
@@ -142,7 +158,7 @@ export async function POST(request: Request) {
     storeMapsUrl: store.mapsUrl,
     storeHours: hoursSummary(store),
     storePhone: store.phone,
-    priceTwd: offer.priceTwd,
+    priceTwd,
     contactKind: contact.kind,
     contact: contact.value,
     status: "pending_store_confirm",
@@ -174,7 +190,7 @@ export async function POST(request: Request) {
   }
   await appendRecord("reservations", {
     ...recordWithoutIntake,
-    stockTier: offer.badge.tier,
+    stockTier,
     ...(source ? { source } : {}),
   });
 
@@ -201,7 +217,7 @@ export async function POST(request: Request) {
     token,
     holdHours: HOLD_HOURS,
     intakeShared: Boolean(record.intake),
-    priceTwd: offer.priceTwd,
+    priceTwd,
     store: {
       slug: store.slug,
       name: store.name,
