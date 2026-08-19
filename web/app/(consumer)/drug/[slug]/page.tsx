@@ -209,15 +209,26 @@ export default async function DrugPage({
                     : "示意圖，非實際包裝。"}
               </p>
             )}
-            {/* 圖廊裡除了包裝實拍，還有排了原廠文案的商品說明圖，歸屬要跟著圖走。 */}
+            {/*
+              圖廊裡除了包裝圖，還有排了文案的商品說明圖，歸屬要跟著**底圖**走：
+              說明圖是拿上面那張當底再排字的，底圖是實拍就沿用原廠標示的歸屬，
+              底圖是示意圖就不能借用它 —— 掛「原廠標示」等於替一張生成的盒子
+              背書，跟把生成圖標成 packshot 是同一種錯。
+            */}
             {drug.detailImages && drug.detailImages.length > 0 && (
               <p className="m-0 text-xs leading-[1.7] text-muted-2">
                 <span className="mr-1.5 border border-oxblood px-[5px] py-px text-[11px] font-bold text-oxblood">
-                  {locale === "en" ? "MANUFACTURER'S OWN WORDING" : "原廠標示"}
+                  {drug.image?.kind === "illustration"
+                    ? locale === "en" ? "ILLUSTRATION" : "示意圖"
+                    : locale === "en" ? "MANUFACTURER'S OWN WORDING" : "原廠標示"}
                 </span>
-                {locale === "en"
-                  ? "Detail images combine partner-supplied product photos with text copied from the package or the manufacturer's own material. uYao has not independently verified those claims."
-                  : "說明圖是合作藥局提供的商品照，加上照抄自包裝或原廠資料的排版文字；uYao 未獨立驗證其中的說法，也不構成背書。"}
+                {drug.image?.kind === "illustration"
+                  ? locale === "en"
+                    ? "Detail images are laid out over the illustration above — not real packaging — with text typeset from this item's own record. Nothing on the rendered carton is a citable product label."
+                    : "說明圖以上方的示意圖為底（非實際包裝），文字依本品項的資料排版；盒面上的字不是可引用的包裝標示。"
+                  : locale === "en"
+                    ? "Detail images combine partner-supplied product photos with text copied from the package or the manufacturer's own material. uYao has not independently verified those claims."
+                    : "說明圖是合作藥局提供的商品照，加上照抄自包裝或原廠資料的排版文字；uYao 未獨立驗證其中的說法，也不構成背書。"}
               </p>
             )}
           </div>
