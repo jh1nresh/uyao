@@ -15,7 +15,7 @@ import {
   storesInArea,
   toAreaSlug,
 } from "@/lib/data";
-import { nonEmptyCatalogGroups } from "@/lib/catalog-groups";
+import { CATALOG_GROUPS } from "@/lib/catalog-groups";
 import { areaCopy, categoryName, localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
 import { PARTNER_STORE_ITEMS } from "@/lib/partner-stores";
@@ -168,8 +168,8 @@ export default async function HomePage({
             <div className="mt-5 flex flex-col items-center justify-between gap-3 text-[14px] leading-[1.65] text-muted sm:flex-row sm:text-left">
               <p className="m-0">
                 {locale === "en"
-                  ? `${currentArea.shortName}: ${storeCount} listed pharmacies · live supply requires pharmacy confirmation`
-                  : `${currentArea.shortName}收錄 ${storeCount} 家藥局 · 即時供應仍待藥局確認`}
+                  ? `${currentArea.shortName}: ${storeCount} listed pharmacies`
+                  : `${currentArea.shortName}收錄 ${storeCount} 家藥局`}
               </p>
               <div className="md:hidden">
                 <AreaSwitch area={area} preservePath locatable compact />
@@ -198,7 +198,7 @@ export default async function HomePage({
             </p>
           </div>
           <nav aria-label={locale === "en" ? "Catalog categories" : "品項分類"} className="mb-7 flex flex-wrap gap-2.5">
-            {nonEmptyCatalogGroups(drugs).map((group) => (
+            {CATALOG_GROUPS.map((group) => (
               <Link
                 key={group.slug}
                 href={`${localizedPath("/category/partner-item", locale)}?area=${area}&group=${group.slug}`}

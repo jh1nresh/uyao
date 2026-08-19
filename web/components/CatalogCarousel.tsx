@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { catalogSourceStatus } from "./CatalogItemGrid";
+import { known } from "@/lib/pending";
 import { drugCopy, localizedPath, type Locale } from "@/lib/i18n";
 import type { AreaSlug, Drug } from "@/lib/types";
 
@@ -121,10 +122,11 @@ export function CatalogCarousel({
                 <span className="block text-[14.5px] font-bold leading-[1.45] text-ink">
                   {drug.name}
                 </span>
+                {/* 規格與出處都可能是空的 —— 有什麼講什麼，兩個都沒有就整行不留。 */}
                 <span className="block text-[12.5px] leading-[1.5] text-muted-2">
-                  {drug.spec === "規格待確認" || drug.spec === "Package size pending"
-                    ? catalogSourceStatus(item, locale)
-                    : `${drug.spec} · ${catalogSourceStatus(item, locale)}`}
+                  {[known(drug.spec), catalogSourceStatus(item, locale)]
+                    .filter(Boolean)
+                    .join(" · ")}
                 </span>
               </span>
             </Link>
