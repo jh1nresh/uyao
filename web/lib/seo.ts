@@ -328,6 +328,56 @@ export function consumerProductJsonLd(input: {
   };
 }
 
+/**
+ * 藥局的公開記錄。
+ *
+ * `Pharmacy` 是 schema.org 的 MedicalBusiness 子型別，講的是「這是一家藥局」，
+ * 不是「這裡買得到什麼」—— 所以這裡沒有 `makesOffer`、沒有 `hasOfferCatalog`、
+ * 沒有任何供應或價格欄位。頁面上沒有的東西，結構化資料裡也不能有。
+ *
+ * 刻意不輸出 `openingHours`：站上的時段是中文自由字串（「星期一至星期日」、
+ * 「09:00–12:00、14:00–17:00」、「公休」），而且一部分店的來源是**健保調劑
+ * 時段**而非營業時間（`Store.hoursSource`）。轉成 schema.org 格式要一個能對
+ * 54 家資料全部驗過的 parser；在那之前寧可不標 —— 標錯的時間會讓人白跑一趟，
+ * 比沒有時間更糟。頁面上仍然照實顯示，並標明來源。
+ */
+export function consumerPharmacyJsonLd(input: {
+  name: string;
+  description: string;
+  path: string;
+  address: string;
+  district: string;
+  inLanguage: "zh-Hant-TW" | "en";
+  telephone?: string;
+  location?: { lat: number; lng: number } | null;
+}): JsonLd {
+  return {
+    "@type": "Pharmacy",
+    "@id": `${SHOP_URL}${input.path}#pharmacy`,
+    name: input.name,
+    description: input.description,
+    url: `${SHOP_URL}${input.path}`,
+    inLanguage: input.inLanguage,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: input.address,
+      addressLocality: input.district,
+      addressCountry: "TW",
+    },
+    ...(input.telephone ? { telephone: input.telephone } : {}),
+    ...(input.location
+      ? {
+          geo: {
+            "@type": "GeoCoordinates",
+            latitude: input.location.lat,
+            longitude: input.location.lng,
+          },
+        }
+      : {}),
+    isPartOf: { "@id": `${SHOP_URL}/#website` },
+  };
+}
+
 export function webPageJsonLd(input: {
   name: string;
   description: string;

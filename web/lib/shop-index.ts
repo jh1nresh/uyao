@@ -1,4 +1,4 @@
-import { CATEGORIES, allDrugs } from "./data";
+import { CATEGORIES, allDrugs, allStores } from "./data";
 import type { Locale } from "./i18n";
 import type { Drug, IsoDate } from "./types";
 
@@ -12,9 +12,20 @@ import type { Drug, IsoDate } from "./types";
  * placeholder records whose details are still unverified, so they stay
  * `noindex, follow` and are reachable through the category page instead.
  *
+ * 藥局頁（`/store/*`）現在也收錄，但**只收中文**。它曾經被擋在門外，理由是
+ * 「列出沒有藥局確認過的供應」—— 那個理由在程式裡早就不成立：真實藥局頁的
+ * 品項是空陣列（`StoreView.tsx`），頁面自己寫明「不列出這家藥局賣什麼、有
+ * 什麼貨」。剩下的內容全是公開藥局資料：店名、行政區、地址、電話、營業時間
+ * 與健保特約狀態，來源是食藥署與健保署開放資料。那是一則可以被搜尋結果落地
+ * 的事實記錄，收錄它不會對供應做出任何主張。
+ *
+ * 英文版不收：藥局名是中文，`/en/store/x` 的標題跟 `/zh-tw/store/x` 一模一樣，
+ * 收了就是製造近似重複頁 —— 跟品項頁缺 `nameEn` 時的處理同一條規則。
+ *
+ * 收錄不代表合作。沒加入的店在頁面上標示「尚未加入」，且不出現任何預留入口。
+ *
  * Not admitted at all, on purpose:
  *   /search      no stable content, one URL per query
- *   /store/*     shows supply that no pharmacy has confirmed yet
  *   /r/*         private reservation receipts
  */
 export function isIndexableCatalogItem(drug: Drug, locale: Locale = "zh"): boolean {
@@ -43,6 +54,25 @@ const LOCALE_PREFIX: Record<Locale, string> = { zh: "/zh-tw", en: "/en" };
  * 這個常數只負責首頁上不是目錄的那些字。改文案才動它。
  */
 const SHOP_HOME_COPY_UPDATED: IsoDate = "2026-08-18";
+
+/**
+ * 藥局頁的內容更新日。
+ *
+ * 藥局沒有 `updatedOn`：它們不是一筆一筆維護的，是整批來自食藥署與健保署的
+ * 開放資料快照。所以這裡用一個共用日期 —— 重灌那份快照時改它。
+ *
+ * 刻意不用今天的日期：`lastmod` 說的是「內容變了」，每次 build 都推一次等於
+ * 對 Google 說謊，而且謊說久了它就不再相信這個站的 lastmod。
+ */
+const STORE_RECORD_UPDATED: IsoDate = "2026-08-19";
+
+/**
+ * 藥局頁只收中文 —— 理由見檔頭。留成函式而不是在下面寫死 `locale === "zh"`，
+ * 是因為之後若有英文藥局名，改這裡一處就會同時打開 sitemap 與頁面的 robots。
+ */
+export function isIndexableStorePage(locale: Locale = "zh"): boolean {
+  return locale === "zh";
+}
 
 export type ShopSitemapEntry = { path: string; lastModified: IsoDate };
 
@@ -79,6 +109,7 @@ function newestOf(dates: IsoDate[], fallback: IsoDate): IsoDate {
 export function sitemapEntriesFor(
   categories: readonly { slug: string }[],
   drugs: readonly Drug[],
+  stores: readonly { slug: string }[] = [],
 ): ShopSitemapEntry[] {
   return LOCALES.flatMap((locale) => {
     const prefix = LOCALE_PREFIX[locale];
@@ -102,13 +133,20 @@ export function sitemapEntriesFor(
         path: `${prefix}/drug/${drug.slug}`,
         lastModified: drug.updatedOn,
       })),
+      // 藥局頁的 lastmod 跟品項無關 —— 這一頁的內容是開放資料快照，不是目錄。
+      ...(isIndexableStorePage(locale)
+        ? stores.map((store) => ({
+            path: `${prefix}/store/${store.slug}`,
+            lastModified: STORE_RECORD_UPDATED,
+          }))
+        : []),
     ];
   });
 }
 
 /** 真實目錄的那一份。 */
 export function shopSitemapEntries(): ShopSitemapEntry[] {
-  return sitemapEntriesFor(CATEGORIES, allDrugs());
+  return sitemapEntriesFor(CATEGORIES, allDrugs(), allStores());
 }
 
 /** 只要路徑的呼叫端用這個。順序與 `shopSitemapEntries()` 一致。 */
