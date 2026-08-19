@@ -145,6 +145,16 @@ export default async function DrugPage({
 
   const canonicalPath = localizedPath(`/drug/${drug.slug}`, locale);
 
+  // 寬螢幕把「哪裡拿得到」抬成獨立一欄，跟品名同一屏 —— 不必先讀完成分
+  // 摘要才看到藥局。lg 以下欄寬切不出三欄，維持疊在品項資料下面。
+  // 沒有圖廊的品項少一欄，欄位表要跟著少一格，否則第一欄會空著。
+  const heroGridClass = galleryImages.length > 0
+    ? "lg:grid-cols-[minmax(0,520px)_minmax(0,1fr)] xl:grid-cols-[minmax(0,400px)_minmax(0,1fr)_minmax(300px,340px)]"
+    : "xl:grid-cols-[minmax(0,1fr)_minmax(300px,340px)]";
+  const buyBoxPlacement = galleryImages.length > 0
+    ? "lg:col-start-2 lg:row-start-2 xl:col-start-3 xl:row-start-1"
+    : "xl:col-start-2 xl:row-start-1";
+
   return (
     <>
       {isIndexableCatalogItemSlug(drug.slug, locale) && (
@@ -204,7 +214,7 @@ export default async function DrugPage({
       </nav>
 
       <section className="border-b border-line bg-paper">
-      <div className="shop-shell grid max-w-[1040px] gap-7 py-8 sm:py-10 lg:grid-cols-[minmax(0,520px)_minmax(0,1fr)] lg:items-start">
+      <div className={`shop-shell grid max-w-[1040px] gap-7 py-8 sm:py-10 lg:items-start xl:max-w-[1280px] xl:gap-8 ${heroGridClass}`}>
         {galleryImages.length > 0 && (
           <div className="flex flex-col gap-2.5">
             <ProductGallery images={galleryImages} locale={locale} />
@@ -307,9 +317,12 @@ export default async function DrugPage({
               {displayDrug.ingredients.join(locale === "en" ? ", " : "、")}
             </p>
           )}
-          {/* 這頁只要回答一件事：哪家藥局有這個藥、電話幾號。
-              有掃描庫存就用庫存 rows；還沒有掃描流時，用合作藥局自己確認過的
-              販售品項 —— 44 個品項都講得出至少一家，不必讓人捲到頁尾。 */}
+        </div>
+
+        {/* 這頁只要回答一件事：哪家藥局有這個藥、電話幾號。
+            有掃描庫存就用庫存 rows；還沒有掃描流時，用合作藥局自己確認過的
+            販售品項 —— 44 個品項都講得出至少一家，不必讓人捲到頁尾。 */}
+        <div className={buyBoxPlacement}>
           <StoreBuyBox
             drug={{ slug: drug.slug, name: displayDrug.name, spec: drug.spec }}
             rows={rows}
