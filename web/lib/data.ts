@@ -497,6 +497,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["乳薊", "Silymarin", "Silybin"],
     manufacturer: "供應商：興中美生技有限公司；製造商：中美兄弟製藥股份有限公司",
     origin: "台灣",
+    image: {
+      src: "/products/cm-guer-gan-150mg.webp",
+      width: 900,
+      height: 1125,
+      kind: "illustration",
+      alt: "示意圖，非實際包裝：中美 顧爾肝膠囊 的紙盒示意，圖片下方以真實字型標示品名與劑型",
+      altEn: "Illustration, not the real packaging: a rendered carton for 中美 顧爾肝膠囊, with the product name and form typeset below",
+    },
   }),
   partnerProvidedProduct({
     slug: "gude-yishengning-p",
@@ -811,6 +819,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["鎂", "檸檬酸鎂", "海藻鈣", "D-核糖", "胺基酸", "維生素D3"],
     manufacturer: "優全生技有限公司",
     origin: "台灣",
+    image: {
+      src: "/products/youquan-super-magnesium.webp",
+      width: 900,
+      height: 1125,
+      kind: "illustration",
+      alt: "示意圖，非實際包裝：新優力超級鎂 的紙盒示意，圖片下方以真實字型標示品名與劑型",
+      altEn: "Illustration, not the real packaging: a rendered carton for 新優力超級鎂, with the product name and form typeset below",
+    },
   }),
   partnerProvidedProduct({
     slug: "chung-jih-youweining",

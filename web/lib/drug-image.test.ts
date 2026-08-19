@@ -34,6 +34,7 @@ const PACKSHOTS = [
 const ILLUSTRATIONS = [
   "bio-stand-calcium-softgel",
   "chung-jih-youweining",
+  "cm-guer-gan-150mg",
   "cm-jinguguanjian-sr",
   "greenplus-discpower",
   "greenplus-vasopower",
@@ -50,6 +51,7 @@ const ILLUSTRATIONS = [
   "tianxia-yangshen-jingqu",
   "toyo-cukang-b",
   "yingkai-guguanjian-ucii",
+  "youquan-super-magnesium",
 ];
 
 describe("品項圖", () => {
