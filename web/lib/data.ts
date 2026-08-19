@@ -415,6 +415,11 @@ const DRUGS: Drug[] = [
     searchTerms: ["二型膠原蛋白", "MSM", "鋅", "維生素D3", "關節營養補給"],
     manufacturer: "中美醫藥",
     origin: "台灣（通路標示）",
+    detailImages: [
+      { src: "/products/detail/jinguguanjian-1-main.webp", alt: "主圖：中美 金固關健緩釋錠 的商品說明圖主視覺，含品名、規格與重點標示", altEn: "Detail hero card for 中美 金固關健緩釋錠, showing the name, pack size and key callouts" },
+      { src: "/products/detail/jinguguanjian-2-features.webp", alt: "產品特色：中美 金固關健緩釋錠 的重點條列", altEn: "Feature summary card for 中美 金固關健緩釋錠" },
+      { src: "/products/detail/jinguguanjian-3-ingredients.webp", alt: "成分與規格：中美 金固關健緩釋錠 的成分含量、規格與注意事項", altEn: "Ingredient and specification card for 中美 金固關健緩釋錠" },
+    ],
     image: {
       src: "/products/cm-jinguguanjian-sr.webp",
       width: 900,
@@ -456,6 +461,11 @@ const DRUGS: Drug[] = [
     searchTerms: ["紅麴", "紅景天", "納豆激酶", "人參", "維生素B群"],
     manufacturer: "天下生物科技",
     origin: "台灣",
+    detailImages: [
+      { src: "/products/detail/congshen-1-main.webp", alt: "主圖：天下生物科技 養身景麴膠囊 的商品說明圖主視覺，含品名、規格與重點標示", altEn: "Detail hero card for 天下生物科技 養身景麴膠囊, showing the name, pack size and key callouts" },
+      { src: "/products/detail/congshen-2-features.webp", alt: "產品特色：天下生物科技 養身景麴膠囊 的重點條列", altEn: "Feature summary card for 天下生物科技 養身景麴膠囊" },
+      { src: "/products/detail/congshen-3-ingredients.webp", alt: "成分與規格：天下生物科技 養身景麴膠囊 的成分含量、規格與注意事項", altEn: "Ingredient and specification card for 天下生物科技 養身景麴膠囊" },
+    ],
     image: {
       src: "/products/tianxia-yangshen-jingqu.webp",
       width: 900,
@@ -476,6 +486,11 @@ const DRUGS: Drug[] = [
     searchTerms: ["益生菌", "乳酸菌", "果寡糖", "Lactobacillus plantarum", "Lactobacillus paracasei"],
     manufacturer: "鴻仁生技有限公司",
     origin: "台灣",
+    detailImages: [
+      { src: "/products/detail/richingsheng-1-main.webp", alt: "主圖：鴻仁 日清勝 LM機能益生菌 的商品說明圖主視覺，含品名、規格與重點標示", altEn: "Detail hero card for 鴻仁 日清勝 LM機能益生菌, showing the name, pack size and key callouts" },
+      { src: "/products/detail/richingsheng-2-features.webp", alt: "產品特色：鴻仁 日清勝 LM機能益生菌 的重點條列", altEn: "Feature summary card for 鴻仁 日清勝 LM機能益生菌" },
+      { src: "/products/detail/richingsheng-3-ingredients.webp", alt: "成分與規格：鴻仁 日清勝 LM機能益生菌 的成分含量、規格與注意事項", altEn: "Ingredient and specification card for 鴻仁 日清勝 LM機能益生菌" },
+    ],
     image: {
       src: "/products/hongren-riqingsheng-lm.webp",
       width: 900,
@@ -497,6 +512,11 @@ const DRUGS: Drug[] = [
     searchTerms: ["乳薊", "Silymarin", "Silybin"],
     manufacturer: "供應商：興中美生技有限公司；製造商：中美兄弟製藥股份有限公司",
     origin: "台灣",
+    detailImages: [
+      { src: "/products/detail/guerhgan-1-main.webp", alt: "主圖：中美 顧爾肝膠囊 的商品說明圖主視覺，含品名、規格與重點標示", altEn: "Detail hero card for 中美 顧爾肝膠囊, showing the name, pack size and key callouts" },
+      { src: "/products/detail/guerhgan-2-features.webp", alt: "產品特色：中美 顧爾肝膠囊 的重點條列", altEn: "Feature summary card for 中美 顧爾肝膠囊" },
+      { src: "/products/detail/guerhgan-3-ingredients.webp", alt: "成分與規格：中美 顧爾肝膠囊 的成分含量、規格與注意事項", altEn: "Ingredient and specification card for 中美 顧爾肝膠囊" },
+    ],
     image: {
       src: "/products/cm-guer-gan-150mg.webp",
       width: 900,
@@ -517,6 +537,10 @@ const DRUGS: Drug[] = [
     searchTerms: ["南瓜子油", "蔓越莓", "葡萄糖酸鋅", "番茄紅素"],
     manufacturer: "谷淂藥品生技有限公司",
     origin: "德國",
+    detailImages: [
+      { src: "/products/detail/sbenlin-1-main.webp", alt: "主圖：益聖寧-P軟膠囊 的商品說明圖主視覺，含品名、規格與重點標示", altEn: "Detail hero card for 益聖寧-P軟膠囊, showing the name, pack size and key callouts" },
+      { src: "/products/detail/sbenlin-2-features.webp", alt: "產品特色：益聖寧-P軟膠囊 的重點條列", altEn: "Feature summary card for 益聖寧-P軟膠囊" },
+    ],
     image: {
       src: "/products/gude-yishengning-p.webp",
       width: 900,
@@ -549,6 +573,10 @@ const DRUGS: Drug[] = [
     searchTerms: ["黑醋", "紅花籽油", "維生素B1", "維生素B6", "維生素E"],
     manufacturer: "東洋",
     origin: "日本",
+    detailImages: [
+      { src: "/products/detail/kurozu-1-main.webp", alt: "主圖：醋康B膠囊 的商品說明圖主視覺，含品名、規格與重點標示", altEn: "Detail hero card for 醋康B膠囊, showing the name, pack size and key callouts" },
+      { src: "/products/detail/kurozu-2-features.webp", alt: "產品特色：醋康B膠囊 的重點條列", altEn: "Feature summary card for 醋康B膠囊" },
+    ],
     image: {
       src: "/products/toyo-cukang-b.webp",
       width: 900,
@@ -621,6 +649,11 @@ const DRUGS: Drug[] = [
     searchTerms: ["鈣", "葡萄糖酸鈣", "維生素D3", "補鈣"],
     manufacturer: "臺灣默化實業有限公司",
     origin: "美國（進口品）",
+    detailImages: [
+      { src: "/products/detail/biostand-1-main.webp", alt: "主圖：Bio-Stand 挺液鈣軟膠囊 的商品說明圖主視覺，含品名、規格與重點標示", altEn: "Detail hero card for Bio-Stand 挺液鈣軟膠囊, showing the name, pack size and key callouts" },
+      { src: "/products/detail/biostand-2-features.webp", alt: "產品特色：Bio-Stand 挺液鈣軟膠囊 的重點條列", altEn: "Feature summary card for Bio-Stand 挺液鈣軟膠囊" },
+      { src: "/products/detail/biostand-3-ingredients.webp", alt: "成分與規格：Bio-Stand 挺液鈣軟膠囊 的成分含量、規格與注意事項", altEn: "Ingredient and specification card for Bio-Stand 挺液鈣軟膠囊" },
+    ],
     image: {
       src: "/products/bio-stand-calcium-softgel.webp",
       width: 900,
@@ -661,6 +694,11 @@ const DRUGS: Drug[] = [
     searchTerms: ["馬卡", "南瓜子", "L-精胺酸", "鋅", "維生素B群"],
     manufacturer: "歐業藥品",
     origin: "台灣",
+    detailImages: [
+      { src: "/products/detail/maca-1-main.webp", alt: "主圖：勁勇軟膠囊 的商品說明圖主視覺，含品名、規格與重點標示", altEn: "Detail hero card for 勁勇軟膠囊, showing the name, pack size and key callouts" },
+      { src: "/products/detail/maca-2-features.webp", alt: "產品特色：勁勇軟膠囊 的重點條列", altEn: "Feature summary card for 勁勇軟膠囊" },
+      { src: "/products/detail/maca-3-ingredients.webp", alt: "成分與規格：勁勇軟膠囊 的成分含量、規格與注意事項", altEn: "Ingredient and specification card for 勁勇軟膠囊" },
+    ],
     image: {
       src: "/products/ouye-jingyong.webp",
       width: 900,
@@ -799,6 +837,11 @@ const DRUGS: Drug[] = [
     searchTerms: ["UC-II", "二型膠原蛋白", "葡萄糖胺", "玻尿酸", "MSM"],
     manufacturer: "迎凱有限公司",
     origin: "台灣（依合作藥局提供的產品資料）",
+    detailImages: [
+      { src: "/products/detail/guguanjian-1-main.webp", alt: "主圖：固關鍵 UC II 的商品說明圖主視覺，含品名、規格與重點標示", altEn: "Detail hero card for 固關鍵 UC II, showing the name, pack size and key callouts" },
+      { src: "/products/detail/guguanjian-2-features.webp", alt: "產品特色：固關鍵 UC II 的重點條列", altEn: "Feature summary card for 固關鍵 UC II" },
+      { src: "/products/detail/guguanjian-3-ingredients.webp", alt: "成分與規格：固關鍵 UC II 的成分含量、規格與注意事項", altEn: "Ingredient and specification card for 固關鍵 UC II" },
+    ],
     image: {
       src: "/products/yingkai-guguanjian-ucii.webp",
       width: 900,
@@ -819,6 +862,10 @@ const DRUGS: Drug[] = [
     searchTerms: ["鎂", "檸檬酸鎂", "海藻鈣", "D-核糖", "胺基酸", "維生素D3"],
     manufacturer: "優全生技有限公司",
     origin: "台灣",
+    detailImages: [
+      { src: "/products/detail/mg-1-main.webp", alt: "主圖：新優力超級鎂 的商品說明圖主視覺，含品名、規格與重點標示", altEn: "Detail hero card for 新優力超級鎂, showing the name, pack size and key callouts" },
+      { src: "/products/detail/mg-2-features.webp", alt: "產品特色：新優力超級鎂 的重點條列", altEn: "Feature summary card for 新優力超級鎂" },
+    ],
     image: {
       src: "/products/youquan-super-magnesium.webp",
       width: 900,
@@ -839,6 +886,11 @@ const DRUGS: Drug[] = [
     searchTerms: ["高麗菜", "維生素U", "S-甲基蛋胺酸", "秋葵", "牛蒡", "鋅"],
     manufacturer: "中日藥品",
     origin: "台灣",
+    detailImages: [
+      { src: "/products/detail/youweining-1-main.webp", alt: "主圖：佑衛寧 高麗菜濃縮複方膠囊 的商品說明圖主視覺，含品名、規格與重點標示", altEn: "Detail hero card for 佑衛寧 高麗菜濃縮複方膠囊, showing the name, pack size and key callouts" },
+      { src: "/products/detail/youweining-2-features.webp", alt: "產品特色：佑衛寧 高麗菜濃縮複方膠囊 的重點條列", altEn: "Feature summary card for 佑衛寧 高麗菜濃縮複方膠囊" },
+      { src: "/products/detail/youweining-3-ingredients.webp", alt: "成分與規格：佑衛寧 高麗菜濃縮複方膠囊 的成分含量、規格與注意事項", altEn: "Ingredient and specification card for 佑衛寧 高麗菜濃縮複方膠囊" },
+    ],
     image: {
       src: "/products/chung-jih-youweining.webp",
       width: 900,
@@ -860,6 +912,11 @@ const DRUGS: Drug[] = [
     searchTerms: ["左旋麩醯胺酸", "L-Glutamine", "麩醯胺酸"],
     manufacturer: "綠心藥品生化科技有限公司",
     origin: "台灣",
+    detailImages: [
+      { src: "/products/detail/glutamine-1-main.webp", alt: "主圖：賜利康療養素－左旋麩醯胺酸 的商品說明圖主視覺，含品名、規格與重點標示", altEn: "Detail hero card for 賜利康療養素－左旋麩醯胺酸, showing the name, pack size and key callouts" },
+      { src: "/products/detail/glutamine-2-features.webp", alt: "產品特色：賜利康療養素－左旋麩醯胺酸 的重點條列", altEn: "Feature summary card for 賜利康療養素－左旋麩醯胺酸" },
+      { src: "/products/detail/glutamine-3-ingredients.webp", alt: "成分與規格：賜利康療養素－左旋麩醯胺酸 的成分含量、規格與注意事項", altEn: "Ingredient and specification card for 賜利康療養素－左旋麩醯胺酸" },
+    ],
     image: {
       src: "/products/luhsin-l-glutamine.webp",
       width: 900,
