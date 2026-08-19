@@ -13,17 +13,25 @@ const mocks = vi.hoisted(() => ({
   appendRecord: vi.fn(async (_kind: string, _record: Record<string, unknown>) => undefined),
   logConsole: vi.fn(),
   sendStorePush: vi.fn(async () => ({ status: "sent", sent: 1, failed: 0, removed: 0 })),
+  // 真正的名單現在是空的（一家都還沒上 Store OS）。這一檔測的是「送得到之後」
+  // 的行為，所以預設當成已上線；閘門本身另外有兩個案例直接驗。
+  isStoreOsLive: vi.fn((_storeSlug: string) => true),
 }));
 
 vi.mock("@/lib/record", () => ({ appendRecord: mocks.appendRecord }));
 vi.mock("@/lib/box", () => ({ logConsole: mocks.logConsole }));
 vi.mock("@/lib/store-push", () => ({ sendStorePush: mocks.sendStorePush }));
+vi.mock("@/lib/store-os-live", () => ({
+  isStoreOsLive: mocks.isStoreOsLive,
+  STORE_OS_LIVE_STORES: [],
+}));
 
 import { DELETE, POST } from "./route";
 
 beforeEach(() => {
   __resetForTests();
   vi.clearAllMocks();
+  mocks.isStoreOsLive.mockImplementation(() => true);
 });
 
 describe("Store OS reservation delivery", () => {
@@ -182,6 +190,58 @@ describe("Store OS reservation delivery", () => {
     expect(mocks.sendStorePush).toHaveBeenCalledTimes(1);
     const [, record] = mocks.appendRecord.mock.calls[0]!;
     expect(record).toMatchObject({ priceTwd: null, stockTier: "unknown", storeSlug: store.slug });
+  });
+
+  // 還沒上 Store OS 的藥局那頭沒有人會按確認 —— 收下這張單只會讓人白等。
+  // 前端已經不給預留鈕了，但 API 也給 agent 用，所以這道閘要在伺服器端。
+  it("refuses a pharmacy that is not working in Store OS yet, and hands back its phone", async () => {
+    mocks.isStoreOsLive.mockImplementation(() => false);
+    const partner = PARTNER_PHARMACIES.建利西藥房;
+    const store = getStore(partner.storeSlug)!;
+    const confirmed: readonly string[] = partner.confirmedProducts;
+    const drug = allDrugs().find((d) =>
+      confirmed.includes(d.spec === "規格待確認" ? d.name : `${d.name} ${d.spec}`),
+    )!;
+
+    const response = await POST(new Request("http://localhost/api/reservations", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-forwarded-for": "127.0.0.36" },
+      body: JSON.stringify({
+        drugSlug: drug.slug,
+        storeSlug: store.slug,
+        contact: "0912345678",
+      }),
+    }));
+
+    expect(response.status).toBe(409);
+    // 擋下來還不夠 —— 要把打得通的號碼交回去，不然使用者只剩「稍後再試」。
+    expect((await response.json() as { error: string }).error)
+      .toContain(store.phone.split("、")[0]);
+    // 一張沒人會處理的單，連收件匣與營運紀錄都不該碰。
+    expect(mocks.sendStorePush).not.toHaveBeenCalled();
+    expect(mocks.appendRecord).not.toHaveBeenCalled();
+    expect(await reservationStore.listStoreReservations(store.slug)).toEqual([]);
+  });
+
+  // 示範單走 uyao-demo sandbox，不碰任何真實藥局，所以不受上線名單影響 ——
+  // 業務示範不能因為還沒有藥局上線就停擺。
+  it("still accepts demo orders while no pharmacy is live in Store OS", async () => {
+    mocks.isStoreOsLive.mockImplementation(() => false);
+    const store = STORE_DEMO_STORE;
+    const offer = previewOffers(store.slug)[0];
+
+    const response = await POST(new Request("http://localhost/api/reservations", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-forwarded-for": "127.0.0.37" },
+      body: JSON.stringify({
+        drugSlug: offer.drugSlug,
+        storeSlug: store.slug,
+        contact: "0912345678",
+        demo: true,
+      }),
+    }));
+
+    expect(response.status).toBe(200);
   });
 
   // 沒有藥局訂閱裝置時，單子會靜靜躺在沒人看的收件匣裡。消費者那端有退路，

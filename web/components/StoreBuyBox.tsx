@@ -10,6 +10,7 @@ import type { StoreRow } from "@/lib/data";
 import { formatDistance } from "@/lib/format";
 import { hoursSummary } from "@/lib/hours";
 import { localizedPath } from "@/lib/i18n";
+import { isStoreOsLive } from "@/lib/store-os-live";
 import type { Store } from "@/lib/types";
 
 /**
@@ -22,6 +23,10 @@ import type { Store } from "@/lib/types";
  * 混在一起列會讓第二區看起來也有貨，那是把「登記在這一區」講成「這裡買得到」。
  * 預留鈕只給第一區：後端也是同一條線（`partnersForProduct`），畫面能按的
  * 就是 API 收得下的。
+ *
+ * 而且只給**已經在 Store OS 上接單**的店（`isStoreOsLive`）。收不到預留的店
+ * 給的是打得通的電話，不是一顆會把人晾在那裡的預留鈕 —— 目前一家都還沒裝，
+ * 所以這張卡實際上是電話優先。
  *
  * 沒有掃描流，所以這裡不出現價格與現貨保證 —— 送出的是「請幫我留一份」。
  */
@@ -58,7 +63,8 @@ export function StoreBuyBox({
 
   return (
     <>
-      <div className="mt-2 border border-forest bg-ivory">
+      {/* 位置與外距交給呼叫端 —— 這張卡在寬螢幕是獨立一欄，不是接在內文後面。 */}
+      <div className="border border-forest bg-ivory">
         <p className="m-0 border-b border-line bg-surface px-3.5 py-2 text-[14px] font-bold text-forest">
           {total === 1
             ? locale === "en" ? "This pharmacy carries it" : "這家藥局有這個品項"
@@ -70,7 +76,10 @@ export function StoreBuyBox({
             key={r.store.slug}
             store={r.store}
             badge={<StockBadge badge={r.badge} className="text-xs" />}
-            onReserve={() => setTarget({ ...r, drug })}
+            carries
+            onReserve={
+              isStoreOsLive(r.store.slug) ? () => setTarget({ ...r, drug }) : undefined
+            }
           />
         ))}
 
@@ -78,7 +87,12 @@ export function StoreBuyBox({
           <StoreLine
             key={store.slug}
             store={store}
-            onReserve={() => setTarget({ store, drug, priceTwd: null })}
+            carries
+            onReserve={
+              isStoreOsLive(store.slug)
+                ? () => setTarget({ store, drug, priceTwd: null })
+                : undefined
+            }
           />
         ))}
 
@@ -113,18 +127,30 @@ export function StoreBuyBox({
   );
 }
 
-/** 一列店家：店名／距離／營業時段，右邊是電話，可預留時多一顆預留鈕。 */
+/**
+ * 一列店家：店名／距離／營業時段，右邊是電話。
+ *
+ * 底部那顆主要動作只有一顆，看這家店現在能做到什麼：
+ *   - 收得到預留 → 預留鈕
+ *   - 確認有這支但還沒上 Store OS → 直接撥號（號碼就印在鈕上）
+ *   - 只是同一區的店 → 沒有主要動作，就一支電話
+ * 撥號鈕出現時不再重複右上角的小電話 —— 同一列不要兩個電話控制項。
+ */
 function StoreLine({
   store,
   badge,
+  carries = false,
   onReserve,
 }: {
   store: Store;
   badge?: React.ReactNode;
+  /** 合作藥局確認販售這支 —— 值得一顆主要動作。 */
+  carries?: boolean;
   onReserve?: () => void;
 }) {
   const locale = useLocale();
   const phone = store.phone ? store.phone.split("、")[0] : null;
+  const callFirst = carries && !onReserve && phone !== null;
 
   return (
     <div className="border-b border-line-soft px-3.5 py-2.5 last:border-b-0">
@@ -147,21 +173,38 @@ function StoreLine({
         <span className="min-w-0 flex-1 truncate text-[13px] text-muted">
           {hoursSummary(store, locale)}
         </span>
-        {phone ? (
+        {phone && !callFirst ? (
           <a
             href={`tel:${phone.replace(/-/g, "")}`}
             className="num -my-1 inline-flex min-h-11 flex-none items-center border border-forest px-2.5 text-[13px] font-bold text-forest no-underline hover:bg-surface"
           >
             {phone}
           </a>
-        ) : (
+        ) : !phone ? (
           <span className="flex-none text-[13px] text-muted-2">
             {locale === "en" ? "No phone listed" : "未提供電話"}
           </span>
-        )}
+        ) : null}
       </div>
 
       {badge && <div className="mt-1">{badge}</div>}
+
+      {/* 還沒上 Store OS 的店：唯一真的會有人接的動作就是這通電話。
+          不要在這裡放預留鈕假裝送得出去 —— 那頭沒有人會按確認。 */}
+      {callFirst && phone && (
+        <a
+          href={`tel:${phone.replace(/-/g, "")}`}
+          aria-label={
+            locale === "en"
+              ? `Call ${store.name} at ${phone} to ask about this item`
+              : `打電話問${store.name}，號碼 ${phone}`
+          }
+          className="mt-2 flex min-h-11 w-full items-center justify-center gap-2 border border-forest bg-brand-surface px-3 text-[14px] font-bold text-on-dark no-underline transition-[background-color,transform] hover:bg-brand-surface-strong active:translate-y-px"
+        >
+          {locale === "en" ? "Call to ask" : "打電話問這家"}
+          <span className="num">{phone}</span>
+        </a>
+      )}
 
       {onReserve && (
         <button
