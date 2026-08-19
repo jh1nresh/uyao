@@ -561,6 +561,18 @@ const DRUGS: Drug[] = [
     searchTerms: ["L-精胺酸", "L-麩醯胺酸", "松樹皮", "維生素C", "維生素E", "葉酸"],
     manufacturer: "精萃載體科技股份有限公司",
     origin: "台灣",
+    detailImages: [
+      { src: "/products/detail/arginine-1-main.webp", alt: "主圖：護欣胺微粒膠囊 的商品說明圖主視覺，含品名、規格與重點標示", altEn: "Detail hero card for 護欣胺微粒膠囊, showing the name, pack size and key callouts" },
+      { src: "/products/detail/arginine-2-features.webp", alt: "產品特色：護欣胺微粒膠囊 的重點條列", altEn: "Feature summary card for 護欣胺微粒膠囊" },
+    ],
+    image: {
+      src: "/products/jingcui-huxinan.webp",
+      width: 900,
+      height: 1125,
+      kind: "illustration",
+      alt: "示意圖，非實際包裝：護欣胺微粒膠囊 的紙盒示意，圖片下方以真實字型標示品名與劑型",
+      altEn: "Illustration, not the real packaging: a rendered carton for 護欣胺微粒膠囊, with the product name and form typeset below",
+    },
   }),
   partnerProvidedProduct({
     slug: "toyo-cukang-b",
