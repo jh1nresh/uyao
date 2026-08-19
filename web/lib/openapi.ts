@@ -217,10 +217,10 @@ export function openApiDocument(): Record<string, unknown> {
         post: {
           tags: ["intake"],
           operationId: "createReservation",
-          summary: "Create a pickup reservation (site form only)",
-          "x-internal": true,
+          summary: "Create a pickup reservation",
           description:
-            "Backs the consumer reservation form. Accepts a Taiwanese mobile number, creates work in a real pharmacy's Store OS, and can trigger a push notification on that pharmacy's devices. Rate limited per contact number, and numbers with repeated no-shows are blocked. Documented for completeness; this is not a public contract and automated submission is not supported.",
+            "Creates work in a real pharmacy's Store OS and can trigger a push notification on that pharmacy's devices. Accepts a Taiwanese mobile number, which must belong to the person collecting the item. `storeSlug` must be a pharmacy that lists this item — see `availableAt` on the catalog item. Every reservation is a request, not a stock guarantee: the pharmacy confirms availability and price in store. Rate limited to 5 per contact number per hour, and numbers with repeated no-shows are blocked. Browser traffic is additionally limited to 20 per IP per hour; assistants and other server-side callers should send an agent key (see `agentKey`) to get their own quota instead of sharing one.",
+          security: [{ agentKey: [] }, {}],
           requestBody: {
             required: true,
             content: {
@@ -253,6 +253,15 @@ export function openApiDocument(): Record<string, unknown> {
       },
     },
     components: {
+      securitySchemes: {
+        agentKey: {
+          type: "apiKey",
+          in: "header",
+          name: "x-uyao-agent-key",
+          description:
+            "Issued per assistant so that server-side callers get their own hourly quota instead of sharing the browser IP limit. It does not bypass the per-contact-number limit, and it does not grant access to anything a browser cannot already do. Ask uYao for a key.",
+        },
+      },
       schemas: {
         Error: {
           type: "object",
@@ -376,6 +385,12 @@ export function openApiDocument(): Record<string, unknown> {
             {
               type: "object",
               properties: {
+                availableAt: {
+                  type: "array",
+                  description:
+                    "Pharmacies that list this item. This is not live inventory and not a stock guarantee — it means the pharmacy told us it carries the product. Use `slug` here as `storeSlug` when creating a reservation.",
+                  items: { $ref: "#/components/schemas/Pharmacy" },
+                },
                 dosage: { type: "string", description: "As printed on the packaging." },
                 cautions: {
                   type: "string",

@@ -42,10 +42,20 @@ export function clientIp(request: Request): string {
  * - 同一支手機：一小時 5 筆。正常人不會在一小時內預留五次以上。
  * - 同一個 IP：一小時 20 筆。放寬是因為公司/學校會共用出口 IP。
  */
+/**
+ * Agent 每小時的預留額度。
+ *
+ * 比 IP 的 20 次寬很多，因為一支 agent 背後是很多人；但仍然有上限 ——
+ * 金鑰外流或 agent 跑迴圈時，藥局的收件匣不該被灌爆。
+ */
+const AGENT_HOURLY_LIMIT = 200;
+
 export async function checkReservation(
   request: Request,
   phone: string,
   demo = false,
+  /** 帶了有效金鑰的 agent 代號；有值就用自己的桶，不吃共用 IP 額度。 */
+  agentId?: string,
 ): Promise<RateLimit> {
   const ip = clientIp(request);
 
@@ -58,8 +68,14 @@ export async function checkReservation(
     if (!byDemo.ok) return byDemo;
   }
 
+  // 每支手機的額度一律要過，跟呼叫者是誰無關 —— 這一條保護的是號碼被冒用
+  // 的消費者，不是我們的基礎設施。agent 也不能繞。
   const byPhone = await hit(`res:p:${phone}`, 5, 3600);
   if (!byPhone.ok) return byPhone;
+
+  // 伺服器端的 agent 所有使用者共用一個出口 IP，20 次/小時會在正常使用下
+  // 就撞牆。認得出身分就改用自己的桶。
+  if (agentId) return hit(`res:a:${agentId}`, AGENT_HOURLY_LIMIT, 3600);
   return hit(`res:i:${ip}`, 20, 3600);
 }
 

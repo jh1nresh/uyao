@@ -2,6 +2,7 @@ import { randomInt } from "node:crypto";
 
 import { NextResponse } from "next/server";
 
+import { identifyAgent } from "@/lib/agent-auth";
 import { normalizeAdSource } from "@/lib/attribution";
 import { logConsole } from "@/lib/box";
 import { getDrug, getStore, previewOffers, storesForDrug } from "@/lib/data";
@@ -117,7 +118,9 @@ export async function POST(request: Request) {
 
   // 節流：每一筆成功預留都會進 Store OS，並可能觸發裝置通知。沒有節流的話
   // 一個迴圈就能洗滿店家的工作收件匣與已訂閱裝置。
-  const rl = await checkReservation(request, contact.value, demo);
+  // 帶了有效金鑰的 agent 走自己的額度桶；認不出來就照一般 IP 額度走。
+  const agent = identifyAgent(request);
+  const rl = await checkReservation(request, contact.value, demo, agent?.id);
   if (!rl.ok) {
     return NextResponse.json(
       { error: "預留太頻繁了，請稍後再試。" },
@@ -188,10 +191,13 @@ export async function POST(request: Request) {
     // Store OS 是唯一店務入口；寫不進去就不能假裝預留已送達。
     return NextResponse.json({ error: demo ? "示範預留未送達，請再試一次" : "預留未送達藥局，請再試一次" }, { status: 503 });
   }
+  // agent 代號只進營運紀錄，不進 StoredReservation —— Store OS 與取貨頁是
+  // 給藥師和消費者看的，他們不需要知道這筆是哪支 agent 送的。
   await appendRecord("reservations", {
     ...recordWithoutIntake,
     stockTier,
     ...(source ? { source } : {}),
+    ...(agent ? { agent: agent.id } : {}),
   });
 
   // 預留已經安全寫入 Store OS；Web Push 只是離站提醒，失敗不影響 inbox。
