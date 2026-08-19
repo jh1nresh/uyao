@@ -26,6 +26,7 @@ import { JsonLd } from "@/components/JsonLd";
 import { areaCopy, categoryName, drugCopy, localizedPath } from "@/lib/i18n";
 import { hasAmounts, ingredientRows } from "@/lib/ingredients";
 import { getRequestLocale } from "@/lib/locale-server";
+import { isPending, known } from "@/lib/pending";
 import { partnersForProduct } from "@/lib/partners";
 import { consumerBreadcrumbJsonLd, consumerProductJsonLd } from "@/lib/seo";
 import { consumerIndexablePageRobots } from "@/lib/seo-server";
@@ -107,6 +108,12 @@ export default async function DrugPage({
   const displayDrug = drugCopy(drug, locale);
   const productLabel = drug.spec === "規格待確認" ? drug.name : `${drug.name} ${drug.spec}`;
   const displayLabel = drug.spec === "規格待確認" ? displayDrug.name : `${displayDrug.name} ${displayDrug.spec}`;
+  // 劑型、規格與藥品分類都可能還沒查證。未知就整段不顯示 —— 目錄卡、輪播與
+  // 搜尋結果本來就這樣收，品項頁跟上。空欄位不該被講成一則「待確認」待辦。
+  const classPending = isPending(drug.drugClass);
+  const metaLine = [known(displayDrug.form), known(displayDrug.spec)]
+    .filter(Boolean)
+    .join(" · ");
   const partnerProvidedDetails = drug.source?.kind === "partner";
   const partnerStores = partnersForProduct(productLabel)
     .map((partner) => getStore(partner.storeSlug))
@@ -147,7 +154,7 @@ export default async function DrugPage({
             consumerProductJsonLd({
               name: displayLabel,
               // Same sentence the page shows, minus any claim about supply.
-              description: displayDrug.nutritionFocus
+              description: known(displayDrug.nutritionFocus)
                 ?? (locale === "en"
                   ? "Partner-listed catalog item. Product details and supply require pharmacy confirmation."
                   : "合作藥局提供的目錄品項；產品資料與供應狀態仍須由藥局確認。"),
@@ -247,26 +254,32 @@ export default async function DrugPage({
               <span className="num text-sm font-medium text-muted">{drug.nameEn}</span>
             )}
           </h1>
-          <div className="flex flex-wrap items-center gap-2.5 text-[15px] text-ink-2">
-            <span>
-              {displayDrug.form} · {displayDrug.spec}
-            </span>
-            {/* 許可證字號在行動端收起來 — 小螢幕先讓「規格 + 藥品分類」站穩 */}
-            {drug.licenseNo && (
-              <>
-                <span className="hidden text-line-strong sm:inline" aria-hidden>
-                  |
-                </span>
-                <span className="num hidden text-xs sm:inline">{drug.licenseNo}</span>
-              </>
-            )}
-            <span className="text-line-strong" aria-hidden>
-              |
-            </span>
-            <span className="border border-green px-[7px] py-px text-[14px] font-bold text-green">
-              {displayDrug.drugClass}
-            </span>
-          </div>
+          {(metaLine || drug.licenseNo || !classPending) && (
+            <div className="flex flex-wrap items-center gap-2.5 text-[15px] text-ink-2">
+              {metaLine && <span>{metaLine}</span>}
+              {/* 許可證字號在行動端收起來 — 小螢幕先讓「規格 + 藥品分類」站穩 */}
+              {drug.licenseNo && (
+                <>
+                  <span className="hidden text-line-strong sm:inline" aria-hidden>
+                    |
+                  </span>
+                  <span className="num hidden text-xs sm:inline">{drug.licenseNo}</span>
+                </>
+              )}
+              {!classPending && (
+                <>
+                  {metaLine && (
+                    <span className="text-line-strong" aria-hidden>
+                      |
+                    </span>
+                  )}
+                  <span className="border border-green px-[7px] py-px text-[14px] font-bold text-green">
+                    {displayDrug.drugClass}
+                  </span>
+                </>
+              )}
+            </div>
+          )}
           <p className="text-xs text-muted-2">
             {partnerProvidedDetails
               ? locale === "en"
@@ -296,7 +309,7 @@ export default async function DrugPage({
           )}
           {/* 內文與成分摘要直接放右欄：打開頁面第一屏就該知道這是什麼、
               裡面有什麼 —— 不必捲到頁面下段。成分細節與來源仍在下方區塊。 */}
-          {displayDrug.nutritionFocus && (
+          {known(displayDrug.nutritionFocus) && (
             <p className="mb-0 mt-1 text-[15.5px] leading-[1.85] text-ink-2">
               {displayDrug.nutritionFocus}
             </p>
@@ -375,15 +388,15 @@ export default async function DrugPage({
                       <span className="font-medium text-ink-2">{drug.source.label}</span>
                     )}
                   </p>
-                  {(drug.manufacturer || drug.origin) && (
+                  {(known(drug.manufacturer) || known(drug.origin)) && (
                     <dl className="mb-0 mt-3 grid grid-cols-[max-content_1fr] gap-x-3 gap-y-1 pt-3 text-[14px] leading-[1.7] text-muted-2">
-                      {drug.manufacturer && (
+                      {known(drug.manufacturer) && (
                         <>
                           <dt>{locale === "en" ? "Company" : "廠商／供應資訊"}</dt>
                           <dd className="m-0 text-ink-2">{drug.manufacturer}</dd>
                         </>
                       )}
-                      {drug.origin && (
+                      {known(drug.origin) && (
                         <>
                           <dt>{locale === "en" ? "Origin" : "產地"}</dt>
                           <dd className="m-0 text-ink-2">{drug.origin}</dd>

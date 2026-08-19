@@ -6,6 +6,7 @@ import { drugCopy, localizedPath } from "@/lib/i18n";
 import type { Locale } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
 import { partnersForProduct } from "@/lib/partners";
+import { known } from "@/lib/pending";
 import type { AreaSlug } from "@/lib/types";
 
 export interface DrugResultRow extends DrugSummary {
@@ -100,7 +101,9 @@ export async function DrugResults({
     <div className="grid max-w-[960px] gap-3">
       {results.map((r) => {
         const drug = drugCopy(r.drug, locale);
-        const reason = r.match ? matchReason(r.match, locale) : drug.nutritionFocus;
+        // 規格未知就只印品名 —— 搜尋結果原本直接把「規格待確認」接在品名後面。
+        const title = [drug.name, known(drug.spec)].filter(Boolean).join(" ");
+        const reason = r.match ? matchReason(r.match, locale) : known(drug.nutritionFocus);
         const source = sourceSummary(r, locale);
         return (
           <SearchResultLink
@@ -113,7 +116,7 @@ export async function DrugResults({
             <span className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
               <span className="min-w-0">
                 <span className="block text-[18px] font-bold leading-[1.45] text-ink sm:text-[19px]">
-                  {drug.name} {drug.spec}
+                  {title}
                 </span>
                 <span className="mt-1.5 block text-[14px] leading-[1.65] text-muted">
                   {reason}
