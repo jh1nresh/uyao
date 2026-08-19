@@ -25,7 +25,21 @@ import * as kv from "./kv";
  * 要加 Postgres 就在 SINKS 多一個函式，其餘不用動。掃描流真的開始之後
  * 就是加它的時機 —— 那份資料要 join 要 group by，不該塞進 KV。
  */
-export type RecordKind = "demand" | "pilot" | "reservations" | "support";
+export type RecordKind =
+  | "demand"
+  | "pilot"
+  | "reservations"
+  | "support"
+  /**
+   * 預留送達 Store OS 收件匣，但那家藥局沒有任何裝置在看。
+   *
+   * 這種單不會失敗 —— 消費者拿到取貨碼、取貨頁在 25 分鐘後會改叫他直接
+   * 打電話、12 小時自動關單。問題在於**我們這邊不會知道**：沒人訂閱裝置時
+   * 推播只是 `no_subscriptions`，過去只留一行 console.log。
+   *
+   * 收件匣沒人看是營運訊號，不是 debug 訊息，所以走 webhook 進聊天室。
+   */
+  | "unreachable";
 
 export const LOG_SENTINEL = "UYAO_RECORD";
 
@@ -48,6 +62,9 @@ function summarize(kind: RecordKind, record: Record<string, unknown>): string {
     const what = record.drugSlug ? `${record.query}（${record.drugSlug}）` : record.query;
     const who = record.contact ? ` · 留了 ${record.contact}` : "";
     return `🔍 落空搜尋 [${record.kind}] ${what} @ ${record.area}${who}`;
+  }
+  if (kind === "unreachable") {
+    return `📵 預留 ${record.code ?? ""} 送到 ${record.storeName ?? record.storeSlug ?? ""}，但沒有任何裝置在看（${record.pushStatus ?? "unknown"}）`;
   }
   if (kind === "support") {
     return `🛟 Store OS 支援單 ${record.ticketId ?? ""} @ ${record.storeSlug ?? ""}`;
