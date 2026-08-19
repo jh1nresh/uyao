@@ -8,6 +8,7 @@ import { AreaSwitch } from "@/components/AreaSwitch";
 import { NoInventoryYet } from "@/components/NoInventoryYet";
 import { PharmacyList } from "@/components/PharmacyList";
 import { PharmacyPeek } from "@/components/PharmacyPeek";
+import { ProductStorePeek } from "@/components/ProductStorePeek";
 import { ProductGallery, type GalleryImage } from "@/components/ProductGallery";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -65,15 +66,15 @@ export async function generateMetadata({
     title: locale === "en" ? `${label} — partner-listed item` : `${label}｜合作藥局提供品項`,
     description: partnerProvidedDetails
       ? locale === "en"
-        ? `${label} is listed from information provided by a partner pharmacy. Product classification, details, and live supply still require confirmation.`
-        : `${label}由合作藥局提供並收錄於 uYao 試營運目錄；成分、產地與供應資訊仍應以實際包裝及藥師確認為準。`
+        ? `${label} is listed from information provided by a partner pharmacy.`
+        : `${label}由合作藥局提供並收錄於 uYao 試營運目錄；成分與產地請以實際包裝及藥師確認為準。`
       : drug.source
       ? locale === "en"
-        ? `${label} is a partner-listed non-drug product. See its sourced nutrition focus and ingredients; live supply still requires pharmacy confirmation.`
-        : `${label}由合作藥局提供並收錄於 uYao 試營運目錄；頁面列出有來源的營養補充方向與成分，即時供應仍待藥局確認。`
+        ? `${label} is a partner-listed non-drug product. See its sourced nutrition focus and ingredients.`
+        : `${label}由合作藥局提供並收錄於 uYao 試營運目錄；頁面列出有來源的營養補充方向與成分。`
       : locale === "en"
-        ? `${label} is a partner-listed item whose product details still await public-source verification; live supply still requires pharmacy confirmation.`
-        : `${label}由合作藥局提供並收錄於 uYao 試營運目錄；產品資料來源仍待驗證，即時供應仍待藥局確認。`,
+        ? `${label} is a partner-listed item provided by a partner pharmacy.`
+        : `${label}由合作藥局提供並收錄於 uYao 試營運目錄。`,
     // `?area=` 只換附近藥局清單，不換品項內容 —— canonical 一律指沒有
     // query 的乾淨網址，否則十個服務區會變成同一頁的十份副本。
     alternates: {
@@ -283,30 +284,16 @@ export default async function DrugPage({
           <p className="text-xs text-muted-2">
             {partnerProvidedDetails
               ? locale === "en"
-                ? "The product name, ingredients, origin, and supplier details below were provided by a partner pharmacy and have not been independently verified against a public source. They do not establish live stock, approved medicine classification, or treatment efficacy."
-                : "下方品名、成分、產地與供應資訊由合作藥局提供，尚未以公開來源獨立驗證；不代表即時庫存、核准藥品分類或療效。"
+                ? "The product name, ingredients, origin, and supplier details below were provided by a partner pharmacy and have not been independently verified against a public source. They do not establish approved medicine classification or treatment efficacy."
+                : "下方品名、成分、產地與供應資訊由合作藥局提供，尚未以公開來源獨立驗證；不代表核准藥品分類或療效。"
               : drug.source
               ? locale === "en"
-                ? "The public product source presents this as a food or nutrition supplement, not an approved medicine. Its nutrition focus is not a treatment indication. Live inventory still requires pharmacy confirmation."
-                : "公開商品資料將此品項列為食品類營養補充品，而非核准藥品；下方是營養補充／日常保養定位，不是治療用途或藥品適應症。即時庫存仍待藥局確認。"
+                ? "The public product source presents this as a food or nutrition supplement, not an approved medicine. Its nutrition focus is not a treatment indication."
+                : "公開商品資料將此品項列為食品類營養補充品，而非核准藥品；下方是營養補充／日常保養定位，不是治療用途或藥品適應症。"
               : locale === "en"
-                ? "Product details are pending public-source verification. We only show the partner-confirmed item name and package size; live inventory still requires pharmacy confirmation."
-                : "產品資料來源仍待驗證；目前只顯示合作藥局確認的品名與規格，即時庫存仍待藥局確認。"}
+                ? "We only show the partner-confirmed item name and package size."
+                : "目前只顯示合作藥局確認的品名與規格。"}
           </p>
-          {partnerStores.length > 0 && (
-            <p className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-2">
-              <span>{locale === "en" ? "Provided by:" : "提供品項的合作藥局："}</span>
-              {partnerStores.map((store) => (
-                <Link
-                  key={store.slug}
-                  href={localizedPath(`/store/${store.slug}`, locale)}
-                  className="font-medium text-green"
-                >
-                  {store.name}
-                </Link>
-              ))}
-            </p>
-          )}
           {/* 內文與成分摘要直接放右欄：打開頁面第一屏就該知道這是什麼、
               裡面有什麼 —— 不必捲到頁面下段。成分細節與來源仍在下方區塊。 */}
           {known(displayDrug.nutritionFocus) && (
@@ -322,13 +309,16 @@ export default async function DrugPage({
               {displayDrug.ingredients.join(locale === "en" ? ", " : "、")}
             </p>
           )}
-          {/* 「哪裡拿得到」是這頁的行動點，跟著品名待在第一屏。
-              沒有庫存 rows 時退回列這一區的藥局 —— 跟下方空狀態一樣不假裝有貨。 */}
+          {/* 這頁只要回答一件事：哪家藥局有這個藥、電話幾號。
+              有掃描庫存就用庫存 rows；還沒有掃描流時，用合作藥局自己確認過的
+              販售品項 —— 44 個品項都講得出至少一家，不必讓人捲到頁尾。 */}
           {rows.length > 0 ? (
             <PharmacyPeek
               drug={{ slug: drug.slug, name: displayDrug.name, spec: drug.spec }}
               rows={rows}
             />
+          ) : partnerStores.length > 0 ? (
+            <ProductStorePeek stores={partnerStores} locale={locale} />
           ) : (
             <AreaStorePeek stores={areaStores} areaLabel={areaShortName} locale={locale} />
           )}

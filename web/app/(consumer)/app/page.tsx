@@ -168,8 +168,8 @@ export default async function HomePage({
             <div className="mt-5 flex flex-col items-center justify-between gap-3 text-[14px] leading-[1.65] text-muted sm:flex-row sm:text-left">
               <p className="m-0">
                 {locale === "en"
-                  ? `${currentArea.shortName}: ${storeCount} listed pharmacies · live supply requires pharmacy confirmation`
-                  : `${currentArea.shortName}收錄 ${storeCount} 家藥局 · 即時供應仍待藥局確認`}
+                  ? `${currentArea.shortName}: ${storeCount} listed pharmacies`
+                  : `${currentArea.shortName}收錄 ${storeCount} 家藥局`}
               </p>
               <div className="md:hidden">
                 <AreaSwitch area={area} preservePath locatable compact />
