@@ -436,6 +436,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["魚油", "EPA", "DHA"],
     manufacturer: "立國藥品股份有限公司",
     origin: "待確認（立國官方產品頁未標成品產地）",
+    image: {
+      src: "/products/likuo-fish-oil-30.webp",
+      width: 900,
+      height: 1125,
+      kind: "illustration",
+      alt: "示意圖，非實際包裝：立國 精粹魚油膠囊 的紙盒示意，圖片下方以真實字型標示品名與劑型",
+      altEn: "Illustration, not the real packaging: a rendered carton for 立國 精粹魚油膠囊, with the product name and form typeset below",
+    },
   }),
   partnerProvidedProduct({
     slug: "tianxia-yangshen-jingqu",
@@ -553,6 +561,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["紅花籽油", "薯蕷皂素", "Diosgenin", "輔酶Q10"],
     manufacturer: "一成藥品股份有限公司",
     origin: "日本",
+    image: {
+      src: "/products/icheng-meileshi.webp",
+      width: 900,
+      height: 1125,
+      kind: "illustration",
+      alt: "示意圖，非實際包裝：美樂適素食膠囊 的紙盒示意，圖片下方以真實字型標示品名與劑型",
+      altEn: "Illustration, not the real packaging: a rendered carton for 美樂適素食膠囊, with the product name and form typeset below",
+    },
   }),
   partnerProvidedProduct({
     slug: "icheng-siyunmeng",
@@ -565,6 +581,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["紅花籽油", "薯蕷皂素", "Diosgenin", "輔酶Q10"],
     manufacturer: "一成藥品股份有限公司",
     origin: "日本",
+    image: {
+      src: "/products/icheng-siyunmeng.webp",
+      width: 900,
+      height: 1125,
+      kind: "illustration",
+      alt: "示意圖，非實際包裝：思韻蒙軟膠囊 的紙盒示意，圖片下方以真實字型標示品名與劑型",
+      altEn: "Illustration, not the real packaging: a rendered carton for 思韻蒙軟膠囊, with the product name and form typeset below",
+    },
   }),
   partnerProvidedProduct({
     slug: "jixiang-jishukang",
@@ -609,6 +633,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["二型膠原蛋白", "UC-II", "MSM", "檸檬酸鈣", "維生素C"],
     manufacturer: "仁鼎生技有限公司",
     origin: "台灣（通路標示）",
+    image: {
+      src: "/products/rending-gujieyou.webp",
+      width: 900,
+      height: 1125,
+      kind: "illustration",
+      alt: "示意圖，非實際包裝：固捷優 的紙盒示意，圖片下方以真實字型標示品名與劑型",
+      altEn: "Illustration, not the real packaging: a rendered carton for 固捷優, with the product name and form typeset below",
+    },
   }),
   partnerProvidedProduct({
     slug: "ouye-jingyong",
@@ -642,6 +674,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["人參", "當歸", "刺五加", "木瓜", "白朮"],
     manufacturer: "綠加科技／綠杏",
     origin: "台灣",
+    image: {
+      src: "/products/greenplus-vasopower.webp",
+      width: 900,
+      height: 1125,
+      kind: "illustration",
+      alt: "示意圖，非實際包裝：舒絡寶 Vasopower 的紙盒示意，圖片下方以真實字型標示品名與劑型",
+      altEn: "Illustration, not the real packaging: a rendered carton for 舒絡寶 Vasopower, with the product name and form typeset below",
+    },
   }),
   partnerProvidedProduct({
     slug: "greenplus-discpower",
@@ -655,6 +695,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["黃耆", "木瓜", "丹參", "紅景天", "天麻"],
     manufacturer: "綠加科技／綠杏",
     origin: "台灣",
+    image: {
+      src: "/products/greenplus-discpower.webp",
+      width: 900,
+      height: 1125,
+      kind: "illustration",
+      alt: "示意圖，非實際包裝：龍固寶 DiscPower 的紙盒示意，圖片下方以真實字型標示品名與劑型",
+      altEn: "Illustration, not the real packaging: a rendered carton for 龍固寶 DiscPower, with the product name and form typeset below",
+    },
   }),
   partnerProvidedProduct({
     slug: "greenplus-elgucare",
@@ -703,6 +751,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["葡萄籽", "花粉", "維生素C", "小麥胚芽油"],
     manufacturer: "普大藥品",
     origin: "美國",
+    image: {
+      src: "/products/puda-grape-seed.webp",
+      width: 900,
+      height: 1125,
+      kind: "illustration",
+      alt: "示意圖，非實際包裝：安格雅葡萄籽膠囊 的紙盒示意，圖片下方以真實字型標示品名與劑型",
+      altEn: "Illustration, not the real packaging: a rendered carton for 安格雅葡萄籽膠囊, with the product name and form typeset below",
+    },
   }),
   partnerProvidedProduct({
     slug: "puda-green-tea-compound",
@@ -715,6 +771,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["綠茶", "葡萄籽", "山楂", "銀杏", "苜蓿葉"],
     manufacturer: "普大藥品",
     origin: "美國",
+    image: {
+      src: "/products/puda-green-tea-compound.webp",
+      width: 900,
+      height: 1125,
+      kind: "illustration",
+      alt: "示意圖，非實際包裝：普大綠茶複方膠囊 的紙盒示意，圖片下方以真實字型標示品名與劑型",
+      altEn: "Illustration, not the real packaging: a rendered carton for 普大綠茶複方膠囊, with the product name and form typeset below",
+    },
   }),
   partnerProvidedProduct({
     slug: "yingkai-guguanjian-ucii",
