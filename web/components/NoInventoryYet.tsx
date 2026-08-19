@@ -30,7 +30,7 @@ export async function NoInventoryYet({
 }) {
   const locale = await getRequestLocale();
   return (
-    <section className="shop-shell py-10 sm:py-14">
+    <section id="pharmacy-list" className="shop-shell scroll-mt-24 py-10 sm:py-14">
       <NotifyMe
         kind="inventory_miss"
         query={drugName}
