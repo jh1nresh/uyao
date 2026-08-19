@@ -30,12 +30,19 @@ describe("consumer admission gate", () => {
     }
   });
 
+  /**
+   * 目錄現在剛好每一筆都附公開來源，所以真實資料裡沒有被擋下來的列了。閘門
+   * 本身仍然要擋得住，所以拿一筆合成的無憑據品項去撞它 —— 這條不依賴目錄
+   * 當下收了哪些品項。
+   */
   it("leaves placeholder catalog rows out", () => {
     const admitted = indexableCatalogItems();
     const rejected = allDrugs().filter((drug) => !isIndexableCatalogItem(drug, "zh"));
+    const placeholder: Drug = { ...admitted[0], slug: "placeholder-row", source: undefined, image: undefined };
 
     expect(admitted.length).toBeGreaterThan(0);
-    expect(rejected.length).toBeGreaterThan(0);
+    expect(isIndexableCatalogItem(placeholder, "zh")).toBe(false);
+    expect(isIndexableCatalogItem(placeholder, "en")).toBe(false);
     for (const drug of rejected) {
       expect(isIndexableCatalogItemSlug(drug.slug, "zh")).toBe(false);
       expect(isIndexableCatalogItemSlug(drug.slug, "en")).toBe(false);

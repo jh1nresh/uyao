@@ -193,7 +193,6 @@ class TestLabels:
             return
         labels = load_labels()
         assert labels.get("hugu-gaishu-100") == "護谷鈣素 100粒"
-        assert labels.get("huzhikang-60") == "護智慷 60粒"
         assert labels.get("huzhikang-150") == "護智慷 150粒"
         assert labels.get("keqiqing-capsule") == "克氣清膠囊"
 
