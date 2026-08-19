@@ -42,6 +42,7 @@ const ILLUSTRATIONS = [
   "hongren-riqingsheng-lm",
   "icheng-meileshi",
   "icheng-siyunmeng",
+  "jingcui-huxinan",
   "likuo-fish-oil-30",
   "luhsin-l-glutamine",
   "ouye-jingyong",
