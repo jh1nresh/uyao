@@ -98,8 +98,11 @@ def main(argv: list[str] | None = None) -> int:
                     help="packshot = 可代表實際包裝的實拍；illustration = 生成示意圖")
     ap.add_argument("--fit", choices=("cover", "contain"), default="cover",
                     help="去背過的圖用 contain（完整入鏡）；未去背的原始照用 cover")
+    # help 字串裡的 % 要跳脫成 %%：argparse 會拿它做 %-展開，Python 3.13 起
+    # 改成在 add_argument 當下就驗證，未跳脫的 % 會讓**任何一次**參數錯誤都
+    # 變成 ValueError，看不到真正的錯在哪。3.11 只在真的印 help 時才炸。
     ap.add_argument("--focus", default="50% 50%",
-                    help="CSS object-position，用來把商品框進畫面，例如 \"45% 55%\"")
+                    help="CSS object-position，用來把商品框進畫面，例如 \"45%% 55%%\"")
     args = ap.parse_args(argv)
 
     if not args.shot.exists():
