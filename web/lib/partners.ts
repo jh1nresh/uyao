@@ -35,34 +35,12 @@ export const PARTNER_PHARMACIES = {
       "勝康寧 150粒",
       "恩體能 230粒",
       "進磯為常-D 60粒",
-      "益聖寧-P軟膠囊",
-      "護欣胺微粒膠囊",
-      "醋康B膠囊",
-      "美樂適素食膠囊",
-      "思韻蒙軟膠囊",
-      "吉舒康軟膠囊",
-      "Bio-Stand 挺液鈣軟膠囊",
-      "固捷優",
-      "勁勇軟膠囊",
-      "舒絡寶 Vasopower",
-      "龍固寶 DiscPower",
-      "益固康 Elgucare",
-      "安格雅葡萄籽膠囊",
-      "普大綠茶複方膠囊",
     ],
   },
   南興西藥房: {
     storeSlug: "南興西藥房",
     aliases: ["南興西藥房", "南興藥房"],
-    confirmedProducts: [
-      "中美 攝利威軟膠囊",
-      "維維樂 視清／小視清軟膠囊",
-      "中美 金固關健緩釋錠",
-      "立國 精粹魚油膠囊 30粒",
-      "天下生物科技 養身景麴膠囊",
-      "鴻仁 日清勝 LM機能益生菌",
-      "中美 顧爾肝膠囊 150 mg",
-    ],
+    confirmedProducts: [],
   },
   建芳藥局: {
     storeSlug: "建芳藥局",
@@ -72,12 +50,7 @@ export const PARTNER_PHARMACIES = {
   大豐藥局: {
     storeSlug: "大豐藥局",
     aliases: ["大豐藥局"],
-    confirmedProducts: [
-      "固關鍵 UC II",
-      "新優力超級鎂",
-      "佑衛寧 高麗菜濃縮複方膠囊",
-      "賜利康療養素－左旋麩醯胺酸",
-    ],
+    confirmedProducts: [],
   },
   美得心藥局: {
     storeSlug: "美得心藥局",
@@ -104,14 +77,10 @@ export const PARTNER_PHARMACIES = {
     aliases: ["萊康藥局", "來康", "來康藥局", "萊康中正店", "萊康連鎖藥局中正店"],
     confirmedProducts: [
       "克氣清膠囊",
-      "護智慷 60粒",
       "護智慷 150粒",
       "護谷鈣素 100粒",
       "勝康寧 150粒",
       "恩體能 230粒",
-      "甘鎂佳珊瑚鈣 60錠",
-      "強喜錠 Chan-C 80錠",
-      "Progifted LP-28 益生菌 30包",
     ],
   },
   萊康中華健保藥局: {
@@ -119,14 +88,10 @@ export const PARTNER_PHARMACIES = {
     aliases: ["萊康藥局", "來康", "來康藥局", "萊康中華", "萊康中華店"],
     confirmedProducts: [
       "克氣清膠囊",
-      "護智慷 60粒",
       "護智慷 150粒",
       "護谷鈣素 100粒",
       "勝康寧 150粒",
       "恩體能 230粒",
-      "甘鎂佳珊瑚鈣 60錠",
-      "強喜錠 Chan-C 80錠",
-      "Progifted LP-28 益生菌 30包",
     ],
   },
   永遠藥師藥局: {
@@ -154,13 +119,7 @@ export const PARTNER_PHARMACIES = {
   一銘藥局: {
     storeSlug: "一銘藥局",
     aliases: ["一銘藥局", "一銘西藥房", "新莊一銘藥局"],
-    confirmedProducts: [
-      "益固康 Elgucare",
-      "憶元素 天麻100膠囊 60粒",
-      "強抗力優 450+ Defense 60粒",
-      "New AOB Vitality Beauty 45包",
-      "高優質維他命B群 60粒",
-    ],
+    confirmedProducts: [],
   },
 } as const satisfies Record<PartnerStoreSlug, PartnerPharmacy>;
 
