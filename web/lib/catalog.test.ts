@@ -22,20 +22,24 @@ const EXPECTED_CATALOG = [
   { slug: "keqiqing-capsule", label: "克氣清膠囊" },
   { slug: "huzhikang-150", label: "護智慷 150粒" },
   { slug: "top-fish-oil-60", label: "TOP高單位頂級魚油軟膠囊 60顆" },
-  { slug: "guanlihu-60", label: "關立護 60錠" },
-  { slug: "kimura-tiancheng-60", label: "木村 添誠膠囊食品 60粒" },
   { slug: "shuwei-600-fish-oil-60", label: "舒維-600魚油 60粒" },
   { slug: "baiyi-capsule-60", label: "百益膠囊食品 60粒" },
 ] as const;
 
 /**
- * 分類「待確認」的品項整批下架 —— 品名、成分、產地與供應資訊都只有合作藥局
- * 口頭提供，沒有可公開引用的來源可以獨立驗證，在那之前不該掛在公開目錄上。
- * 資料本身留在 git 歷史，逐筆驗過再放回來。
+ * 頁面上會顯示「待確認」的品項整批下架，兩種都算：
+ *
+ *   分類待確認  品名、成分、產地與供應資訊只有合作藥局口頭提供
+ *   來源待確認  成分抄自門市包裝，沒有可公開引用的網址
+ *
+ * 兩種的共同點是使用者無法自己去核對，在那之前不該掛在公開目錄上。資料本身
+ * 留在 git 歷史，逐筆驗過再放回來。
  */
 const WITHDRAWN_PENDING_SLUGS = [
   "huzhikang-60",
   "aob-vitality-beauty-45",
+  "guanlihu-60",
+  "kimura-tiancheng-60",
   "cm-sheliwei-softgel",
   "wewell-vision-softgel",
   "cm-jinguguanjian-sr",
@@ -72,6 +76,8 @@ const WITHDRAWN_PENDING_SLUGS = [
 const WITHDRAWN_PENDING_NAMES = [
   "護智慷 60粒",
   "New AOB Vitality Beauty",
+  "關立護",
+  "木村 添誠膠囊食品",
   "中美 攝利威軟膠囊",
   "維維樂 視清",
   "中美 金固關健緩釋錠",
@@ -110,7 +116,7 @@ function catalogLabel(drug: ReturnType<typeof allDrugs>[number]): string {
 }
 
 describe("合作藥局常見品項目錄", () => {
-  it("公開目錄剛好只有已驗證來源的十一個品項", () => {
+  it("公開目錄剛好只有九個附公開來源的品項", () => {
     expect(allDrugs().map((drug) => ({ slug: drug.slug, label: catalogLabel(drug) }))).toEqual(
       EXPECTED_CATALOG,
     );
@@ -118,18 +124,25 @@ describe("合作藥局常見品項目錄", () => {
   });
 
   /**
-   * 這條是下架本身：分類待確認的品項不管從哪個入口都不該再被看見。品項頁走
-   * `getDrug`，搜尋走 `searchDrugs` —— 只補其中一個，另一個仍然通得到頁面。
+   * 這條是下架本身：會顯示「待確認」的品項不管從哪個入口都不該再被看見。
+   * 品項頁走 `getDrug`，搜尋走 `searchDrugs` —— 只補其中一個，另一個仍然
+   * 通得到頁面。
    */
   it("待確認的品項不再是公開品項或搜尋結果", () => {
     for (const slug of WITHDRAWN_PENDING_SLUGS) expect(getDrug(slug), slug).toBeUndefined();
     for (const name of WITHDRAWN_PENDING_NAMES) expect(searchDrugs(name), name).toEqual([]);
   });
 
-  it("公開目錄不留任何分類待確認的品項", () => {
+  /**
+   * 目錄頁的卡片會把「待確認」印在每個品項下面（`catalogSourceStatus`），
+   * 分類待確認看 `drugClass`，來源待確認看有沒有 `source`。兩個欄位一起
+   * 釘住，公開目錄才不會又冒出一張寫著待確認的卡片。
+   */
+  it("公開目錄不留任何會顯示待確認的品項", () => {
     for (const drug of allDrugs()) {
       expect(drug.drugClass, drug.slug).toBe("非藥品");
       expect(drug.source?.kind, drug.slug).not.toBe("partner");
+      expect(drug.source?.url, `${drug.slug} 沒有可公開引用的來源`).toMatch(/^https:\/\//);
     }
   });
 
@@ -170,6 +183,10 @@ describe("合作藥局常見品項目錄", () => {
    * 已驗證的一般食品不在這條規則內：上面那個 case 要求它們 `nameEn` 一律
    * 留空（欄位以 mono 呈現，在非藥品上會被讀成藥品識別碼），即使原廠確實
    * 有登記英文品名也一樣，那是刻意留下的缺口。
+   *
+   * 待確認品項下架後目錄裡剩下的全是已驗證一般食品，所以這條現在掃不到
+   * 任何一筆。留著是因為它盯的是「品項回來時填 nameEn 的規矩」，品項一
+   * 放回目錄就自動重新生效。
    */
   it("英文品名只照抄原廠拉丁字品名，有得抄就不漏填", () => {
     const latinOnly = /^[A-Za-z0-9][A-Za-z0-9 .+-]*$/;
@@ -177,7 +194,6 @@ describe("合作藥局常見品項目錄", () => {
       (drug) => !(drug.source && drug.source.kind !== "partner"),
     );
 
-    expect(mayHaveEnglishName.length).toBeGreaterThan(0);
     for (const drug of mayHaveEnglishName) {
       const latinAliases = drug.aliases.filter((alias) => latinOnly.test(alias));
 
@@ -190,34 +206,17 @@ describe("合作藥局常見品項目錄", () => {
     }
   });
 
-  it.each([
-    {
-      slug: "guanlihu-60",
-      form: "錠",
-      ingredients: ["葡萄糖胺鹽酸鹽", "軟骨素", "第二型膠原蛋白", "MSM（甲基硫醯基甲烷）"],
-      query: "第二型膠原蛋白",
+  /**
+   * 只有門市包裝可核對、沒有公開網址的品項也一起下架了 —— 使用者沒辦法自己
+   * 去核對成分，卡片上就只能寫「資料待確認」。成分資料留在 git 歷史，找到
+   * 可引用的來源再放回來。
+   */
+  it.each(["guanlihu-60", "kimura-tiancheng-60"])(
+    "%s 只有門市包裝可核對，沒有公開來源前不收進目錄",
+    (slug) => {
+      expect(getDrug(slug)).toBeUndefined();
     },
-    {
-      slug: "kimura-tiancheng-60",
-      form: "膠囊",
-      ingredients: ["南瓜子油", "葡萄子油", "杜松子油", "葡萄糖酸鋅", "維生素E"],
-      query: "南瓜子油",
-    },
-  ])("$slug 保留門市包裝可核對的食品資料", ({ slug, form, ingredients, query }) => {
-    const drug = getDrug(slug);
-
-    expect(drug).toMatchObject({
-      form,
-      drugClass: "非藥品",
-      licenseNo: "",
-      indications: [],
-    });
-    expect(drug?.ingredients).toEqual(expect.arrayContaining(ingredients));
-    expect(drug?.nutritionFocus).not.toContain("待確認");
-    expect(drug?.searchTerms.length).toBeGreaterThan(0);
-    expect(drug?.source).toBeUndefined();
-    expect(searchDrugs(query).map((item) => item.slug)).toContain(slug);
-  });
+  );
 
   it("護智慷只留下有公開來源的 150粒，60粒不借用它的來源", () => {
     const oneFiftyCount = getDrug("huzhikang-150");

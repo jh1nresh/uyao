@@ -30,7 +30,6 @@ export const CATALOG_PAGE_SIZE = 12;
 // 檢查對著不存在的 slug 空轉。
 const GROUP_BY_DRUG_SLUG: Record<string, Exclude<CatalogGroupSlug, "all">> = {
   "hugu-gaishu-100": "joint",
-  "guanlihu-60": "joint",
   "top-fish-oil-60": "fish-vision",
   "shuwei-600-fish-oil-60": "fish-vision",
   "baiyi-capsule-60": "fish-vision",
@@ -39,15 +38,14 @@ const GROUP_BY_DRUG_SLUG: Record<string, Exclude<CatalogGroupSlug, "all">> = {
   "entineng-230": "botanical-blends",
   "keqiqing-capsule": "botanical-blends",
   "huzhikang-150": "botanical-blends",
-  "kimura-tiancheng-60": "botanical-blends",
 };
 
 const FEATURED_CATALOG_SLUGS = [
   "hugu-gaishu-100",
   "top-fish-oil-60",
   "shuwei-600-fish-oil-60",
+  "baiyi-capsule-60",
   "jinjiweichang-60",
-  "guanlihu-60",
   "shengkangning-150",
   "entineng-230",
   "keqiqing-capsule",

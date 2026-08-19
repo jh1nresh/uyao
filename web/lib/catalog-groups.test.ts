@@ -13,7 +13,7 @@ import { allDrugs } from "./data";
 describe("合作藥局品項瀏覽", () => {
   it("每一項都有且只有一個固定瀏覽分類", () => {
     const drugs = allDrugs();
-    expect(drugs).toHaveLength(11);
+    expect(drugs).toHaveLength(9);
     expect(drugs.filter((drug) => catalogGroupForDrug(drug) === undefined)).toEqual([]);
 
     const groupedCount = CATALOG_GROUPS.filter((group) => group.slug !== "all")
@@ -53,7 +53,7 @@ describe("合作藥局品項瀏覽", () => {
         expect.objectContaining({ slug: "shuwei-600-fish-oil-60" }),
       ]));
     expect(filterCatalogDrugs(allDrugs(), { query: "南瓜子油" }))
-      .toEqual(expect.arrayContaining([expect.objectContaining({ slug: "kimura-tiancheng-60" })]));
+      .toEqual(expect.arrayContaining([expect.objectContaining({ slug: "shengkangning-150" })]));
   });
 
   it("完整目錄每頁最多十二項，超出範圍時落在有效頁", () => {
@@ -62,7 +62,7 @@ describe("合作藥局品項瀏覽", () => {
     const lastPage = paginateCatalogDrugs(drugs, "99");
 
     expect(firstPage).toMatchObject({ page: 1, pageCount: 1 });
-    expect(firstPage.drugs).toHaveLength(11);
+    expect(firstPage.drugs).toHaveLength(9);
     expect(lastPage).toMatchObject({ page: 1, pageCount: 1 });
     expect(paginateCatalogDrugs(drugs, undefined, 4)).toMatchObject({ page: 1, pageCount: 3 });
     expect(paginateCatalogDrugs(drugs, "99", 4)).toMatchObject({ page: 3, pageCount: 3 });

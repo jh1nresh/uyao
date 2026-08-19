@@ -104,8 +104,6 @@ export const PARTNER_PHARMACIES = {
     aliases: ["發元藥局", "發元西藥房", "發元藥房"],
     confirmedProducts: [
       "TOP高單位頂級魚油軟膠囊 60顆",
-      "關立護 60錠",
-      "木村 添誠膠囊食品 60粒",
       "舒維-600魚油 60粒",
       "百益膠囊食品 60粒",
     ],
