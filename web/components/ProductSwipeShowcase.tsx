@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useLocale } from "./LocaleProvider";
 import { drugCopy } from "@/lib/i18n";
+import { known } from "@/lib/pending";
 import type { Drug } from "@/lib/types";
 
 /**
@@ -102,15 +103,8 @@ export function ProductSwipeShowcase({
   const copy = drugCopy(current.drug, locale);
   // 規格與分類都還沒確認時整行不顯示。「規格待確認 · 待確認」並排出現在
   // 品名正下方，看起來像頁面沒做完，而不是像誠實揭露。
-  const specPending = copy.spec === "規格待確認" || copy.spec === "Package size pending";
-  const classPending = copy.drugClass === "待確認" || copy.drugClass === "Classification pending";
-  const metaLine = specPending && classPending
-    ? null
-    : specPending
-      ? copy.drugClass
-      : classPending
-        ? copy.spec
-        : `${copy.spec} · ${copy.drugClass}`;
+  const metaLine =
+    [known(copy.spec), known(copy.drugClass)].filter(Boolean).join(" · ") || null;
 
   /** 環狀位移：-side…+side 之外的品項不畫，DOM 不會因為目錄變長而爆掉。 */
   function offsetOf(index: number): number | null {

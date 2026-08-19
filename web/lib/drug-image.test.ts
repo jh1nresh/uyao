@@ -20,11 +20,40 @@ const withImage = allDrugs().filter((drug) => drug.image);
  *
  * 把某個 slug 從下面搬到上面，等於宣告「這張是真的包裝」—— 要搬就得先有實拍。
  */
-// 兩份名單目前都是空的：有圖的品項全部是分類待確認的那批，已經整批下架。
-// 圖檔還留在 public/products/，品項回到目錄時把 slug 填回它該在的那份名單。
-const PACKSHOTS: string[] = [];
+const PACKSHOTS = [
+  "aob-vitality-beauty-45",
+  "chungchi-ganmeijia-coral-ca",
+  "chungchi-yiyuansu-gastrodia-100",
+  "gaoyouzhi-vitamin-b-60",
+  "greenplus-elgucare",
+  "huamao-progifted-lp28",
+  "tianxia-chan-c-80",
+  "yuanding-puregps-defense-450",
+];
 
-const ILLUSTRATIONS: string[] = [];
+const ILLUSTRATIONS = [
+  "bio-stand-calcium-softgel",
+  "chung-jih-youweining",
+  "cm-guer-gan-150mg",
+  "cm-jinguguanjian-sr",
+  "greenplus-discpower",
+  "greenplus-vasopower",
+  "gude-yishengning-p",
+  "hongren-riqingsheng-lm",
+  "icheng-meileshi",
+  "icheng-siyunmeng",
+  "jingcui-huxinan",
+  "likuo-fish-oil-30",
+  "luhsin-l-glutamine",
+  "ouye-jingyong",
+  "puda-grape-seed",
+  "puda-green-tea-compound",
+  "rending-gujieyou",
+  "tianxia-yangshen-jingqu",
+  "toyo-cukang-b",
+  "yingkai-guguanjian-ucii",
+  "youquan-super-magnesium",
+];
 
 describe("品項圖", () => {
   it("有圖的品項就是這兩份名單", () => {
@@ -33,26 +62,22 @@ describe("品項圖", () => {
     );
   });
 
-  it("每張圖檔真的在 public/ 裡且已壓過", () => {
-    for (const drug of withImage) {
-      const image = drug.image!;
-      expect(image.src.startsWith("/products/"), drug.slug).toBe(true);
+  it.each(withImage)("$slug 的圖檔真的在 public/ 裡且已壓過", (drug) => {
+    const image = drug.image!;
+    expect(image.src.startsWith("/products/")).toBe(true);
 
-      const file = path.join(PUBLIC_DIR, image.src);
-      expect(existsSync(file), drug.slug).toBe(true);
-      expect(statSync(file).size, drug.slug).toBeLessThan(MAX_BYTES);
-    }
+    const file = path.join(PUBLIC_DIR, image.src);
+    expect(existsSync(file)).toBe(true);
+    expect(statSync(file).size).toBeLessThan(MAX_BYTES);
   });
 
-  it("每張圖都帶得動版位與兩種語言的替代文字", () => {
-    for (const drug of withImage) {
-      const image = drug.image!;
-      // 寬高是 next/image 固定版位用的；缺了會在手機上跳版。
-      expect(image.width, drug.slug).toBeGreaterThan(0);
-      expect(image.height, drug.slug).toBeGreaterThan(0);
-      expect(image.alt.length, drug.slug).toBeGreaterThan(0);
-      expect(image.altEn.length, drug.slug).toBeGreaterThan(0);
-    }
+  it.each(withImage)("$slug 帶得動版位與兩種語言的替代文字", (drug) => {
+    const image = drug.image!;
+    // 寬高是 next/image 固定版位用的；缺了會在手機上跳版。
+    expect(image.width).toBeGreaterThan(0);
+    expect(image.height).toBeGreaterThan(0);
+    expect(image.alt.length).toBeGreaterThan(0);
+    expect(image.altEn.length).toBeGreaterThan(0);
   });
 
   it("kind 與替代文字說的是同一件事", () => {

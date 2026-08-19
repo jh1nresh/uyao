@@ -3,14 +3,20 @@ import Link from "next/link";
 import { drugCopy, localizedPath, type Locale } from "@/lib/i18n";
 import type { AreaSlug, Drug } from "@/lib/types";
 
-export function catalogSourceStatus(drug: Drug, locale: Locale): string {
+/**
+ * 卡片上的資料出處。沒有出處就回 null —— 呼叫端整段不顯示。
+ *
+ * 不要回「資料待確認」：那是把一個空欄位講成一則待辦，對讀的人沒有意義，
+ * 又像是在替品項掛一個問號。有出處才講出處，沒有就別佔位。
+ */
+export function catalogSourceStatus(drug: Drug, locale: Locale): string | null {
   if (drug.source?.kind === "partner") {
     return locale === "en" ? "Partner pharmacy data" : "合作藥局提供";
   }
   if (drug.source) {
     return locale === "en" ? "Public source checked" : "公開資料已核對";
   }
-  return locale === "en" ? "Source pending" : "資料待確認";
+  return null;
 }
 
 export function CatalogItemGrid({
@@ -58,7 +64,7 @@ export function CatalogItemGrid({
               </span>
             </span>
             <span className="mt-4 flex items-center justify-between gap-3 text-[14px] leading-[1.5] text-muted-2">
-              <span className="text-forest">{catalogSourceStatus(item, locale)}</span>
+              <span className="text-forest">{catalogSourceStatus(item, locale) ?? ""}</span>
               <span className="text-[15px] text-forest transition-transform group-hover:translate-x-1" aria-hidden>
                 →
               </span>

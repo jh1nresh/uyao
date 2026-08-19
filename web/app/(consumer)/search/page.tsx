@@ -61,8 +61,8 @@ export default async function SearchPage({
                 : results.length === 0
                   ? locale === "en" ? "0 catalog items" : "0 項目錄資料"
                 : locale === "en"
-                  ? `${results.length} catalog items · supply in ${areaCopy(getArea(area), locale).shortName} pending`
-                  : `${results.length} 項目錄資料 · ${areaCopy(getArea(area), locale).shortName}供應待確認`}
+                  ? `${results.length} catalog items · ${areaCopy(getArea(area), locale).shortName}`
+                  : `${results.length} 項目錄資料 · ${areaCopy(getArea(area), locale).shortName}`}
           </p>
         </div>
 

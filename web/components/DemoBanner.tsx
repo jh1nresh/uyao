@@ -20,13 +20,13 @@ export async function DemoBanner() {
             {locale === "en" ? "EARLY ACCESS" : "試營運"}
           </b>
           {locale === "en"
-            ? "Public pharmacy records; live supply still requires confirmation."
-            : "公開藥局資料；即時供應仍待藥局確認。"}
+            ? "Public pharmacy records; call the pharmacy before visiting."
+            : "公開藥局資料；前往門市前請先打電話。"}
         </summary>
         <p className="m-0 pb-3 text-[14px] leading-[1.7] text-muted">
           {locale === "en"
-            ? "Store records come from government open data. Live inventory is not yet available; call before visiting. Pharmacists provide prices and medicine guidance in store."
-            : "店家資料來自政府開放資料；即時庫存尚未開始，前往門市前請先電話確認。售價與用藥說明由藥師於門市提供。"}
+            ? "Store records come from government open data. Call before visiting. Pharmacists provide prices and medicine guidance in store."
+            : "店家資料來自政府開放資料；前往門市前請先電話確認。售價與用藥說明由藥師於門市提供。"}
         </p>
       </details>
     </div>

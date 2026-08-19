@@ -11,7 +11,6 @@ import {
   CATALOG_GROUPS,
   filterCatalogDrugs,
   isCatalogGroupSlug,
-  nonEmptyCatalogGroups,
   paginateCatalogDrugs,
 } from "@/lib/catalog-groups";
 import {
@@ -192,7 +191,7 @@ export default async function CategoryPage({
                 defaultValue={query}
                 aria-describedby="catalog-query-help"
                 className="min-h-12 w-full border border-line-strong bg-paper px-4 text-[16px] text-ink outline-none transition-colors placeholder:text-muted focus:border-forest"
-                placeholder={locale === "en" ? "e.g. fish oil, calcium, manufacturer" : "例如：魚油、鈣、葡萄糖胺"}
+                placeholder={locale === "en" ? "e.g. fish oil, calcium, manufacturer" : "例如：魚油、鈣、中美醫藥"}
               />
               <button type="submit" className="action-primary min-h-12 px-7">
                 {locale === "en" ? "Search" : "搜尋"}
@@ -201,7 +200,7 @@ export default async function CategoryPage({
           </form>
 
           <nav aria-label={locale === "en" ? "Catalog categories" : "品項分類"} className="mt-6 flex flex-wrap gap-2">
-            {nonEmptyCatalogGroups(allCatalogDrugs).map((item) => {
+            {CATALOG_GROUPS.map((item) => {
               const active = item.slug === group;
               return (
                 <Link
