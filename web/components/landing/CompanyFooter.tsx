@@ -1,7 +1,8 @@
 import Link from "next/link";
 
 import { BrandLogo } from "@/components/BrandLogo";
-import { CONTACT_EMAIL, X_URL } from "@/lib/seo";
+import { InstagramIcon, XIcon } from "@/components/SocialIcons";
+import { CONTACT_EMAIL, INSTAGRAM_URL, X_URL } from "@/lib/seo";
 import { SHOP_URL } from "@/lib/shop";
 
 type FooterCopy = {
@@ -18,6 +19,7 @@ type FooterCopy = {
   evidence: string;
   partnership: string;
   xLabel: string;
+  instagramLabel: string;
   email: string;
   disclaimer: string;
 };
@@ -37,6 +39,7 @@ const COPY: Record<"zh" | "en", FooterCopy> = {
     evidence: "產品證據",
     partnership: "合作藥局據點",
     xLabel: "X（@uyaohealth）",
+    instagramLabel: "Instagram（@uyaohealth）",
     email: "電子郵件",
     disclaimer:
       "uYao 不進行藥品網路販售，也不提供醫療或用藥建議。消費者服務僅協助查詢、留下需求與安排到店取貨；供應與實際交付由藥局或藥師確認。",
@@ -55,6 +58,7 @@ const COPY: Record<"zh" | "en", FooterCopy> = {
     evidence: "Product evidence",
     partnership: "Partner pharmacies",
     xLabel: "X (@uyaohealth)",
+    instagramLabel: "Instagram (@uyaohealth)",
     email: "Email",
     disclaimer:
       "uYao does not sell medicines online or provide medical advice. The consumer service supports search, requests, and in-store pickup; pharmacies and pharmacists confirm supply and complete every handover.",
@@ -69,7 +73,7 @@ function FooterLink({ href, children }: { href: string; children: React.ReactNod
       {children}
     </Link>
   ) : (
-    <a href={href} rel={href === X_URL ? "me" : undefined} className={className}>
+    <a href={href} className={className}>
       {children}
     </a>
   );
@@ -133,7 +137,24 @@ export function CompanyFooter({
               {copy.contactHeading}
             </h2>
             <div className="mt-2 flex flex-col items-start">
-              <FooterLink href={X_URL}>{copy.xLabel}</FooterLink>
+              <div className="flex items-center gap-2">
+                <a
+                  href={X_URL}
+                  rel="me"
+                  aria-label={copy.xLabel}
+                  className="inline-flex min-h-11 min-w-11 items-center justify-start text-forest hover:text-green"
+                >
+                  <XIcon className="h-[18px] w-[18px]" />
+                </a>
+                <a
+                  href={INSTAGRAM_URL}
+                  rel="me"
+                  aria-label={copy.instagramLabel}
+                  className="inline-flex min-h-11 min-w-11 items-center justify-start text-forest hover:text-green"
+                >
+                  <InstagramIcon className="h-[19px] w-[19px]" />
+                </a>
+              </div>
               <FooterLink href={`mailto:${CONTACT_EMAIL}`}>{copy.email}</FooterLink>
             </div>
           </nav>
