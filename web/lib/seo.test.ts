@@ -7,6 +7,7 @@ import {
   CONSUMER_DESCRIPTION,
   ENTITY_DESCRIPTION,
   INDEXABLE_PATHS,
+  INSTAGRAM_URL,
   ORGANIZATION_LOGO_URL,
   SHOP_CANONICAL_HOST,
   SITE_URL,
@@ -167,8 +168,8 @@ describe("json-ld", () => {
     );
   });
 
-  it("links the organization to the official uYao X account", () => {
-    expect(organizationJsonLd()).toMatchObject({ sameAs: [X_URL] });
+  it("links the organization to the official uYao X and Instagram accounts", () => {
+    expect(organizationJsonLd()).toMatchObject({ sameAs: [X_URL, INSTAGRAM_URL] });
   });
 
   it("publishes one canonical organization identity with an owned logo", () => {
