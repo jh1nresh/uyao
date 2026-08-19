@@ -278,7 +278,12 @@ function ReservationInbox({
             </header>
             <h2>{reservation.drugName}</h2>
             <p>
-              {reservation.drugSpec} · NT$ {reservation.priceTwd}
+              {/* 沒有掃描流就沒有價格 —— 寫「門市報價」而不是 NT$ 0，
+                  藥師看到 0 會以為是免費或系統壞了。 */}
+              {reservation.drugSpec} ·{" "}
+              {reservation.priceTwd === null
+                ? english ? "Price at counter" : "門市報價"
+                : `NT$ ${reservation.priceTwd}`}
               {reservation.sourceStoreName ? ` · ${english ? "Source page" : "來源頁"} ${reservation.sourceStoreName}` : ""}
             </p>
             {reservation.intake && (

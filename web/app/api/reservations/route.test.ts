@@ -1,7 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import * as data from "@/lib/data";
-import { allStores, previewOffers } from "@/lib/data";
+import { allDrugs, allStores, getStore, previewOffers } from "@/lib/data";
+import { PARTNER_PHARMACIES, partnersForProduct } from "@/lib/partners";
 import { __resetForTests } from "@/lib/kv";
 import * as reservationStore from "@/lib/reservations-store";
 import { stockBadge } from "@/lib/stock";
@@ -148,6 +149,70 @@ describe("Store OS reservation delivery", () => {
     expect(await response.json()).toMatchObject({ error: "預留未送達藥局，請再試一次" });
     expect(mocks.sendStorePush).not.toHaveBeenCalled();
     expect(mocks.appendRecord).not.toHaveBeenCalled();
+  });
+
+  // 沒有任何一家藥局裝盒子，所以 OFFERS 是空的。合作藥局自己確認販售的品項
+  // 必須收得下預留，否則整站一筆都送不出去 —— 但那是一次請求，不是有貨保證，
+  // 所以價格留 null、庫存標示是 unknown。
+  it("accepts a reservation for a partner-confirmed item with no scan offer", async () => {
+    const partner = PARTNER_PHARMACIES.建利西藥房;
+    const store = getStore(partner.storeSlug)!;
+    const confirmed: readonly string[] = partner.confirmedProducts;
+    const drug = allDrugs().find((d) =>
+      confirmed.includes(d.spec === "規格待確認" ? d.name : `${d.name} ${d.spec}`),
+    )!;
+    // 這一支刻意不 mock storesForDrug：真實情況就是查不到任何 offer。
+    expect(data.storesForDrug(drug.slug)).toEqual([]);
+
+    const response = await POST(new Request("http://localhost/api/reservations", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-forwarded-for": "127.0.0.31",
+      },
+      body: JSON.stringify({
+        drugSlug: drug.slug,
+        storeSlug: store.slug,
+        contact: "0912345678",
+      }),
+    }));
+
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({ priceTwd: null });
+    expect(mocks.sendStorePush).toHaveBeenCalledTimes(1);
+    const [, record] = mocks.appendRecord.mock.calls[0]!;
+    expect(record).toMatchObject({ priceTwd: null, stockTier: "unknown", storeSlug: store.slug });
+  });
+
+  it("still rejects a pharmacy that never confirmed carrying the item", async () => {
+    const partner = PARTNER_PHARMACIES.建利西藥房;
+    const confirmed: readonly string[] = partner.confirmedProducts;
+    const drug = allDrugs().find((d) =>
+      confirmed.includes(d.spec === "規格待確認" ? d.name : `${d.name} ${d.spec}`),
+    )!;
+    // 同一區、但沒有把這支列進 confirmedProducts 的店。
+    const outsider = allStores().find(
+      (s) => !partnersForProduct(
+        drug.spec === "規格待確認" ? drug.name : `${drug.name} ${drug.spec}`,
+      ).some((p) => p.storeSlug === s.slug),
+    )!;
+
+    const response = await POST(new Request("http://localhost/api/reservations", {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        "x-forwarded-for": "127.0.0.32",
+      },
+      body: JSON.stringify({
+        drugSlug: drug.slug,
+        storeSlug: outsider.slug,
+        contact: "0912345678",
+      }),
+    }));
+
+    expect(response.status).toBe(404);
+    expect(await response.json()).toMatchObject({ error: "這家藥局沒有這個品項" });
+    expect(mocks.sendStorePush).not.toHaveBeenCalled();
   });
 
   it("rejects health context without explicit consent before creating an order", async () => {

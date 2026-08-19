@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { StockBadge } from "./StockBadge";
 import { useLocale } from "./LocaleProvider";
 import { captureAdSource } from "@/lib/attribution-client";
+import { known } from "@/lib/pending";
 import { PRICE_NOTICE } from "@/lib/pricing";
 import { hoursSummary } from "@/lib/hours";
 import { localizedPath } from "@/lib/i18n";
@@ -20,8 +21,10 @@ import type { StockBadgeSpec, Store } from "@/lib/types";
 export interface ReserveTarget {
   drug: { slug: string; name: string; spec: string };
   store: Store;
-  priceTwd: number;
-  badge: StockBadgeSpec;
+  /** 掃描流帶出的價格；沒有裝盒子的店是 null，價格由門市報。 */
+  priceTwd: number | null;
+  /** 沒有掃描紀錄時省略 —— 不要塞一個假的 tier 進來充數。 */
+  badge?: StockBadgeSpec;
 }
 
 /** 記住上次填的號碼，不要每次預留都重打一次。 */
@@ -195,9 +198,18 @@ export function ReserveSheet({
             <div className="flex items-center gap-2.5 border border-line px-3.5 py-2.5 text-[15px]">
               <div className="min-w-0 flex-1">
                 <div className="font-medium">
-                  {target.drug.name} {target.drug.spec}
+                  {target.drug.name} {known(target.drug.spec) ?? ""}
                 </div>
-                <StockBadge badge={target.badge} className="mt-0.5 text-[13px]" />
+                {target.badge ? (
+                  <StockBadge badge={target.badge} className="mt-0.5 text-[13px]" />
+                ) : (
+                  // 沒有掃描紀錄就直說這是一次請求，不是有貨保證。
+                  <div className="mt-0.5 text-[13px] text-muted">
+                    {locale === "en"
+                      ? "The pharmacy confirms stock after you send this"
+                      : "送出後由藥局確認有無現貨"}
+                  </div>
+                )}
               </div>
               <div className="text-[13px] text-muted-2">{locale === "en" ? "Price confirmed in store" : PRICE_NOTICE}</div>
             </div>
