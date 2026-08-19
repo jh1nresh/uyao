@@ -15,7 +15,7 @@ import {
   storesInArea,
   toAreaSlug,
 } from "@/lib/data";
-import { nonEmptyCatalogGroups } from "@/lib/catalog-groups";
+import { CATALOG_GROUPS } from "@/lib/catalog-groups";
 import { areaCopy, categoryName, localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
 import { PARTNER_STORE_ITEMS } from "@/lib/partner-stores";
@@ -198,7 +198,7 @@ export default async function HomePage({
             </p>
           </div>
           <nav aria-label={locale === "en" ? "Catalog categories" : "品項分類"} className="mb-7 flex flex-wrap gap-2.5">
-            {nonEmptyCatalogGroups(drugs).map((group) => (
+            {CATALOG_GROUPS.map((group) => (
               <Link
                 key={group.slug}
                 href={`${localizedPath("/category/partner-item", locale)}?area=${area}&group=${group.slug}`}
