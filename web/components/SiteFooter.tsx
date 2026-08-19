@@ -2,8 +2,9 @@ import Link from "next/link";
 
 import { BrandLogo } from "./BrandLogo";
 import { LanguageSwitch } from "./LanguageSwitch";
+import { InstagramIcon, XIcon } from "./SocialIcons";
 import { getRequestLocale } from "@/lib/locale-server";
-import { CONTACT_EMAIL, SITE_URL, X_URL } from "@/lib/seo";
+import { CONTACT_EMAIL, INSTAGRAM_URL, SITE_URL, X_URL } from "@/lib/seo";
 import { SHOP_URL } from "@/lib/shop";
 
 /**
@@ -75,9 +76,24 @@ export async function SiteFooter({ note }: { note?: string }) {
               {locale === "en" ? "CONTACT" : "社群與聯絡"}
             </h2>
             <div className="mt-2 flex flex-col items-start">
-              <a href={X_URL} rel="me" className="inline-flex min-h-11 items-center text-forest hover:text-green">
-                {locale === "en" ? "X (@uyaohealth)" : "X（@uyaohealth）"}
-              </a>
+              <div className="flex items-center gap-2">
+                <a
+                  href={X_URL}
+                  rel="me"
+                  aria-label="X (@uyaohealth)"
+                  className="inline-flex min-h-11 min-w-11 items-center justify-start text-forest hover:text-green"
+                >
+                  <XIcon className="h-[18px] w-[18px]" />
+                </a>
+                <a
+                  href={INSTAGRAM_URL}
+                  rel="me"
+                  aria-label="Instagram (@uyaohealth)"
+                  className="inline-flex min-h-11 min-w-11 items-center justify-start text-forest hover:text-green"
+                >
+                  <InstagramIcon className="h-[19px] w-[19px]" />
+                </a>
+              </div>
               <a href={`mailto:${CONTACT_EMAIL}`} className="inline-flex min-h-11 items-center text-forest hover:text-green">
                 {locale === "en" ? "Email" : "電子郵件"}
               </a>

@@ -167,6 +167,7 @@ export const CONSUMER_DESCRIPTION: Record<Locale, string> = {
 
 export const CONTACT_EMAIL = "edwardhsieh0122@gmail.com";
 export const X_URL = "https://x.com/uyaohealth";
+export const INSTAGRAM_URL = "https://www.instagram.com/uyaohealth/";
 
 // ---------------------------------------------------------------------------
 // JSON-LD builders。規則（spec §3）：不標 Pharmacy/MedicalOrganization、
@@ -185,7 +186,7 @@ export function organizationJsonLd(): JsonLd {
     logo: ORGANIZATION_LOGO_URL,
     email: CONTACT_EMAIL,
     description: ENTITY_DESCRIPTION.zh,
-    sameAs: [X_URL],
+    sameAs: [X_URL, INSTAGRAM_URL],
   };
 }
 
