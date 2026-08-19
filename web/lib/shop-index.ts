@@ -52,26 +52,51 @@ function latest(dates: IsoDate[], fallback: IsoDate): IsoDate {
 }
 
 /**
- * Every consumer URL the shop sitemap publishes, each with real freshness:
+ * 品類頁專用：有品項就只看品項，沒有品項才退回站上文案日期。
+ *
+ * 不能直接用 `latest(dates, SHOP_HOME_COPY_UPDATED)` —— 那個 fallback 是
+ * 下限，會把一個全是舊品項的品類墊成「今天剛更新」。首頁需要那個下限
+ * （它的文案不只是目錄），品類頁不需要：它的內容就是底下那些品項。
+ */
+function newestOf(dates: IsoDate[], fallback: IsoDate): IsoDate {
+  return dates.length > 0 ? latest(dates, dates[0]) : fallback;
+}
+
+/**
+ * Every consumer URL one sitemap publishes, each with real freshness:
  * both localized homepages, both locales of each category, and each admitted
  * item in the locales whose copy actually exists.
  *
- * `lastmod` 的重點是「哪幾頁變了」。品項頁用自己的 `updatedOn`；品類頁與
- * 首頁取底下品項的最新日期，因為它們的內容就是那些品項。整批同一天不是
- * 問題 —— 那是事實；一旦只改一筆，就只有那一頁的日期會動。
+ * `lastmod` 的重點是「哪幾頁變了」。品項頁用自己的 `updatedOn`；品類頁取
+ * **它自己底下**品項的最新日期，首頁取整份目錄的，因為那就是它們各自的
+ * 內容。整批同一天不是問題 —— 那是事實；一旦只改一筆，就只有那一頁與
+ * 摘要它的頁會動。
+ *
+ * 參數化成 (categories, drugs) 只有一個理由：真實目錄現在只有一個品類，
+ * 用它自己的資料證明不了「改 A 品類不會推掉 B 品類的日期」。合成兩個品類
+ * 的 regression test 才釘得住這條規則（`shop-index.test.ts`）。
  */
-export function shopSitemapEntries(): ShopSitemapEntry[] {
+export function sitemapEntriesFor(
+  categories: readonly { slug: string }[],
+  drugs: readonly Drug[],
+): ShopSitemapEntry[] {
   return LOCALES.flatMap((locale) => {
     const prefix = LOCALE_PREFIX[locale];
-    const items = indexableCatalogItems(locale);
-    const itemDates = items.map((drug) => drug.updatedOn);
-    const catalogUpdated = latest(itemDates, SHOP_HOME_COPY_UPDATED);
+    const items = drugs.filter((drug) => isIndexableCatalogItem(drug, locale));
+    const catalogUpdated = latest(items.map((drug) => drug.updatedOn), SHOP_HOME_COPY_UPDATED);
 
     return [
-      { path: prefix, lastModified: latest([catalogUpdated], SHOP_HOME_COPY_UPDATED) },
-      ...CATEGORIES.map((category) => ({
+      { path: prefix, lastModified: catalogUpdated },
+      ...categories.map((category) => ({
         path: `${prefix}/category/${category.slug}`,
-        lastModified: catalogUpdated,
+        // 用全目錄最新日期的話，改 A 品類會把 B 品類的 lastmod 一起推掉 ——
+        // 等於告訴 Google 一頁沒變的頁面變了，freshness 訊號就作廢了。
+        lastModified: newestOf(
+          items
+            .filter((drug) => drug.category === category.slug)
+            .map((drug) => drug.updatedOn),
+          SHOP_HOME_COPY_UPDATED,
+        ),
       })),
       ...items.map((drug) => ({
         path: `${prefix}/drug/${drug.slug}`,
@@ -79,6 +104,11 @@ export function shopSitemapEntries(): ShopSitemapEntry[] {
       })),
     ];
   });
+}
+
+/** 真實目錄的那一份。 */
+export function shopSitemapEntries(): ShopSitemapEntry[] {
+  return sitemapEntriesFor(CATEGORIES, allDrugs());
 }
 
 /** 只要路徑的呼叫端用這個。順序與 `shopSitemapEntries()` 一致。 */

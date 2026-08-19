@@ -415,6 +415,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["二型膠原蛋白", "MSM", "鋅", "維生素D3", "關節營養補給"],
     manufacturer: "中美醫藥",
     origin: "台灣（通路標示）",
+    image: {
+      src: "/products/cm-jinguguanjian-sr.webp",
+      width: 900,
+      height: 1125,
+      kind: "illustration",
+      alt: "示意圖，非實際包裝：中美 金固關健緩釋錠 的紙盒示意，圖片下方以真實字型標示品名與劑型",
+      altEn: "Illustration, not the real packaging: a rendered carton for 中美 金固關健緩釋錠, with the product name and form typeset below",
+    },
   }),
   partnerProvidedProduct({
     slug: "likuo-fish-oil-30",
@@ -440,6 +448,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["紅麴", "紅景天", "納豆激酶", "人參", "維生素B群"],
     manufacturer: "天下生物科技",
     origin: "台灣",
+    image: {
+      src: "/products/tianxia-yangshen-jingqu.webp",
+      width: 900,
+      height: 1125,
+      kind: "illustration",
+      alt: "示意圖，非實際包裝：天下生物科技 養身景麴膠囊 的紙盒示意，圖片下方以真實字型標示品名與劑型",
+      altEn: "Illustration, not the real packaging: a rendered carton for 天下生物科技 養身景麴膠囊, with the product name and form typeset below",
+    },
   }),
   partnerProvidedProduct({
     slug: "hongren-riqingsheng-lm",
@@ -452,6 +468,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["益生菌", "乳酸菌", "果寡糖", "Lactobacillus plantarum", "Lactobacillus paracasei"],
     manufacturer: "鴻仁生技有限公司",
     origin: "台灣",
+    image: {
+      src: "/products/hongren-riqingsheng-lm.webp",
+      width: 900,
+      height: 1125,
+      kind: "illustration",
+      alt: "示意圖，非實際包裝：鴻仁 日清勝 LM機能益生菌 的紙盒示意，圖片下方以真實字型標示品名與劑型",
+      altEn: "Illustration, not the real packaging: a rendered carton for 鴻仁 日清勝 LM機能益生菌, with the product name and form typeset below",
+    },
   }),
   partnerProvidedProduct({
     slug: "cm-guer-gan-150mg",
@@ -477,6 +501,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["南瓜子油", "蔓越莓", "葡萄糖酸鋅", "番茄紅素"],
     manufacturer: "谷淂藥品生技有限公司",
     origin: "德國",
+    image: {
+      src: "/products/gude-yishengning-p.webp",
+      width: 900,
+      height: 1125,
+      kind: "illustration",
+      alt: "示意圖，非實際包裝：益聖寧-P軟膠囊 的紙盒示意，圖片下方以真實字型標示品名與劑型",
+      altEn: "Illustration, not the real packaging: a rendered carton for 益聖寧-P軟膠囊, with the product name and form typeset below",
+    },
   }),
   partnerProvidedProduct({
     slug: "jingcui-huxinan",
@@ -501,6 +533,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["黑醋", "紅花籽油", "維生素B1", "維生素B6", "維生素E"],
     manufacturer: "東洋",
     origin: "日本",
+    image: {
+      src: "/products/toyo-cukang-b.webp",
+      width: 900,
+      height: 1125,
+      kind: "illustration",
+      alt: "示意圖，非實際包裝：醋康B膠囊 的紙盒示意，圖片下方以真實字型標示品名與劑型",
+      altEn: "Illustration, not the real packaging: a rendered carton for 醋康B膠囊, with the product name and form typeset below",
+    },
   }),
   partnerProvidedProduct({
     slug: "icheng-meileshi",
@@ -549,6 +589,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["鈣", "葡萄糖酸鈣", "維生素D3", "補鈣"],
     manufacturer: "臺灣默化實業有限公司",
     origin: "美國（進口品）",
+    image: {
+      src: "/products/bio-stand-calcium-softgel.webp",
+      width: 900,
+      height: 1125,
+      kind: "illustration",
+      alt: "示意圖，非實際包裝：Bio-Stand 挺液鈣軟膠囊 的紙盒示意，圖片下方以真實字型標示品名與劑型",
+      altEn: "Illustration, not the real packaging: a rendered carton for Bio-Stand 挺液鈣軟膠囊, with the product name and form typeset below",
+    },
   }),
   partnerProvidedProduct({
     slug: "rending-gujieyou",
@@ -573,6 +621,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["馬卡", "南瓜子", "L-精胺酸", "鋅", "維生素B群"],
     manufacturer: "歐業藥品",
     origin: "台灣",
+    image: {
+      src: "/products/ouye-jingyong.webp",
+      width: 900,
+      height: 1125,
+      kind: "illustration",
+      alt: "示意圖，非實際包裝：勁勇軟膠囊 的紙盒示意，圖片下方以真實字型標示品名與劑型",
+      altEn: "Illustration, not the real packaging: a rendered carton for 勁勇軟膠囊, with the product name and form typeset below",
+    },
   }),
   partnerProvidedProduct({
     slug: "greenplus-vasopower",
@@ -632,8 +688,8 @@ const DRUGS: Drug[] = [
       width: 900,
       height: 1028,
       kind: "packshot",
-      alt: "合作藥局提供的包裝照片（已去背，透明背景）：綠杏 LHBcare 益固康 Elgucare 的 72 粒盒裝與 360 粒罐裝並排，盒面標示「全素可食」與 72 Capsules",
-      altEn: "Partner-provided packaging photo: the LHBcare Elgucare 72-capsule carton beside the 360-capsule jar",
+      alt: "包裝照片（已去背，透明背景）：綠杏 LHBcare 益固康 Elgucare 的 72 粒盒裝與 360 粒罐裝並排，盒面標示「全素可食」與 72 Capsules",
+      altEn: "Packaging photo: the LHBcare Elgucare 72-capsule carton beside the 360-capsule jar",
     },
   }),
   partnerProvidedProduct({
@@ -671,6 +727,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["UC-II", "二型膠原蛋白", "葡萄糖胺", "玻尿酸", "MSM"],
     manufacturer: "迎凱有限公司",
     origin: "台灣（依合作藥局提供的產品資料）",
+    image: {
+      src: "/products/yingkai-guguanjian-ucii.webp",
+      width: 900,
+      height: 1125,
+      kind: "illustration",
+      alt: "示意圖，非實際包裝：固關鍵 UC II 的紙盒示意，圖片下方以真實字型標示品名與劑型",
+      altEn: "Illustration, not the real packaging: a rendered carton for 固關鍵 UC II, with the product name and form typeset below",
+    },
   }),
   partnerProvidedProduct({
     slug: "youquan-super-magnesium",
@@ -695,6 +759,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["高麗菜", "維生素U", "S-甲基蛋胺酸", "秋葵", "牛蒡", "鋅"],
     manufacturer: "中日藥品",
     origin: "台灣",
+    image: {
+      src: "/products/chung-jih-youweining.webp",
+      width: 900,
+      height: 1125,
+      kind: "illustration",
+      alt: "示意圖，非實際包裝：佑衛寧 高麗菜濃縮複方膠囊 的紙盒示意，圖片下方以真實字型標示品名與劑型",
+      altEn: "Illustration, not the real packaging: a rendered carton for 佑衛寧 高麗菜濃縮複方膠囊, with the product name and form typeset below",
+    },
   }),
   partnerProvidedProduct({
     slug: "luhsin-l-glutamine",
@@ -708,6 +780,14 @@ const DRUGS: Drug[] = [
     searchTerms: ["左旋麩醯胺酸", "L-Glutamine", "麩醯胺酸"],
     manufacturer: "綠心藥品生化科技有限公司",
     origin: "台灣",
+    image: {
+      src: "/products/luhsin-l-glutamine.webp",
+      width: 900,
+      height: 1125,
+      kind: "illustration",
+      alt: "示意圖，非實際包裝：賜利康療養素－左旋麩醯胺酸 的紙盒示意，圖片下方以真實字型標示品名與劑型",
+      altEn: "Illustration, not the real packaging: a rendered carton for 賜利康療養素－左旋麩醯胺酸, with the product name and form typeset below",
+    },
   }),
   {
     // 一銘藥局確認販售，但包裝是日文原裝、照片上讀不到成分與委製廠商，
@@ -737,8 +817,8 @@ const DRUGS: Drug[] = [
       width: 900,
       height: 928,
       kind: "packshot",
-      alt: "合作藥局提供的包裝照片：New AOB Vitality Beauty 淺綠色紙盒與三支鋁袋條狀隨身包，盒面標示 45包、健全体調美容増進",
-      altEn: "Partner-provided packaging photo: the pale-green New AOB Vitality Beauty carton with three aluminium stick sachets",
+      alt: "包裝照片：New AOB Vitality Beauty 淺綠色紙盒與三支鋁袋條狀隨身包，盒面標示 45包、健全体調美容増進",
+      altEn: "Packaging photo: the pale-green New AOB Vitality Beauty carton with three aluminium stick sachets",
     },
     highlights: [
       { title: "健全體調", body: "包裝標示「健全體調」" },
@@ -777,8 +857,8 @@ const DRUGS: Drug[] = [
       width: 900,
       height: 821,
       kind: "packshot",
-      alt: "合作藥局提供的包裝照片（已去背，透明背景）：憶元素 天麻100膠囊的金黃色盒裝正面，盒面印有品名、天麻100膠囊與分子結構底紋",
-      altEn: "Partner-provided packaging photo: the golden carton of 憶元素 天麻100膠囊, front face showing the product name and a molecular-structure motif",
+      alt: "包裝照片（已去背，透明背景）：憶元素 天麻100膠囊的金黃色盒裝正面，盒面印有品名、天麻100膠囊與分子結構底紋",
+      altEn: "Packaging photo: the golden carton of 憶元素 天麻100膠囊, front face showing the product name and a molecular-structure motif",
     },
   }),
   partnerProvidedProduct({
@@ -814,8 +894,8 @@ const DRUGS: Drug[] = [
       width: 900,
       height: 760,
       kind: "packshot",
-      alt: "合作藥局提供的包裝照片（已去背，透明背景）：PUREGPS 強抗力優 450+ Defense 盒裝正面，標示 60 Capsules、植物膠囊全素與 wellmune 原廠授權",
-      altEn: "Partner-provided packaging photo: the PUREGPS Defense 450+ carton front, marked 60 Capsules",
+      alt: "包裝照片（已去背，透明背景）：PUREGPS 強抗力優 450+ Defense 盒裝正面，標示 60 Capsules、植物膠囊全素與 wellmune 原廠授權",
+      altEn: "Packaging photo: the PUREGPS Defense 450+ carton front, marked 60 Capsules",
     },
   }),
   partnerProvidedProduct({
@@ -843,8 +923,8 @@ const DRUGS: Drug[] = [
       width: 900,
       height: 1237,
       kind: "packshot",
-      alt: "合作藥局提供的包裝照片：甘鎂佳珊瑚鈣淺藍色紙盒正面，標示 Magnesium Glycinate Coral Ca、K2(MK-7)、D3、Mg 與 60 TABLETS、MADE IN CANADA",
-      altEn: "Partner-provided packaging photo: the light-blue Magnesium Glycinate Coral Ca carton front, marked K2 (MK-7), D3, Mg and 60 tablets",
+      alt: "包裝照片：甘鎂佳珊瑚鈣淺藍色紙盒正面，標示 Magnesium Glycinate Coral Ca、K2(MK-7)、D3、Mg 與 60 TABLETS、MADE IN CANADA",
+      altEn: "Packaging photo: the light-blue Magnesium Glycinate Coral Ca carton front, marked K2 (MK-7), D3, Mg and 60 tablets",
     },
     highlights: [
       { title: "珊瑚鈣 Coral Ca", body: "以珊瑚鈣為鈣質來源" },
@@ -879,8 +959,8 @@ const DRUGS: Drug[] = [
       width: 900,
       height: 1312,
       kind: "packshot",
-      alt: "合作藥局提供的包裝照片：強喜錠 Chan-C 黃色紙盒正面，標示維他命C＋B6、草莓添加β胡蘿蔔素、80 Tab 與國家品質標章",
-      altEn: "Partner-provided packaging photo: the yellow 強喜錠 Chan-C carton front, marked vitamin C+B6 and 80 tablets",
+      alt: "包裝照片：強喜錠 Chan-C 黃色紙盒正面，標示維他命C＋B6、草莓添加β胡蘿蔔素、80 Tab 與國家品質標章",
+      altEn: "Packaging photo: the yellow 強喜錠 Chan-C carton front, marked vitamin C+B6 and 80 tablets",
     },
     highlights: [
       { title: "維生素 C ＋ B6 複方", body: "維生素C（抗壞血酸）、抗壞血酸鈉搭配維生素B6" },
@@ -913,8 +993,8 @@ const DRUGS: Drug[] = [
       width: 900,
       height: 991,
       kind: "packshot",
-      alt: "合作藥局提供的包裝照片：Progifted LP-28 綠白色紙盒正面，標示第4代專利三層包埋、120×10⁸ cfu/2g 與 30 包蘋果口味",
-      altEn: "Partner-provided packaging photo: the green-and-white Progifted LP-28 carton front, marked 120×10⁸ cfu/2g and 30 sachets",
+      alt: "包裝照片：Progifted LP-28 綠白色紙盒正面，標示第4代專利三層包埋、120×10⁸ cfu/2g 與 30 包蘋果口味",
+      altEn: "Packaging photo: the green-and-white Progifted LP-28 carton front, marked 120×10⁸ cfu/2g and 30 sachets",
     },
     highlights: [
       { title: "第4代專利三層包埋", body: "三層包埋技術，通過耐胃酸、耐膽鹽與活力穩定試驗" },
@@ -948,8 +1028,8 @@ const DRUGS: Drug[] = [
       width: 900,
       height: 775,
       kind: "packshot",
-      alt: "合作藥局提供的包裝照片：高優質維他命B群紅白色紙盒正面，標示原料嚴選 DSM 德國廠、95% 薑黃、啤酒酵母、五味子與 60粒軟膠囊",
-      altEn: "Partner-provided packaging photo: the red-and-white 高優質維他命B群 carton front, marked DSM ingredients and 60 softgels",
+      alt: "包裝照片：高優質維他命B群紅白色紙盒正面，標示原料嚴選 DSM 德國廠、95% 薑黃、啤酒酵母、五味子與 60粒軟膠囊",
+      altEn: "Packaging photo: the red-and-white 高優質維他命B群 carton front, marked DSM ingredients and 60 softgels",
     },
     highlights: [
       { title: "原料嚴選 DSM 德國廠", body: "維生素原料來自 DSM 德國廠" },

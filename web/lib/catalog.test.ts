@@ -122,6 +122,38 @@ describe("合作藥局常見品項目錄", () => {
     }
   });
 
+  /**
+   * `nameEn` 是 `/en` 品項頁的入場券（`lib/shop-index.ts`），所以它同時是
+   * 最容易被「順手翻一個」的欄位。兩條規則一起釘：
+   *
+   *   來源：只能照抄該品項自己 `aliases` 裡的原廠拉丁字品名。音譯或翻譯
+   *         出來的英文品名，跟填假許可證字號是同一種錯。
+   *   完整：反過來，已經有拉丁字品名可抄的品項就不該漏填 —— 漏一個就是
+   *         一頁本來進得了英文索引的品項白白留在 zh-tw。
+   *
+   * 已驗證的一般食品不在這條規則內：上面那個 case 要求它們 `nameEn` 一律
+   * 留空（欄位以 mono 呈現，在非藥品上會被讀成藥品識別碼），即使原廠確實
+   * 有登記英文品名也一樣，那是刻意留下的缺口。
+   */
+  it("英文品名只照抄原廠拉丁字品名，有得抄就不漏填", () => {
+    const latinOnly = /^[A-Za-z0-9][A-Za-z0-9 .+-]*$/;
+    const mayHaveEnglishName = allDrugs().filter(
+      (drug) => !(drug.source && drug.source.kind !== "partner"),
+    );
+
+    expect(mayHaveEnglishName.length).toBeGreaterThan(0);
+    for (const drug of mayHaveEnglishName) {
+      const latinAliases = drug.aliases.filter((alias) => latinOnly.test(alias));
+
+      if (drug.nameEn) {
+        expect(drug.aliases, `${drug.slug} 的 nameEn 不在 aliases 裡`).toContain(drug.nameEn);
+        expect(latinOnly.test(drug.nameEn), `${drug.slug} 的 nameEn 不是純拉丁字`).toBe(true);
+      } else {
+        expect(latinAliases, `${drug.slug} 有拉丁字品名可抄卻沒填 nameEn`).toEqual([]);
+      }
+    }
+  });
+
   it("合作藥局提供的新增品項保留資料來源、廠商、產地與分類待確認邊界", () => {
     const partnerProvided = allDrugs().filter((drug) => drug.source?.kind === "partner");
 
