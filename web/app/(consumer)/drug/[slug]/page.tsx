@@ -3,6 +3,7 @@ import { Fragment } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { AreaStorePeek } from "@/components/AreaStorePeek";
 import { AreaSwitch } from "@/components/AreaSwitch";
 import { NoInventoryYet } from "@/components/NoInventoryYet";
 import { PharmacyList } from "@/components/PharmacyList";
@@ -23,8 +24,6 @@ import {
 } from "@/lib/data";
 import { JsonLd } from "@/components/JsonLd";
 import { areaCopy, categoryName, drugCopy, localizedPath } from "@/lib/i18n";
-import { formatDistance } from "@/lib/format";
-import { hoursSummary } from "@/lib/hours";
 import { hasAmounts, ingredientRows } from "@/lib/ingredients";
 import { getRequestLocale } from "@/lib/locale-server";
 import { partnersForProduct } from "@/lib/partners";
@@ -318,42 +317,7 @@ export default async function DrugPage({
               rows={rows}
             />
           ) : (
-            areaStores.length > 0 && (
-              <div className="mt-2 border border-line bg-ivory">
-                <p className="m-0 border-b border-line bg-surface px-3.5 py-2 text-[14px] font-bold text-forest">
-                  {locale === "en"
-                    ? `Pharmacies in ${areaShortName}`
-                    : `${areaShortName}的藥局`}
-                </p>
-                {areaStores.slice(0, 3).map((store) => (
-                  <div
-                    key={store.slug}
-                    className="flex items-baseline gap-2 border-b border-line-soft px-3.5 py-2.5"
-                  >
-                    <Link
-                      href={localizedPath(`/store/${store.slug}`, locale)}
-                      className="history-link min-w-0 truncate text-[15px] font-medium text-ink no-underline"
-                    >
-                      {store.name}
-                    </Link>
-                    <span className="num text-[13px] text-ink-2">
-                      {formatDistance(store.distanceM)}
-                    </span>
-                    <span className="ml-auto whitespace-nowrap text-[13px] text-muted">
-                      {hoursSummary(store, locale)}
-                    </span>
-                  </div>
-                ))}
-                <a
-                  href="#pharmacy-list"
-                  className="flex min-h-11 items-center px-3.5 text-[14px] font-medium text-green no-underline hover:bg-surface-hover"
-                >
-                  {locale === "en"
-                    ? `See all ${areaStores.length} stores with phone numbers ↓`
-                    : `看全部 ${areaStores.length} 家與電話 ↓`}
-                </a>
-              </div>
-            )
+            <AreaStorePeek stores={areaStores} areaLabel={areaShortName} locale={locale} />
           )}
         </div>
       </div>

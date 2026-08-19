@@ -41,7 +41,8 @@ export async function NoInventoryYet({
 
       <div className="mt-2.5 flex flex-wrap items-baseline gap-2.5">
         <h2 className="text-[17px] font-black">{locale === "en" ? `Pharmacies in ${areaLabel}` : `${areaLabel}的藥局`}</h2>
-        <p className="text-[14px] text-muted-2">{locale === "en" ? `${stores.length} stores · Check hours before calling` : `${stores.length} 家 · 打電話前先看營業時段`}</p>
+        {/* 店名、營業時段與電話已經在上方側欄，這一段的差別是地址與可重排的實際距離。 */}
+        <p className="text-[14px] text-muted-2">{locale === "en" ? `${stores.length} stores · Addresses and distance from you` : `${stores.length} 家 · 地址與距離你多遠`}</p>
       </div>
 
       <div className="mt-2">
