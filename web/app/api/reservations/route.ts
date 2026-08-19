@@ -212,6 +212,24 @@ export async function POST(request: Request) {
     console.error(`[reservations] Store OS Web Push 未送達 ${code}: ${pushResult.status}`);
   }
 
+  // 推不出去 = 這筆躺在沒人看的收件匣裡。消費者那端有退路（25 分鐘後改叫他
+  // 打電話、12 小時自動關單），但我們這端過去只有一行 log —— 真的有人預留
+  // 卻沒人接，不該要翻 Vercel logs 才發現。示範單不算，那本來就沒有真藥局。
+  if (pushResult.status !== "sent" && !demo) {
+    await appendRecord("unreachable", {
+      code,
+      drugSlug,
+      drugName: drug.name,
+      storeSlug,
+      storeName: store.name,
+      storePhone: store.phone,
+      pushStatus: pushResult.status,
+      createdAt: record.createdAt,
+    }).catch((err) => {
+      console.error("[reservations] 無人接單訊號寫入失敗", code, String(err).slice(0, 200));
+    });
+  }
+
   return NextResponse.json({
     code,
     token,
