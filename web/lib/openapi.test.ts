@@ -10,6 +10,20 @@ const paths = doc.paths as Record<string, Record<string, Record<string, unknown>
 const READ_PATHS = ["/api/catalog", "/api/catalog/{slug}", "/api/pharmacies"];
 const WRITE_PATHS = ["/api/demand", "/api/pilot", "/api/reservations"];
 
+/**
+ * 唯一一個刻意開放給程式呼叫的寫入端點。
+ *
+ * 其餘寫入端點（需求訊號、試點申請）仍然只服務本站表單 —— 它們沒有節流以外
+ * 的身分概念，也沒有人在另一端等著處理。預留不一樣：LINE agent 幫使用者留藥
+ * 是產品本身，不是有人在濫用 API，所以它有金鑰、有自己的額度、要在文件上
+ * 講清楚契約。
+ */
+const AGENT_CALLABLE: Record<string, string[]> = { "/api/reservations": ["post"] };
+
+function agentCallable(path: string, method: string): boolean {
+  return AGENT_CALLABLE[path]?.includes(method) ?? false;
+}
+
 describe("openapi document", () => {
   it("declares OpenAPI 3.1 and both canonical hosts", () => {
     expect(doc.openapi).toBe("3.1.0");
@@ -31,6 +45,17 @@ describe("openapi document", () => {
       expect(paths[path], path).toBeDefined();
       for (const [method, operation] of Object.entries(paths[path])) {
         expect(method, `${path} should not expose a public read`).not.toBe("get");
+        if (agentCallable(path, method)) {
+          // 開放給 agent 的那一個必須說得出契約：怎麼帶金鑰、額度多少、
+          // 以及這不是現貨保證。少了任何一條，接的人就會把它當成有貨查詢。
+          expect(operation["x-internal"], `${path}.${method} 開放後不該再標 x-internal`).toBeUndefined();
+          expect(operation.security, `${path}.${method} 必須宣告 agentKey`).toBeDefined();
+          expect(JSON.stringify(operation.security)).toContain("agentKey");
+          const desc = String(operation.description);
+          expect(desc, `${path}.${method} 必須說明不是現貨保證`).toMatch(/not a stock guarantee/i);
+          expect(desc, `${path}.${method} 必須說明額度`).toMatch(/per hour/i);
+          continue;
+        }
         expect(operation["x-internal"], `${path}.${method}`).toBe(true);
         expect(
           String(operation.description),
@@ -44,7 +69,7 @@ describe("openapi document", () => {
     for (const [path, methods] of Object.entries(paths)) {
       expect([...READ_PATHS, ...WRITE_PATHS], `undocumented path ${path}`).toContain(path);
       for (const [method, operation] of Object.entries(methods)) {
-        if (method === "get") {
+        if (method === "get" || agentCallable(path, method)) {
           expect(operation["x-internal"]).toBeUndefined();
         } else {
           expect(operation["x-internal"], `${path}.${method}`).toBe(true);

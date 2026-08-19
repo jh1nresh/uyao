@@ -19,6 +19,7 @@ const PLACEHOLDERS = new Set([
   "Classification pending",
   "Package size pending",
   "Form pending",
+  "Nutrition positioning pending verification",
 ]);
 
 export function isPending(value: string | null | undefined): boolean {

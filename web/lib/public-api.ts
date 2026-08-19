@@ -1,5 +1,7 @@
-import { allDrugs, allStores, getDrug } from "./data";
+import { allDrugs, allStores, getDrug, getStore } from "./data";
 import { drugCopy, areaCopy, type Locale } from "./i18n";
+import { partnersForProduct } from "./partners";
+import { known } from "./pending";
 import { SHOP_URL } from "./shop";
 import type { Drug, Store } from "./types";
 
@@ -23,9 +25,10 @@ export type CatalogItemPayload = {
   url: string;
   name: string;
   nameEn?: string;
-  form: string;
-  spec: string;
-  drugClass: string;
+  /** 未查證的欄位整個不輸出 —— 不要送「規格待確認」這種佔位字串出去。 */
+  form?: string;
+  spec?: string;
+  drugClass?: string;
   category: string;
   ingredients: string[];
   nutritionFocus: string;
@@ -41,6 +44,16 @@ export type CatalogItemDetailPayload = CatalogItemPayload & {
   cautions?: string;
   /** 原廠標示逐條照抄，不是 uYao 的評價。 */
   labelHighlights?: { title: string; body: string }[];
+  /**
+   * 合作藥局自己確認**有販售**這個品項的店。
+   *
+   * 這不是供應狀態，也不是現貨保證 —— 是「這家店把這支列在自己的品項清單
+   * 上」，跟品項頁上寫的同一件事。仍然不輸出價格、庫存與掃描新鮮度。
+   *
+   * 會輸出是因為少了它，讀 API 的一方（例如 LINE agent）拿不到 storeSlug，
+   * 就沒辦法幫使用者送出預留 —— 只能請他自己回網站點一次。
+   */
+  availableAt?: PharmacyPayload[];
 };
 
 export type PharmacyPayload = {
@@ -72,14 +85,14 @@ export function catalogItemPayload(drug: Drug, locale: Locale): CatalogItemPaylo
     url: itemUrl(drug.slug, drug.nameEn ? locale : "zh"),
     name: display.name,
     ...(drug.nameEn ? { nameEn: drug.nameEn } : {}),
-    form: display.form,
-    spec: display.spec,
-    drugClass: display.drugClass,
+    ...(known(display.form) ? { form: display.form } : {}),
+    ...(known(display.spec) ? { spec: display.spec } : {}),
+    ...(known(display.drugClass) ? { drugClass: display.drugClass } : {}),
     category: drug.category,
     ingredients: display.ingredients,
-    nutritionFocus: (locale === "en" ? drug.nutritionFocusEn : drug.nutritionFocus) || "",
-    ...(drug.manufacturer ? { manufacturer: drug.manufacturer } : {}),
-    ...(drug.origin ? { origin: drug.origin } : {}),
+    nutritionFocus: known(locale === "en" ? drug.nutritionFocusEn : drug.nutritionFocus) ?? "",
+    ...(known(drug.manufacturer) ? { manufacturer: drug.manufacturer } : {}),
+    ...(known(drug.origin) ? { origin: drug.origin } : {}),
     // 許可證字號只在真的有值時輸出；沒接到藥證開放資料前一律空字串。
     ...(drug.licenseNo ? { licenseNo: drug.licenseNo } : {}),
     ...(drug.image
@@ -99,8 +112,15 @@ export function catalogItemDetailPayload(
   drug: Drug,
   locale: Locale,
 ): CatalogItemDetailPayload {
+  const label = drug.spec === "規格待確認" ? drug.name : `${drug.name} ${drug.spec}`;
+  const availableAt = partnersForProduct(label)
+    .map((partner) => getStore(partner.storeSlug))
+    .filter((store): store is Store => store !== undefined)
+    .map((store) => pharmacyPayload(store, locale));
+
   return {
     ...catalogItemPayload(drug, locale),
+    ...(availableAt.length > 0 ? { availableAt } : {}),
     ...(drug.dosage ? { dosage: drug.dosage } : {}),
     ...(drug.cautions ? { cautions: drug.cautions } : {}),
     ...(drug.highlights?.length
