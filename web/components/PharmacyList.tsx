@@ -110,7 +110,7 @@ export function PharmacyList({
   );
 }
 
-export function ReserveButton({
+function ReserveButton({
   row,
   mobile = false,
   onClick,

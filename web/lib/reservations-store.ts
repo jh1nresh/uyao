@@ -43,7 +43,12 @@ export interface StoredReservation {
   storeHours: string;
   /** 藥局遲遲沒回覆時，消費者要打的號碼 */
   storePhone: string;
-  priceTwd: number;
+  /**
+   * 藥局自報價。null = 這家藥局確認有販售這個品項，但還沒有掃描流帶出價格
+   * （目前沒有任何一家裝盒子，所以真單幾乎都是 null）。Store OS 的工作卡
+   * 遇到 null 就寫「門市報價」—— 不要填 0，那會被讀成免費。
+   */
+  priceTwd: number | null;
   contactKind: "phone";
   contact: string;
   status: ReservationStatus;
@@ -136,7 +141,8 @@ export interface StoreReservationSummary {
   code: string;
   drugName: string;
   drugSpec: string;
-  priceTwd: number;
+  /** null = 還沒有掃描流帶出價格；工作卡寫「門市報價」而不是 0。 */
+  priceTwd: number | null;
   contactTail: string;
   status: ReservationStatus;
   createdAt: string;

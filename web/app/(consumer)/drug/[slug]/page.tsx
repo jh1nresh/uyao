@@ -3,12 +3,10 @@ import { Fragment } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { AreaStorePeek } from "@/components/AreaStorePeek";
 import { AreaSwitch } from "@/components/AreaSwitch";
+import { StoreBuyBox } from "@/components/StoreBuyBox";
 import { NoInventoryYet } from "@/components/NoInventoryYet";
 import { PharmacyList } from "@/components/PharmacyList";
-import { PharmacyPeek } from "@/components/PharmacyPeek";
-import { ProductStorePeek } from "@/components/ProductStorePeek";
 import { ProductGallery, type GalleryImage } from "@/components/ProductGallery";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -312,16 +310,13 @@ export default async function DrugPage({
           {/* 這頁只要回答一件事：哪家藥局有這個藥、電話幾號。
               有掃描庫存就用庫存 rows；還沒有掃描流時，用合作藥局自己確認過的
               販售品項 —— 44 個品項都講得出至少一家，不必讓人捲到頁尾。 */}
-          {rows.length > 0 ? (
-            <PharmacyPeek
-              drug={{ slug: drug.slug, name: displayDrug.name, spec: drug.spec }}
-              rows={rows}
-            />
-          ) : partnerStores.length > 0 ? (
-            <ProductStorePeek stores={partnerStores} locale={locale} />
-          ) : (
-            <AreaStorePeek stores={areaStores} areaLabel={areaShortName} locale={locale} />
-          )}
+          <StoreBuyBox
+            drug={{ slug: drug.slug, name: displayDrug.name, spec: drug.spec }}
+            rows={rows}
+            carryingStores={partnerStores}
+            otherStores={areaStores}
+            areaLabel={areaShortName}
+          />
         </div>
       </div>
       </section>
