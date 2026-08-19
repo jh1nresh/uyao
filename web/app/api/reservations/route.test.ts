@@ -184,6 +184,63 @@ describe("Store OS reservation delivery", () => {
     expect(record).toMatchObject({ priceTwd: null, stockTier: "unknown", storeSlug: store.slug });
   });
 
+  // 沒有藥局訂閱裝置時，單子會靜靜躺在沒人看的收件匣裡。消費者那端有退路，
+  // 但我們這端必須留下可追的訊號，不能只有一行 console.log。
+  it("records an unreachable signal when no pharmacy device is listening", async () => {
+    mocks.sendStorePush.mockResolvedValueOnce({
+      status: "no_subscriptions", sent: 0, failed: 0, removed: 0,
+    });
+    const partner = PARTNER_PHARMACIES.建利西藥房;
+    const store = getStore(partner.storeSlug)!;
+    const confirmed: readonly string[] = partner.confirmedProducts;
+    const drug = allDrugs().find((d) =>
+      confirmed.includes(d.spec === "規格待確認" ? d.name : `${d.name} ${d.spec}`),
+    )!;
+
+    const response = await POST(new Request("http://localhost/api/reservations", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-forwarded-for": "127.0.0.33" },
+      body: JSON.stringify({
+        drugSlug: drug.slug,
+        storeSlug: store.slug,
+        contact: "0912345678",
+      }),
+    }));
+
+    expect(response.status).toBe(200);
+    const kinds = mocks.appendRecord.mock.calls.map(([kind]) => kind);
+    expect(kinds).toContain("unreachable");
+    const [, signal] = mocks.appendRecord.mock.calls.find(([kind]) => kind === "unreachable")!;
+    expect(signal).toMatchObject({
+      storeSlug: store.slug,
+      storeName: store.name,
+      pushStatus: "no_subscriptions",
+      storePhone: store.phone,
+    });
+  });
+
+  it("does not raise an unreachable signal for demo orders", async () => {
+    mocks.sendStorePush.mockResolvedValueOnce({
+      status: "no_subscriptions", sent: 0, failed: 0, removed: 0,
+    });
+    const store = STORE_DEMO_STORE;
+    const offer = previewOffers(store.slug)[0];
+
+    const response = await POST(new Request("http://localhost/api/reservations", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-forwarded-for": "127.0.0.34" },
+      body: JSON.stringify({
+        drugSlug: offer.drugSlug,
+        storeSlug: store.slug,
+        contact: "0912345678",
+        demo: true,
+      }),
+    }));
+
+    expect(response.status).toBe(200);
+    expect(mocks.appendRecord.mock.calls.map(([kind]) => kind)).not.toContain("unreachable");
+  });
+
   it("still rejects a pharmacy that never confirmed carrying the item", async () => {
     const partner = PARTNER_PHARMACIES.建利西藥房;
     const confirmed: readonly string[] = partner.confirmedProducts;

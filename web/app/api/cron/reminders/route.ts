@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 
 import { logConsole } from "@/lib/box";
+import { appendRecord } from "@/lib/record";
 import {
   EXPIRE_UNANSWERED_AFTER_HOURS,
   REMIND_STORE_AFTER_MIN,
@@ -115,6 +116,23 @@ export async function GET(request: Request) {
     if (result.status !== "sent") {
       if (result.status === "no_subscriptions") unsubscribed += 1;
       console.log(`[cron] ${r.code} @ ${r.storeSlug} 逾時但 Web Push 未送達（${result.status}）`);
+      // 建單時推不出去還可能是剛好沒訂閱；過了催單門檻仍推不出去，就是這筆
+      // 確定沒人在看。這一筆才是最該讓人知道的 —— 消費者已經等了 15 分鐘。
+      if (!r.demo) {
+        await appendRecord("unreachable", {
+          code: r.code,
+          drugSlug: r.drugSlug,
+          drugName: r.drugName,
+          storeSlug: r.storeSlug,
+          storeName: r.storeName,
+          storePhone: r.storePhone,
+          pushStatus: result.status,
+          createdAt: r.createdAt,
+          waitedMin: Math.round(minutesSince(r.createdAt)),
+        }).catch((err) => {
+          console.error(`[cron] 無人接單訊號寫入失敗 ${r.code}`, String(err).slice(0, 200));
+        });
+      }
       continue;
     }
 
