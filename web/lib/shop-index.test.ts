@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { allDrugs } from "./data";
+import { allDrugs, allStores } from "./data";
 import {
   indexableCatalogItems,
   shopSitemapEntries,
@@ -56,9 +56,35 @@ describe("consumer admission gate", () => {
     expect(paths).toContain("/en/category/partner-item");
   });
 
-  it("never publishes search, store, or reservation-receipt routes", () => {
+  it("never publishes search or reservation-receipt routes", () => {
     for (const path of shopIndexablePaths()) {
-      expect(path).not.toMatch(/\/(search|store|r)(\/|$)/);
+      expect(path).not.toMatch(/\/(search|r)(\/|$)/);
+    }
+  });
+
+  // 藥局頁只有公開藥局資料，不列品項也不講供應，所以收錄。但只收中文：
+  // 藥局名是中文，英文版標題跟中文版一模一樣，收了就是近似重複頁。
+  it("publishes every pharmacy in Chinese only", () => {
+    const paths = shopIndexablePaths();
+
+    for (const store of allStores()) {
+      expect(paths).toContain(`/zh-tw/store/${store.slug}`);
+      expect(paths).not.toContain(`/en/store/${store.slug}`);
+    }
+  });
+
+  // 藥局是整批的開放資料快照，沒有逐筆 updatedOn —— 但 lastmod 仍然要是
+  // 一個真實、不隨每次 build 前進的日期，否則 Google 會停止相信這個訊號。
+  it("dates pharmacy pages with a real, non-future ISO day", () => {
+    const today = process.env.UYAO_TEST_TODAY ?? "2026-08-19";
+    const storeEntries = shopSitemapEntries().filter((entry) =>
+      entry.path.includes("/store/"),
+    );
+
+    expect(storeEntries.length).toBe(allStores().length);
+    for (const entry of storeEntries) {
+      expect(entry.lastModified).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(entry.lastModified <= today).toBe(true);
     }
   });
 
