@@ -5,6 +5,7 @@ import {
   catalogItem,
   catalogPayload,
   pharmaciesPayload,
+  PUBLIC_API_VERSION,
   readLocale,
 } from "./public-api";
 import { SHOP_URL } from "./shop";
@@ -12,6 +13,22 @@ import { SHOP_URL } from "./shop";
 const LOCALES = ["zh", "en"] as const;
 
 describe("public read API payloads", () => {
+  it("versions the additive catalog freshness contract", () => {
+    expect(PUBLIC_API_VERSION).toBe("1.1.0");
+  });
+
+  it("exposes catalog copy freshness without implying inventory freshness", () => {
+    for (const locale of LOCALES) {
+      for (const item of catalogPayload(locale)) {
+        const drug = allDrugs().find((candidate) => candidate.slug === item.slug)!;
+        expect(item.catalogRecordUpdatedOn, item.slug).toBe(drug.updatedOn);
+        expect(catalogItem(item.slug, locale)?.catalogRecordUpdatedOn, item.slug).toBe(
+          drug.updatedOn,
+        );
+      }
+    }
+  });
+
   it("never leaks price, stock, or availability", () => {
     for (const locale of LOCALES) {
       const json = JSON.stringify({
