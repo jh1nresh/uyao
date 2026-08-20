@@ -291,6 +291,75 @@ html[data-theme="dark"] .theme-logo-dark {
   fill: rgb(var(--color-agent-eye)) !important;
 }
 
+/* The product proof starts on one full-width paper plane, then resolves into
+   the final sharp-edged card. The card's layout is contained from the start;
+   only transform and opacity are scroll-linked, so the effect never animates
+   width, margin, background color, or another main-thread layout property. */
+.hero-scroll-stage {
+  position: relative;
+  isolation: isolate;
+}
+
+.hero-scroll-backdrop {
+  position: absolute;
+  inset-block: 0;
+  left: 50%;
+  z-index: -1;
+  width: 100vw;
+  background: rgb(var(--color-paper));
+  transform: translateX(-50%) scaleX(0.92);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.hero-scroll-card {
+  width: min(1120px, 92vw);
+  margin-inline: auto;
+  background: rgb(var(--color-paper));
+  transform-origin: top center;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-scroll-stage {
+      view-timeline-name: --hero-card;
+      view-timeline-axis: block;
+    }
+
+    .hero-scroll-backdrop {
+      animation: hero-backdrop-retreat linear both;
+      animation-timeline: --hero-card;
+      animation-range: entry 0% cover 34%;
+    }
+
+    .hero-scroll-card {
+      animation: hero-card-settle linear both;
+      animation-timeline: --hero-card;
+      animation-range: entry 0% cover 34%;
+    }
+  }
+}
+
+@keyframes hero-backdrop-retreat {
+  from {
+    transform: translateX(-50%) scaleX(1);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-50%) scaleX(0.92);
+    opacity: 0;
+  }
+}
+
+@keyframes hero-card-settle {
+  from {
+    transform: scale(1.08);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
 @keyframes partner-marquee-scroll {
   to {
     transform: translate3d(-50%, 0, 0);
