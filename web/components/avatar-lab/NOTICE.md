@@ -18,6 +18,8 @@ of that license is included as `AGPL-3.0.txt` in this directory.
 ## Integration changes
 
 - One identical generated `avatar-runtime.ts` is shared by all five exports.
+  Its engine is compiled from one shared `blob:` module; avatar data is passed
+  into a cached factory instead of being embedded in a new module per export.
 - The Vite-specific dynamic import ignore marker was replaced with webpack's
   equivalent so Next.js leaves the generated `blob:` module URL to the browser.
 - The exported components are selected by the existing uYao Agent role.
@@ -29,6 +31,9 @@ of that license is included as `AGPL-3.0.txt` in this directory.
   body-node geometry so the roles remain distinct at sidebar size.
 - Runtime playback is enabled only for the central active Agent and is disabled
   when the operating system requests reduced motion.
+- Landing avatars render generated first-frame SVG components from `static/`.
+  Only an in-view animated avatar swaps into the shared runtime after page load
+  and an idle callback. Regenerate them with `npm run generate:static-avatars`.
 - `Sprout` takes an optional `data` prop so one surface can supply alternate
   export data. The landing footer uses it to raise and shorten the eyes
   (`components/landing/footerSproutData.ts`) so the mascot survives being

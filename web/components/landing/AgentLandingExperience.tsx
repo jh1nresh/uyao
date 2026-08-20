@@ -19,11 +19,10 @@ import { Flame } from "@/components/avatar-lab/Flame";
 import { Pepper } from "@/components/avatar-lab/Pepper";
 import { Sapling } from "@/components/avatar-lab/Sapling";
 import { Sprout } from "@/components/avatar-lab/Sprout";
+import { StaticAvatar } from "@/components/avatar-lab/StaticAvatar";
 import { CompanyFooter } from "@/components/landing/CompanyFooter";
 import {
-  FOOTER_MANAGER_ANIMATION,
   FOOTER_MANAGER_TRANSFORM,
-  footerSproutData,
 } from "@/components/landing/footerSproutData";
 import { SHOP_URL } from "@/lib/shop";
 
@@ -369,14 +368,77 @@ function Avatar({
   style?: CSSProperties;
 }) {
   const Component = AVATARS[id];
+  const host = useRef<HTMLSpanElement>(null);
+  const [runtimeReady, setRuntimeReady] = useState(false);
+
+  useEffect(() => {
+    if (!playing || !host.current) {
+      setRuntimeReady(false);
+      return;
+    }
+
+    const node = host.current;
+    const idleWindow = window as Window & {
+      requestIdleCallback?: (callback: IdleRequestCallback, options?: IdleRequestOptions) => number;
+      cancelIdleCallback?: (handle: number) => void;
+    };
+    let disposed = false;
+    let idleHandle: number | undefined;
+    let timeoutHandle: number | undefined;
+    let waitingForLoad = false;
+
+    const showRuntime = () => {
+      if (!disposed) setRuntimeReady(true);
+    };
+    const scheduleAfterLoad = () => {
+      waitingForLoad = false;
+      if (disposed) return;
+      if (idleWindow.requestIdleCallback) {
+        idleHandle = idleWindow.requestIdleCallback(showRuntime, { timeout: 2000 });
+      } else {
+        timeoutHandle = window.setTimeout(showRuntime, 200);
+      }
+    };
+    const schedule = () => {
+      if (document.readyState === "complete") scheduleAfterLoad();
+      else {
+        waitingForLoad = true;
+        window.addEventListener("load", scheduleAfterLoad, { once: true });
+      }
+    };
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        observer.disconnect();
+        schedule();
+      },
+      { rootMargin: "120px" },
+    );
+    observer.observe(node);
+
+    return () => {
+      disposed = true;
+      observer.disconnect();
+      if (waitingForLoad) window.removeEventListener("load", scheduleAfterLoad);
+      if (idleHandle !== undefined) idleWindow.cancelIdleCallback?.(idleHandle);
+      if (timeoutHandle !== undefined) window.clearTimeout(timeoutHandle);
+    };
+  }, [playing]);
+
+  const dimension = typeof size === "number" ? `${size}px` : size;
   return (
-    <Component
-      playing={playing}
-      loop
-      size={size}
+    <span
+      ref={host}
       className={`agent-theme-eyes ${className}`}
-      style={style}
-    />
+      data-avatar-mode={runtimeReady ? "runtime" : "static"}
+      style={{ display: "inline-block", width: dimension, height: dimension, ...style }}
+    >
+      {runtimeReady ? (
+        <Component playing loop size="100%" />
+      ) : (
+        <StaticAvatar id={id} size="100%" />
+      )}
+    </span>
   );
 }
 
@@ -401,7 +463,7 @@ function StoreOsPreview({
   };
 
   return (
-    <section className="mx-auto w-full max-w-[1080px] pb-24" aria-label="Store OS interactive product preview">
+    <section className="mx-auto w-full pb-24" aria-label="Store OS interactive product preview">
       <div className="num mb-3 flex items-center justify-between gap-4 text-[11px] font-semibold tracking-[.06em] text-muted">
         <span>STORE OS · INTERACTIVE PRODUCT PREVIEW</span>
         <span className="hidden sm:inline">{copy.previewHint}</span>
@@ -453,7 +515,7 @@ function StoreOsPreview({
         <div className="min-w-0">
           <div className="flex min-h-[68px] items-center justify-between gap-4 border-b border-line px-4 sm:px-6">
             <div className="flex min-w-0 items-center gap-3">
-              <Avatar id={selected.id} size={42} playing={!reducedMotion} />
+              <Avatar id={selected.id} size={42} playing={false} />
               <span className="min-w-0">
                 <strong className="block truncate text-[14px]">{selected.name}</strong>
                 <small className="block truncate text-[11px] text-muted">{selected.description}</small>
@@ -469,7 +531,7 @@ function StoreOsPreview({
             <div className="flex min-h-0 min-w-0 flex-col px-4 py-5 sm:px-6 lg:py-4">
               <span className="num text-[9px] font-semibold tracking-[.08em] text-muted">SHARED WORKITEM · WI-2031</span>
               <div className="mt-5 flex items-start gap-4 lg:mt-4">
-                <Avatar id={selected.id} size={48} playing={!reducedMotion} />
+                <Avatar id={selected.id} size={48} playing={false} />
                 <div className="min-w-0">
                   <strong className="text-[13px]">{selected.name}</strong>
                   <p
@@ -632,11 +694,8 @@ function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; loc
             {/* Bible Strong's Sprout `idle` resting pose, held statically so the
                 footer never sways; only the eye crop is adapted so the face
                 remains visible above the footer line. */}
-            <Sprout
-              data={footerSproutData}
-              animation={FOOTER_MANAGER_ANIMATION}
-              playing={false}
-              loop
+            <StaticAvatar
+              id="footer-manager"
               size="100%"
               className="agent-theme-eyes"
             />
@@ -694,7 +753,12 @@ export function AgentLandingExperience({ locale }: { locale: Locale }) {
           </div>
         </header>
 
-        <div className="px-0 sm:px-8"><StoreOsPreview copy={copy} locale={locale} reducedMotion={reducedMotion} /></div>
+        <div className="hero-scroll-stage">
+          <div className="hero-scroll-backdrop" aria-hidden />
+          <div className="hero-scroll-card">
+            <StoreOsPreview copy={copy} locale={locale} reducedMotion={reducedMotion} />
+          </div>
+        </div>
 
         <section id="message" className="border-t border-line py-24 sm:py-32">
           <div className="mx-auto grid max-w-[1240px] items-center gap-14 px-5 sm:px-8 lg:grid-cols-[.82fr_1.18fr]">
