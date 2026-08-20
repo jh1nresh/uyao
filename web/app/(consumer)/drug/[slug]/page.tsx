@@ -148,9 +148,13 @@ export default async function DrugPage({
   // 寬螢幕把「哪裡拿得到」抬成獨立一欄，跟品名同一屏 —— 不必先讀完成分
   // 摘要才看到藥局。lg 以下欄寬切不出三欄，維持疊在品項資料下面。
   // 沒有圖廊的品項少一欄，欄位表要跟著少一格，否則第一欄會空著。
+  // 欄寬跟著 .shop-shell 的三級一起長，級距必須對齊 —— xl 的可用寬度只有
+  // 1120px，在那裡就把主圖放大到 480 的話，中間那欄會被擠到 300 出頭，
+  // 44px 的品名直接折成三行。所以 xl 維持原樣，1440 以上才開始放大。
+  // 主圖上限 560 是有根據的：來源檔就是 900px 寬，再放大就是在放大糊圖。
   const heroGridClass = galleryImages.length > 0
-    ? "lg:grid-cols-[minmax(0,520px)_minmax(0,1fr)] xl:grid-cols-[minmax(0,400px)_minmax(0,1fr)_minmax(300px,340px)]"
-    : "xl:grid-cols-[minmax(0,1fr)_minmax(300px,340px)]";
+    ? "lg:grid-cols-[minmax(0,520px)_minmax(0,1fr)] xl:grid-cols-[minmax(0,400px)_minmax(0,1fr)_minmax(300px,340px)] min-[1440px]:grid-cols-[minmax(0,480px)_minmax(0,1fr)_minmax(320px,380px)] 2xl:grid-cols-[minmax(0,560px)_minmax(0,1fr)_minmax(340px,400px)]"
+    : "xl:grid-cols-[minmax(0,1fr)_minmax(300px,340px)] min-[1440px]:grid-cols-[minmax(0,1fr)_minmax(320px,380px)] 2xl:grid-cols-[minmax(0,1fr)_minmax(340px,400px)]";
   const buyBoxPlacement = galleryImages.length > 0
     ? "lg:col-start-2 lg:row-start-2 xl:col-start-3 xl:row-start-1"
     : "xl:col-start-2 xl:row-start-1";
@@ -214,7 +218,9 @@ export default async function DrugPage({
       </nav>
 
       <section className="border-b border-line bg-paper">
-      <div className={`shop-shell grid max-w-[1040px] gap-7 py-8 sm:py-10 lg:items-start xl:max-w-[1280px] xl:gap-8 ${heroGridClass}`}>
+      {/* 不再自己壓一層 max-w：原本 hero 是 1280，比 .shop-shell 的 1344 還窄 ——
+          麵包屑與頁首都比它寬，切齊永遠差一截。寬度交給 shell 一處決定。 */}
+      <div className={`shop-shell grid gap-7 py-8 sm:py-10 lg:items-start xl:gap-8 ${heroGridClass}`}>
         {galleryImages.length > 0 && (
           <div className="flex flex-col gap-2.5">
             <ProductGallery images={galleryImages} locale={locale} />
