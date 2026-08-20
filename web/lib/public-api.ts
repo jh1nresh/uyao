@@ -3,7 +3,7 @@ import { drugCopy, areaCopy, type Locale } from "./i18n";
 import { partnersForProduct } from "./partners";
 import { known } from "./pending";
 import { SHOP_URL } from "./shop";
-import type { Drug, Store } from "./types";
+import type { Drug, IsoDate, Store } from "./types";
 
 /**
  * 公開讀取 API 的序列化層。
@@ -18,12 +18,14 @@ import type { Drug, Store } from "./types";
  *                      供應狀態或 daysSinceScan —— 那會被當成現貨保證。
  */
 
-export const PUBLIC_API_VERSION = "1.0.0";
+export const PUBLIC_API_VERSION = "1.1.0";
 
 export type CatalogItemPayload = {
   slug: string;
   url: string;
   name: string;
+  /** Catalog copy freshness only. This is never an inventory scan timestamp. */
+  catalogRecordUpdatedOn: IsoDate;
   nameEn?: string;
   /** 未查證的欄位整個不輸出 —— 不要送「規格待確認」這種佔位字串出去。 */
   form?: string;
@@ -88,6 +90,7 @@ export function catalogItemPayload(drug: Drug, locale: Locale): CatalogItemPaylo
     slug: drug.slug,
     url: itemUrl(drug.slug, drug.nameEn ? locale : "zh"),
     name: display.name,
+    catalogRecordUpdatedOn: drug.updatedOn,
     ...(drug.nameEn ? { nameEn: drug.nameEn } : {}),
     ...(known(display.form) ? { form: display.form } : {}),
     ...(known(display.spec) ? { spec: display.spec } : {}),

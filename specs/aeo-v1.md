@@ -56,7 +56,10 @@ distinction is the point:
   read contract. They return only fields the corresponding pages already
   render, carry a `disclaimer` string in every response, and never return
   price, stock, availability, or `daysSinceScan` — uYao has no live inventory
-  and a machine-readable stock field would be read as one.
+  and a machine-readable stock field would be read as one. Catalog records also
+  return `catalogRecordUpdatedOn`, the same per-item content date used for
+  sitemap freshness. It is not an inventory scan timestamp, stock freshness
+  signal, or availability confirmation.
 - The intake endpoints (`/api/demand`, `/api/pilot`, `/api/reservations`) are
   listed but marked `x-internal: true`, with each description stating that they
   back this site's own forms and are not a public contract. They accept

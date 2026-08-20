@@ -93,6 +93,20 @@ describe("openapi document", () => {
     }
   });
 
+  it("documents catalog freshness as content metadata, never inventory freshness", () => {
+    const schemas = (doc.components as Record<string, Record<string, Record<string, unknown>>>).schemas;
+    const catalog = schemas.CatalogItem;
+    const properties = catalog.properties as Record<string, Record<string, unknown>>;
+    const freshness = properties.catalogRecordUpdatedOn;
+
+    expect((doc.info as Record<string, unknown>).version).toBe("1.1.0");
+    expect(freshness.type).toBe("string");
+    expect(freshness.format).toBe("date");
+    expect(String(freshness.description)).toMatch(/catalog record.*content/i);
+    expect(String(freshness.description)).toMatch(/not an inventory scan timestamp/i);
+    expect(catalog.required as string[]).toContain("catalogRecordUpdatedOn");
+  });
+
   it("flags the reservation endpoint's real-world side effect", () => {
     const reservation = String(paths["/api/reservations"].post.description);
     expect(reservation).toMatch(/mobile number/i);
