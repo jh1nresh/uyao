@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { CatalogImagePlaceholder } from "./CatalogImagePlaceholder";
 import { catalogSourceStatus } from "./CatalogItemGrid";
 import { known } from "@/lib/pending";
 import { drugCopy, localizedPath, type Locale } from "@/lib/i18n";
@@ -61,7 +62,7 @@ export function CatalogCarousel({
   if (drugs.length === 0) return null;
 
   const arrow =
-    "flex h-9 w-9 items-center justify-center border border-line bg-paper text-forest transition-colors hover:border-forest disabled:cursor-default disabled:opacity-35 disabled:hover:border-line";
+    "flex h-11 w-11 items-center justify-center border border-line bg-paper text-forest transition-colors hover:border-forest disabled:cursor-default disabled:opacity-35 disabled:hover:border-line";
 
   return (
     <div className="relative">
@@ -112,10 +113,7 @@ export function CatalogCarousel({
                     className="object-contain p-3"
                   />
                 ) : (
-                  // 還沒有商品圖的品項不留空框：用品名撐住版位，整條列高度才一致
-                  <span className="flex h-full w-full items-center justify-center px-3 text-center text-[15px] font-bold leading-[1.4] text-muted-2">
-                    {drug.name}
-                  </span>
+                  <CatalogImagePlaceholder locale={locale} />
                 )}
               </span>
               <span className="flex flex-1 flex-col justify-between gap-2 px-3.5 py-3">

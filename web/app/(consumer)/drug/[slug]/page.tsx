@@ -22,7 +22,7 @@ import {
   toAreaSlug,
 } from "@/lib/data";
 import { JsonLd } from "@/components/JsonLd";
-import { areaCopy, categoryName, drugCopy, localizedPath } from "@/lib/i18n";
+import { areaCopy, categoryName, drugCopy, localizedPath, secondaryProductName } from "@/lib/i18n";
 import { hasAmounts, ingredientRows } from "@/lib/ingredients";
 import { getRequestLocale } from "@/lib/locale-server";
 import { isPending, known } from "@/lib/pending";
@@ -105,6 +105,7 @@ export default async function DrugPage({
   const drug = getDrug(slug);
   if (!drug) notFound();
   const displayDrug = drugCopy(drug, locale);
+  const secondaryName = secondaryProductName(drug, locale);
   const productLabel = drug.spec === "規格待確認" ? drug.name : `${drug.name} ${drug.spec}`;
   const displayLabel = drug.spec === "規格待確認" ? displayDrug.name : `${displayDrug.name} ${displayDrug.spec}`;
   // 劑型、規格與藥品分類都可能還沒查證。未知就整段不顯示 —— 目錄卡、輪播與
@@ -222,7 +223,7 @@ export default async function DrugPage({
           麵包屑與頁首都比它寬，切齊永遠差一截。寬度交給 shell 一處決定。 */}
       <div className={`shop-shell grid gap-7 py-8 sm:py-10 lg:items-start xl:gap-8 ${heroGridClass}`}>
         {galleryImages.length > 0 && (
-          <div className="flex flex-col gap-2.5">
+          <div className="order-3 flex flex-col gap-2.5 lg:order-1">
             <ProductGallery images={galleryImages} locale={locale} />
             {drug.image && (
               <p className="m-0 text-xs leading-[1.7] text-muted-2">
@@ -259,14 +260,14 @@ export default async function DrugPage({
             )}
           </div>
         )}
-        <div className="flex flex-col gap-2 border-l-2 border-forest pl-4 sm:pl-6">
+        <div className="order-1 flex flex-col gap-2 border-l-2 border-forest pl-4 sm:pl-6 lg:order-2">
           <p className="mb-1 text-[14px] font-bold text-forest">
             {locale === "en" ? "Partner-listed item" : "合作藥局提供品項"}
           </p>
           <h1 className="editorial-display m-0 text-[32px] leading-[1.2] sm:text-[44px]">
             {displayDrug.name}{" "}
-            {locale !== "en" && drug.nameEn && (
-              <span className="num text-sm font-medium text-muted">{drug.nameEn}</span>
+            {secondaryName && (
+              <span className="num text-sm font-medium text-muted">{secondaryName}</span>
             )}
           </h1>
           {(metaLine || drug.licenseNo || !classPending) && (
@@ -296,17 +297,24 @@ export default async function DrugPage({
             </div>
           )}
           <p className="text-xs text-muted-2">
-            {partnerProvidedDetails
-              ? locale === "en"
-                ? "The product name, ingredients, origin, and supplier details below were provided by a partner pharmacy and have not been independently verified against a public source. They do not establish approved medicine classification or treatment efficacy."
-                : "下方品名、成分、產地與供應資訊由合作藥局提供，尚未以公開來源獨立驗證；不代表核准藥品分類或療效。"
-              : drug.source
-              ? locale === "en"
-                ? "The public product source presents this as a food or nutrition supplement, not an approved medicine. Its nutrition focus is not a treatment indication."
-                : "公開商品資料將此品項列為食品類營養補充品，而非核准藥品；下方是營養補充／日常保養定位，不是治療用途或藥品適應症。"
-              : locale === "en"
-                ? "We only show the partner-confirmed item name and package size."
-                : "目前只顯示合作藥局確認的品名與規格。"}
+            <span className="sm:hidden">
+              {locale === "en"
+                ? "Catalog details and supply still require pharmacy confirmation."
+                : "品項資料與供應狀態仍須向藥局確認。"}
+            </span>
+            <span className="hidden sm:inline">
+              {partnerProvidedDetails
+                ? locale === "en"
+                  ? "The product name, ingredients, origin, and supplier details below were provided by a partner pharmacy and have not been independently verified against a public source. They do not establish approved medicine classification or treatment efficacy."
+                  : "下方品名、成分、產地與供應資訊由合作藥局提供，尚未以公開來源獨立驗證；不代表核准藥品分類或療效。"
+                : drug.source
+                ? locale === "en"
+                  ? "The public product source presents this as a food or nutrition supplement, not an approved medicine. Its nutrition focus is not a treatment indication."
+                  : "公開商品資料將此品項列為食品類營養補充品，而非核准藥品；下方是營養補充／日常保養定位，不是治療用途或藥品適應症。"
+                : locale === "en"
+                  ? "We only show the partner-confirmed item name and package size."
+                  : "目前只顯示合作藥局確認的品名與規格。"}
+            </span>
           </p>
           {/* 內文與成分摘要直接放右欄：打開頁面第一屏就該知道這是什麼、
               裡面有什麼 —— 不必捲到頁面下段。成分細節與來源仍在下方區塊。 */}
@@ -328,7 +336,7 @@ export default async function DrugPage({
         {/* 這頁只要回答一件事：哪家藥局有這個藥、電話幾號。
             有掃描庫存就用庫存 rows；還沒有掃描流時，用合作藥局自己確認過的
             販售品項 —— 44 個品項都講得出至少一家，不必讓人捲到頁尾。 */}
-        <div className={buyBoxPlacement}>
+        <div className={`order-2 lg:order-3 ${buyBoxPlacement}`}>
           <StoreBuyBox
             drug={{ slug: drug.slug, name: displayDrug.name, spec: drug.spec }}
             rows={rows}

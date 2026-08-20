@@ -84,7 +84,7 @@ export function PartnerMarquee({
       data-paused={!visible}
       aria-labelledby={`partner-marquee-heading-${locale}`}
     >
-      <div className="mx-auto max-w-[1240px] px-5 py-5 sm:px-8 sm:py-6">
+      <div className="mx-auto max-w-[1240px] px-5 py-3 sm:px-8 sm:py-4">
         <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1">
           <h2 id={`partner-marquee-heading-${locale}`} className="m-0 text-[18px] font-black">
             <span className="num text-oxblood">{items.length}</span> {copy.headingSuffix}
@@ -98,7 +98,7 @@ export function PartnerMarquee({
         </div>
 
         <div
-          className="partner-marquee-viewport relative mt-2 overflow-hidden py-4"
+          className="partner-marquee-viewport relative mt-1 overflow-hidden py-2"
           aria-label={copy.ariaLabel}
         >
           <div className="partner-marquee-track flex w-max">
