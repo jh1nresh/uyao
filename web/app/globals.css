@@ -167,8 +167,21 @@ html.theme-switching body * {
 }
 
 @layer components {
+  /*
+   * 站上每一段內容的外框。
+   *
+   * 寬螢幕再放寬兩級：1344 在 1920 的螢幕上左右各空掉約 290px，等於三成畫面
+   * 是留白，而品項頁那種三欄版面會被擠到主圖只剩 310px 寬。
+   *
+   * 中間那級刻意用 1440 而不是 Tailwind 的 2xl(1536)：最常見的大筆電是
+   * 1440–1512（MacBook Pro 14" 就是 1512），全部落在 2xl 以下 —— 只加 2xl
+   * 的話，最多人用的那個尺寸一點都不會變寬。
+   *
+   * 上限仍然存在：沒有上限的話超寬螢幕會把內文拉成一行七八十個字，
+   * 那是另一種難讀。
+   */
   .shop-shell {
-    @apply mx-auto w-full max-w-[1344px] px-4 sm:px-7 xl:px-12;
+    @apply mx-auto w-full max-w-[1344px] px-4 sm:px-7 xl:px-12 min-[1440px]:max-w-[1440px] 2xl:max-w-[1600px];
   }
 
   .shop-kicker {
