@@ -1,3 +1,6 @@
+import Image from "next/image";
+
+import { CatalogImagePlaceholder } from "./CatalogImagePlaceholder";
 import { NotifyMe } from "./NotifyMe";
 import { SearchResultLink } from "./SearchResultLink";
 import { StockBadge } from "./StockBadge";
@@ -98,7 +101,7 @@ export async function DrugResults({
   }
 
   return (
-    <div className="grid max-w-[960px] gap-3">
+    <div className="grid max-w-[1040px] gap-3">
       {results.map((r) => {
         const drug = drugCopy(r.drug, locale);
         // 規格未知就只印品名 —— 搜尋結果原本直接把「規格待確認」接在品名後面。
@@ -111,28 +114,46 @@ export async function DrugResults({
             href={`${localizedPath(`/drug/${r.drug.slug}`, locale)}?area=${area}`}
             drugSlug={r.drug.slug}
             query={query}
-            className="history-link group block bg-paper px-5 py-5 no-underline transition-[background-color,transform] hover:-translate-y-px hover:bg-surface-hover sm:px-6"
+            className="history-link group block bg-paper px-4 py-4 no-underline transition-[background-color,transform] hover:-translate-y-px hover:bg-surface-hover sm:px-5 sm:py-5"
           >
-            <span className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-start">
-              <span className="min-w-0">
+            <span className="grid grid-cols-[76px_minmax(0,1fr)] gap-4 sm:grid-cols-[88px_minmax(0,1fr)_190px] sm:items-center">
+              <span className="relative block aspect-square w-[76px] overflow-hidden border border-line sm:w-[88px]">
+                {r.drug.image ? (
+                  <Image
+                    src={r.drug.image.src}
+                    alt=""
+                    fill
+                    sizes="88px"
+                    className="object-contain p-2"
+                  />
+                ) : (
+                  <CatalogImagePlaceholder locale={locale} />
+                )}
+              </span>
+
+              <span className="min-w-0 self-start sm:self-center">
                 <span className="block text-[18px] font-bold leading-[1.45] text-ink sm:text-[19px]">
                   {title}
                 </span>
                 <span className="mt-1.5 block text-[14px] leading-[1.65] text-muted">
                   {reason}
                 </span>
-              </span>
-              <span className="flex items-center gap-2 sm:flex-col sm:items-end">
-                <span className="text-[14px] text-muted-2">
-                  {locale === "en" ? "SUPPLY SIGNAL" : "供應訊號"}
+                <span className="mt-3 block text-[13px] leading-[1.55] text-muted-2">
+                  {source}
                 </span>
-                <StockBadge badge={r.bestBadge} className="text-[14px] sm:justify-end" />
               </span>
-            </span>
-            <span className="mt-4 flex items-center justify-between gap-4 text-[14px] leading-[1.55] text-muted-2">
-              <span>{source}</span>
-              <span className="flex-none text-forest transition-transform group-hover:translate-x-1" aria-hidden>
-                →
+
+              <span className="col-span-2 grid gap-2 sm:col-span-1">
+                <span className="border border-line bg-surface px-3 py-2">
+                  <span className="mb-1 block text-[12px] font-bold text-forest">
+                    {locale === "en" ? "PARTNER-LISTED ITEM" : "合作藥局提供品項"}
+                  </span>
+                  <StockBadge badge={r.bestBadge} className="text-[13px]" />
+                </span>
+                <span className="action-secondary min-h-11 w-full gap-2 px-3 text-[13px] font-bold text-forest">
+                  {locale === "en" ? "View item" : "查看品項"}
+                  <span className="transition-transform group-hover:translate-x-1" aria-hidden>→</span>
+                </span>
               </span>
             </span>
           </SearchResultLink>

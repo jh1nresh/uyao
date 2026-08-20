@@ -63,6 +63,9 @@ export async function StoreView({
   const statusWarning = businessStatusWarning(store, locale);
   const nhiNote = nhiTerminationNote(store, locale);
   const partner = partnerForStore(store.slug);
+  // 單一時段可以排成兩欄、縮短卡片；含午休等多時段的長字串保留單欄，
+  // 避免在窄欄裡硬折成難讀的時間碎片。
+  const compactHours = store.hours.every(({ hours }) => hours.length <= 13);
 
   return (
     <>
@@ -70,9 +73,13 @@ export async function StoreView({
       {preview && <StorePreviewBanner storeName={store.name} storeSlug={store.slug} demo={demo} />}
 
       <section className="border-b border-line bg-ivory">
-        <div className="shop-shell py-10 sm:py-14">
-          <p className="shop-kicker mb-3">{demo ? "DEMO PHARMACY" : "PHARMACY RECORD"}</p>
-          <div className="flex flex-col gap-7 border border-line bg-paper p-5 sm:p-7 lg:flex-row lg:gap-10">
+        <div className="shop-shell py-7 sm:py-9">
+          <p className="shop-kicker mb-3">
+            {demo
+              ? locale === "en" ? "DEMO PHARMACY" : "示範藥局"
+              : locale === "en" ? "PHARMACY RECORD" : "藥局資料"}
+          </p>
+          <div className="grid gap-6 border border-line bg-paper p-5 sm:p-6 lg:grid-cols-[minmax(0,1fr)_minmax(260px,320px)] lg:items-start lg:gap-8">
         <div className="flex flex-1 flex-col gap-2.5">
           <div className="flex flex-wrap items-center gap-2.5">
             <h1 className="editorial-display m-0 text-[32px] leading-[1.2] sm:text-[42px]">{store.name}</h1>
@@ -143,15 +150,15 @@ export async function StoreView({
           </div>
         </div>
 
-        <div className="w-full flex-none border border-line bg-surface px-4 py-4 text-xs text-ink-2 lg:w-[280px]">
+        <div className="w-full border border-line bg-surface px-4 py-4 text-xs text-ink-2">
           <div className="mb-3 border-b border-line pb-2 text-[13px] font-bold text-ink">{hoursTitle(store.hoursSource, locale)}</div>
           {/* 標籤欄用 auto 且不換行 —— Google 的多時段字串
               （09:00–12:00、14:00–17:00、18:00–21:00）會把 1fr 的標籤欄
               壓到「星期一」直接斷成三行。 */}
           {store.hours.length > 0 ? (
-            <dl className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-[3px]">
+            <dl className={`grid gap-x-5 gap-y-1 ${compactHours ? "sm:grid-cols-2" : ""}`}>
               {store.hours.map((h) => (
-                <div key={h.label} className="contents">
+                <div key={h.label} className="grid grid-cols-[auto_1fr] gap-x-2">
                   <dt className="whitespace-nowrap">{openingLabel(h.label, locale)}</dt>
                   <dd
                     className={`text-[13px] ${
@@ -178,8 +185,8 @@ export async function StoreView({
 
       {preview ? (
         <section className="bg-paper">
-          <div className="shop-shell py-12 sm:py-16">
-          <p className="shop-kicker mb-3">AVAILABLE HERE</p>
+          <div className="shop-shell py-8 sm:py-10">
+          <p className="shop-kicker mb-3">{locale === "en" ? "AVAILABLE HERE" : "本店品項"}</p>
           <div className="mb-6 flex flex-wrap items-end gap-3">
             <h2 className="editorial-display m-0 text-[30px] sm:text-[38px]">{locale === "en" ? "Products available here" : "本店有貨商品"}</h2>
             <p className="text-[13px] text-muted-2">
@@ -195,10 +202,10 @@ export async function StoreView({
            一個方向：搜尋品項 → 品項頁列出提供它的合作藥局 → 藥局頁。反向
            把某家店有什麼藥攤開來，等於替門市公開一份庫存清單。 */
         <section className="bg-paper">
-          <div className="shop-shell py-12 sm:py-16">
-          <p className="shop-kicker mb-3">FIND BY ITEM</p>
-          <h2 className="editorial-display mb-6 mt-0 text-[30px] sm:text-[38px]">{locale === "en" ? "Find pharmacies by item" : "從品項找藥局"}</h2>
-          <div className="border border-line bg-ivory px-5 py-7 sm:px-7 sm:py-8">
+          <div className="shop-shell py-8 sm:py-10">
+          <p className="shop-kicker mb-3">{locale === "en" ? "FIND BY ITEM" : "從品項開始"}</p>
+          <h2 className="editorial-display mb-4 mt-0 text-[30px] sm:text-[38px]">{locale === "en" ? "Find pharmacies by item" : "從品項找藥局"}</h2>
+          <div className="border border-line bg-ivory px-5 py-5 sm:px-6 sm:py-6">
             <p className="max-w-[760px] text-[15px] leading-[1.8] text-ink-2">
               {locale === "en" ? "This page carries the public pharmacy record only. It does not list what this pharmacy sells or stocks." : "這一頁只提供公開的藥局基本資料，不列出這家藥局賣什麼、有什麼貨。"}
               <br />

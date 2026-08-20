@@ -56,6 +56,15 @@ export function drugCopy(drug: Drug, locale: Locale) {
   };
 }
 
+/** 中文正式品名已經含英文商品名時，不要在標題尾端再印一次。 */
+export function secondaryProductName(
+  drug: Pick<Drug, "name" | "nameEn">,
+  locale: Locale,
+): string | null {
+  if (locale === "en" || !drug.nameEn) return null;
+  return drug.name.toLowerCase().includes(drug.nameEn.toLowerCase()) ? null : drug.nameEn;
+}
+
 export function categoryName(slug: string, fallback: string, locale: Locale): string {
   return locale === "en" ? CATEGORY_EN[slug] ?? fallback : fallback;
 }
