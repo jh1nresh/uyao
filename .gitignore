@@ -1,6 +1,7 @@
 # 本機 agent 設定與藥局資料不進版控
 /.claude/
 /.claude-ads/
+/.codex/
 /data/
 __pycache__/
 *.pyc
@@ -17,3 +18,9 @@ designs/ecommerce/
 
 # 商品實拍原圖只留本機；上線用的是 web/public/products/ 的壓縮檔
 /photos/
+
+# 社群素材產出（AI 短影音、IG 版位、語音試聽）與生成紀錄只留本機。
+# 目前 157MB 且大多是 mp4／png —— 進了 git 歷史就清不掉，而且每次 clone
+# 都要拉一次。要交付的成品請上傳到雲端或素材庫，不要放版控。
+/artifacts/
+/heygen-video-log.jsonl
