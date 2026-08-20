@@ -139,7 +139,7 @@ export default async function HomePage({
         藥局家數留下來當可信度證據，但收成一行字。
       */}
       <section className="bg-ivory">
-        <div className="shop-shell pb-12 pt-10 sm:pb-16 sm:pt-14 lg:pb-20 lg:pt-16">
+        <div className="shop-shell pb-8 pt-8 sm:pb-10 sm:pt-10 lg:pb-12 lg:pt-12">
           <div className="mx-auto w-full max-w-[960px] text-center">
             <h1 className="editorial-display m-0 text-[clamp(38px,4.2vw,58px)] leading-[1.1]">
               {locale === "en" ? "You do not need to know the product name." : "不用先知道品名。描述需求就能開始。"}
@@ -188,7 +188,7 @@ export default async function HomePage({
 
       {/* 首頁直接橫向瀏覽整個目錄；要搜尋與篩選時再進列表頁。 */}
       <section className="bg-ivory">
-        <div className="shop-shell py-14 sm:py-20">
+        <div className="shop-shell py-10 sm:py-12">
           <div className="mb-6 max-w-[720px]">
             <h2 className="editorial-display m-0 text-[32px] leading-[1.25] sm:text-[40px]">
               {locale === "en" ? "Items provided by partner pharmacies" : "合作藥局提供品項"}
