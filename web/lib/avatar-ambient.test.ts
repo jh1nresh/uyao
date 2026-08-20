@@ -1,8 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import {
-  BROWSER_RUNTIME_SOURCE,
-  ENGINE_SOURCE,
+  createAvatarEngineModuleSource,
 } from "@/components/avatar-lab/avatar-runtime";
 import { avatarData } from "@/components/avatar-lab/sprout.avatar";
 
@@ -123,20 +122,19 @@ const mountAmbientAvatar = (autoplay = true) => {
   const timers: Array<{ id: number; due: number; fn: () => void }> = [];
   let nextTimerId = 1;
 
-  const engine = new Function(`${ENGINE_SOURCE}\nreturn AvatarProceduralEngine;`)() as unknown;
-  const mountAvatar = new Function(
-    "AvatarProceduralEngine",
-    "DATA",
+  const moduleSource = createAvatarEngineModuleSource().replace(
+    "export function createAvatarFactory",
+    "function createAvatarFactory",
+  );
+  const createAvatarFactory = new Function(
     "document",
     "performance",
     "requestAnimationFrame",
     "cancelAnimationFrame",
     "setTimeout",
     "clearTimeout",
-    `${BROWSER_RUNTIME_SOURCE}\nreturn mountAvatar;`,
+    `${moduleSource}\nreturn createAvatarFactory;`,
   )(
-    engine,
-    avatarData,
     { createElementNS: createStubElement, createElement: createStubElement },
     { now: () => now },
     (fn: (time: number) => void) => {
@@ -154,10 +152,17 @@ const mountAmbientAvatar = (autoplay = true) => {
       const index = timers.findIndex((timer) => timer.id === id);
       if (index >= 0) timers.splice(index, 1);
     },
-  ) as (target: StubElement, options: Record<string, unknown>) => void;
+  ) as (data: typeof avatarData) => {
+    createAvatar: (target: StubElement, options: Record<string, unknown>) => void;
+  };
 
   const host = createStubElement();
-  mountAvatar(host, { animation: "ambient", autoplay, loop: true, size: "100%" });
+  createAvatarFactory(avatarData).createAvatar(host, {
+    animation: "ambient",
+    autoplay,
+    loop: true,
+    size: "100%",
+  });
 
   const advance = (ms: number, onFrame?: () => void) => {
     const target = now + ms;
