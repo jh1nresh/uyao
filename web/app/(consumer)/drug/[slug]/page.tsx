@@ -217,7 +217,7 @@ export default async function DrugPage({
         {displayDrug.name}
       </nav>
 
-      <section className="border-b border-line bg-paper">
+      <section className="border-b border-line bg-ivory">
       {/* 不再自己壓一層 max-w：原本 hero 是 1280，比 .shop-shell 的 1344 還窄 ——
           麵包屑與頁首都比它寬，切齊永遠差一截。寬度交給 shell 一處決定。 */}
       <div className={`shop-shell grid gap-7 py-8 sm:py-10 lg:items-start xl:gap-8 ${heroGridClass}`}>

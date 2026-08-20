@@ -71,10 +71,12 @@ export async function SiteHeader({
         </div>
         <ThemeToggle locale={locale} />
         <LanguageSwitch />
-        {/* 供給側入口。合作說明留在公司站；已開通店家從 Store OS 網域登入。 */}
+        {/* 供給側入口。合作說明留在公司站；已開通店家從 Store OS 網域登入。
+            手機有搜尋框時先讓寬度給找藥主流程（頁尾仍有藥局合作入口）；
+            沒有搜尋框的頁面則保留這顆 CTA。 */}
         <Link
           href={`${SITE_URL}${localizedPath("/pharmacy", locale)}`}
-          className="inline-flex min-h-11 flex-none items-center border border-line-strong bg-paper px-3 text-xs font-bold text-forest no-underline transition-colors hover:border-forest hover:bg-surface"
+          className={`${showSearch ? "hidden sm:inline-flex" : "inline-flex"} min-h-11 flex-none items-center border border-line-strong bg-paper px-3 text-xs font-bold text-forest no-underline transition-colors hover:border-forest hover:bg-surface`}
         >
           {locale === "en" ? "For pharmacies" : "我是藥局"}
         </Link>
