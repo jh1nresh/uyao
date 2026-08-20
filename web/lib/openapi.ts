@@ -321,6 +321,12 @@ export function openApiDocument(): Record<string, unknown> {
             slug: { type: "string" },
             url: { type: "string", format: "uri", description: "Canonical page for this item." },
             name: { type: "string" },
+            catalogRecordUpdatedOn: {
+              type: "string",
+              format: "date",
+              description:
+                "Date when this catalog record's public product content last changed. This is not an inventory scan timestamp, stock freshness signal, or availability confirmation.",
+            },
             nameEn: {
               type: "string",
               description: "Present only when a real English product name exists.",
@@ -375,6 +381,7 @@ export function openApiDocument(): Record<string, unknown> {
             "slug",
             "url",
             "name",
+            "catalogRecordUpdatedOn",
             "form",
             "spec",
             "drugClass",
