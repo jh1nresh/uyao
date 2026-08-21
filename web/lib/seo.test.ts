@@ -5,6 +5,7 @@ import {
   BRAND_NAME,
   CANONICAL_HOST,
   CONSUMER_DESCRIPTION,
+  CONTACT_EMAIL,
   ENTITY_DESCRIPTION,
   INDEXABLE_PATHS,
   INSTAGRAM_URL,
@@ -179,6 +180,11 @@ describe("json-ld", () => {
       url: `${SITE_URL}/`,
       logo: ORGANIZATION_LOGO_URL,
     });
+  });
+
+  it("locks the public schema contact email to CONTACT_EMAIL", () => {
+    expect(CONTACT_EMAIL).toBe("uyao@agentmail.to");
+    expect(organizationJsonLd()).toMatchObject({ email: CONTACT_EMAIL });
   });
 
   it("keeps the website name and aliases stable across locales", () => {
