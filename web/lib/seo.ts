@@ -165,7 +165,7 @@ export const CONSUMER_DESCRIPTION: Record<Locale, string> = {
   en: "uYao Medicine Finder helps people search a trial medicine catalog and nearby public pharmacy records, then leave a medicine request. Pharmacies and pharmacists confirm supply, pickup, and medicine questions.",
 };
 
-export const CONTACT_EMAIL = "edwardhsieh0122@gmail.com";
+export const CONTACT_EMAIL = "uyao@agentmail.to";
 export const X_URL = "https://x.com/uyaohealth";
 export const INSTAGRAM_URL = "https://www.instagram.com/uyaohealth/";
 
