@@ -24,6 +24,20 @@ const READ_HEADERS_NOTE =
 const NO_INVENTORY_NOTE =
   "uYao has no live inventory for any pharmacy. This API never returns price, stock, or availability, and no response may be presented as confirmed stock.";
 
+const VERSION_POLICY_NOTE =
+  `Clients may send X-uYao-API-Version: ${PUBLIC_API_VERSION}. Omitting the header selects the current version for backward compatibility. Every response returns the selected version. Before a version is retired, uYao will publish the migration path at /docs and signal it with the Deprecation and Sunset response headers.`;
+
+const PUBLIC_RESPONSE_HEADERS = {
+  "X-uYao-API-Version": {
+    schema: { type: "string", enum: [PUBLIC_API_VERSION] },
+    description: "The API contract version used for this response.",
+  },
+  Link: {
+    schema: { type: "string" },
+    description: "Link to the versioning and deprecation policy. This link alone does not mean the endpoint is deprecated.",
+  },
+};
+
 function localeParam() {
   return {
     name: "locale",
@@ -31,6 +45,17 @@ function localeParam() {
     required: false,
     description: "Response language. Anything other than `en` returns Traditional Chinese.",
     schema: { type: "string", enum: ["zh", "en"], default: "zh" },
+  };
+}
+
+function apiVersionParam() {
+  return {
+    name: "X-uYao-API-Version",
+    in: "header",
+    required: false,
+    description:
+      `Optional API contract version. Omit it to use the current ${PUBLIC_API_VERSION} contract. Unsupported values return an RFC 9457 JSON problem.`,
+    schema: { type: "string", enum: [PUBLIC_API_VERSION], default: PUBLIC_API_VERSION },
   };
 }
 
@@ -54,6 +79,10 @@ export function openApiDocument(): Record<string, unknown> {
         "",
         "The `GET` endpoints are a public contract. The `POST` endpoints are marked `x-internal` and exist for this site's own forms: they accept personal contact details and create work in a real pharmacy's console. They are documented for completeness, not for automated use.",
         "",
+        VERSION_POLICY_NOTE,
+        "",
+        `Developer resources: ${SITE_URL}/docs and ${SITE_URL}/openapi.json.`,
+        "",
         `See also ${SITE_URL}/llms.txt for the page-level index.`,
       ].join("\n"),
       contact: { email: CONTACT_EMAIL, url: `${SITE_URL}/en` },
@@ -66,7 +95,7 @@ export function openApiDocument(): Record<string, unknown> {
       { url: SHOP_URL, description: "Consumer host. Serves the catalog and pharmacy endpoints." },
       { url: SITE_URL, description: "Company host. Same API surface." },
     ],
-    externalDocs: { url: `${SITE_URL}/llms.txt`, description: "Page-level index for agents" },
+    externalDocs: { url: `${SITE_URL}/docs`, description: "uYao developer resources, errors, versioning, and deprecation policy" },
     tags: [
       { name: "catalog", description: "Partner-listed catalog items. Read-only." },
       { name: "pharmacies", description: "Public pharmacy records. Read-only." },
@@ -83,11 +112,12 @@ export function openApiDocument(): Record<string, unknown> {
           operationId: "listCatalog",
           summary: "List every catalog item",
           description: `Returns the catalog records partner pharmacies provided. ${NO_INVENTORY_NOTE} ${READ_HEADERS_NOTE}`,
-          parameters: [localeParam()],
+          parameters: [apiVersionParam(), localeParam()],
           responses: {
             "200": {
               description: "The full catalog. Not live inventory.",
               headers: {
+                ...PUBLIC_RESPONSE_HEADERS,
                 RateLimit: { schema: { type: "string" }, description: "limit, remaining, reset" },
               },
               content: {
@@ -97,10 +127,16 @@ export function openApiDocument(): Record<string, unknown> {
                 "text/markdown": { schema: { type: "string" } },
               },
             },
+            "400": {
+              description: "Unsupported API version. RFC 9457 JSON problem.",
+              content: {
+                "application/problem+json": { schema: { $ref: "#/components/schemas/Error" } },
+              },
+            },
             "429": {
               description: "Rate limited. JSON error body plus RateLimit headers.",
               content: {
-                "application/json": { schema: { $ref: "#/components/schemas/Error" } },
+                "application/problem+json": { schema: { $ref: "#/components/schemas/Error" } },
               },
             },
           },
@@ -120,21 +156,29 @@ export function openApiDocument(): Record<string, unknown> {
               description: "Item slug, as returned by `listCatalog`.",
               schema: { type: "string" },
             },
+            apiVersionParam(),
             localeParam(),
           ],
           responses: {
             "200": {
               description: "One catalog item.",
+              headers: PUBLIC_RESPONSE_HEADERS,
               content: {
                 "application/json": {
                   schema: { $ref: "#/components/schemas/CatalogItemDetailResponse" },
                 },
               },
             },
+            "400": {
+              description: "Unsupported API version. RFC 9457 JSON problem.",
+              content: {
+                "application/problem+json": { schema: { $ref: "#/components/schemas/Error" } },
+              },
+            },
             "404": {
               description: "No item with that slug.",
               content: {
-                "application/json": { schema: { $ref: "#/components/schemas/Error" } },
+                "application/problem+json": { schema: { $ref: "#/components/schemas/Error" } },
               },
             },
           },
@@ -154,11 +198,16 @@ export function openApiDocument(): Record<string, unknown> {
               description: "Restrict to one service area.",
               schema: { type: "string", enum: AREAS.map((area) => area.slug) },
             },
+            apiVersionParam(),
             localeParam(),
           ],
           responses: {
             "200": {
               description: "Matching pharmacy records.",
+              headers: {
+                ...PUBLIC_RESPONSE_HEADERS,
+                RateLimit: { schema: { type: "string" }, description: "limit, remaining, reset" },
+              },
               content: {
                 "application/json": {
                   schema: { $ref: "#/components/schemas/PharmacyList" },
@@ -168,13 +217,13 @@ export function openApiDocument(): Record<string, unknown> {
             "400": {
               description: "Unknown area slug. JSON error body.",
               content: {
-                "application/json": { schema: { $ref: "#/components/schemas/Error" } },
+                "application/problem+json": { schema: { $ref: "#/components/schemas/Error" } },
               },
             },
             "429": {
               description: "Rate limited. JSON error body plus RateLimit headers.",
               content: {
-                "application/json": { schema: { $ref: "#/components/schemas/Error" } },
+                "application/problem+json": { schema: { $ref: "#/components/schemas/Error" } },
               },
             },
           },
@@ -285,10 +334,18 @@ export function openApiDocument(): Record<string, unknown> {
       schemas: {
         Error: {
           type: "object",
+          description: "RFC 9457 problem details with stable uYao compatibility fields and a machine-actionable resolution hint.",
           properties: {
-            error: { type: "string" },
+            type: { type: "string", format: "uri-reference" },
+            title: { type: "string" },
+            status: { type: "integer", minimum: 400, maximum: 599 },
+            detail: { type: "string" },
+            error: { type: "string", description: "Backward-compatible stable error code." },
+            code: { type: "string", description: "Stable machine-readable error code." },
+            message: { type: "string", description: "Short human-readable error summary." },
+            resolution: { type: "string", description: "Action the caller can take to resolve the error." },
           },
-          required: ["error"],
+          required: ["type", "title", "status", "detail", "error", "code", "message", "resolution"],
         },
         ResponseEnvelope: {
           type: "object",
@@ -596,6 +653,7 @@ export function publicReadOpenApiDocument(): Record<string, unknown> {
         "- These responses repeat fields the catalog and pharmacy pages already render.",
         "- They are not a diagnosis API and not a Store OS control plane. Store OS is a prototype.",
         "- Site-form POST endpoints exist on this host for humans; they are not part of this document.",
+        `- ${VERSION_POLICY_NOTE}`,
       ].join("\n"),
     },
     servers: full.servers,

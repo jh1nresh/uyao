@@ -9,24 +9,24 @@ import {
 
 /**
  * Server-rendered homepage copy. The interactive landing stays a client
- * island; this block is in the raw HTML so a no-JS agent still sees an H1
- * and more than 500 characters of real sentences.
+ * island; this block is in the raw HTML so a no-JS agent still sees more than
+ * 500 characters of real sentences under the visual hero's document H1.
  */
 export function CompanyHomeHonesty() {
   return (
     <article className="border-t border-line bg-paper">
       <div className="mx-auto max-w-[720px] px-5 py-16 sm:px-8 sm:py-20">
-        <h1 className="editorial-display m-0 text-[clamp(32px,4vw,44px)] leading-[1.2]">
+        <h2 className="editorial-display m-0 text-[clamp(32px,4vw,44px)] leading-[1.2]">
           {HOMEPAGE_H1}
-        </h1>
+        </h2>
         {HOMEPAGE_PROSE.split("\n\n").map((paragraph) => (
           <p key={paragraph.slice(0, 24)} className="mt-5 text-[16px] leading-[1.8] text-ink-2">
             {paragraph}
           </p>
         ))}
-        <h2 className="editorial-display mb-0 mt-12 text-[28px] leading-[1.3]">
+        <h3 className="editorial-display mb-0 mt-12 text-[28px] leading-[1.3]">
           {HOMEPAGE_LIMITS_HEADING}
-        </h2>
+        </h3>
         <ul className="mt-4 list-disc pl-5 text-[16px] leading-[1.75] text-ink-2">
           {HOMEPAGE_LIMITS.map((item) => (
             <li key={item} className="mt-2">{item}</li>

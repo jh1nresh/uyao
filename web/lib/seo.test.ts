@@ -125,6 +125,15 @@ describe("indexable paths", () => {
     );
   });
 
+  it("includes first-party brand and developer discovery pages", () => {
+    expect(INDEXABLE_PATHS).toEqual(expect.arrayContaining([
+      "/zh-tw/about",
+      "/zh-tw/contact",
+      "/zh-tw/privacy",
+      "/docs",
+    ]));
+  });
+
   it("publishes the guides pillar page that keeps the cluster one hop from home", () => {
     expect(INDEXABLE_PATHS).toEqual(expect.arrayContaining(["/zh-tw/guides", "/en/guides"]));
   });
@@ -140,9 +149,9 @@ describe("indexable paths", () => {
     expect(en.map((path) => path.replace(/^\/en/, "/zh-tw")).sort()).toEqual(zh.slice().sort());
   });
 
-  it("only contains locale-prefixed canonical routes", () => {
+  it("only contains locale-prefixed canonical routes plus the predictable docs URL", () => {
     for (const path of INDEXABLE_PATHS) {
-      expect(path).toMatch(/^\/(zh-tw|en)(\/|$)/);
+      expect(path === "/docs" || /^\/(zh-tw|en)(\/|$)/.test(path)).toBe(true);
     }
   });
 

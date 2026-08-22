@@ -40,6 +40,24 @@ describe("openapi document", () => {
     }
   });
 
+  it("publishes a compatible header version and deprecation policy", () => {
+    for (const path of READ_PATHS) {
+      const parameters = paths[path].get.parameters as Array<Record<string, unknown>>;
+      expect(parameters).toEqual(expect.arrayContaining([
+        expect.objectContaining({
+          name: "X-uYao-API-Version",
+          in: "header",
+          required: false,
+        }),
+      ]));
+      expect(JSON.stringify(paths[path].get.responses)).toContain("X-uYao-API-Version");
+    }
+
+    const description = String((doc.info as Record<string, unknown>).description);
+    expect(description).toMatch(/Deprecation and Sunset response headers/);
+    expect((doc.externalDocs as Record<string, unknown>).url).toBe(`${SITE_URL}/docs`);
+  });
+
   it("marks every write operation x-internal and says so in prose", () => {
     for (const path of WRITE_PATHS) {
       expect(paths[path], path).toBeDefined();
@@ -128,6 +146,23 @@ describe("openapi document", () => {
     expect(JSON.stringify(docs)).toMatch(/no live inventory|has no live inventory/i);
     expect(JSON.stringify(docs)).not.toContain("/api/demand");
     expect(JSON.stringify(docs)).not.toContain("/api/reservations");
+    expect(JSON.stringify(docs)).toContain("X-uYao-API-Version");
+    expect(JSON.stringify(docs)).toContain("application/problem+json");
+  });
+
+  it("defines machine-actionable RFC 9457 error responses", () => {
+    const schemas = (doc.components as Record<string, Record<string, Record<string, unknown>>>).schemas;
+    const error = schemas.Error;
+    expect(error.required).toEqual(expect.arrayContaining([
+      "type",
+      "title",
+      "status",
+      "detail",
+      "code",
+      "message",
+      "resolution",
+    ]));
+    expect(JSON.stringify(doc)).toContain("application/problem+json");
   });
 
   it("resolves every internal $ref", () => {

@@ -36,6 +36,6 @@ export async function GET(request: Request) {
       },
     });
   } catch {
-    return jsonError("catalog_unavailable", 500);
+    return jsonError("catalog_unavailable", 500, {}, gated.rate);
   }
 }

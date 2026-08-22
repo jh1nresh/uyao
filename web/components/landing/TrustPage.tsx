@@ -5,17 +5,18 @@ import { KnowledgeShell } from "@/components/landing/KnowledgeShell";
 import { TRUST_PAGES, type PublicPagePath } from "@/lib/agent-public";
 import { publicReadOpenApiDocument } from "@/lib/openapi";
 import { CONTACT_EMAIL, organizationJsonLd, webPageJsonLd } from "@/lib/seo";
+import { indexablePageRobots } from "@/lib/seo-server";
 import { JsonLd } from "@/components/JsonLd";
 
 type TrustPath = Exclude<PublicPagePath, "/">;
 
-export function trustPageMetadata(path: TrustPath): Metadata {
+export async function trustPageMetadata(path: TrustPath): Promise<Metadata> {
   const page = TRUST_PAGES[path];
   return {
-    title: page.title,
+    title: { absolute: `${page.title} | uYao 有藥` },
     description: page.description,
     alternates: { canonical: page.canonicalPath },
-    robots: { index: false, follow: true },
+    robots: await indexablePageRobots(),
   };
 }
 
@@ -98,6 +99,38 @@ function DocsEndpoints() {
         Public pharmacy records from Taiwan open data. A listing is not stock.
       </p>
       <pre className="mt-3 overflow-x-auto bg-ivory p-4 text-[13px]">{`curl -sS https://uyaohealth.com/api/pharmacies`}</pre>
+      <h2 id="api-errors" className="editorial-display mb-0 mt-10 text-[24px]">Structured API errors</h2>
+      <p className="mt-4 text-[15px] leading-[1.7] text-ink-2">
+        API failures use RFC 9457 <code>application/problem+json</code>. Every
+        problem includes <code>type</code>, <code>title</code>, <code>status</code>,
+        <code>detail</code>, <code>code</code>, <code>message</code>, and a
+        machine-actionable <code>resolution</code>. The original <code>error</code>
+        code remains for existing clients. Unknown <code>/api/*</code> paths use
+        the same JSON format instead of an HTML app shell.
+      </p>
+      <pre className="mt-3 overflow-x-auto bg-ivory p-4 text-[13px]">{`{
+  "type": "https://uyaohealth.com/docs#api-errors",
+  "title": "Unknown API endpoint",
+  "status": 404,
+  "code": "unknown_endpoint",
+  "message": "Unknown API endpoint",
+  "resolution": "Read /docs or /openapi.json and use a documented endpoint."
+}`}</pre>
+      <h2 id="versioning-and-deprecation" className="editorial-display mb-0 mt-10 text-[24px]">
+        Versioning and deprecation
+      </h2>
+      <p className="mt-4 text-[15px] leading-[1.7] text-ink-2">
+        Send <code>X-uYao-API-Version: 1.1.0</code> to pin the current contract,
+        or omit it to use the current version. Every public API response returns
+        that header. Unsupported versions return a structured 400 problem.
+      </p>
+      <p className="mt-4 text-[15px] leading-[1.7] text-ink-2">
+        No endpoint is deprecated today. The response <code>Link</code> header
+        makes this policy discoverable and does not itself mark a resource as
+        deprecated. Before removing a version, uYao will publish a migration path
+        here, send a standards-based <code>Deprecation</code> header, and announce
+        the removal date with <code>Sunset</code>.
+      </p>
       <h2 className="editorial-display mb-0 mt-10 text-[24px]">OpenAPI (these two GETs only)</h2>
       <pre className="mt-4 overflow-x-auto bg-ivory p-4 text-[12px] leading-[1.6]">
         {JSON.stringify(spec, null, 2)}
