@@ -1,12 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import {
+  PAGE_TYPES,
+  appendVaryAccept,
+  htmlHeaders,
+  isRscRequest,
+  markdownHeaders,
+  preferredType,
+} from "@/lib/accept";
+import {
+  applyPublicCache,
+  isKnownBarePath,
+  needsLocalePrefixRedirect,
+  notFoundHtml,
+  notFoundMarkdown,
+  pageMarkdown,
+} from "@/lib/agent-public";
 import { SITE_URL } from "@/lib/seo";
 import { SHOP_URL } from "@/lib/shop";
 
 /**
  * Host-based routing：同一份部署掛兩個網域。
  *
- *   uyaohealth.com         → `/` 導向 `/zh-tw` 公司 landing
+ *   uyaohealth.com         → `/` 公司 landing（SSR，不再 308 走掉）
  *   shop.uyaohealth.com    → `/` 導向 `/zh-tw` Consumer Web
  *   store.uyaohealth.com   → `/` 顯示 Store OS（唯一 canonical）
  *   store.uyao.com         → 永久導向 canonical
@@ -16,6 +32,7 @@ import { SHOP_URL } from "@/lib/shop";
  * （如 shop.uyaohealth.com）時，`shop.` 開頭的 host 也會被這裡認出來。
  *
  * 公開網址一律明示 `/zh-tw` 或 `/en`；舊的無語系路徑永久導向中文版。
+ * `/about` `/contact` `/privacy` `/docs` 留在短路徑，給 agent 用。
  */
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)"],
@@ -32,8 +49,19 @@ const STORE_ALIASES = new Set(
 );
 
 const COMPANY_HOST = new URL(SITE_URL).host;
-const COMPANY_ONLY_ROUTES = ["/pharmacy", "/evidence", "/guides", "/compare", "/store-os"];
+const COMPANY_ONLY_ROUTES = [
+  "/pharmacy",
+  "/evidence",
+  "/guides",
+  "/compare",
+  "/store-os",
+  "/about",
+  "/contact",
+  "/privacy",
+  "/docs",
+];
 const CONSUMER_ROUTES = ["/app", "/demo", "/drug", "/store", "/search", "/category", "/r", "/stock-badges"];
+const PUBLIC_CACHE_PATHS = new Set(["/", "/zh-tw", "/en", "/about", "/contact", "/privacy", "/docs"]);
 
 function routeStartsWith(pathname: string, prefixes: string[]): boolean {
   return prefixes.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
@@ -63,6 +91,43 @@ function redirectTo(req: NextRequest, baseUrl: string, pathname: string) {
   url.pathname = pathname;
   url.search = req.nextUrl.search;
   return NextResponse.redirect(url, 308);
+}
+
+function decoratePublic(response: NextResponse, cache: boolean): NextResponse {
+  appendVaryAccept(response.headers);
+  if (cache) applyPublicCache(response.headers);
+  return response;
+}
+
+function negotiateNotFound(req: NextRequest): Response {
+  if (!isRscRequest(req.headers) && preferredType(req.headers.get("accept"), PAGE_TYPES) === "text/markdown") {
+    const headers = markdownHeaders();
+    applyPublicCache(headers);
+    return new Response(notFoundMarkdown(), { status: 404, headers });
+  }
+  const headers = htmlHeaders();
+  applyPublicCache(headers);
+  return new Response(notFoundHtml(), { status: 404, headers });
+}
+
+function companyMarkdown(req: NextRequest, pathname: string): Response | null {
+  if (req.method !== "GET" && req.method !== "HEAD") return null;
+  if (isRscRequest(req.headers)) return null;
+  const chosen = preferredType(req.headers.get("accept"), PAGE_TYPES);
+  if (chosen !== "text/markdown") {
+    if (chosen === null && req.headers.get("accept")) {
+      return new Response("Not Acceptable\n\nAvailable: text/html, text/markdown\n", {
+        status: 406,
+        headers: { "content-type": "text/plain; charset=utf-8", vary: "Accept" },
+      });
+    }
+    return null;
+  }
+  const body = pageMarkdown(pathname);
+  if (!body) return null;
+  const headers = markdownHeaders();
+  applyPublicCache(headers);
+  return new Response(req.method === "HEAD" ? null : body, { status: 200, headers });
 }
 
 export function proxy(req: NextRequest) {
@@ -120,6 +185,10 @@ export function proxy(req: NextRequest) {
       return redirectTo(req, SHOP_URL, localizedPath("/", route.locale));
     }
 
+    if (!isKnownBarePath(route.barePath)) {
+      return negotiateNotFound(req);
+    }
+
     if (!route.localized) {
       const url = req.nextUrl.clone();
       url.pathname = localizedPath(route.barePath, route.locale);
@@ -138,16 +207,31 @@ export function proxy(req: NextRequest) {
     return redirectTo(req, SHOP_URL, localizedPath(consumerPath, route.locale));
   }
 
+  const markdown = companyMarkdown(req, pathname);
+  if (markdown) return markdown;
+
+  if (!isKnownBarePath(route.barePath)) {
+    return negotiateNotFound(req);
+  }
+
+  const cacheThis = PUBLIC_CACHE_PATHS.has(pathname) || PUBLIC_CACHE_PATHS.has(route.barePath);
+
   // `/en` has its own editorial landing. Every nested English path reuses the
   // canonical product route so business logic, reservation state, and tests
   // never fork into two implementations.
   if (pathname === "/en") {
-    return NextResponse.next({ request: { headers: requestHeaders } });
+    return decoratePublic(
+      NextResponse.next({ request: { headers: requestHeaders } }),
+      cacheThis,
+    );
   }
   if (pathname.startsWith("/en/")) {
     const url = req.nextUrl.clone();
     url.pathname = pathname.slice(3) || "/";
-    return NextResponse.rewrite(url, { request: { headers: requestHeaders } });
+    return decoratePublic(
+      NextResponse.rewrite(url, { request: { headers: requestHeaders } }),
+      cacheThis,
+    );
   }
 
   // Chinese uses the same explicit locale prefix as English. The root page
@@ -155,11 +239,25 @@ export function proxy(req: NextRequest) {
   if (pathname === "/zh-tw" || pathname.startsWith("/zh-tw/")) {
     const url = req.nextUrl.clone();
     url.pathname = pathname.slice(6) || "/";
-    return NextResponse.rewrite(url, { request: { headers: requestHeaders } });
+    return decoratePublic(
+      NextResponse.rewrite(url, { request: { headers: requestHeaders } }),
+      cacheThis,
+    );
   }
 
-  // Keep old unprefixed links working, but make locale explicit in the URL.
+  // Agent trust pages and the homepage stay on the unprefixed URL so a
+  // crawler that fetches `/` or `/about` gets HTML, not a 308.
+  if (pathname === "/" || !needsLocalePrefixRedirect(pathname)) {
+    return decoratePublic(
+      NextResponse.next({ request: { headers: requestHeaders } }),
+      cacheThis,
+    );
+  }
+
+  // Keep old unprefixed product links working, but make locale explicit.
   const url = req.nextUrl.clone();
   url.pathname = `/zh-tw${pathname === "/" ? "" : pathname}`;
   return NextResponse.redirect(url, 308);
 }
+
+export { negotiateNotFound };

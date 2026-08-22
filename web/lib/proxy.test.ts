@@ -84,6 +84,50 @@ describe("canonical host routing", () => {
     expect(response.headers.get("location")).toBe(`${SITE_URL}/en/pharmacy`);
   });
 
+  it("serves the company homepage at / instead of redirecting", () => {
+    const response = request("https://uyaohealth.com/");
+    expect(response.status).toBe(200);
+    expect(response.headers.get("cache-control")).toMatch(/\bpublic\b/);
+    expect(response.headers.get("cache-control")).not.toMatch(/\bprivate\b|\bno-store\b/);
+    expect(response.headers.get("vary")).toMatch(/Accept/i);
+  });
+
+  it("returns a real 404 with a short HTML body for unknown routes", async () => {
+    const response = request("https://uyaohealth.com/this-is-not-a-uyao-page");
+    expect(response.status).toBe(404);
+    expect(response.headers.get("content-type")).toMatch(/text\/html/);
+    await expect(response.text()).resolves.toContain("<h1>Page not found</h1>");
+  });
+
+  it("serves markdown for Accept: text/markdown on public pages", async () => {
+    const response = proxy(
+      new NextRequest("https://uyaohealth.com/", {
+        headers: { accept: "text/markdown" },
+      }),
+    );
+    expect(response.status).toBe(200);
+    expect(response.headers.get("content-type")).toMatch(/text\/markdown/);
+    expect(response.headers.get("vary")).toMatch(/Accept/i);
+    await expect(response.text()).resolves.toContain("# uYao is a pilot prototype");
+  });
+
+  it("serves markdown 404s when Accept prefers markdown", async () => {
+    const response = proxy(
+      new NextRequest("https://uyaohealth.com/this-is-not-a-uyao-page", {
+        headers: { accept: "text/markdown" },
+      }),
+    );
+    expect(response.status).toBe(404);
+    expect(response.headers.get("content-type")).toMatch(/text\/markdown/);
+    await expect(response.text()).resolves.toContain("# Page not found");
+  });
+
+  it("keeps locale-prefixed product routes on their canonical URLs", () => {
+    const response = request("https://uyaohealth.com/pharmacy");
+    expect(response.status).toBe(308);
+    expect(response.headers.get("location")).toBe(`${SITE_URL}/zh-tw/pharmacy`);
+  });
+
   it("keeps Store OS off the consumer shop host", () => {
     const response = request("https://shop.uyaohealth.com/zh-tw/store-os");
     expect(response.status).toBe(308);

@@ -2,9 +2,7 @@ import Link from "next/link";
 
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
-import { SHOP_URL } from "@/lib/shop";
 
 export default async function NotFound() {
   const locale = await getRequestLocale();
@@ -14,11 +12,18 @@ export default async function NotFound() {
       <section className="px-4 pb-10 pt-10 sm:px-7 xl:px-12 2xl:px-16">
         <h1 className="mb-2 text-lg font-black">{locale === "en" ? "Page not found" : "找不到這個頁面"}</h1>
         <p className="text-[15px] text-muted">
-          {locale === "en" ? "This product or pharmacy may no longer be listed." : "品項或藥局可能已下架。"}
-          <Link href={`${SHOP_URL}${localizedPath("/", locale)}`} className="ml-1 text-green">
-            {locale === "en" ? "Back to search →" : "回到搜尋 →"}
-          </Link>
+          {locale === "en"
+            ? "This URL is not a uYao page. uYao does not publish live stock and does not diagnose."
+            : "這個網址不是 uYao 的頁面。本站不提供即時庫存，也不做診斷。"}
         </p>
+        <ul className="mt-4 flex flex-col items-start gap-2 text-[15px]">
+          <li><Link href="/" className="text-green">Home</Link></li>
+          <li><Link href="/about" className="text-green">About</Link></li>
+          <li><Link href="/contact" className="text-green">Contact</Link></li>
+          <li><Link href="/docs" className="text-green">Docs</Link></li>
+          <li><Link href="/llms.txt" className="text-green">llms.txt</Link></li>
+          <li><Link href="/sitemap.xml" className="text-green">Sitemap</Link></li>
+        </ul>
       </section>
       <SiteFooter />
     </>

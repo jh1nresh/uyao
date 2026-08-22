@@ -46,6 +46,15 @@ these boundaries intact:
 - Guides on this site are written by the uYao team and have not been reviewed by
   a licensed pharmacist. Each guide states this on the page.
 
+## When to use this site
+
+Use uYao when you need the public catalog records, public pharmacy listings,
+or an honest description of a pharmacy-ops prototype.
+
+Do not use uYao when you need live stock, a price, a diagnosis, a prescription,
+or a finished Store OS. GET /api/catalog and GET /api/pharmacies are static
+public records. They are not an inventory feed.
+
 ## Answers (English)
 
 ${english.join("\n")}
@@ -56,6 +65,10 @@ ${chinese.join("\n")}
 
 ## Product
 
+${line("About", `${SITE_URL}/about`, "What uYao is and is not. Store OS is a prototype. No live stock, no diagnosis.")}
+${line("Contact", `${SITE_URL}/contact`, `Email ${CONTACT_EMAIL} only. No public street address or phone.`)}
+${line("Privacy", `${SITE_URL}/privacy`, "What the public site collects. Catalog GETs do not take personal data.")}
+${line("Docs", `${SITE_URL}/docs`, "OpenAPI for GET /api/catalog and GET /api/pharmacies only. Not live inventory.")}
 ${line("All guides", `${SITE_URL}/en/guides`, "Index of every guide, grouped by pharmacy operations, finding medicine, and joining the pilot.")}
 ${line("Pilot application", `${SITE_URL}/en/pharmacy`, "How an independent pharmacy joins the pilot, and what the pilot does not require.")}
 ${line("Medicine finder", `${SHOP_URL}/en`, CONSUMER_DESCRIPTION.en)}
@@ -63,6 +76,7 @@ ${line("Medicine finder", `${SHOP_URL}/en`, CONSUMER_DESCRIPTION.en)}
 ## Machine-readable
 
 ${line("OpenAPI", `${SITE_URL}/openapi.json`, "Read-only catalog and pharmacy endpoints. Write endpoints are listed but marked x-internal: they back this site's own forms and are not a public contract.")}
+${line("Docs", `${SITE_URL}/docs`, "Human notes plus OpenAPI limited to the two public GETs.")}
 ${line("Sitemap", `${SITE_URL}/sitemap.xml`, "Every indexable company URL in both locales.")}
 ${line("Robots", `${SITE_URL}/robots.txt`, "Crawl policy. /console and /store-os are disallowed; the two read endpoints are allowed.")}
 

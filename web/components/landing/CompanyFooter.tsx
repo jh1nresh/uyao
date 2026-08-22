@@ -18,6 +18,11 @@ type FooterCopy = {
   pilot: string;
   evidence: string;
   partnership: string;
+  about: string;
+  contactPage: string;
+  privacy: string;
+  docs: string;
+  llms: string;
   xLabel: string;
   instagramLabel: string;
   email: string;
@@ -38,6 +43,11 @@ const COPY: Record<"zh" | "en", FooterCopy> = {
     pilot: "申請試點",
     evidence: "產品證據",
     partnership: "合作藥局據點",
+    about: "關於",
+    contactPage: "聯絡",
+    privacy: "隱私",
+    docs: "文件",
+    llms: "llms.txt",
     xLabel: "X（@uyaohealth）",
     instagramLabel: "Instagram（@uyaohealth）",
     email: "電子郵件",
@@ -57,6 +67,11 @@ const COPY: Record<"zh" | "en", FooterCopy> = {
     pilot: "Join the pilot",
     evidence: "Product evidence",
     partnership: "Partner pharmacies",
+    about: "About",
+    contactPage: "Contact",
+    privacy: "Privacy",
+    docs: "Docs",
+    llms: "llms.txt",
     xLabel: "X (@uyaohealth)",
     instagramLabel: "Instagram (@uyaohealth)",
     email: "Email",
@@ -129,6 +144,11 @@ export function CompanyFooter({
             <div className="mt-2 flex flex-col items-start">
               <FooterLink href={`${companyPrefix}/evidence`}>{copy.evidence}</FooterLink>
               <FooterLink href={`${companyPrefix}/evidence#partners`}>{copy.partnership}</FooterLink>
+              <FooterLink href="/about">{copy.about}</FooterLink>
+              <FooterLink href="/contact">{copy.contactPage}</FooterLink>
+              <FooterLink href="/privacy">{copy.privacy}</FooterLink>
+              <FooterLink href="/docs">{copy.docs}</FooterLink>
+              <FooterLink href="/llms.txt">{copy.llms}</FooterLink>
             </div>
           </nav>
 

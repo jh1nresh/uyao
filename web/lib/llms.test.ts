@@ -23,6 +23,15 @@ describe("llms.txt", () => {
     expect(company).toContain(`${SITE_URL}/en/guides`);
   });
 
+  it("tells agents when not to treat the site as live inventory or diagnosis", () => {
+    expect(company).toMatch(/When to use this site/);
+    expect(company).toMatch(/Do not use uYao when you need live stock/);
+    expect(company).toContain(`${SITE_URL}/about`);
+    expect(company).toContain(`${SITE_URL}/contact`);
+    expect(company).toContain(`${SITE_URL}/privacy`);
+    expect(company).toContain(`${SITE_URL}/docs`);
+  });
+
   it("points agents at the OpenAPI document from both hosts", () => {
     expect(company).toContain(`${SITE_URL}/openapi.json`);
     expect(shop).toContain(`${SHOP_URL}/openapi.json`);

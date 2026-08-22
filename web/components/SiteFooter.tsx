@@ -68,6 +68,21 @@ export async function SiteFooter({ note }: { note?: string }) {
               <a href={`${companyPath("/evidence")}#partners`} className="inline-flex min-h-11 items-center text-forest hover:text-green">
                 {locale === "en" ? "Partner pharmacies" : "合作藥局據點"}
               </a>
+              <a href={`${SITE_URL}/about`} className="inline-flex min-h-11 items-center text-forest hover:text-green">
+                {locale === "en" ? "About" : "關於"}
+              </a>
+              <a href={`${SITE_URL}/contact`} className="inline-flex min-h-11 items-center text-forest hover:text-green">
+                {locale === "en" ? "Contact" : "聯絡"}
+              </a>
+              <a href={`${SITE_URL}/privacy`} className="inline-flex min-h-11 items-center text-forest hover:text-green">
+                {locale === "en" ? "Privacy" : "隱私"}
+              </a>
+              <a href={`${SITE_URL}/docs`} className="inline-flex min-h-11 items-center text-forest hover:text-green">
+                {locale === "en" ? "Docs" : "文件"}
+              </a>
+              <a href={`${SITE_URL}/llms.txt`} className="inline-flex min-h-11 items-center text-forest hover:text-green">
+                llms.txt
+              </a>
             </div>
           </nav>
 

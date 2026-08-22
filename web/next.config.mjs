@@ -3,6 +3,18 @@ const nextConfig = {
   reactStrictMode: true,
   // 家目錄有雜散的 pnpm-lock.yaml，Turbopack 會誤判 workspace root — 固定在 web/。
   turbopack: { root: import.meta.dirname },
+  async headers() {
+    const cache = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400";
+    const publicPages = ["/", "/about", "/contact", "/privacy", "/docs", "/zh-tw", "/en"];
+    return publicPages.map((source) => ({
+      source,
+      headers: [
+        { key: "Cache-Control", value: cache },
+        { key: "CDN-Cache-Control", value: cache },
+        { key: "Vary", value: "Accept" },
+      ],
+    }));
+  },
   async redirects() {
     return [
       // 舊登入入口直接收斂到唯一 Store OS 網域。
