@@ -50,8 +50,12 @@ describe("pearl stage wall and floor", () => {
   it("lights the wall from one direction instead of tinting it flat", () => {
     const hero = block(".shop-pearl-hero");
     expect(hero).toMatch(/--pearl-horizon:/);
+    const environment = block(".shop-pearl-environment");
+    expect(environment).toMatch(/url\("\/brand\/shop-pearl-sunlit-room\.webp"\)/);
+    expect(environment).toMatch(/background-position: center, center bottom/);
+    expect(environment).toMatch(/background-size: cover/);
     const wall = block(".shop-pearl-wall-light");
-    // The angled shaft is what makes the surface read as lit.
+    // A restrained overlay preserves the supplied photo's directional light.
     expect(wall).toMatch(/linear-gradient\(107deg/);
   });
 
@@ -65,8 +69,8 @@ describe("pearl stage wall and floor", () => {
 
     const grain = floor.match(/rgb\(var\(--color-line-soft\) \/ ([\d.]+)\)/);
     expect(grain, "floor grain must exist").not.toBeNull();
-    // At 0.16 the previous striping was invisible against the pearl surface.
-    expect(Number(grain![1])).toBeGreaterThanOrEqual(0.3);
+    // The supplied image now owns the material; CSS grain must not cover it.
+    expect(Number(grain![1])).toBeLessThanOrEqual(0.1);
   });
 
   it("keeps every room plane as a reviewable component", () => {

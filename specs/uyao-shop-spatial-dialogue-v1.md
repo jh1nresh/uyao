@@ -47,11 +47,12 @@ idle
 
 - Preserve a real GET search form and no-JavaScript fallback.
 - Keep the approved pearl wall, visible desktop horizon, reflective floor, and continuous pearl-resin search capsule.
+- Use the user-supplied 1920×1080 sunlit-room asset as the primary idle hero material at `center bottom / cover`; keep the CSS planes as restrained overlays and fallback structure. Confirm the source usage rights before production publication.
 - Treat the hero as a fixed object topology, not a replaceable background effect: wall key light → horizon → brushed floor → pooled floor light → capsule contact shadow → full capsule mirror → area/partner line.
 - The spatial treatment has measurable floors, not adjectives. "Restrained" previously licensed an implementation that was visually absent, so each element now carries a checkable threshold:
   - the wall carries one directional key light as an explicit angled band, not only radial tints;
   - the horizon is a real border between wall and floor, positioned by the `--pearl-horizon` token;
-  - floor grain is visible against the pearl surface at an alpha of at least `0.3`;
+  - the image supplies the floor material; CSS grain remains at or below `0.1` so it cannot hide the photograph;
   - the capsule returns a masked mirror silhouette at an opacity of at least `0.6`, and casts a layered contact shadow;
   - the mirror is `aria-hidden`, duplicates no text, and its wrapper reserves layout height so following copy never overlaps it.
 - No theme-scoped rule may override `.shop-pearl-hero`'s background. `.shop-pearl-home` already pins the pearl-light token set; a later `html[data-theme]` override silently replaced every wall layer and removed the whole treatment from the shipped page.
