@@ -123,6 +123,10 @@ export function consumerIndexingAllowed(
 export const INDEXABLE_PATHS = [
   "/zh-tw",
   "/en",
+  "/zh-tw/about",
+  "/zh-tw/contact",
+  "/zh-tw/privacy",
+  "/docs",
   "/zh-tw/pharmacy",
   "/en/pharmacy",
   "/zh-tw/evidence",

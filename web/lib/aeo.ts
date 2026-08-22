@@ -257,6 +257,10 @@ const AEO_PAGE_BY_PATH = new Map<string, AeoAnswerPage>(
 const NON_AEO_LAST_MODIFIED = {
   "/zh-tw": "2026-08-16",
   "/en": "2026-08-16",
+  "/zh-tw/about": "2026-08-22",
+  "/zh-tw/contact": "2026-08-22",
+  "/zh-tw/privacy": "2026-08-22",
+  "/docs": "2026-08-22",
   "/zh-tw/pharmacy": "2026-08-16",
   "/en/pharmacy": "2026-08-16",
   "/zh-tw/guides": "2026-08-18",

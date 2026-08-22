@@ -47,6 +47,6 @@ export async function GET(request: Request) {
       },
     });
   } catch {
-    return jsonError("pharmacies_unavailable", 500);
+    return jsonError("pharmacies_unavailable", 500, {}, gated.rate);
   }
 }

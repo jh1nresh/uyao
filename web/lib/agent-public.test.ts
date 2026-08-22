@@ -39,12 +39,15 @@ describe("homepage SSR copy", () => {
     expect(footer).toContain('href="/llms.txt"');
   });
 
-  it("renders that H1 from a server component on both locale homepages", () => {
+  it("renders one leading hero H1 and keeps the long server copy below it", () => {
+    const landing = readFileSync(new URL("../components/landing/AgentLandingExperience.tsx", import.meta.url), "utf8");
     const honesty = readFileSync(new URL("../components/landing/CompanyHomeHonesty.tsx", import.meta.url), "utf8");
     const zh = readFileSync(new URL("../app/page.tsx", import.meta.url), "utf8");
     const en = readFileSync(new URL("../app/en/page.tsx", import.meta.url), "utf8");
 
-    expect(honesty).toContain("<h1");
+    expect(landing).toContain("<h1");
+    expect(honesty).not.toContain("<h1");
+    expect(honesty).toContain("<h2");
     expect(honesty).toContain("HOMEPAGE_H1");
     expect(zh).toContain("CompanyHomeHonesty");
     expect(en).toContain("CompanyHomeHonesty");
@@ -79,6 +82,10 @@ describe("trust pages", () => {
     expect(TRUST_PAGES["/privacy"].body).toMatch(/不蒐集病歷/);
     expect(TRUST_PAGES["/docs"].body).toMatch(/not live inventory/i);
     expect(TRUST_PAGES["/docs"].body).toMatch(/prototype/i);
+    expect(TRUST_PAGES["/docs"].title).toMatch(/uYao Developer Resources/);
+    expect(TRUST_PAGES["/docs"].body).toMatch(/application\/problem\+json/);
+    expect(TRUST_PAGES["/docs"].body).toMatch(/X-uYao-API-Version/);
+    expect(TRUST_PAGES["/docs"].body).toMatch(/Deprecation header.*Sunset date/i);
   });
 
   it("keeps contact on the AgentMail inbox and refuses a public phone or address", () => {
