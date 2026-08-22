@@ -15,6 +15,7 @@ import {
   notFoundHtml,
   notFoundMarkdown,
   pageMarkdown,
+  shopHomepageMarkdown,
 } from "@/lib/agent-public";
 import { SITE_URL } from "@/lib/seo";
 import { SHOP_URL } from "@/lib/shop";
@@ -145,6 +146,27 @@ function companyMarkdown(req: NextRequest, pathname: string): Response | null {
   return new Response(req.method === "HEAD" ? null : body, { status: 200, headers });
 }
 
+function shopMarkdown(req: NextRequest, locale: "zh" | "en"): Response | null {
+  if (req.method !== "GET" && req.method !== "HEAD") return null;
+  if (isRscRequest(req.headers)) return null;
+  const chosen = preferredType(req.headers.get("accept"), PAGE_TYPES);
+  if (chosen !== "text/markdown") {
+    if (chosen === null && req.headers.get("accept")) {
+      return new Response("Not Acceptable\n\nAvailable: text/html, text/markdown\n", {
+        status: 406,
+        headers: { "content-type": "text/plain; charset=utf-8", vary: "Accept" },
+      });
+    }
+    return null;
+  }
+  const headers = markdownHeaders();
+  applyPublicCache(headers);
+  return new Response(req.method === "HEAD" ? null : shopHomepageMarkdown(locale), {
+    status: 200,
+    headers,
+  });
+}
+
 export function proxy(req: NextRequest) {
   const requestHeaders = new Headers(req.headers);
   const pathname = req.nextUrl.pathname;
@@ -213,6 +235,11 @@ export function proxy(req: NextRequest) {
       const url = req.nextUrl.clone();
       url.pathname = localizedPath(route.barePath, route.locale);
       return NextResponse.redirect(url, 308);
+    }
+
+    if (route.barePath === "/") {
+      const markdown = shopMarkdown(req, route.locale);
+      if (markdown) return markdown;
     }
 
     const url = req.nextUrl.clone();

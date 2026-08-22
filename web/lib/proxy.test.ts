@@ -5,8 +5,8 @@ import { proxy } from "../proxy";
 import { SITE_URL } from "./seo";
 import { SHOP_URL } from "./shop";
 
-function request(url: string) {
-  return proxy(new NextRequest(url));
+function request(url: string, headers?: HeadersInit) {
+  return proxy(new NextRequest(url, { headers }));
 }
 
 describe("canonical host routing", () => {
@@ -54,6 +54,28 @@ describe("canonical host routing", () => {
     expect(response.headers.get("x-middleware-rewrite")).toBe(
       "https://shop.uyaohealth.com/app?area=datong",
     );
+  });
+
+  it("serves a shop-specific markdown representation when requested", async () => {
+    const response = request("https://shop.uyaohealth.com/zh-tw", {
+      accept: "text/markdown, text/html;q=0.8",
+    });
+    const body = await response.text();
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("content-type")).toMatch(/text\/markdown/);
+    expect(response.headers.get("vary")).toMatch(/Accept/i);
+    expect(body).toMatch(/^# uYao 找藥/m);
+    expect(body).toMatch(/不是即時庫存/);
+  });
+
+  it("returns 406 when the shop homepage cannot satisfy Accept", () => {
+    const response = request("https://shop.uyaohealth.com/en", {
+      accept: "application/xml",
+    });
+
+    expect(response.status).toBe(406);
+    expect(response.headers.get("vary")).toMatch(/Accept/i);
   });
 
   it("keeps Vercel preview hosts on the branch shop instead of production", () => {

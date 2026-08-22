@@ -149,6 +149,66 @@ export function homepageMarkdown(): string {
   ].join("\n");
 }
 
+export function shopHomepageMarkdown(locale: "zh" | "en"): string {
+  if (locale === "en") {
+    return [
+      "# uYao Medicine Finder",
+      "",
+      "> Search a trial catalog and nearby public pharmacy records, then leave a medicine request for a pharmacy to confirm.",
+      "",
+      "## What you can do",
+      "",
+      "- Search by product name, ingredient, or everyday wellness need.",
+      "- Read public pharmacy records and partner-listed catalog details.",
+      "- Leave a medicine request, then wait for a pharmacy or pharmacist to confirm the next step.",
+      "",
+      "## Boundaries",
+      "",
+      "- Catalog records are not live inventory, a price, or a promise that a pharmacy has an item today.",
+      "- uYao does not sell medicine online and does not diagnose or recommend what to take.",
+      "- Supply, substitution, pickup, and medication questions require pharmacy or pharmacist confirmation.",
+      "- Prescription medicine is out of scope.",
+      "",
+      "## Machine-readable resources",
+      "",
+      "- [llms.txt](/llms.txt)",
+      "- [OpenAPI](/openapi.json)",
+      "- [Catalog API](/api/catalog)",
+      "- [Public pharmacy API](/api/pharmacies)",
+      "- [Sitemap](/sitemap.xml)",
+      "",
+    ].join("\n");
+  }
+
+  return [
+    "# uYao 找藥",
+    "",
+    "> 搜尋試營運目錄與附近公開藥局資料，留下找藥需求，再由藥局或藥師確認下一步。",
+    "",
+    "## 可以做什麼",
+    "",
+    "- 依品名、成分或日常保養方向搜尋。",
+    "- 查看公開藥局資料與合作藥局提供的目錄內容。",
+    "- 留下找藥需求，等待藥局或藥師確認供應與領取安排。",
+    "",
+    "## 服務邊界",
+    "",
+    "- 目錄不是即時庫存、價格或現貨承諾。",
+    "- uYao 不在線上販售藥品，不做診斷，也不推薦該吃什麼。",
+    "- 供應、替代品、領取與用藥問題都要由藥局或藥師確認。",
+    "- 處方藥不在服務範圍內。",
+    "",
+    "## 機器可讀資源",
+    "",
+    "- [llms.txt](/llms.txt)",
+    "- [OpenAPI](/openapi.json)",
+    "- [目錄 API](/api/catalog)",
+    "- [公開藥局 API](/api/pharmacies)",
+    "- [Sitemap](/sitemap.xml)",
+    "",
+  ].join("\n");
+}
+
 export function trustPageMarkdown(path: Exclude<PublicPagePath, "/">): string {
   const page = TRUST_PAGES[path];
   return [`# ${page.title}`, "", page.body, "", "See also: [/](/), [/llms.txt](/llms.txt)", ""].join(

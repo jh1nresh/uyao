@@ -14,6 +14,7 @@ import {
   notFoundHtml,
   notFoundMarkdown,
   pageMarkdown,
+  shopHomepageMarkdown,
   trustPageVisibleText,
   visibleTextLength,
 } from "./agent-public";
@@ -28,6 +29,20 @@ describe("homepage SSR copy", () => {
     expect(text).toMatch(/prototype/i);
     expect(text).toMatch(/not live inventory|does not sell medicine/i);
     expect(text).not.toMatch(/diagnos(e|is)s? you/i);
+  });
+
+  it("publishes an honest shop-specific markdown representation in both locales", () => {
+    const zh = shopHomepageMarkdown("zh");
+    const en = shopHomepageMarkdown("en");
+
+    expect(zh).toMatch(/^# uYao 找藥/m);
+    expect(en).toMatch(/^# uYao Medicine Finder/m);
+    for (const document of [zh, en]) {
+      expect(document).toMatch(/not live inventory|不是即時庫存/i);
+      expect(document).toContain("/api/catalog");
+      expect(document).toContain("/api/pharmacies");
+      expect(document).not.toMatch(/in stock|現貨保證/i);
+    }
   });
 
   it("links about, contact, and privacy from the company footer on locale routes", () => {
