@@ -15,6 +15,11 @@ export type GuidedQueryIntent =
       terms: string[];
     };
 
+/** The spatial composer opens on the first meaningful character, before submit. */
+export function shouldOpenGuidedComposer(query: string): boolean {
+  return query.trim().length > 0;
+}
+
 function normalize(value: string): string {
   return value.normalize("NFKC").toLocaleLowerCase().replace(/\s+/g, "");
 }

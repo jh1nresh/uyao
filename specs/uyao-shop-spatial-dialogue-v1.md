@@ -33,11 +33,12 @@ A future LLM may interpret language and select the next approved question. It mu
 
 ```text
 idle
-  ├─ direct query ─────────────────────────────→ native GET /search
-  ├─ symptom ─→ safety question
+  └─ first non-empty input ─→ composing
+                                ├─ direct query + submit ───────→ native GET /search
+                                ├─ symptom + submit ─→ safety question
   │               ├─ red flag ────────────────→ urgent professional handoff
   │               └─ no red flag ─────────────→ pharmacist handoff; no products
-  └─ wellness need ─→ intent confirmation
+                                └─ wellness need + submit ─→ intent confirmation
                       ├─ active symptom ───────→ professional handoff
                       └─ daily wellness ───────→ deterministic product directions
 ```
@@ -46,11 +47,15 @@ idle
 
 - Preserve a real GET search form and no-JavaScript fallback.
 - Keep the approved pearl wall, visible desktop horizon, restrained reflective floor, and continuous pearl-resin search capsule.
+- Match the approved static truth frame: editorial promise and support copy, the search object, local pharmacy count, category pills, then four visible catalog cards.
 - Catalog follows directly after the stage as a flat paper sheet.
 - The first four visible catalog cards are the spatial-dialogue side-wing source.
 - Pharmacy evidence may remain below the primary catalog handoff, not between the search object and catalog.
 
 ## Active spatial dialogue
+
+- The first meaningful character begins the spatial transition immediately; the UI does not wait for form submission to reveal the composing surface.
+- Partial input is not classified. The composing surface preserves live editing, and submit/Enter is the boundary that either continues through the native GET search or opens an approved safety/wellness question.
 
 ### Desktop, 1280 px and wider
 

@@ -12,6 +12,7 @@ import { SearchInput } from "./SearchInput";
 import { CATALOG_GROUPS } from "@/lib/catalog-groups";
 import {
   classifyGuidedQuery,
+  shouldOpenGuidedComposer,
   wellnessCandidates,
   type GuidedQueryIntent,
 } from "@/lib/guided-search";
@@ -19,6 +20,10 @@ import { drugCopy, localizedPath, type Locale } from "@/lib/i18n";
 import type { AreaSlug, Drug } from "@/lib/types";
 
 type ActiveState =
+  | {
+      phase: "composing";
+      query: string;
+    }
   | {
       phase: "safety" | "wellness";
       query: string;
@@ -123,10 +128,19 @@ export function ShopSpatialExperience({
   const sideCards = useMemo(() => drugs.filter((drug) => drug.image).slice(0, 4), [drugs]);
 
   useEffect(() => {
-    if (!active) return;
+    if (!active || active.phase === "composing") return;
     const frame = window.requestAnimationFrame(() => questionRef.current?.focus());
     return () => window.cancelAnimationFrame(frame);
   }, [active]);
+
+  function compose(query: string) {
+    setDraftQuery(query);
+    if (!shouldOpenGuidedComposer(query)) {
+      setActive(null);
+      return;
+    }
+    setActive({ phase: "composing", query });
+  }
 
   function begin(query: string): boolean {
     const intent = classifyGuidedQuery(query, drugs);
@@ -141,9 +155,10 @@ export function ShopSpatialExperience({
   }
 
   function modify() {
-    setDraftQuery(active?.query ?? "");
+    const query = active?.query ?? "";
+    setDraftQuery(query);
     setFocusSearch(true);
-    setActive(null);
+    setActive(query ? { phase: "composing", query } : null);
   }
 
   function showHandoff({ urgent }: { urgent: boolean }) {
@@ -204,7 +219,7 @@ export function ShopSpatialExperience({
         <section className="shop-pearl-hero">
           <div className="shop-pearl-hero-content shop-shell">
             <div className="mx-auto w-full max-w-[920px] text-center">
-              <h1 className="editorial-display m-0 text-[clamp(38px,4vw,48px)] leading-[1.12]">
+              <h1 className="editorial-display m-0 text-[clamp(36px,3.4vw,42px)] leading-[1.12]">
                 {locale === "en" ? "You do not need to know the product name." : "不用先知道品名。描述需求就能開始。"}
               </h1>
               <p className="mx-auto mt-4 max-w-[680px] text-[16px] leading-[1.75] text-ink-2 sm:text-[17px]">
@@ -221,6 +236,7 @@ export function ShopSpatialExperience({
                   autoFocus={focusSearch}
                   area={area}
                   className="w-full"
+                  onQueryChange={compose}
                   onSubmitQuery={begin}
                 />
               </div>
@@ -238,24 +254,24 @@ export function ShopSpatialExperience({
           </div>
         </section>
 
-        <section className="bg-ivory">
-          <div className="shop-shell py-12 sm:py-16">
-            <div className="mb-6 max-w-[720px]">
-              <h2 className="editorial-display m-0 text-[32px] leading-[1.25] sm:text-[40px]">
+        <section className="bg-paper">
+          <div className="shop-shell py-8">
+            <div className="mb-4 max-w-[720px]">
+              <h2 className="editorial-display m-0 text-[30px] leading-[1.25] sm:text-[34px]">
                 {locale === "en" ? "Items provided by partner pharmacies" : "合作藥局提供品項"}
               </h2>
-              <p className="mb-0 mt-3 text-[14px] leading-[1.7] text-muted">
+              <p className="mb-0 mt-2 text-[14px] leading-[1.7] text-muted">
                 {locale === "en"
                   ? "Browse verified catalog records. Supply and pickup still require pharmacy confirmation."
                   : "先瀏覽已整理的品項資料；是否供應與到店安排，仍需由藥局確認。"}
               </p>
             </div>
-            <nav aria-label={locale === "en" ? "Catalog categories" : "品項分類"} className="mb-7 flex flex-wrap gap-2.5">
+            <nav aria-label={locale === "en" ? "Catalog categories" : "品項分類"} className="mb-4 flex flex-wrap gap-2.5">
               {CATALOG_GROUPS.map((group) => (
                 <Link
                   key={group.slug}
                   href={`${localizedPath("/category/partner-item", locale)}?area=${area}&group=${group.slug}`}
-                  className={`inline-flex min-h-11 items-center border px-4 text-[14px] font-semibold no-underline transition-colors ${
+                  className={`inline-flex min-h-11 items-center rounded-full border px-5 text-[14px] font-semibold no-underline transition-colors ${
                     group.slug === "all"
                       ? "border-green bg-green text-on-dark hover:bg-green-hover"
                       : "border-line-soft bg-paper text-forest hover:border-line-strong hover:bg-surface-hover"
@@ -270,15 +286,8 @@ export function ShopSpatialExperience({
               area={area}
               locale={locale}
               label={locale === "en" ? "Catalog items" : "目錄品項"}
+              presentation="showcase"
             />
-            <div className="mt-6 flex justify-end">
-              <Link
-                href={`${localizedPath("/category/partner-item", locale)}?area=${area}`}
-                className="inline-flex min-h-11 items-center border-b border-forest text-[14px] font-bold text-forest no-underline hover:border-green hover:text-green"
-              >
-                {locale === "en" ? `View all ${drugs.length} items →` : `查看全部 ${drugs.length} 項 →`}
-              </Link>
-            </div>
           </div>
         </section>
       </>
@@ -286,27 +295,62 @@ export function ShopSpatialExperience({
   }
 
   const isQuestion = active.phase === "safety" || active.phase === "wellness";
+  const isComposing = active.phase === "composing";
+  const showWings = isComposing || isQuestion;
   const leftCards = sideCards.slice(0, 2);
   const rightCards = sideCards.slice(2, 4);
 
   return (
     <section
-      className={`shop-spatial-stage ${isQuestion ? "" : "shop-spatial-stage--resolved"}`}
+      className={`shop-spatial-stage ${isComposing ? "shop-spatial-stage--composing" : ""} ${showWings ? "" : "shop-spatial-stage--resolved"}`}
       aria-live="polite"
     >
       <div className="shop-shell py-8 sm:py-10">
-        <div className="shop-spatial-query mx-auto flex min-h-[66px] max-w-[740px] items-center gap-3 px-4 sm:px-8">
-          <span aria-hidden className="text-[20px] text-forest">⌕</span>
-          <span className="min-w-0 flex-1 truncate text-[16px] text-ink sm:text-[18px]">{active.query}</span>
-          <button type="button" onClick={modify} className="action-secondary min-h-10 px-4 text-[14px]">
-            {locale === "en" ? "Edit" : "修改"}
-          </button>
-        </div>
+        {!isComposing && (
+          <div className="shop-spatial-query mx-auto flex min-h-[66px] max-w-[720px] items-center gap-3 px-4 sm:px-8">
+            <svg aria-hidden viewBox="0 0 24 24" fill="none" className="h-7 w-7 flex-none text-forest">
+              <circle cx="10.75" cy="10.75" r="6.75" stroke="currentColor" strokeWidth="1.75" />
+              <path d="m15.75 15.75 4.5 4.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+            </svg>
+            <span className="min-w-0 flex-1 truncate text-[16px] text-ink sm:text-[18px]">{active.query}</span>
+            <button type="button" onClick={modify} className="action-secondary min-h-10 rounded-full px-4 text-[14px]">
+              {locale === "en" ? "Edit" : "修改"}
+            </button>
+          </div>
+        )}
 
-        <div className="shop-spatial-grid mt-8">
-          {isQuestion && <SpatialWing drugs={leftCards} locale={locale} side="left" />}
+        <div className={`shop-spatial-grid ${isComposing ? "" : "mt-8"}`}>
+          {showWings && <SpatialWing drugs={leftCards} locale={locale} side="left" />}
 
-          <div className="shop-spatial-dialogue border border-line-strong bg-paper px-5 py-6 sm:px-14 sm:py-12">
+          <div className={`shop-spatial-dialogue border border-line-strong bg-paper px-5 py-6 sm:px-14 sm:py-12 ${isComposing ? "shop-spatial-dialogue--composing" : ""}`}>
+            {active.phase === "composing" && (
+              <>
+                <p className="shop-kicker m-0">{locale === "en" ? "Describe what you need" : "描述你的需要"}</p>
+                <h2 className="editorial-display mb-0 mt-4 text-[32px] leading-[1.2] sm:text-[42px]">
+                  {locale === "en" ? "Keep typing in your own words" : "用你自己的話繼續說"}
+                </h2>
+                <p className="mb-0 mt-4 text-[15px] leading-[1.75] text-muted">
+                  {locale === "en"
+                    ? "A product name stays a normal search. A symptom opens one necessary safety question after you submit."
+                    : "輸入品名會維持一般搜尋；描述症狀時，送出後只會先問一個必要的安全問題。"}
+                </p>
+                <div className="mt-8">
+                  <SearchInput
+                    size="xl"
+                    presentation="pearl"
+                    defaultValue={active.query}
+                    autoFocus
+                    area={area}
+                    className="w-full"
+                    onQueryChange={compose}
+                    onSubmitQuery={begin}
+                  />
+                </div>
+                <p className="mb-0 mt-4 text-center text-[13px] leading-[1.6] text-muted-2">
+                  {locale === "en" ? "Press Enter to continue" : "按 Enter 繼續"}
+                </p>
+              </>
+            )}
             {active.phase === "safety" && (
               <>
                 <p className="shop-kicker m-0">{locale === "en" ? "Organizing your need · 1 / 3" : "正在整理你的需求・1 / 3"}</p>
@@ -448,7 +492,7 @@ export function ShopSpatialExperience({
             )}
           </div>
 
-          {isQuestion && <SpatialWing drugs={rightCards} locale={locale} side="right" />}
+          {showWings && <SpatialWing drugs={rightCards} locale={locale} side="right" />}
         </div>
         {isQuestion && (
           <p className="shop-spatial-stage-note mb-0 mt-8 text-center text-[14px] leading-[1.7] text-ink-2 sm:text-[16px]">

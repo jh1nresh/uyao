@@ -41,8 +41,8 @@
   --color-surface: 236 231 219;
   --color-surface-hover: 229 223 210;
   --color-canvas: 231 225 212;
-  --color-ivory: 242 239 230;
-  --color-paper: 248 244 233;
+  --color-ivory: 248 246 241;
+  --color-paper: 252 251 248;
   --color-agent-eye: var(--color-paper);
   --color-sage: 220 231 217;
   --color-map-bg: 229 233 226;
@@ -382,7 +382,7 @@ html[data-theme="dark"] .theme-logo-dark {
 
 .shop-pearl-hero-content {
   display: flex;
-  min-height: clamp(400px, 34vw, 480px);
+  min-height: clamp(380px, 25vw, 416px);
   align-items: center;
   padding-block: 2.5rem 4rem;
 }
@@ -462,6 +462,10 @@ html[data-theme="dark"] .theme-logo-dark {
   margin-top: 2.75rem;
 }
 
+.shop-spatial-stage--composing .shop-spatial-grid {
+  margin-top: 2.5rem;
+}
+
 .shop-spatial-stage--resolved .shop-spatial-grid {
   grid-template-columns: minmax(0, 740px);
   justify-content: center;
@@ -490,7 +494,7 @@ html[data-theme="dark"] .theme-logo-dark {
   position: relative;
   z-index: 1;
   width: min(100%, 740px);
-  min-height: 500px;
+  min-height: 510px;
   margin-inline: auto;
   border-radius: 1.5rem;
   box-shadow:
@@ -498,6 +502,13 @@ html[data-theme="dark"] .theme-logo-dark {
     inset 0 1px 0 rgb(255 255 255 / 0.82),
     inset 0 -1px 0 rgb(var(--color-line) / 0.35);
   animation: shop-dialogue-settle 540ms var(--ease-brand) both;
+}
+
+.shop-spatial-dialogue--composing {
+  display: flex;
+  min-height: 520px;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .shop-spatial-dialogue h2:focus-visible {

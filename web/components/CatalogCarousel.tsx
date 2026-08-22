@@ -23,11 +23,13 @@ export function CatalogCarousel({
   area,
   locale,
   label,
+  presentation = "default",
 }: {
   drugs: Drug[];
   area: AreaSlug;
   locale: Locale;
   label: string;
+  presentation?: "default" | "showcase";
 }) {
   const railRef = useRef<HTMLDivElement>(null);
   const [atStart, setAtStart] = useState(true);
@@ -60,32 +62,35 @@ export function CatalogCarousel({
   }
 
   if (drugs.length === 0) return null;
+  const showcase = presentation === "showcase";
 
   const arrow =
     "flex h-11 w-11 items-center justify-center border border-line bg-paper text-forest transition-colors hover:border-forest disabled:cursor-default disabled:opacity-35 disabled:hover:border-line";
 
   return (
     <div className="relative">
-      <div className="mb-3 flex items-center justify-end gap-2">
-        <button
-          type="button"
-          onClick={() => nudge(-1)}
-          disabled={atStart}
-          aria-label={locale === "en" ? "Scroll left" : "往左"}
-          className={arrow}
-        >
-          <span aria-hidden>←</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => nudge(1)}
-          disabled={atEnd}
-          aria-label={locale === "en" ? "Scroll right" : "往右"}
-          className={arrow}
-        >
-          <span aria-hidden>→</span>
-        </button>
-      </div>
+      {!showcase && (
+        <div className="mb-3 flex items-center justify-end gap-2">
+          <button
+            type="button"
+            onClick={() => nudge(-1)}
+            disabled={atStart}
+            aria-label={locale === "en" ? "Scroll left" : "往左"}
+            className={arrow}
+          >
+            <span aria-hidden>←</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => nudge(1)}
+            disabled={atEnd}
+            aria-label={locale === "en" ? "Scroll right" : "往右"}
+            className={arrow}
+          >
+            <span aria-hidden>→</span>
+          </button>
+        </div>
+      )}
 
       <div
         ref={railRef}
@@ -101,16 +106,16 @@ export function CatalogCarousel({
             <Link
               key={item.slug}
               href={`${localizedPath(`/drug/${item.slug}`, locale)}?area=${area}`}
-              className="history-link group flex shrink-0 snap-start flex-col border border-line-soft bg-paper no-underline transition-[background-color,border-color,transform] hover:-translate-y-px hover:border-line-strong hover:bg-surface-hover w-[calc((100%-12px)/2)] sm:w-[calc((100%-24px)/3)] md:w-[calc((100%-36px)/4)]"
+              className={`history-link group flex shrink-0 snap-start flex-col overflow-hidden border border-line-soft bg-paper no-underline transition-[background-color,border-color,transform] hover:-translate-y-px hover:border-line-strong hover:bg-surface-hover w-[calc((100%-12px)/2)] sm:w-[calc((100%-24px)/3)] md:w-[calc((100%-36px)/4)] ${showcase ? "rounded-[12px]" : ""}`}
             >
-              <span className="relative block aspect-square w-full border-b border-line">
+              <span className={`relative block w-full border-b border-line ${showcase ? "aspect-[1.75/1]" : "aspect-square"}`}>
                 {item.image ? (
                   <Image
                     src={item.image.src}
                     alt=""
                     fill
                     sizes="196px"
-                    className="object-contain p-3"
+                    className={`object-contain ${showcase ? "p-2" : "p-3"}`}
                   />
                 ) : (
                   <CatalogImagePlaceholder locale={locale} />
