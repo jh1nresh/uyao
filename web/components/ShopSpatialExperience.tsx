@@ -317,7 +317,7 @@ export function ShopSpatialExperience({
               <path d="m15.75 15.75 4.5 4.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
             </svg>
             <span className="min-w-0 flex-1 truncate text-[16px] text-ink sm:text-[18px]">{active.query}</span>
-            <button type="button" onClick={modify} className="action-secondary min-h-10 rounded-full px-4 text-[14px]">
+            <button type="button" onClick={modify} className="action-secondary rounded-full px-4 text-[14px]">
               {locale === "en" ? "Edit" : "修改"}
             </button>
           </div>
