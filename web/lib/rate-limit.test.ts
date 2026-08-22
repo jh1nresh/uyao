@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { __resetForTests } from "./kv";
-import { checkReservation, clientIp } from "./rate-limit";
+import { checkPublicRead, checkReservation, clientIp, PUBLIC_READ_LIMIT } from "./rate-limit";
 
 const req = (ip: string) =>
   ({ headers: { get: (k: string) => (k === "x-forwarded-for" ? ip : null) } }) as Request;
@@ -60,6 +60,22 @@ describe("預留節流", () => {
     }
     expect(last.ok).toBe(false);
     expect(last.retryAfterSec).toBeGreaterThan(0);
+  });
+});
+
+describe("公開讀取節流", () => {
+  it("advertises remaining quota and blocks after the public read limit", async () => {
+    const first = await checkPublicRead(req("8.8.8.8"));
+    expect(first.ok).toBe(true);
+    expect(first.limit).toBe(PUBLIC_READ_LIMIT);
+    expect(first.remaining).toBe(PUBLIC_READ_LIMIT - 1);
+
+    let last = first;
+    for (let i = 1; i <= PUBLIC_READ_LIMIT; i += 1) {
+      last = await checkPublicRead(req("8.8.8.8"));
+    }
+    expect(last.ok).toBe(false);
+    expect(last.remaining).toBe(0);
   });
 });
 

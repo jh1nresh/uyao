@@ -23,6 +23,19 @@ describe("llms.txt", () => {
     expect(company).toContain(`${SITE_URL}/en/guides`);
   });
 
+  it("tells agents when not to treat the site as live inventory or diagnosis", () => {
+    expect(company).toContain("## When to use");
+    expect(company).toContain("## When not to use");
+    expect(company).toContain("這些不是即時庫存");
+    expect(company).toContain("不要當成診斷、用藥、劑量或處方建議");
+    expect(company).toContain("不要寫入 Store OS、不要當 POS 或健保申報");
+    expect(company).toContain(`${SITE_URL}/zh-tw/about`);
+    expect(company).toContain(`${SITE_URL}/zh-tw/contact`);
+    expect(company).toContain(`${SITE_URL}/zh-tw/privacy`);
+    expect(company).toContain(`${SITE_URL}/docs`);
+    expect(company).toContain(`Contact: uyao@agentmail.to`);
+  });
+
   it("points agents at the OpenAPI document from both hosts", () => {
     expect(company).toContain(`${SITE_URL}/openapi.json`);
     expect(shop).toContain(`${SHOP_URL}/openapi.json`);
