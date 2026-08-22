@@ -237,7 +237,7 @@ export function ShopSpatialExperience({
                   ? "Enter a product, ingredient, or daily-wellness need. Recognized symptoms open safety guidance first."
                   : "可輸入品名、成分或日常保養方向；常見症狀會先顯示安全提醒。"}
               </p>
-              <div className="mt-8 text-left">
+              <div className="shop-pearl-object mt-8 text-left">
                 <SearchInput
                   key={`${draftQuery}-${focusSearch}`}
                   size="xl"
@@ -249,6 +249,12 @@ export function ShopSpatialExperience({
                   onQueryChange={compose}
                   onSubmitQuery={begin}
                 />
+                {/* Mirror silhouette of the capsule on the floor. Decorative
+                    only: it duplicates no text and stays out of the a11y tree. */}
+                <div aria-hidden className="shop-pearl-reflection">
+                  <div className="shop-pearl-reflection-pill" />
+                  <div className="shop-pearl-reflection-action" />
+                </div>
               </div>
               <div className="mt-6 flex flex-col items-center justify-center gap-3 text-center text-[14px] leading-[1.65] text-muted sm:flex-row">
                 <p className="m-0">

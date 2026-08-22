@@ -72,7 +72,12 @@ export function proxy(req: NextRequest) {
   requestHeaders.set("x-uyao-locale", route.locale);
 
   const host = (req.headers.get("host") ?? req.nextUrl.hostname).toLowerCase().split(":")[0];
-  const isShop = SHOP_HOSTS.has(host) || host.startsWith("shop.");
+  // Vercel preview deployments are branch-scoped hosts such as
+  // `uyao-git-<branch>-<team>.vercel.app`. They match neither `shop.` nor
+  // SHOP_HOST, so consumer routes used to 308 straight to production and every
+  // shop frontend PR was unreviewable on its own preview URL.
+  const isPreviewHost = host.endsWith(".vercel.app") && !SHOP_HOSTS.has(host);
+  const isShop = SHOP_HOSTS.has(host) || host.startsWith("shop.") || isPreviewHost;
   const isStore = host === STORE_HOST
     || (process.env.NODE_ENV !== "production" && host === "store.localhost");
   const isStoreAlias = STORE_ALIASES.has(host);
