@@ -286,7 +286,7 @@ export function ShopSpatialExperience({
               ))}
             </nav>
             <CatalogCarousel
-              drugs={drugs}
+              drugs={sideCards}
               area={area}
               locale={locale}
               label={locale === "en" ? "Catalog items" : "目錄品項"}
