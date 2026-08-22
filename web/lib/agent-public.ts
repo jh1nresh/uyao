@@ -104,10 +104,12 @@ export const TRUST_PAGES: Record<Exclude<PublicPagePath, "/">, TrustPage> = {
     description:
       "OpenAPI for GET /api/catalog and GET /api/pharmacies. Both are static public records, not live inventory.",
     body: [
+      HOMEPAGE_PROSE,
+      `What this site will not claim: ${HOMEPAGE_LIMITS.join(" ")}`,
       "uYao developer resources live at predictable first-party URLs: /docs, /openapi.json, and /llms.txt. The public read contract is two GET endpoints. Do not treat any other path on this host as a supported agent API.",
       "GET /api/catalog returns partner-listed catalog records. Each response includes a disclaimer. The payload has product copy the catalog pages already render. It does not include price, stock, availability, or an inventory scan timestamp.",
       "GET /api/pharmacies returns public pharmacy records assembled from Taiwan government open data. A listing is not a uYao partnership and not proof of stock. When hoursSource is nhi, those hours are National Health Insurance dispensing hours, not a promise the store is open.",
-      "Both endpoints are rate limited per client IP. Successful responses and 429 responses send RateLimit headers. Failures use RFC 9457 application/problem+json with type, title, status, detail, code, message, and resolution fields; the existing error field remains for compatibility.",
+      "Every public GET is rate limited per client IP. Successful responses and 429 responses send RateLimit-Policy and RateLimit using the current IETF HTTPAPI draft syntax; legacy RateLimit-Limit, RateLimit-Remaining, and RateLimit-Reset fields remain for compatibility. A 429 also sends Retry-After. Failures use RFC 9457 application/problem+json with type, title, status, detail, code, message, and resolution fields; the existing error field remains for compatibility.",
       "API versioning uses the optional X-uYao-API-Version request header. Omit it for the current contract, or send 1.1.0 explicitly. Every response returns X-uYao-API-Version. Unsupported versions return a structured 400 problem.",
       "No endpoint is deprecated today. The Link response header points to this policy without marking an endpoint deprecated. If a contract is retired, uYao will publish a migration path here, then send the standards-based Deprecation header and a Sunset date before removal.",
       "Send Accept: application/json for JSON (the default) or Accept: text/markdown for a markdown rendering of the same records. Responses include Vary: Accept.",
@@ -147,6 +149,66 @@ export function homepageMarkdown(): string {
     "- [Docs](/docs)",
     "- [llms.txt](/llms.txt)",
     `- Email: ${CONTACT_EMAIL}`,
+    "",
+  ].join("\n");
+}
+
+export function shopHomepageMarkdown(locale: "zh" | "en"): string {
+  if (locale === "en") {
+    return [
+      "# uYao Medicine Finder",
+      "",
+      "> Search a trial catalog and nearby public pharmacy records, then leave a medicine request. A pharmacy or pharmacist confirms supply, pickup, and medicine questions.",
+      "",
+      "## When to use",
+      "",
+      "- Search by product name, ingredient, or everyday wellness need.",
+      "- Find public pharmacy records near a supported area in Taiwan.",
+      "- Leave a request when the trial catalog does not answer the search.",
+      "",
+      "## Boundaries",
+      "",
+      "- Catalog records are partner-listed product details, not live inventory, a price, or a supply promise.",
+      "- This site does not sell medicine online and does not provide diagnosis, dosage, substitution, or medication advice.",
+      "- Recognized symptom language opens safety guidance instead of automatically recommending a product.",
+      "- Prescription medicine is out of scope. Contact the pharmacy before travelling.",
+      "",
+      "## Developer resources",
+      "",
+      "- [Catalog API](/api/catalog): Public catalog records only; no stock, price, or availability.",
+      "- [Pharmacy API](/api/pharmacies): Public pharmacy records; a listing is not a uYao partnership or stock confirmation.",
+      "- [OpenAPI](/openapi.json): Machine-readable schemas, errors, versioning, and rate-limit headers.",
+      "- [Developer documentation](https://uyaohealth.com/docs): Supported public contract and deprecation policy.",
+      "- [Agent index](/llms.txt): When to use this site and what not to infer.",
+      "",
+    ].join("\n");
+  }
+
+  return [
+    "# uYao 找藥",
+    "",
+    "> 搜尋試營運目錄與附近公開藥局資料；找不到時可以留下找藥需求。實際供應、領取與用藥問題仍由藥局或藥師確認。",
+    "",
+    "## 適合使用",
+    "",
+    "- 依品名、成分或日常保養方向搜尋公開目錄。",
+    "- 查看台灣已支援地區的附近公開藥局資料。",
+    "- 試營運目錄沒有答案時留下品項與地區需求。",
+    "",
+    "## 使用邊界",
+    "",
+    "- 目錄是合作藥局提供的品項資料，不是即時庫存、價格或供應保證。",
+    "- 本站不在線上販售藥品，也不提供診斷、劑量、替代品或用藥建議。",
+    "- 辨識到症狀文字時，先顯示安全提醒，不會自動推薦商品。",
+    "- 處方藥不在範圍內；出發前請先聯絡藥局確認。",
+    "",
+    "## 開發者資源",
+    "",
+    "- [目錄 API](/api/catalog)：只回公開目錄欄位，不含庫存、價格或供應狀態。",
+    "- [藥局 API](/api/pharmacies)：只回公開藥局資料；列出不代表合作或有貨。",
+    "- [OpenAPI](/openapi.json)：機器可讀的 schema、錯誤、版本與 rate-limit headers。",
+    "- [開發者文件](https://uyaohealth.com/docs)：支援的公開契約與棄用政策。",
+    "- [Agent index](/llms.txt)：何時適合使用，以及不可推論的事項。",
     "",
   ].join("\n");
 }

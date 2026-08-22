@@ -4,6 +4,8 @@ import { describe, expect, it } from "vitest";
 import { CONTACT_EMAIL, organizationJsonLd } from "./seo";
 import {
   HOMEPAGE_H1,
+  HOMEPAGE_LIMITS,
+  HOMEPAGE_PROSE,
   PUBLIC_CACHE_CONTROL,
   PUBLIC_PAGE_PATHS,
   TRUST_PAGES,
@@ -14,6 +16,7 @@ import {
   notFoundHtml,
   notFoundMarkdown,
   pageMarkdown,
+  shopHomepageMarkdown,
   trustPageVisibleText,
   visibleTextLength,
 } from "./agent-public";
@@ -30,6 +33,23 @@ describe("homepage SSR copy", () => {
     expect(text).not.toMatch(/diagnos(e|is)s? you/i);
   });
 
+  it("gives each Shop locale a structured markdown homepage without changing the visual page", () => {
+    const zh = shopHomepageMarkdown("zh");
+    const en = shopHomepageMarkdown("en");
+
+    expect(zh.startsWith("# uYao 找藥\n")).toBe(true);
+    expect(en.startsWith("# uYao Medicine Finder\n")).toBe(true);
+    for (const markdown of [zh, en]) {
+      expect(markdown.match(/^# /gm)).toHaveLength(1);
+      expect(markdown.match(/^## /gm)?.length).toBeGreaterThanOrEqual(3);
+      expect(visibleTextLength(markdown)).toBeGreaterThanOrEqual(500);
+      expect(markdown).toContain("/api/catalog");
+      expect(markdown).toContain("/api/pharmacies");
+      expect(markdown).toContain("https://uyaohealth.com/docs");
+      expect(markdown).toMatch(/not live inventory|不是即時庫存/i);
+    }
+  });
+
   it("links about, contact, and privacy from the company footer on locale routes", () => {
     const footer = readFileSync(new URL("../components/landing/CompanyFooter.tsx", import.meta.url), "utf8");
     expect(footer).toContain("${companyPrefix}/about");
@@ -39,18 +59,18 @@ describe("homepage SSR copy", () => {
     expect(footer).toContain('href="/llms.txt"');
   });
 
-  it("renders one leading hero H1 and keeps the long server copy below it", () => {
+  it("keeps one visual hero H1 and serves the long agent copy outside the homepage", () => {
     const landing = readFileSync(new URL("../components/landing/AgentLandingExperience.tsx", import.meta.url), "utf8");
-    const honesty = readFileSync(new URL("../components/landing/CompanyHomeHonesty.tsx", import.meta.url), "utf8");
     const zh = readFileSync(new URL("../app/page.tsx", import.meta.url), "utf8");
     const en = readFileSync(new URL("../app/en/page.tsx", import.meta.url), "utf8");
 
     expect(landing).toContain("<h1");
-    expect(honesty).not.toContain("<h1");
-    expect(honesty).toContain("<h2");
-    expect(honesty).toContain("HOMEPAGE_H1");
-    expect(zh).toContain("CompanyHomeHonesty");
-    expect(en).toContain("CompanyHomeHonesty");
+    expect(zh).not.toContain("CompanyHomeHonesty");
+    expect(en).not.toContain("CompanyHomeHonesty");
+    expect(TRUST_PAGES["/docs"].body).toContain(HOMEPAGE_PROSE);
+    for (const limit of HOMEPAGE_LIMITS) {
+      expect(TRUST_PAGES["/docs"].body).toContain(limit);
+    }
   });
 });
 
@@ -84,6 +104,8 @@ describe("trust pages", () => {
     expect(TRUST_PAGES["/docs"].body).toMatch(/prototype/i);
     expect(TRUST_PAGES["/docs"].title).toMatch(/uYao Developer Resources/);
     expect(TRUST_PAGES["/docs"].body).toMatch(/application\/problem\+json/);
+    expect(TRUST_PAGES["/docs"].body).toMatch(/RateLimit-Policy.*RateLimit/);
+    expect(TRUST_PAGES["/docs"].body).toMatch(/Retry-After/);
     expect(TRUST_PAGES["/docs"].body).toMatch(/X-uYao-API-Version/);
     expect(TRUST_PAGES["/docs"].body).toMatch(/Deprecation header.*Sunset date/i);
   });
