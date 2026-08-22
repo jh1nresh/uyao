@@ -739,13 +739,13 @@ export function AgentLandingExperience({ locale }: { locale: Locale }) {
 
       <main>
         <header className="mx-auto flex min-h-[500px] max-w-[1120px] flex-col items-center justify-center px-5 py-16 text-center sm:min-h-[560px] sm:px-8 sm:py-20">
-          <h1 className="editorial-display mb-0 mt-0 max-w-[980px] text-[clamp(46px,7vw,88px)] leading-[1.08]">
+          <p className="editorial-display mb-0 mt-0 max-w-[980px] text-[clamp(46px,7vw,88px)] leading-[1.08]">
             {copy.heroTitleBefore}{" "}
             {/* #171 靜態化的例外：hero 這隻是首屏招牌，單隻 idle 的 CPU 成本
                 可以接受，其餘 avatar（message、many、jobs、footer）維持靜態。 */}
             <Avatar id="manager" size="1.08em" playing={!reducedMotion} className="align-[-.2em]" />{" "}
             {copy.heroTitleAfter}
-          </h1>
+          </p>
           <p className="mb-0 mt-7 max-w-[720px] text-[15px] leading-[1.8] text-muted sm:text-[17px]">{copy.heroLead}</p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link href={pilotHref} className="action-primary min-h-[52px] px-7 text-[14px]">{copy.pilot}</Link>

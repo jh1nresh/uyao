@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { JsonLd } from "@/components/JsonLd";
 import { AgentLandingExperience } from "@/components/landing/AgentLandingExperience";
+import { CompanyHomeHonesty } from "@/components/landing/CompanyHomeHonesty";
 import {
   BRAND_NAME,
   organizationJsonLd,
@@ -10,6 +11,8 @@ import {
   webSiteJsonLd,
 } from "@/lib/seo";
 import { indexablePageRobots } from "@/lib/seo-server";
+
+export const revalidate = 3600;
 
 const TITLE = `${BRAND_NAME}｜台灣獨立藥局的 AI Operating System`;
 // SEO 稽核把 40 字的版本判成 meta description 過短。補到 80 字左右：把「訊號從哪來、
@@ -49,6 +52,7 @@ export default function CompanyLandingPage() {
     <>
       <JsonLd nodes={[organizationJsonLd(), webSiteJsonLd("zh"), softwareApplicationJsonLd("zh")]} />
       <AgentLandingExperience locale="zh" />
+      <CompanyHomeHonesty />
     </>
   );
 }
