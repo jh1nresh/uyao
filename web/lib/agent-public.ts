@@ -104,6 +104,8 @@ export const TRUST_PAGES: Record<Exclude<PublicPagePath, "/">, TrustPage> = {
     description:
       "OpenAPI for GET /api/catalog and GET /api/pharmacies. Both are static public records, not live inventory.",
     body: [
+      HOMEPAGE_PROSE,
+      `What this site will not claim: ${HOMEPAGE_LIMITS.join(" ")}`,
       "uYao developer resources live at predictable first-party URLs: /docs, /openapi.json, and /llms.txt. The public read contract is two GET endpoints. Do not treat any other path on this host as a supported agent API.",
       "GET /api/catalog returns partner-listed catalog records. Each response includes a disclaimer. The payload has product copy the catalog pages already render. It does not include price, stock, availability, or an inventory scan timestamp.",
       "GET /api/pharmacies returns public pharmacy records assembled from Taiwan government open data. A listing is not a uYao partnership and not proof of stock. When hoursSource is nhi, those hours are National Health Insurance dispensing hours, not a promise the store is open.",

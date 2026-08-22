@@ -4,6 +4,8 @@ import { describe, expect, it } from "vitest";
 import { CONTACT_EMAIL, organizationJsonLd } from "./seo";
 import {
   HOMEPAGE_H1,
+  HOMEPAGE_LIMITS,
+  HOMEPAGE_PROSE,
   PUBLIC_CACHE_CONTROL,
   PUBLIC_PAGE_PATHS,
   TRUST_PAGES,
@@ -39,18 +41,18 @@ describe("homepage SSR copy", () => {
     expect(footer).toContain('href="/llms.txt"');
   });
 
-  it("renders one leading hero H1 and keeps the long server copy below it", () => {
+  it("keeps one visual hero H1 and serves the long agent copy outside the homepage", () => {
     const landing = readFileSync(new URL("../components/landing/AgentLandingExperience.tsx", import.meta.url), "utf8");
-    const honesty = readFileSync(new URL("../components/landing/CompanyHomeHonesty.tsx", import.meta.url), "utf8");
     const zh = readFileSync(new URL("../app/page.tsx", import.meta.url), "utf8");
     const en = readFileSync(new URL("../app/en/page.tsx", import.meta.url), "utf8");
 
     expect(landing).toContain("<h1");
-    expect(honesty).not.toContain("<h1");
-    expect(honesty).toContain("<h2");
-    expect(honesty).toContain("HOMEPAGE_H1");
-    expect(zh).toContain("CompanyHomeHonesty");
-    expect(en).toContain("CompanyHomeHonesty");
+    expect(zh).not.toContain("CompanyHomeHonesty");
+    expect(en).not.toContain("CompanyHomeHonesty");
+    expect(TRUST_PAGES["/docs"].body).toContain(HOMEPAGE_PROSE);
+    for (const limit of HOMEPAGE_LIMITS) {
+      expect(TRUST_PAGES["/docs"].body).toContain(limit);
+    }
   });
 });
 
