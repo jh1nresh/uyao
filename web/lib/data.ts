@@ -231,11 +231,9 @@ const DRUGS: Drug[] = [
     nutritionFocus: "呼吸道日常保養",
     nutritionFocusEn: "Daily respiratory wellness",
     searchTerms: ["呼吸道保養", "換季保養", "粉塵環境保養"],
-    manufacturer: "UNITED PHARMA LLC",
-    origin: "美國",
     source: {
-      label: "樂天市場克氣清商品資料",
-      url: "https://www.rakuten.com.tw/shop/querterr/product/z8jbj38x3/",
+      label: "麗登藥妝產品資料",
+      url: "https://www.citycare.com.tw/product/lakalin-sp02/",
     },
   },
   {
@@ -421,7 +419,6 @@ const DRUGS: Drug[] = [
     name: "中美 金固關健緩釋錠",
     aliases: ["金固關健", "金固關健緩釋錠"],
     form: "緩釋錠",
-    spec: "60錠",
     ingredients: ["雞胸軟骨萃取物（含非變性二型膠原蛋白）", "乳木果油萃取", "MSM（甲基硫醯基甲烷）", "葡萄糖酸鋅", "維生素D3"],
     nutritionFocus: "非變性二型膠原蛋白、MSM、鋅與維生素 D3 的產品組成",
     searchTerms: ["二型膠原蛋白", "MSM", "鋅", "維生素D3", "關節營養補給"],

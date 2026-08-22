@@ -29,7 +29,7 @@ const EXPECTED_CATALOG = [
   { slug: "baiyi-capsule-60", label: "百益膠囊食品 60粒" },
   { slug: "cm-sheliwei-softgel", label: "中美 攝利威軟膠囊" },
   { slug: "wewell-vision-softgel", label: "維維樂 視清／小視清軟膠囊" },
-  { slug: "cm-jinguguanjian-sr", label: "中美 金固關健緩釋錠 60錠" },
+  { slug: "cm-jinguguanjian-sr", label: "中美 金固關健緩釋錠" },
   { slug: "likuo-fish-oil-30", label: "立國 精粹魚油膠囊 30粒" },
   { slug: "tianxia-yangshen-jingqu", label: "天下生物科技 養身景麴膠囊 90粒" },
   { slug: "hongren-riqingsheng-lm", label: "鴻仁 日清勝 LM機能益生菌" },
@@ -172,7 +172,6 @@ describe("合作藥局常見品項目錄", () => {
   });
 
   it.each([
-    { slug: "cm-jinguguanjian-sr", form: "緩釋錠", spec: "60錠" },
     { slug: "tianxia-yangshen-jingqu", form: "膠囊", spec: "90粒" },
     { slug: "jingcui-huxinan", form: "微粒膠囊", spec: "120粒" },
     { slug: "toyo-cukang-b", form: "膠囊", spec: "120粒" },
@@ -193,14 +192,30 @@ describe("合作藥局常見品項目錄", () => {
     expect(drug?.source?.url).toMatch(/^https:\/\//);
   });
 
-  it("克氣清保留公開資料可核對的規格、製造商與產地", () => {
-    expect(getDrug("keqiqing-capsule")).toMatchObject({
+  it("克氣清只保留麗登頁面可核對的規格", () => {
+    const drug = getDrug("keqiqing-capsule");
+
+    expect(drug).toMatchObject({
       spec: "50粒",
-      manufacturer: "UNITED PHARMA LLC",
-      origin: "美國",
       updatedOn: "2026-08-22",
       source: {
-        url: "https://www.rakuten.com.tw/shop/querterr/product/z8jbj38x3/",
+        label: "麗登藥妝產品資料",
+        url: "https://www.citycare.com.tw/product/lakalin-sp02/",
+      },
+    });
+    expect(drug?.manufacturer).toBeUndefined();
+    expect(drug?.origin).toBeUndefined();
+  });
+
+  it("金固關健保留中美用量與成分核對，但不宣稱未標示的包裝粒數", () => {
+    expect(getDrug("cm-jinguguanjian-sr")).toMatchObject({
+      form: "緩釋錠",
+      spec: "規格待確認",
+      dosage: "每日2錠，飯後食用；一日請勿超過2錠。",
+      updatedOn: "2026-08-22",
+      source: {
+        kind: "partner",
+        url: "https://chungmei.pixo-lab.com/product/%E9%87%91%E5%9B%BA%E9%97%9C%E5%81%A5%E7%B7%A9%E9%87%8B%E9%8C%A0/",
       },
     });
   });
