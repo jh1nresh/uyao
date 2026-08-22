@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { __resetForTests } from "@/lib/kv";
+import { PUBLIC_API_VERSION } from "@/lib/public-api";
+import { PUBLIC_API_VERSION_HEADER } from "@/lib/public-read-route";
 import { PUBLIC_READ_LIMIT } from "@/lib/rate-limit";
 
 import { GET } from "./route";
@@ -22,9 +24,29 @@ describe("GET /api/catalog", () => {
     expect(response.headers.get("content-type")).toMatch(/application\/json/);
     expect(response.headers.get("vary")).toMatch(/Accept/i);
     expect(response.headers.get("ratelimit-limit")).toBe(String(PUBLIC_READ_LIMIT));
+    expect(response.headers.get(PUBLIC_API_VERSION_HEADER)).toBe(PUBLIC_API_VERSION);
+    expect(response.headers.get("link")).toMatch(/rel="deprecation"/);
     expect(Number(response.headers.get("ratelimit-remaining"))).toBeLessThan(PUBLIC_READ_LIMIT);
     expect(body.disclaimer).toMatch(/not live inventory/i);
     expect(JSON.stringify(body)).not.toMatch(/inStock|priceTwd|availability/);
+  });
+
+  it("rejects an unsupported version with a structured JSON resolution", async () => {
+    const response = await GET(request("/api/catalog", {
+      [PUBLIC_API_VERSION_HEADER]: "0.9.0",
+    }));
+    const body = await response.json() as Record<string, unknown>;
+
+    expect(response.status).toBe(400);
+    expect(response.headers.get("content-type")).toMatch(/application\/problem\+json/);
+    expect(body).toMatchObject({
+      status: 400,
+      error: "unsupported_api_version",
+      code: "unsupported_api_version",
+      requestedVersion: "0.9.0",
+      supportedVersions: [PUBLIC_API_VERSION],
+    });
+    expect(String(body.resolution)).toContain(PUBLIC_API_VERSION_HEADER);
   });
 
   it("serves markdown when Accept prefers it", async () => {
@@ -43,11 +65,17 @@ describe("GET /api/catalog", () => {
     for (let i = 0; i <= PUBLIC_READ_LIMIT; i += 1) {
       last = await GET(request("/api/catalog", { "x-forwarded-for": "203.0.113.9" }));
     }
-    const body = await last.json() as { error: string };
+    const body = await last.json() as Record<string, unknown>;
 
     expect(last.status).toBe(429);
-    expect(last.headers.get("content-type")).toMatch(/application\/json/);
+    expect(last.headers.get("content-type")).toMatch(/application\/problem\+json/);
     expect(last.headers.get("ratelimit-remaining")).toBe("0");
-    expect(body.error).toBe("rate_limited");
+    expect(body).toMatchObject({
+      status: 429,
+      error: "rate_limited",
+      code: "rate_limited",
+      message: "Public read quota exceeded",
+    });
+    expect(String(body.resolution)).toMatch(/Retry-After/i);
   });
 });
