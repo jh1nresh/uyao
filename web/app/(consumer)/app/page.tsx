@@ -5,8 +5,8 @@ import { JsonLd } from "@/components/JsonLd";
 import { ShopSpatialExperience } from "@/components/ShopSpatialExperience";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { allDrugs, toAreaSlug } from "@/lib/data";
-import { localizedPath } from "@/lib/i18n";
+import { allDrugs, getArea, toAreaSlug } from "@/lib/data";
+import { areaCopy, localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
 import { PARTNER_STORE_ITEMS } from "@/lib/partner-stores";
 import {
@@ -112,6 +112,7 @@ export default async function HomePage({
   const catalogRail = [...drugs].sort(
     (a, b) => Number(Boolean(b.image)) - Number(Boolean(a.image)),
   );
+  const currentArea = areaCopy(getArea(area), locale);
   const steps = locale === "en" ? STEPS_EN : STEPS_ZH;
 
   return (
@@ -123,6 +124,7 @@ export default async function HomePage({
         drugs={catalogRail}
         area={area}
         locale={locale}
+        areaName={currentArea.name}
         partnerStores={PARTNER_STORE_ITEMS}
         partnerEvidenceHref={`${SITE_URL}${locale === "en" ? "/en" : "/zh-tw"}/evidence#partners`}
       />

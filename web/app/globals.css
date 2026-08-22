@@ -381,63 +381,73 @@ html:not([data-theme]) .shop-pearl-home,
    the right, and a warm pearl base. The shaft is an explicit skewed band so the
    wall reads as a lit surface instead of a flat tint. */
 .shop-pearl-hero {
-  --pearl-horizon: 52%;
-  --pearl-floor-noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.18  0 0 0 0 0.16  0 0 0 0 0.13  0 0 0 0.42 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  --pearl-horizon: 73%;
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  background:
-    linear-gradient(104deg, rgb(255 255 255 / 0.22) 0 3%, rgb(255 255 255) 9%, rgb(255 255 255 / 0.62) 22%, rgb(255 255 255 / 0.12) 34%, transparent 48%),
-    radial-gradient(ellipse 80% 70% at 16% 0%, rgb(255 255 255) 0%, transparent 58%),
-    radial-gradient(ellipse 48% 40% at 92% 18%, rgb(var(--color-sage) / 0.62) 0%, transparent 52%),
-    linear-gradient(180deg, rgb(var(--color-paper)) 0%, rgb(var(--color-ivory)) 42%, rgb(var(--color-surface) / 0.55) 100%);
+  background: rgb(var(--color-paper));
 }
 
-/* Floor. The horizon is a real edge, and the surface carries brushed
-   horizontal grain that converges toward the wall. */
-.shop-pearl-hero::before {
+/* The approved hero is a room, not a gradient preset. Keep every plane as an
+   explicit layer so wall light, horizon, floor grain, and reflected light can
+   be positioned and reviewed independently. */
+.shop-pearl-environment {
   position: absolute;
+  inset: 0;
+  z-index: -3;
+  overflow: hidden;
+  background:
+    linear-gradient(112deg, rgb(255 255 255) 0%, rgb(var(--color-paper)) 50%, rgb(var(--color-surface) / 0.7) 100%);
+}
+
+.shop-pearl-wall-light,
+.shop-pearl-horizon,
+.shop-pearl-floor,
+.shop-pearl-floor-light {
+  position: absolute;
+  display: block;
+}
+
+.shop-pearl-wall-light {
+  inset: 0 0 auto;
+  height: var(--pearl-horizon);
+  background:
+    linear-gradient(107deg, transparent 0 3%, rgb(255 255 255 / 0.98) 12%, rgb(255 255 255 / 0.58) 27%, transparent 46%),
+    radial-gradient(ellipse 72% 62% at 10% -5%, rgb(255 255 255) 0%, transparent 54%),
+    radial-gradient(ellipse 52% 48% at 92% 18%, rgb(var(--color-sage) / 0.54) 0%, transparent 52%);
+}
+
+.shop-pearl-horizon {
   inset-inline: 0;
-  bottom: 0;
-  z-index: -2;
-  height: calc(100% - var(--pearl-horizon));
-  border-top: 1px solid rgb(var(--color-line-strong));
-  background:
-    radial-gradient(ellipse at 50% 0%, rgb(255 255 255 / 0.55) 0%, transparent 48%),
-    repeating-linear-gradient(
-      180deg,
-      rgb(var(--color-line-soft) / 0.58) 0 1px,
-      transparent 1px 7px
-    ),
-    repeating-linear-gradient(
-      92deg,
-      transparent 0 11px,
-      rgb(var(--color-line) / 0.16) 11px 12px
-    ),
-    var(--pearl-floor-noise),
-    linear-gradient(180deg, rgb(var(--color-surface) / 0.88) 0%, rgb(var(--color-canvas)) 46%, rgb(var(--color-line-soft) / 0.7) 100%);
-  background-size: auto, auto, auto, 180px 180px, auto;
-  box-shadow:
-    0 -1px 0 rgb(255 255 255 / 0.55),
-    inset 0 28px 36px rgb(var(--shadow-paper) / 0.16),
-    inset 0 1px 0 rgb(255 255 255 / 0.7);
-  content: "";
+  top: var(--pearl-horizon);
+  z-index: 2;
+  border-top: 1px solid rgb(var(--color-line-strong) / 0.54);
+  box-shadow: 0 7px 18px rgb(var(--shadow-paper) / 0.065);
 }
 
-/* Pooled light on the floor directly under the search object. */
-.shop-pearl-hero::after {
-  position: absolute;
-  bottom: calc((100% - var(--pearl-horizon)) * 0.28);
+.shop-pearl-floor {
+  inset: var(--pearl-horizon) 0 0;
+  background:
+    radial-gradient(ellipse 64% 52% at 50% 0%, rgb(255 255 255 / 0.96) 0%, transparent 62%),
+    repeating-linear-gradient(180deg, rgb(var(--color-line-soft) / 0.3) 0 1px, transparent 1px 9px),
+    repeating-linear-gradient(178deg, transparent 0 16px, rgb(255 255 255 / 0.28) 16px 17px),
+    linear-gradient(180deg, rgb(var(--color-paper) / 0.96) 0%, rgb(var(--color-surface) / 0.66) 100%);
+  box-shadow:
+    inset 0 18px 34px rgb(var(--shadow-paper) / 0.065),
+    inset 0 1px 0 rgb(255 255 255 / 0.9);
+}
+
+.shop-pearl-floor-light {
+  top: calc(var(--pearl-horizon) + 0.2rem);
   left: 50%;
-  z-index: -1;
-  width: min(58rem, 74vw);
-  height: 7rem;
+  z-index: 1;
+  width: min(62rem, 76vw);
+  height: 8.5rem;
   border-radius: 50%;
-  background: radial-gradient(ellipse, rgb(var(--color-green) / 0.2) 0%, rgb(var(--color-green) / 0.06) 50%, transparent 72%);
-  filter: blur(26px);
-  opacity: 0.9;
-  transform: translateX(-50%) scaleY(0.42);
-  content: "";
+  background: radial-gradient(ellipse, rgb(var(--color-green) / 0.12) 0%, rgb(var(--color-green) / 0.035) 52%, transparent 74%);
+  filter: blur(22px);
+  opacity: 0.78;
+  transform: translateX(-50%) scaleY(0.5);
 }
 
 /* The search capsule is a physical object standing on the floor: it casts a
@@ -448,50 +458,78 @@ html:not([data-theme]) .shop-pearl-home,
    mirror instead of below it. */
 .shop-pearl-object {
   position: relative;
-  padding-bottom: 5.25rem;
+  padding-bottom: 5rem;
 }
 
-.shop-pearl-object::after {
+.shop-pearl-contact-shadow {
   position: absolute;
-  right: 8%;
-  bottom: 4.15rem;
-  left: 8%;
-  z-index: 0;
-  height: 1.35rem;
+  top: 6.65rem;
+  right: 10%;
+  left: 10%;
+  z-index: 1;
+  height: 1.4rem;
   border-radius: 50%;
-  background: rgb(var(--shadow-paper) / 0.38);
-  filter: blur(10px);
-  content: "";
+  background: rgb(var(--shadow-paper) / 0.17);
+  filter: blur(14px);
 }
 
 .shop-pearl-reflection {
   position: absolute;
   inset-inline: 0;
-  top: calc(100% - 5.05rem);
-  height: 4.85rem;
+  top: 7.35rem;
+  z-index: 1;
+  height: 5.5rem;
   pointer-events: none;
-  -webkit-mask-image: linear-gradient(180deg, rgb(0 0 0 / 0.82) 0%, rgb(0 0 0 / 0.34) 42%, transparent 86%);
-  mask-image: linear-gradient(180deg, rgb(0 0 0 / 0.82) 0%, rgb(0 0 0 / 0.34) 42%, transparent 86%);
-  filter: blur(1.35px);
-  opacity: 0.78;
+  -webkit-mask-image: linear-gradient(180deg, rgb(0 0 0 / 0.72) 0%, rgb(0 0 0 / 0.28) 50%, transparent 94%);
+  mask-image: linear-gradient(180deg, rgb(0 0 0 / 0.72) 0%, rgb(0 0 0 / 0.28) 50%, transparent 94%);
+  filter: blur(2px);
+  opacity: 0.76;
+  transform: perspective(260px) rotateX(8deg) scaleY(0.9);
+  transform-origin: top center;
 }
 
 .shop-pearl-reflection-pill {
   position: absolute;
   inset: 0;
-  border: 1px solid rgb(255 255 255 / 0.62);
+  border: 1px solid rgb(var(--color-line-strong) / 0.44);
   border-radius: 999px;
-  background: linear-gradient(0deg, rgb(255 255 255 / 0.92) 0%, rgb(var(--color-paper) / 0.72) 40%, rgb(var(--color-sage) / 0.4) 100%);
-  box-shadow: inset 0 0 0 1px rgb(var(--color-line-strong) / 0.28);
+  background: linear-gradient(0deg, rgb(var(--color-surface) / 0.72) 0%, rgb(var(--color-paper) / 0.58) 44%, rgb(var(--color-sage) / 0.48) 100%);
+  box-shadow:
+    0 3px 9px rgb(var(--shadow-paper) / 0.08),
+    inset 0 2px 3px rgb(255 255 255 / 0.76),
+    inset 0 -2px 5px rgb(var(--color-line) / 0.18);
+}
+
+.shop-pearl-reflection-search {
+  position: absolute;
+  top: 50%;
+  left: 3.2rem;
+  width: 2rem;
+  color: rgb(var(--color-forest) / 0.26);
+  transform: translateY(-50%);
 }
 
 .shop-pearl-reflection-action {
   position: absolute;
-  inset-block: 0.45rem;
-  right: 0.75rem;
-  width: 8.5rem;
+  inset-block: 0.5rem;
+  right: 1.5rem;
+  width: 7.45rem;
   border-radius: 999px;
-  background: linear-gradient(0deg, rgb(var(--color-green) / 0.55), rgb(var(--color-forest) / 0.28));
+  background: linear-gradient(0deg, rgb(var(--color-green) / 0.5), rgb(var(--color-forest) / 0.24));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.14);
+}
+
+.shop-pearl-location {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 1.3rem;
+  z-index: 3;
+  color: rgb(var(--color-ink));
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.5;
+  text-align: center;
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.8);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -505,19 +543,21 @@ html:not([data-theme]) .shop-pearl-home,
 }
 
 .shop-pearl-hero-content {
-  display: flex;
-  min-height: clamp(360px, 26vw, 460px);
-  align-items: flex-start;
-  padding-block: 2.5rem 5.75rem;
+  min-height: 26.125rem;
+  padding-block: 4rem 0;
 }
 
 .shop-pearl-search {
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  min-height: 6.75rem;
-  border-color: rgb(var(--color-line-strong) / 0.84) !important;
+  z-index: 2;
+  min-height: 7.125rem;
+  column-gap: 1.75rem;
+  border-color: rgb(var(--color-forest) / 0.46) !important;
   border-radius: 999px;
+  padding-right: 1.5rem !important;
+  padding-left: 3.25rem !important;
   background:
     linear-gradient(108deg, rgb(255 255 255 / 0.9) 0%, rgb(var(--color-paper) / 0.7) 38%, rgb(255 255 255 / 0.94) 67%, rgb(var(--color-sage) / 0.48) 100%) !important;
   box-shadow:
@@ -558,9 +598,9 @@ html:not([data-theme]) .shop-pearl-home,
 }
 
 .shop-pearl-search .action-primary {
-  min-height: 4.5rem;
+  min-height: 4.75rem;
   border-radius: 999px;
-  padding-inline: 2rem;
+  padding-inline: 2.75rem;
   background: linear-gradient(145deg, rgb(var(--color-green)), rgb(var(--color-forest)));
   box-shadow:
     0 10px 24px rgb(var(--color-forest) / 0.2),
@@ -923,7 +963,7 @@ html:not([data-theme]) .shop-pearl-home,
     --pearl-horizon: 58%;
   }
 
-  .shop-pearl-hero::after {
+  .shop-pearl-floor-light {
     width: 88vw;
     height: 4rem;
     filter: blur(18px);
@@ -941,8 +981,8 @@ html:not([data-theme]) .shop-pearl-home,
     padding-bottom: 2.75rem;
   }
 
-  .shop-pearl-object::after {
-    bottom: 1.85rem;
+  .shop-pearl-contact-shadow {
+    top: 4.15rem;
     height: 0.7rem;
   }
 
@@ -959,9 +999,21 @@ html:not([data-theme]) .shop-pearl-home,
     width: 5rem;
   }
 
+  .shop-pearl-reflection-search {
+    left: 0.85rem;
+    width: 1.35rem;
+  }
+
+  .shop-pearl-location {
+    display: none;
+  }
+
   .shop-pearl-search {
     min-height: 4.5rem;
+    column-gap: 0.75rem;
     border-radius: 999px;
+    padding-right: 0.5rem !important;
+    padding-left: 0.75rem !important;
     background: linear-gradient(108deg, rgb(255 255 255 / 0.94), rgb(var(--color-paper) / 0.82) 58%, rgb(var(--color-sage) / 0.5)) !important;
     box-shadow:
       0 16px 36px rgb(var(--shadow-paper) / 0.11),

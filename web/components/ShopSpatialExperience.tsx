@@ -116,12 +116,14 @@ export function ShopSpatialExperience({
   drugs,
   area,
   locale,
+  areaName,
   partnerStores,
   partnerEvidenceHref,
 }: {
   drugs: Drug[];
   area: AreaSlug;
   locale: Locale;
+  areaName: string;
   partnerStores: readonly PartnerStoreItem[];
   partnerEvidenceHref: string;
 }) {
@@ -222,8 +224,14 @@ export function ShopSpatialExperience({
     return (
       <>
         <section className="shop-pearl-hero">
+          <div aria-hidden className="shop-pearl-environment">
+            <span className="shop-pearl-wall-light" />
+            <span className="shop-pearl-horizon" />
+            <span className="shop-pearl-floor" />
+            <span className="shop-pearl-floor-light" />
+          </div>
           <div className="shop-pearl-hero-content shop-shell">
-            <div className="mx-auto w-full max-w-[920px] text-center">
+            <div className="mx-auto w-full max-w-[892px] text-center">
               <h1 className="editorial-display m-0 text-[clamp(36px,3.4vw,42px)] leading-[1.12]">
                 {locale === "en" ? "You do not need to know the product name." : "不用先知道品名。描述需求就能開始。"}
               </h1>
@@ -232,7 +240,8 @@ export function ShopSpatialExperience({
                   ? "Enter a product, ingredient, or daily-wellness need. Recognized symptoms open safety guidance first."
                   : "可輸入品名、成分或日常保養方向；常見症狀會先顯示安全提醒。"}
               </p>
-              <div className="shop-pearl-object mt-6 text-left">
+              <div className="shop-pearl-object mt-9 text-left">
+                <div aria-hidden className="shop-pearl-contact-shadow" />
                 <SearchInput
                   key={`${draftQuery}-${focusSearch}`}
                   size="xl"
@@ -247,9 +256,17 @@ export function ShopSpatialExperience({
                 {/* Mirror silhouette of the capsule on the floor. Decorative
                     only: it duplicates no text and stays out of the a11y tree. */}
                 <div aria-hidden className="shop-pearl-reflection">
-                  <div className="shop-pearl-reflection-pill" />
+                  <div className="shop-pearl-reflection-pill">
+                    <svg viewBox="0 0 24 24" fill="none" className="shop-pearl-reflection-search">
+                      <circle cx="10.75" cy="10.75" r="6.75" stroke="currentColor" strokeWidth="1.75" />
+                      <path d="m15.75 15.75 4.5 4.5" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+                    </svg>
+                  </div>
                   <div className="shop-pearl-reflection-action" />
                 </div>
+                <p className="shop-pearl-location m-0">
+                  {locale === "en" ? `${areaName} · partner pharmacies` : `${areaName}收錄合作藥局`}
+                </p>
               </div>
               <div className="mt-4 md:hidden">
                 <AreaSwitch area={area} preservePath locatable compact />

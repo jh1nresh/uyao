@@ -50,19 +50,31 @@ describe("pearl stage wall and floor", () => {
   it("lights the wall from one direction instead of tinting it flat", () => {
     const hero = block(".shop-pearl-hero");
     expect(hero).toMatch(/--pearl-horizon:/);
+    const wall = block(".shop-pearl-wall-light");
     // The angled shaft is what makes the surface read as lit.
-    expect(hero).toMatch(/linear-gradient\(104deg/);
+    expect(wall).toMatch(/linear-gradient\(107deg/);
   });
 
   it("gives the floor a visible horizon and readable grain", () => {
-    const floor = block(".shop-pearl-hero::before");
-    expect(floor).toMatch(/height: calc\(100% - var\(--pearl-horizon\)\)/);
-    expect(floor).toMatch(/border-top: 1px solid/);
+    const horizon = block(".shop-pearl-horizon");
+    expect(horizon).toMatch(/top: var\(--pearl-horizon\)/);
+    expect(horizon).toMatch(/border-top: 1px solid/);
+
+    const floor = block(".shop-pearl-floor");
+    expect(floor).toMatch(/inset: var\(--pearl-horizon\) 0 0/);
 
     const grain = floor.match(/rgb\(var\(--color-line-soft\) \/ ([\d.]+)\)/);
     expect(grain, "floor grain must exist").not.toBeNull();
     // At 0.16 the previous striping was invisible against the pearl surface.
     expect(Number(grain![1])).toBeGreaterThanOrEqual(0.3);
+  });
+
+  it("keeps every room plane as a reviewable component", () => {
+    expect(component).toMatch(/shop-pearl-environment/);
+    expect(component).toMatch(/shop-pearl-wall-light/);
+    expect(component).toMatch(/shop-pearl-horizon/);
+    expect(component).toMatch(/shop-pearl-floor/);
+    expect(component).toMatch(/shop-pearl-floor-light/);
   });
 });
 
@@ -79,12 +91,13 @@ describe("search capsule reflection", () => {
 
   it("casts a contact shadow and reserves layout space under the capsule", () => {
     expect(block(".shop-pearl-object")).toMatch(/padding-bottom:/);
-    expect(block(".shop-pearl-object::after")).toMatch(/box-shadow|background: rgb\(var\(--shadow-paper\)/);
+    expect(block(".shop-pearl-contact-shadow")).toMatch(/background: rgb\(var\(--shadow-paper\)/);
   });
 
   it("keeps the mirror silhouette in the markup", () => {
     expect(component).toMatch(/aria-hidden className="shop-pearl-reflection"/);
     expect(component).toMatch(/shop-pearl-reflection-pill/);
+    expect(component).toMatch(/shop-pearl-reflection-search/);
     expect(component).toMatch(/shop-pearl-reflection-action/);
   });
 });
@@ -100,7 +113,10 @@ describe("idle stack and partner marquee", () => {
     expect(component).toMatch(/partner-marquee-track|PartnerMarquee/);
   });
 
-  it("does not replace the marquee with a static store-count line", () => {
+  it("keeps area context without replacing the marquee with a store-count line", () => {
+    expect(component).toMatch(/shop-pearl-location/);
+    expect(component).toMatch(/areaName/);
+    expect(component).toMatch(/收錄合作藥局/);
     expect(component).not.toMatch(/listed pharmacies/);
     expect(component).not.toMatch(/收錄 \$\{storeCount\}/);
     expect(css).toMatch(/@keyframes partner-marquee-scroll/);
