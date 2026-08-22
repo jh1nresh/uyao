@@ -245,7 +245,7 @@ def enrich(
 
 def main(argv: list[str] | None = None) -> int:
     from pharmabox.prospects import fetch_csv, parse, select
-    from pharmabox.seed import DEFAULT_SCOPES, DEFAULT_STORE_NAMES, MANUAL_STORES
+    from pharmabox.seed import DEFAULT_SCOPES, DEFAULT_STORE_NAMES, LISTED_STORES, MANUAL_STORES
 
     ap = argparse.ArgumentParser(description="用 Google Places 補齊藥局座標與營業時間")
     ap.add_argument("--city", default="臺北市")
@@ -285,7 +285,11 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.stores:
         only = {s.strip() for s in args.stores.replace("、", ",").split(",") if s.strip()}
-        picked = [p for p in picked if p.name in only]
+        if args.stores == DEFAULT_STORE_NAMES:
+            listed_locations = set(LISTED_STORES)
+            picked = [p for p in picked if (p.name, p.city, p.district) in listed_locations]
+        else:
+            picked = [p for p in picked if p.name in only]
         missing = only - {p.name for p in picked}
         if missing:
             print(f"這些店在指定範圍找不到：{'、'.join(sorted(missing))}", file=sys.stderr)

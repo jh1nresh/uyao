@@ -88,6 +88,8 @@ const EXPECTED_PRODUCTS = {
     "New AOB Vitality Beauty 45包",
     "高優質維他命B群 60粒",
   ],
+  天養藥局: [],
+  美麗田藥局: [],
 } as const;
 
 const REQUIRED_ALIASES = {
@@ -105,6 +107,8 @@ const REQUIRED_ALIASES = {
   發元藥局: ["發元藥局", "發元西藥房", "發元藥房"],
   喜來樂中西藥局: ["喜來樂中西藥局", "新莊喜來樂中西藥局", "喜來樂藥局"],
   一銘藥局: ["一銘藥局", "一銘西藥房", "新莊一銘藥局"],
+  天養藥局: ["天養藥局", "天養"],
+  美麗田藥局: ["美麗田藥局"],
 } as const;
 
 const PARTNER_LOCATIONS = [
@@ -122,14 +126,16 @@ const PARTNER_LOCATIONS = [
   ["發元藥局", "miaoli", "苗栗縣苗栗市中正路908號", null],
   ["喜來樂中西藥局", "xinzhuang", "新北市新莊區昌平街20號1樓", "593106B134"],
   ["一銘藥局", "xinzhuang", "新北市新莊區幸福路542號(1樓)", "593106C319"],
+  ["天養藥局", "shilin", "臺北市士林區中山北路6段262號(1樓)", "5901154331"],
+  ["美麗田藥局", "shilin", "臺北市士林區通河街78號1樓", "5901154153"],
 ] as const;
 
 describe("合作藥局人工確認資料", () => {
-  it("收錄十四個已確認合作的正式藥局 slug", () => {
+  it("收錄十六個已確認合作的正式藥局 slug", () => {
     expect(Object.keys(PARTNER_PHARMACIES)).toEqual(
       Object.keys(EXPECTED_PRODUCTS),
     );
-    expect(PARTNER_PHARMACY_COUNT).toBe(14);
+    expect(PARTNER_PHARMACY_COUNT).toBe(16);
   });
 
   it("首頁合作藥局列沿用正式店名與行政區", () => {
@@ -148,6 +154,8 @@ describe("合作藥局人工確認資料", () => {
       { name: "發元藥局", district: "苗栗市" },
       { name: "喜來樂中西藥局", district: "新莊區" },
       { name: "一銘藥局", district: "新莊區" },
+      { name: "天養藥局", district: "士林區" },
+      { name: "美麗田藥局", district: "士林區" },
     ]);
   });
 

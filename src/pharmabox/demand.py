@@ -84,6 +84,7 @@ AREA_NAMES = {
     "linkou": "林口區",
     "xinzhuang": "新莊區",
     "zhongshan": "中山區",
+    "shilin": "士林區",
     "xinyi": "信義區",
 }
 KIND_NAMES = {

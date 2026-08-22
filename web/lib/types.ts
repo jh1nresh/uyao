@@ -33,6 +33,7 @@ export type AreaSlug =
   | "luzhou"
   | "xinzhuang"
   | "zhongshan"
+  | "shilin"
   | "xinyi"
   | "xitun"
   | "miaoli"

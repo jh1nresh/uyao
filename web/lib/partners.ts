@@ -18,7 +18,9 @@ export type PartnerStoreSlug =
   | "永遠藥師藥局"
   | "發元藥局"
   | "喜來樂中西藥局"
-  | "一銘藥局";
+  | "一銘藥局"
+  | "天養藥局"
+  | "美麗田藥局";
 
 export interface PartnerPharmacy {
   readonly storeSlug: PartnerStoreSlug;
@@ -161,6 +163,16 @@ export const PARTNER_PHARMACIES = {
       "New AOB Vitality Beauty 45包",
       "高優質維他命B群 60粒",
     ],
+  },
+  天養藥局: {
+    storeSlug: "天養藥局",
+    aliases: ["天養藥局", "天養"],
+    confirmedProducts: [],
+  },
+  美麗田藥局: {
+    storeSlug: "美麗田藥局",
+    aliases: ["美麗田藥局"],
+    confirmedProducts: [],
   },
 } as const satisfies Record<PartnerStoreSlug, PartnerPharmacy>;
 

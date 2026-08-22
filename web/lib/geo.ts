@@ -16,6 +16,7 @@ export const AREA_CENTER: Record<AreaSlug, LatLng> = {
   luzhou: { lat: 25.0849, lng: 121.4737 },
   xinzhuang: { lat: 25.0359, lng: 121.4322 },
   zhongshan: { lat: 25.0637, lng: 121.5265 },
+  shilin: { lat: 25.095, lng: 121.5246 },
   xinyi: { lat: 25.033, lng: 121.5654 },
   xitun: { lat: 24.1813, lng: 120.6466 },
   miaoli: { lat: 24.566667, lng: 120.816444 },

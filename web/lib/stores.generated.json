@@ -506,6 +506,68 @@
         "健保特約"
       ],
       "status": "listed"
+    },
+    {
+      "slug": "天養藥局",
+      "name": "天養藥局",
+      "area": "shilin",
+      "district": "士林區",
+      "address": "臺北市士林區中山北路6段262號(1樓)",
+      "phone": "",
+      "owner": "劉昕恬",
+      "nhiCode": "5901154331",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=天養藥局+臺北市士林區中山北路6段262號(1樓)",
+      "hours": [
+        {
+          "label": "週一–週五",
+          "hours": "上午、下午、晚上"
+        },
+        {
+          "label": "週六",
+          "hours": "上午、下午"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
+    },
+    {
+      "slug": "美麗田藥局",
+      "name": "美麗田藥局",
+      "area": "shilin",
+      "district": "士林區",
+      "address": "臺北市士林區通河街78號1樓",
+      "phone": "02-2885-5990",
+      "owner": "吳玉鳳",
+      "nhiCode": "5901154153",
+      "nhiContracted": true,
+      "nhiTerminatedOn": null,
+      "lat": null,
+      "lng": null,
+      "distanceM": null,
+      "placeId": null,
+      "businessStatus": null,
+      "mapsUrl": "https://www.google.com/maps/search/?api=1&query=美麗田藥局+臺北市士林區通河街78號1樓",
+      "hours": [
+        {
+          "label": "週一–週日",
+          "hours": "上午、下午、晚上"
+        }
+      ],
+      "hoursSource": "nhi",
+      "notes": [
+        "健保特約"
+      ],
+      "status": "listed"
     }
   ]
 }
