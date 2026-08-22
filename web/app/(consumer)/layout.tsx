@@ -7,7 +7,7 @@ import { LocationProvider } from "@/components/LocationProvider";
  */
 export default function ConsumerLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="consumer-shell min-h-screen bg-ivory text-ink">
+    <div className="min-h-screen bg-ivory text-ink">
       <DemoBanner />
       <LocationProvider>{children}</LocationProvider>
     </div>
