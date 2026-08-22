@@ -381,15 +381,16 @@ html:not([data-theme]) .shop-pearl-home,
    the right, and a warm pearl base. The shaft is an explicit skewed band so the
    wall reads as a lit surface instead of a flat tint. */
 .shop-pearl-hero {
-  --pearl-horizon: 56%;
+  --pearl-horizon: 52%;
+  --pearl-floor-noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.18  0 0 0 0 0.16  0 0 0 0 0.13  0 0 0 0.42 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
   position: relative;
   isolation: isolate;
   overflow: hidden;
   background:
-    linear-gradient(104deg, transparent 0 4%, rgb(255 255 255 / 0.98) 11%, rgb(255 255 255 / 0.52) 26%, transparent 44%),
-    radial-gradient(ellipse 72% 58% at 12% -6%, rgb(255 255 255) 0%, transparent 52%),
-    radial-gradient(ellipse 54% 42% at 90% 16%, rgb(var(--color-sage) / 0.7) 0%, transparent 46%),
-    linear-gradient(176deg, rgb(var(--color-paper)) 0%, rgb(var(--color-ivory)) 36%, rgb(var(--color-surface) / 0.88) 100%);
+    linear-gradient(104deg, rgb(255 255 255 / 0.22) 0 3%, rgb(255 255 255) 9%, rgb(255 255 255 / 0.62) 22%, rgb(255 255 255 / 0.12) 34%, transparent 48%),
+    radial-gradient(ellipse 80% 70% at 16% 0%, rgb(255 255 255) 0%, transparent 58%),
+    radial-gradient(ellipse 48% 40% at 92% 18%, rgb(var(--color-sage) / 0.62) 0%, transparent 52%),
+    linear-gradient(180deg, rgb(var(--color-paper)) 0%, rgb(var(--color-ivory)) 42%, rgb(var(--color-surface) / 0.55) 100%);
 }
 
 /* Floor. The horizon is a real edge, and the surface carries brushed
@@ -400,18 +401,26 @@ html:not([data-theme]) .shop-pearl-home,
   bottom: 0;
   z-index: -2;
   height: calc(100% - var(--pearl-horizon));
-  border-top: 1px solid rgb(var(--color-line-strong) / 0.78);
+  border-top: 1px solid rgb(var(--color-line-strong));
   background:
-    radial-gradient(ellipse at 50% -8%, rgb(255 255 255 / 0.78) 0%, transparent 56%),
+    radial-gradient(ellipse at 50% 0%, rgb(255 255 255 / 0.55) 0%, transparent 48%),
     repeating-linear-gradient(
       180deg,
-      rgb(var(--color-line-soft) / 0.5) 0 1px,
-      transparent 1px 8px
+      rgb(var(--color-line-soft) / 0.58) 0 1px,
+      transparent 1px 7px
     ),
-    linear-gradient(180deg, rgb(var(--color-surface) / 0.72) 0%, rgb(var(--color-canvas)) 64%, rgb(var(--color-surface) / 0.9) 100%);
+    repeating-linear-gradient(
+      92deg,
+      transparent 0 11px,
+      rgb(var(--color-line) / 0.16) 11px 12px
+    ),
+    var(--pearl-floor-noise),
+    linear-gradient(180deg, rgb(var(--color-surface) / 0.88) 0%, rgb(var(--color-canvas)) 46%, rgb(var(--color-line-soft) / 0.7) 100%);
+  background-size: auto, auto, auto, 180px 180px, auto;
   box-shadow:
-    inset 0 22px 44px rgb(var(--shadow-paper) / 0.12),
-    inset 0 1px 0 rgb(255 255 255 / 0.82);
+    0 -1px 0 rgb(255 255 255 / 0.55),
+    inset 0 28px 36px rgb(var(--shadow-paper) / 0.16),
+    inset 0 1px 0 rgb(255 255 255 / 0.7);
   content: "";
 }
 
@@ -439,49 +448,50 @@ html:not([data-theme]) .shop-pearl-home,
    mirror instead of below it. */
 .shop-pearl-object {
   position: relative;
-  padding-bottom: 4.75rem;
+  padding-bottom: 5.25rem;
 }
 
 .shop-pearl-object::after {
   position: absolute;
-  right: 12%;
-  bottom: 3.35rem;
-  left: 12%;
+  right: 8%;
+  bottom: 4.15rem;
+  left: 8%;
   z-index: 0;
-  height: 1.15rem;
+  height: 1.35rem;
   border-radius: 50%;
-  background: rgb(var(--shadow-paper) / 0.28);
-  filter: blur(12px);
+  background: rgb(var(--shadow-paper) / 0.38);
+  filter: blur(10px);
   content: "";
 }
 
 .shop-pearl-reflection {
   position: absolute;
   inset-inline: 0;
-  top: calc(100% - 4.4rem);
-  height: 4.25rem;
+  top: calc(100% - 5.05rem);
+  height: 4.85rem;
   pointer-events: none;
-  -webkit-mask-image: linear-gradient(180deg, rgb(0 0 0 / 0.7) 0%, rgb(0 0 0 / 0.24) 46%, transparent 88%);
-  mask-image: linear-gradient(180deg, rgb(0 0 0 / 0.7) 0%, rgb(0 0 0 / 0.24) 46%, transparent 88%);
-  filter: blur(2.5px);
-  opacity: 0.86;
+  -webkit-mask-image: linear-gradient(180deg, rgb(0 0 0 / 0.82) 0%, rgb(0 0 0 / 0.34) 42%, transparent 86%);
+  mask-image: linear-gradient(180deg, rgb(0 0 0 / 0.82) 0%, rgb(0 0 0 / 0.34) 42%, transparent 86%);
+  filter: blur(1.35px);
+  opacity: 0.78;
 }
 
 .shop-pearl-reflection-pill {
   position: absolute;
   inset: 0;
-  border: 1px solid rgb(255 255 255 / 0.5);
+  border: 1px solid rgb(255 255 255 / 0.62);
   border-radius: 999px;
-  background: linear-gradient(0deg, rgb(255 255 255 / 0.86) 0%, rgb(var(--color-paper) / 0.6) 44%, rgb(var(--color-sage) / 0.34) 100%);
+  background: linear-gradient(0deg, rgb(255 255 255 / 0.92) 0%, rgb(var(--color-paper) / 0.72) 40%, rgb(var(--color-sage) / 0.4) 100%);
+  box-shadow: inset 0 0 0 1px rgb(var(--color-line-strong) / 0.28);
 }
 
 .shop-pearl-reflection-action {
   position: absolute;
-  inset-block: 0.4rem;
+  inset-block: 0.45rem;
   right: 0.75rem;
   width: 8.5rem;
   border-radius: 999px;
-  background: linear-gradient(0deg, rgb(var(--color-green) / 0.42), rgb(var(--color-forest) / 0.2));
+  background: linear-gradient(0deg, rgb(var(--color-green) / 0.55), rgb(var(--color-forest) / 0.28));
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -496,9 +506,9 @@ html:not([data-theme]) .shop-pearl-home,
 
 .shop-pearl-hero-content {
   display: flex;
-  min-height: clamp(320px, 22vw, 380px);
-  align-items: center;
-  padding-block: 2.25rem 2.5rem;
+  min-height: clamp(360px, 26vw, 460px);
+  align-items: flex-start;
+  padding-block: 2.5rem 5.75rem;
 }
 
 .shop-pearl-search {
@@ -511,9 +521,9 @@ html:not([data-theme]) .shop-pearl-home,
   background:
     linear-gradient(108deg, rgb(255 255 255 / 0.9) 0%, rgb(var(--color-paper) / 0.7) 38%, rgb(255 255 255 / 0.94) 67%, rgb(var(--color-sage) / 0.48) 100%) !important;
   box-shadow:
-    0 34px 60px rgb(var(--shadow-paper) / 0.2),
-    0 12px 20px rgb(var(--shadow-paper) / 0.13),
-    0 3px 5px rgb(var(--shadow-paper) / 0.1),
+    0 28px 44px rgb(var(--shadow-paper) / 0.18),
+    0 8px 14px rgb(var(--shadow-paper) / 0.12),
+    0 2px 3px rgb(var(--shadow-paper) / 0.16),
     0 0 0 5px rgb(255 255 255 / 0.3),
     inset 0 2px 2px rgb(255 255 255 / 0.9),
     inset 0 -3px 8px rgb(var(--color-line) / 0.28) !important;
@@ -608,17 +618,18 @@ html:not([data-theme]) .shop-pearl-home,
    non-interactive; a real product link appears only after a safe, sourced
    daily-wellness route resolves. */
 .shop-spatial-stage {
-  --pearl-horizon: 48%;
+  --pearl-horizon: 46%;
+  --pearl-floor-noise: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.18  0 0 0 0 0.16  0 0 0 0 0.13  0 0 0 0.42 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
   position: relative;
   isolation: isolate;
   min-height: clamp(720px, 78vh, 850px);
   overflow: hidden;
   border-bottom: 1px solid rgb(var(--color-line-soft));
   background:
-    linear-gradient(104deg, transparent 0 4%, rgb(255 255 255 / 0.98) 11%, rgb(255 255 255 / 0.52) 26%, transparent 44%),
-    radial-gradient(ellipse 72% 58% at 12% -6%, rgb(255 255 255) 0%, transparent 52%),
-    radial-gradient(ellipse 54% 42% at 90% 16%, rgb(var(--color-sage) / 0.7) 0%, transparent 46%),
-    linear-gradient(176deg, rgb(var(--color-paper)) 0%, rgb(var(--color-ivory)) 36%, rgb(var(--color-surface) / 0.88) 100%);
+    linear-gradient(104deg, rgb(255 255 255 / 0.22) 0 3%, rgb(255 255 255) 9%, rgb(255 255 255 / 0.62) 22%, rgb(255 255 255 / 0.12) 34%, transparent 48%),
+    radial-gradient(ellipse 80% 70% at 16% 0%, rgb(255 255 255) 0%, transparent 58%),
+    radial-gradient(ellipse 48% 40% at 92% 18%, rgb(var(--color-sage) / 0.62) 0%, transparent 52%),
+    linear-gradient(180deg, rgb(var(--color-paper)) 0%, rgb(var(--color-ivory)) 42%, rgb(var(--color-surface) / 0.55) 100%);
 }
 
 .shop-spatial-stage::after {
@@ -627,15 +638,25 @@ html:not([data-theme]) .shop-pearl-home,
   bottom: 0;
   z-index: -1;
   height: calc(100% - var(--pearl-horizon));
-  border-top: 1px solid rgb(var(--color-line-strong) / 0.78);
+  border-top: 1px solid rgb(var(--color-line-strong));
   background:
-    radial-gradient(ellipse at 50% -8%, rgb(255 255 255 / 0.78) 0%, transparent 56%),
+    radial-gradient(ellipse at 50% 0%, rgb(255 255 255 / 0.55) 0%, transparent 48%),
     repeating-linear-gradient(
       180deg,
-      rgb(var(--color-line-soft) / 0.5) 0 1px,
-      transparent 1px 8px
+      rgb(var(--color-line-soft) / 0.58) 0 1px,
+      transparent 1px 7px
     ),
-    linear-gradient(180deg, rgb(var(--color-surface) / 0.72) 0%, rgb(var(--color-canvas)) 64%, rgb(var(--color-surface) / 0.9) 100%);
+    repeating-linear-gradient(
+      92deg,
+      transparent 0 11px,
+      rgb(var(--color-line) / 0.16) 11px 12px
+    ),
+    var(--pearl-floor-noise),
+    linear-gradient(180deg, rgb(var(--color-surface) / 0.88) 0%, rgb(var(--color-canvas)) 46%, rgb(var(--color-line-soft) / 0.7) 100%);
+  background-size: auto, auto, auto, 180px 180px, auto;
+  box-shadow:
+    0 -1px 0 rgb(255 255 255 / 0.55),
+    inset 0 28px 36px rgb(var(--shadow-paper) / 0.16);
   content: "";
 }
 
@@ -704,7 +725,9 @@ html:not([data-theme]) .shop-pearl-home,
   margin-inline: auto;
   border-radius: 1.5rem;
   box-shadow:
-    0 24px 46px rgb(var(--shadow-paper) / 0.16),
+    0 2px 4px rgb(var(--shadow-paper) / 0.1),
+    0 28px 48px rgb(var(--shadow-paper) / 0.16),
+    0 42px 22px rgb(var(--shadow-paper) / 0.08),
     inset 0 1px 0 rgb(255 255 255 / 0.82),
     inset 0 -1px 0 rgb(var(--color-line) / 0.35);
   animation: shop-dialogue-settle 540ms var(--ease-brand) both;
@@ -897,7 +920,7 @@ html:not([data-theme]) .shop-pearl-home,
 
 @media (max-width: 639px) {
   .shop-pearl-hero {
-    --pearl-horizon: 62%;
+    --pearl-horizon: 58%;
   }
 
   .shop-pearl-hero::after {
@@ -909,7 +932,7 @@ html:not([data-theme]) .shop-pearl-home,
 
   .shop-pearl-hero-content {
     min-height: 0;
-    padding-block: 1.75rem 2.5rem;
+    padding-block: 1.75rem 3.75rem;
   }
 
   /* The capsule is shorter on mobile, so the mirror must shrink with it or it
