@@ -904,6 +904,8 @@ html:not([data-theme]) .shop-pearl-hero {
   .shop-spatial-dialogue,
   .shop-spatial-wing,
   .shop-spatial-result,
+  .shop-spatial-answer,
+  .shop-spatial-send,
   [data-motion-section="true"] {
     animation: none;
     opacity: 1;
