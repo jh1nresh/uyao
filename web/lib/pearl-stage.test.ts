@@ -51,7 +51,7 @@ describe("pearl stage wall and floor", () => {
     const hero = block(".shop-pearl-hero");
     expect(hero).toMatch(/--pearl-horizon:/);
     // The angled shaft is what makes the surface read as lit.
-    expect(hero).toMatch(/linear-gradient\(101deg/);
+    expect(hero).toMatch(/linear-gradient\(104deg/);
   });
 
   it("gives the floor a visible horizon and readable grain", () => {
@@ -139,7 +139,7 @@ describe("spatial dialogue wings", () => {
   it("keeps the three-column desktop stage", () => {
     expect(css).toMatch(/minmax\(190px, 250px\) minmax\(700px, 740px\) minmax\(190px, 250px\)/);
     const stage = block(".shop-spatial-stage");
-    expect(stage).toMatch(/linear-gradient\(101deg/);
+    expect(stage).toMatch(/linear-gradient\(104deg/);
     expect(stage).toMatch(/--pearl-horizon:/);
   });
 });
