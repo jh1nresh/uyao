@@ -120,8 +120,11 @@ export function SearchInput({
           onChange={(event) => {
             const value = event.currentTarget.value;
             setHasValue(value.length > 0);
-            onQueryChange?.(value);
+            if (!(event.nativeEvent as InputEvent).isComposing) {
+              onQueryChange?.(value);
+            }
           }}
+          onCompositionEnd={(event) => onQueryChange?.(event.currentTarget.value)}
           // h-full：讓整個框都是點擊區，不是只有文字那 20px
           className={`h-full w-full min-w-0 bg-transparent text-ink outline-none placeholder:text-muted-2 focus:outline-none focus-visible:outline-none ${
             xl ? "text-[16px] sm:text-[18px]" : large ? "text-[16px]" : "text-[15px]"
