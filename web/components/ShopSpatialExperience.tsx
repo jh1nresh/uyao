@@ -9,6 +9,7 @@ import { CatalogCarousel } from "./CatalogCarousel";
 import { CatalogImagePlaceholder } from "./CatalogImagePlaceholder";
 import { catalogSourceStatus } from "./CatalogItemGrid";
 import { SearchInput } from "./SearchInput";
+import { PartnerMarquee } from "./landing/PartnerMarquee";
 import { CATALOG_GROUPS } from "@/lib/catalog-groups";
 import {
   classifyGuidedQuery,
@@ -17,6 +18,7 @@ import {
   type GuidedQueryIntent,
 } from "@/lib/guided-search";
 import { drugCopy, localizedPath, type Locale } from "@/lib/i18n";
+import type { PartnerStoreItem } from "@/lib/partner-stores";
 import type { AreaSlug, Drug } from "@/lib/types";
 
 type ActiveState =
@@ -117,12 +119,16 @@ export function ShopSpatialExperience({
   locale,
   areaName,
   storeCount,
+  partnerStores,
+  partnerEvidenceHref,
 }: {
   drugs: Drug[];
   area: AreaSlug;
   locale: Locale;
   areaName: string;
   storeCount: number;
+  partnerStores: readonly PartnerStoreItem[];
+  partnerEvidenceHref: string;
 }) {
   const [active, setActive] = useState<ActiveState | null>(null);
   const [draftQuery, setDraftQuery] = useState("");
@@ -257,6 +263,13 @@ export function ShopSpatialExperience({
             </div>
           </div>
         </section>
+
+        <PartnerMarquee
+          id="pharmacies"
+          items={partnerStores}
+          locale={locale}
+          evidenceHref={partnerEvidenceHref}
+        />
 
         <section className="bg-paper">
           <div className="shop-shell py-8">

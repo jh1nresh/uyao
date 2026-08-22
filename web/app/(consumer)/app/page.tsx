@@ -5,7 +5,6 @@ import { JsonLd } from "@/components/JsonLd";
 import { ShopSpatialExperience } from "@/components/ShopSpatialExperience";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { PartnerMarquee } from "@/components/landing/PartnerMarquee";
 import { allDrugs, getArea, storesInArea, toAreaSlug } from "@/lib/data";
 import { areaCopy, localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
@@ -128,13 +127,8 @@ export default async function HomePage({
         locale={locale}
         areaName={currentArea.shortName}
         storeCount={storeCount}
-      />
-
-      <PartnerMarquee
-        id="pharmacies"
-        items={PARTNER_STORE_ITEMS}
-        locale={locale}
-        evidenceHref={`${SITE_URL}${locale === "en" ? "/en" : "/zh-tw"}/evidence#partners`}
+        partnerStores={PARTNER_STORE_ITEMS}
+        partnerEvidenceHref={`${SITE_URL}${locale === "en" ? "/en" : "/zh-tw"}/evidence#partners`}
       />
 
       <section className="bg-paper">

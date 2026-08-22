@@ -47,10 +47,10 @@ idle
 
 - Preserve a real GET search form and no-JavaScript fallback.
 - Keep the approved pearl wall, visible desktop horizon, restrained reflective floor, and continuous pearl-resin search capsule.
-- Match the approved static truth frame: editorial promise and support copy, the search object, local pharmacy count, category pills, then four visible catalog cards.
-- Catalog follows directly after the stage as a flat paper sheet.
+- Match the approved static truth frame: editorial promise and support copy, the search object, local pharmacy count, partner-pharmacy marquee, category pills, then four visible catalog cards.
+- Catalog follows the partner-pharmacy marquee as a flat paper sheet.
 - The first four visible catalog cards are the spatial-dialogue side-wing source.
-- Pharmacy evidence may remain below the primary catalog handoff, not between the search object and catalog.
+- Restore the existing continuously moving partner-pharmacy marquee directly below the search stage and above the catalog. It pauses on hover, when offscreen, and under reduced motion; it must not be replaced by a static count line.
 
 ## Active spatial dialogue
 
