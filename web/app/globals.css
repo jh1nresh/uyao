@@ -41,8 +41,8 @@
   --color-surface: 236 231 219;
   --color-surface-hover: 229 223 210;
   --color-canvas: 231 225 212;
-  --color-ivory: 248 246 241;
-  --color-paper: 252 251 248;
+  --color-ivory: 242 239 230;
+  --color-paper: 248 244 233;
   --color-agent-eye: var(--color-paper);
   --color-sage: 220 231 217;
   --color-map-bg: 229 233 226;
@@ -311,8 +311,8 @@ html[data-theme="dark"] .theme-logo-dark {
   --color-surface: 236 231 219;
   --color-surface-hover: 229 223 210;
   --color-canvas: 231 225 212;
-  --color-ivory: 242 239 230;
-  --color-paper: 248 244 233;
+  --color-ivory: 248 246 241;
+  --color-paper: 252 251 248;
   --color-sage: 220 231 217;
   --shadow-paper: 37 54 45;
   min-height: 100vh;
