@@ -99,7 +99,7 @@ function AreaSwitchWithRoute({
   if (compact) {
     const currentArea = areaCopy(AREAS.find((candidate) => candidate.slug === area) ?? AREAS[0], locale);
     return (
-      <div className="flex h-11 w-full flex-none items-center overflow-hidden border border-line-strong bg-paper text-xs text-muted md:w-auto">
+      <div className="area-switch-compact flex h-11 w-full flex-none items-center overflow-hidden border border-line-strong bg-paper text-xs text-muted md:w-auto">
         {locatable && (
           <button
             type="button"
@@ -187,7 +187,7 @@ function AreaSwitchFallback({ area, locatable = false, compact = false }: AreaSw
 
   if (compact) {
     return (
-      <div className="flex h-11 w-full flex-none items-center overflow-hidden border border-line-strong bg-paper text-xs text-muted md:w-auto">
+      <div className="area-switch-compact flex h-11 w-full flex-none items-center overflow-hidden border border-line-strong bg-paper text-xs text-muted md:w-auto">
         {locatable && (
           <span className="inline-flex h-full items-center border-r border-line px-2.5 text-muted-2">
             <span aria-hidden>◎</span>
