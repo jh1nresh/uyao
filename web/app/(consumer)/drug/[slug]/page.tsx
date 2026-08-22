@@ -13,16 +13,14 @@ import { SiteHeader } from "@/components/SiteHeader";
 import {
   allDrugs,
   alternativesFor,
-  getArea,
   getCategory,
   getDrug,
   getStore,
   storesForDrug,
-  storesInArea,
   toAreaSlug,
 } from "@/lib/data";
 import { JsonLd } from "@/components/JsonLd";
-import { areaCopy, categoryName, drugCopy, localizedPath, secondaryProductName } from "@/lib/i18n";
+import { categoryName, drugCopy, localizedPath, secondaryProductName } from "@/lib/i18n";
 import { hasAmounts, ingredientRows } from "@/lib/ingredients";
 import { getRequestLocale } from "@/lib/locale-server";
 import { isPending, known } from "@/lib/pending";
@@ -139,8 +137,6 @@ export default async function DrugPage({
   ];
 
   const rows = storesForDrug(drug.slug, area);
-  const areaStores = storesInArea(area);
-  const areaShortName = areaCopy(getArea(area), locale).shortName;
   const alternatives = alternativesFor(drug.slug, area);
   const category = getCategory(drug.category);
 
@@ -341,8 +337,6 @@ export default async function DrugPage({
             drug={{ slug: drug.slug, name: displayDrug.name, spec: drug.spec }}
             rows={rows}
             carryingStores={partnerStores}
-            otherStores={areaStores}
-            areaLabel={areaShortName}
           />
         </div>
       </div>
@@ -462,8 +456,6 @@ export default async function DrugPage({
           drugName={displayLabel}
           drugSlug={drug.slug}
           area={area}
-          areaLabel={areaShortName}
-          stores={areaStores}
         />
       )}
 

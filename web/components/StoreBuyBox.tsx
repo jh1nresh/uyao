@@ -16,12 +16,9 @@ import type { Store } from "@/lib/types";
 /**
  * 品項頁右欄的「哪裡拿得到」。
  *
- * 兩區刻意分開，不混成一份賣家清單：
- *   1. 確認有這個品項的藥局 —— 合作藥局自己報過這支，可以直接請它預留
- *   2. 這一區其他藥局 —— 沒說過自己有，只能打電話問
- *
- * 混在一起列會讓第二區看起來也有貨，那是把「登記在這一區」講成「這裡買得到」。
- * 預留鈕只給第一區：後端也是同一條線（`partnersForProduct`），畫面能按的
+ * 只列確認有這個品項的藥局：掃描紀錄或合作藥局自己提供的品項清單。
+ * 同區但沒有品項證據的藥局不出現在這裡，避免把「登記在這一區」講成
+ * 「這裡買得到」。後端也是同一條線（`partnersForProduct`），畫面能按的
  * 就是 API 收得下的。
  *
  * 而且只給**已經在 Store OS 上接單**的店（`isStoreOsLive`）。收不到預留的店
@@ -34,30 +31,21 @@ export function StoreBuyBox({
   drug,
   rows,
   carryingStores,
-  otherStores,
-  areaLabel,
 }: {
   drug: { slug: string; name: string; spec: string };
   /** 有掃描庫存時的 rows；有值就優先用，帶得出新鮮度與價格。 */
   rows: StoreRow[];
   /** 合作藥局確認販售這個品項的店。 */
   carryingStores: Store[];
-  /** 同一區、但沒有確認販售這個品項的店。 */
-  otherStores: Store[];
-  areaLabel: string;
 }) {
   const [target, setTarget] = useState<ReserveTarget | null>(null);
-  const [showOthers, setShowOthers] = useState(false);
   const locale = useLocale();
 
   const scanned = new Set(rows.map((r) => r.store.slug));
   // 掃描過的店排前面（有新鮮度可講），其餘用合作藥局確認的名單補上。
   const carrying = carryingStores.filter((s) => !scanned.has(s.slug));
-  const others = otherStores.filter(
-    (s) => !scanned.has(s.slug) && !carryingStores.some((c) => c.slug === s.slug),
-  );
 
-  if (rows.length === 0 && carrying.length === 0 && others.length === 0) return null;
+  if (rows.length === 0 && carrying.length === 0) return null;
 
   const total = rows.length + carrying.length;
 
@@ -96,30 +84,6 @@ export function StoreBuyBox({
           />
         ))}
 
-        {others.length > 0 && (
-          <div className="border-t border-line">
-            <button
-              type="button"
-              onClick={() => setShowOthers((v) => !v)}
-              aria-expanded={showOthers}
-              className="flex min-h-11 w-full items-center gap-2 px-3.5 text-left text-[14px] font-medium text-green hover:bg-surface-hover"
-            >
-              {locale === "en"
-                ? `${others.length} other pharmacies in ${areaLabel} — call to ask`
-                : `${areaLabel}另有 ${others.length} 家藥局，可以打去問`}
-              <span className="ml-auto" aria-hidden>{showOthers ? "▴" : "▾"}</span>
-            </button>
-
-            {showOthers && (
-              <div className="border-t border-line-soft">
-                {/* 這一區其他藥局沒有說過自己有這支，所以只給電話，沒有預留鈕。 */}
-                {others.map((store) => (
-                  <StoreLine key={store.slug} store={store} />
-                ))}
-              </div>
-            )}
-          </div>
-        )}
       </div>
 
       {target && <ReserveSheet target={target} onClose={() => setTarget(null)} />}
@@ -133,7 +97,6 @@ export function StoreBuyBox({
  * 底部那顆主要動作只有一顆，看這家店現在能做到什麼：
  *   - 收得到預留 → 預留鈕
  *   - 確認有這支但還沒上 Store OS → 直接撥號（號碼就印在鈕上）
- *   - 只是同一區的店 → 沒有主要動作，就一支電話
  * 撥號鈕出現時不再重複右上角的小電話 —— 同一列不要兩個電話控制項。
  */
 function StoreLine({
