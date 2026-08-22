@@ -286,6 +286,123 @@ html[data-theme="dark"] .theme-logo-dark {
   box-shadow: 0 22px 52px rgb(var(--shadow-paper) / 0.09);
 }
 
+/* The shop gets one pearl-stage product moment around its real search form.
+   The spatial treatment stops at the hero boundary; catalog and evidence
+   sections keep the existing flat paper system. */
+.shop-pearl-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 50% 8%, rgb(var(--color-paper) / 0.98) 0%, transparent 66%),
+    linear-gradient(135deg, rgb(var(--color-paper)) 0%, rgb(var(--color-ivory)) 72%);
+}
+
+.shop-pearl-hero::before {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: -2;
+  height: 31%;
+  border-top: 1px solid rgb(var(--color-line-soft) / 0.68);
+  background:
+    linear-gradient(180deg, rgb(var(--color-paper) / 0.16), rgb(var(--color-surface) / 0.76)),
+    repeating-linear-gradient(90deg, transparent 0 12%, rgb(var(--color-line-soft) / 0.12) 12.1% 12.2%);
+  box-shadow: inset 0 24px 48px rgb(var(--shadow-paper) / 0.045);
+  content: "";
+}
+
+.shop-pearl-hero::after {
+  position: absolute;
+  bottom: 4%;
+  left: 50%;
+  z-index: -1;
+  width: min(42rem, 62vw);
+  height: 4.5rem;
+  border-radius: 50%;
+  background: rgb(var(--color-green) / 0.13);
+  filter: blur(30px);
+  opacity: 0.74;
+  transform: translateX(-50%) scaleY(0.5);
+  content: "";
+}
+
+.shop-pearl-hero-content {
+  display: flex;
+  min-height: clamp(400px, 34vw, 480px);
+  align-items: center;
+  padding-block: 2.5rem 4rem;
+}
+
+.shop-pearl-search {
+  position: relative;
+  border-color: rgb(var(--color-line-strong) / 0.72) !important;
+  border-radius: 999px;
+  background: rgb(var(--color-paper) / 0.76) !important;
+  box-shadow:
+    0 24px 54px rgb(var(--shadow-paper) / 0.1),
+    inset 0 1px 0 rgb(255 255 255 / 0.74),
+    inset 0 -1px 0 rgb(var(--color-line) / 0.42) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(0.92);
+  backdrop-filter: blur(18px) saturate(0.92);
+}
+
+.shop-pearl-search .action-primary {
+  min-height: 3.5rem;
+  border-radius: 999px;
+  padding-inline: 2rem;
+  box-shadow: 0 10px 24px rgb(var(--color-forest) / 0.16);
+}
+
+.shop-pearl-search:focus-within {
+  border-color: rgb(var(--color-green)) !important;
+  box-shadow:
+    0 24px 54px rgb(var(--shadow-paper) / 0.1),
+    0 0 0 3px rgb(var(--color-green) / 0.18),
+    inset 0 1px 0 rgb(255 255 255 / 0.74) !important;
+}
+
+html[data-theme="dark"] .shop-pearl-hero,
+html:not([data-theme]) .shop-pearl-hero {
+  background:
+    radial-gradient(ellipse at 50% 8%, rgb(var(--color-paper) / 0.94) 0%, transparent 68%),
+    linear-gradient(135deg, rgb(var(--color-ivory)) 0%, rgb(var(--color-canvas)) 78%);
+}
+
+@media (prefers-color-scheme: light) {
+  html:not([data-theme]) .shop-pearl-hero {
+    background:
+      radial-gradient(ellipse at 50% 8%, rgb(var(--color-paper) / 0.98) 0%, transparent 66%),
+      linear-gradient(135deg, rgb(var(--color-paper)) 0%, rgb(var(--color-ivory)) 72%);
+  }
+}
+
+@media (max-width: 639px) {
+  .shop-pearl-hero::before,
+  .shop-pearl-hero::after {
+    display: none;
+  }
+
+  .shop-pearl-hero-content {
+    min-height: 0;
+    padding-block: 2rem 2.5rem;
+  }
+
+  .shop-pearl-search {
+    border-radius: 1rem;
+    background: rgb(var(--color-paper) / 0.92) !important;
+    box-shadow: 0 14px 32px rgb(var(--shadow-paper) / 0.075) !important;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .shop-pearl-search .action-primary {
+    min-height: 3rem;
+    border-radius: 0.75rem;
+    padding-inline: 1.25rem;
+  }
+}
+
 /* Match Grok Bot's cutout treatment: eyes inherit the active page surface. */
 .agent-theme-eyes svg g[clip-path] path {
   fill: rgb(var(--color-agent-eye)) !important;

@@ -101,7 +101,7 @@ export function CatalogCarousel({
             <Link
               key={item.slug}
               href={`${localizedPath(`/drug/${item.slug}`, locale)}?area=${area}`}
-              className="history-link group flex shrink-0 snap-start flex-col bg-paper no-underline transition-[background-color,transform] hover:-translate-y-px hover:bg-surface-hover w-[calc((100%-12px)/2)] sm:w-[calc((100%-24px)/3)] md:w-[calc((100%-36px)/4)] lg:w-[calc((100%-48px)/5)] xl:w-[calc((100%-60px)/6)]"
+              className="history-link group flex shrink-0 snap-start flex-col border border-line-soft bg-paper no-underline transition-[background-color,border-color,transform] hover:-translate-y-px hover:border-line-strong hover:bg-surface-hover w-[calc((100%-12px)/2)] sm:w-[calc((100%-24px)/3)] md:w-[calc((100%-36px)/4)]"
             >
               <span className="relative block aspect-square w-full border-b border-line">
                 {item.image ? (

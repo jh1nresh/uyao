@@ -138,8 +138,8 @@ export default async function HomePage({
         第一印象「這是藥局名錄」，而名錄 Google Maps 做得更好。
         藥局家數留下來當可信度證據，但收成一行字。
       */}
-      <section className="bg-ivory">
-        <div className="shop-shell pb-8 pt-8 sm:pb-10 sm:pt-10 lg:pb-12 lg:pt-12">
+      <section className="shop-pearl-hero">
+        <div className="shop-pearl-hero-content shop-shell">
           <div className="mx-auto w-full max-w-[960px] text-center">
             <h1 className="editorial-display m-0 text-[clamp(38px,4.2vw,58px)] leading-[1.1]">
               {locale === "en" ? "You do not need to know the product name." : "不用先知道品名。描述需求就能開始。"}
@@ -148,7 +148,7 @@ export default async function HomePage({
               {locale === "en" ? "Search by product, ingredient, or daily-wellness need. Recognized common symptoms open safety guidance instead of automatic product results." : "可輸入品名、成分或日常保養方向；辨識到常見症狀時，會先顯示安全提醒，不會自動帶商品。"}
             </p>
             <div className="mt-8 text-left">
-              <SearchInput size="xl" area={area} className="w-full shadow-none" />
+              <SearchInput size="xl" presentation="pearl" area={area} className="w-full" />
             </div>
 
             <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-[14px] text-muted">
@@ -165,7 +165,7 @@ export default async function HomePage({
               </nav>
             </div>
 
-            <div className="mt-5 flex flex-col items-center justify-between gap-3 text-[14px] leading-[1.65] text-muted sm:flex-row sm:text-left">
+            <div className="mt-5 flex flex-col items-center justify-center gap-3 text-center text-[14px] leading-[1.65] text-muted sm:flex-row">
               <p className="m-0">
                 {locale === "en"
                   ? `${currentArea.shortName}: ${storeCount} listed pharmacies`
@@ -188,7 +188,7 @@ export default async function HomePage({
 
       {/* 首頁直接橫向瀏覽整個目錄；要搜尋與篩選時再進列表頁。 */}
       <section className="bg-ivory">
-        <div className="shop-shell py-10 sm:py-12">
+        <div className="shop-shell py-12 sm:py-16">
           <div className="mb-6 max-w-[720px]">
             <h2 className="editorial-display m-0 text-[32px] leading-[1.25] sm:text-[40px]">
               {locale === "en" ? "Items provided by partner pharmacies" : "合作藥局提供品項"}

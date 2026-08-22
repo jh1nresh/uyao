@@ -23,12 +23,14 @@ const SEARCH_EXAMPLES_EN = [
 export function SearchInput({
   defaultValue = "",
   size = "sm",
+  presentation = "default",
   className = "",
   autoFocus = false,
   area,
 }: {
   defaultValue?: string;
   size?: "sm" | "lg" | "xl";
+  presentation?: "default" | "pearl";
   className?: string;
   autoFocus?: boolean;
   area?: AreaSlug;
@@ -82,7 +84,7 @@ export function SearchInput({
           : large
             ? "paper-elevation h-[60px] gap-2 border border-line px-5"
           : "h-12 border border-line-strong px-3"
-      } ${className}`}
+      } ${presentation === "pearl" ? "shop-pearl-search" : ""} ${className}`}
     >
       {area && <input type="hidden" name="area" value={area} />}
       <span aria-hidden className={large ? "text-[18px] text-ink" : "text-sm text-muted-2"}>
