@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { openApiDocument } from "./openapi";
+import { openApiDocument, publicReadOpenApiDocument } from "./openapi";
 import { SITE_URL } from "./seo";
 import { SHOP_URL } from "./shop";
 
@@ -120,6 +120,14 @@ describe("openapi document", () => {
     const hoursSource = (schemas.Pharmacy.properties as Record<string, { description: string }>)
       .hoursSource;
     expect(hoursSource.description).toMatch(/not store opening hours/i);
+  });
+
+  it("keeps the /docs OpenAPI limited to the two public GETs", () => {
+    const docs = publicReadOpenApiDocument();
+    expect(Object.keys(docs.paths as object).sort()).toEqual(["/api/catalog", "/api/pharmacies"]);
+    expect(JSON.stringify(docs)).toMatch(/no live inventory|has no live inventory/i);
+    expect(JSON.stringify(docs)).not.toContain("/api/demand");
+    expect(JSON.stringify(docs)).not.toContain("/api/reservations");
   });
 
   it("resolves every internal $ref", () => {

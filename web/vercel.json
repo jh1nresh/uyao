@@ -4,5 +4,63 @@
       "path": "/api/cron/reminders",
       "schedule": "*/15 * * * *"
     }
+  ],
+  "headers": [
+    {
+      "source": "/",
+      "headers": [
+        { "key": "Vary", "value": "Accept" },
+        { "key": "Cache-Control", "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400" }
+      ]
+    },
+    {
+      "source": "/about",
+      "headers": [
+        { "key": "Vary", "value": "Accept" },
+        { "key": "Cache-Control", "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400" }
+      ]
+    },
+    {
+      "source": "/contact",
+      "headers": [
+        { "key": "Vary", "value": "Accept" },
+        { "key": "Cache-Control", "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400" }
+      ]
+    },
+    {
+      "source": "/privacy",
+      "headers": [
+        { "key": "Vary", "value": "Accept" },
+        { "key": "Cache-Control", "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400" }
+      ]
+    },
+    {
+      "source": "/docs",
+      "headers": [
+        { "key": "Vary", "value": "Accept" },
+        { "key": "Cache-Control", "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400" }
+      ]
+    },
+    {
+      "source": "/zh-tw/about",
+      "headers": [
+        { "key": "Vary", "value": "Accept" },
+        { "key": "Cache-Control", "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400" }
+      ]
+    },
+    {
+      "source": "/zh-tw/contact",
+      "headers": [
+        { "key": "Vary", "value": "Accept" },
+        { "key": "Cache-Control", "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400" }
+      ]
+    },
+    {
+      "source": "/zh-tw/privacy",
+      "headers": [
+        { "key": "Vary", "value": "Accept" },
+        { "key": "Cache-Control", "value": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400" }
+      ]
+    }
   ]
 }

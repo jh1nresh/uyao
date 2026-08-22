@@ -185,6 +185,10 @@ export function organizationJsonLd(): JsonLd {
     url: `${SITE_URL}/`,
     logo: ORGANIZATION_LOGO_URL,
     email: CONTACT_EMAIL,
+    contactPoint: {
+      "@type": "ContactPoint",
+      email: CONTACT_EMAIL,
+    },
     description: ENTITY_DESCRIPTION.zh,
     sameAs: [X_URL, INSTAGRAM_URL],
   };
