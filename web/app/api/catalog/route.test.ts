@@ -3,7 +3,11 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { __resetForTests } from "@/lib/kv";
 import { PUBLIC_API_VERSION } from "@/lib/public-api";
 import { PUBLIC_API_VERSION_HEADER } from "@/lib/public-read-route";
-import { PUBLIC_READ_LIMIT } from "@/lib/rate-limit";
+import {
+  PUBLIC_READ_LIMIT,
+  PUBLIC_READ_POLICY,
+  PUBLIC_READ_WINDOW_SEC,
+} from "@/lib/rate-limit";
 
 import { GET } from "./route";
 
@@ -24,6 +28,12 @@ describe("GET /api/catalog", () => {
     expect(response.headers.get("content-type")).toMatch(/application\/json/);
     expect(response.headers.get("vary")).toMatch(/Accept/i);
     expect(response.headers.get("ratelimit-limit")).toBe(String(PUBLIC_READ_LIMIT));
+    expect(response.headers.get("ratelimit-policy")).toBe(
+      `"${PUBLIC_READ_POLICY}";q=${PUBLIC_READ_LIMIT};w=${PUBLIC_READ_WINDOW_SEC}`,
+    );
+    expect(response.headers.get("ratelimit")).toMatch(
+      new RegExp(`^"${PUBLIC_READ_POLICY}";r=\\d+;t=${PUBLIC_READ_WINDOW_SEC}$`),
+    );
     expect(response.headers.get(PUBLIC_API_VERSION_HEADER)).toBe(PUBLIC_API_VERSION);
     expect(response.headers.get("link")).toMatch(/rel="deprecation"/);
     expect(Number(response.headers.get("ratelimit-remaining"))).toBeLessThan(PUBLIC_READ_LIMIT);
@@ -70,6 +80,7 @@ describe("GET /api/catalog", () => {
     expect(last.status).toBe(429);
     expect(last.headers.get("content-type")).toMatch(/application\/problem\+json/);
     expect(last.headers.get("ratelimit-remaining")).toBe("0");
+    expect(last.headers.get("retry-after")).toBe(String(PUBLIC_READ_WINDOW_SEC));
     expect(body).toMatchObject({
       status: 429,
       error: "rate_limited",

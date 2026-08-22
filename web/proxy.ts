@@ -15,6 +15,7 @@ import {
   notFoundHtml,
   notFoundMarkdown,
   pageMarkdown,
+  shopHomepageMarkdown,
 } from "@/lib/agent-public";
 import { SITE_URL } from "@/lib/seo";
 import { SHOP_URL } from "@/lib/shop";
@@ -125,7 +126,7 @@ function negotiateNotFound(req: NextRequest): Response {
   return new Response(notFoundHtml(), { status: 404, headers });
 }
 
-function companyMarkdown(req: NextRequest, pathname: string): Response | null {
+function negotiatedMarkdown(req: NextRequest, body: string | undefined): Response | null {
   if (req.method !== "GET" && req.method !== "HEAD") return null;
   if (isRscRequest(req.headers)) return null;
   const chosen = preferredType(req.headers.get("accept"), PAGE_TYPES);
@@ -138,7 +139,6 @@ function companyMarkdown(req: NextRequest, pathname: string): Response | null {
     }
     return null;
   }
-  const body = pageMarkdown(pathname);
   if (!body) return null;
   const headers = markdownHeaders();
   applyPublicCache(headers);
@@ -198,6 +198,11 @@ export function proxy(req: NextRequest) {
       return redirectTo(req, SITE_URL, localizedPath(route.barePath, route.locale));
     }
 
+    if (route.barePath === "/") {
+      const markdown = negotiatedMarkdown(req, shopHomepageMarkdown(route.locale));
+      if (markdown) return markdown;
+    }
+
     // `/app` was the internal implementation path. The shop host owns the
     // clean public namespace, so every locale alias permanently collapses to
     // the locale homepage while retaining meaningful query state.
@@ -227,7 +232,7 @@ export function proxy(req: NextRequest) {
     return redirectTo(req, SHOP_URL, localizedPath(consumerPath, route.locale));
   }
 
-  const markdown = companyMarkdown(req, pathname);
+  const markdown = negotiatedMarkdown(req, pageMarkdown(pathname));
   if (markdown) return markdown;
 
   if (!isKnownBarePath(route.barePath)) {

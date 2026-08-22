@@ -58,6 +58,29 @@ describe("openapi document", () => {
     expect((doc.externalDocs as Record<string, unknown>).url).toBe(`${SITE_URL}/docs`);
   });
 
+  it("documents current RateLimit draft fields, legacy fields, and Retry-After", () => {
+    for (const path of READ_PATHS) {
+      const responses = paths[path].get.responses as Record<string, Record<string, unknown>>;
+      const okHeaders = responses["200"].headers as Record<string, unknown>;
+      const limitedHeaders = responses["429"].headers as Record<string, unknown>;
+
+      expect(okHeaders["RateLimit-Policy"], path).toBeDefined();
+      expect(okHeaders.RateLimit, path).toBeDefined();
+      expect(okHeaders["RateLimit-Limit"], path).toBeDefined();
+      expect(okHeaders["RateLimit-Remaining"], path).toBeDefined();
+      expect(okHeaders["RateLimit-Reset"], path).toBeDefined();
+      expect(limitedHeaders["Retry-After"], path).toBeDefined();
+      expect(
+        ((okHeaders["RateLimit-Policy"] as Record<string, Record<string, unknown>>).schema).example,
+        path,
+      ).toBe('"public-read";q=120;w=3600');
+      expect(
+        ((okHeaders.RateLimit as Record<string, Record<string, unknown>>).schema).example,
+        path,
+      ).toBe('"public-read";r=119;t=3600');
+    }
+  });
+
   it("marks every write operation x-internal and says so in prose", () => {
     for (const path of WRITE_PATHS) {
       expect(paths[path], path).toBeDefined();

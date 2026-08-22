@@ -56,6 +56,24 @@ describe("canonical host routing", () => {
     );
   });
 
+  it("serves structured Shop markdown with Vary: Accept on root and locale URLs", async () => {
+    for (const [path, heading] of [
+      ["/", "# uYao 找藥"],
+      ["/zh-tw", "# uYao 找藥"],
+      ["/en", "# uYao Medicine Finder"],
+    ] as const) {
+      const response = proxy(new NextRequest(`https://shop.uyaohealth.com${path}`, {
+        headers: { accept: "text/markdown" },
+      }));
+
+      expect(response.status, path).toBe(200);
+      expect(response.headers.get("content-type"), path).toMatch(/text\/markdown/);
+      expect(response.headers.get("vary"), path).toMatch(/Accept/i);
+      expect(response.headers.get("vary"), path).toMatch(/Accept-Encoding/i);
+      await expect(response.text(), path).resolves.toContain(heading);
+    }
+  });
+
   it("keeps Vercel preview hosts on the branch shop instead of production", () => {
     const response = request(
       "https://uyao-git-codex-shop-pearl-stage-jhinreshs-projects.vercel.app/zh-tw",

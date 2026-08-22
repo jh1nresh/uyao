@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 
 import { JsonLd } from "@/components/JsonLd";
 import { AgentLandingExperience } from "@/components/landing/AgentLandingExperience";
-import { CompanyHomeHonesty } from "@/components/landing/CompanyHomeHonesty";
 import {
   BRAND_NAME,
   organizationJsonLd,
@@ -52,7 +51,6 @@ export default function EnglishLandingPage() {
     <>
       <JsonLd nodes={[organizationJsonLd(), webSiteJsonLd("en"), softwareApplicationJsonLd("en")]} />
       <AgentLandingExperience locale="en" />
-      <CompanyHomeHonesty />
     </>
   );
 }

@@ -104,10 +104,23 @@ export function appendVaryAccept(headers: Headers): void {
   }
 }
 
+function appendVaryAcceptEncoding(headers: Headers): void {
+  const existing = headers.get("vary");
+  if (!existing) {
+    headers.set("vary", "Accept-Encoding");
+    return;
+  }
+  const tokens = existing.split(",").map((token) => token.trim().toLowerCase());
+  if (!tokens.includes("accept-encoding")) {
+    headers.set("vary", `${existing}, Accept-Encoding`);
+  }
+}
+
 export function markdownHeaders(extra?: HeadersInit): Headers {
   const headers = new Headers(extra);
   headers.set("content-type", "text/markdown; charset=utf-8");
   appendVaryAccept(headers);
+  appendVaryAcceptEncoding(headers);
   return headers;
 }
 

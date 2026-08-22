@@ -1,8 +1,8 @@
 import { catalogItem, readLocale, PUBLIC_API_VERSION } from "@/lib/public-api";
 import {
   jsonError,
-  publicApiHeaders,
-  publicApiVersionGate,
+  publicReadGate,
+  publicReadHeaders,
 } from "@/lib/public-read-route";
 
 export const runtime = "nodejs";
@@ -12,15 +12,15 @@ export async function GET(
   request: Request,
   { params }: { params: Promise<{ slug: string }> },
 ) {
-  const versionError = publicApiVersionGate(request);
-  if (versionError) return versionError;
+  const gated = await publicReadGate(request);
+  if (!gated.ok) return gated.response;
 
   const { slug } = await params;
   const locale = readLocale(new URL(request.url).searchParams.get("locale"));
   const item = catalogItem(slug, locale);
 
   if (!item) {
-    return jsonError("catalog_item_not_found", 404, { slug });
+    return jsonError("catalog_item_not_found", 404, { slug }, gated.rate);
   }
 
   return Response.json(
@@ -33,9 +33,7 @@ export async function GET(
     },
     {
       headers: {
-        "cache-control": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400",
-        "access-control-allow-origin": "*",
-        ...publicApiHeaders(),
+        ...publicReadHeaders(gated.rate),
       },
     },
   );

@@ -5,6 +5,7 @@ import {
   PAGE_TYPES,
   appendVaryAccept,
   isRscRequest,
+  markdownHeaders,
   preferredType,
   prefersMarkdown,
 } from "./accept";
@@ -48,5 +49,11 @@ describe("Accept negotiation", () => {
     appendVaryAccept(headers);
     appendVaryAccept(headers);
     expect(headers.get("vary")).toBe("Accept-Encoding, Accept");
+  });
+
+  it("makes markdown cache variants explicit without duplicate tokens", () => {
+    const headers = markdownHeaders({ vary: "RSC, Accept" });
+    expect(headers.get("vary")).toBe("RSC, Accept, Accept-Encoding");
+    expect(markdownHeaders(headers).get("vary")).toBe("RSC, Accept, Accept-Encoding");
   });
 });

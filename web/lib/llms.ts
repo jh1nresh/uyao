@@ -72,14 +72,14 @@ ${chinese.join("\n")}
 ${line("About", `${SITE_URL}/zh-tw/about`, "uYao 是什麼、不是什麼。Store OS 是 prototype。不是即時庫存，不是診斷。")}
 ${line("Contact", `${SITE_URL}/zh-tw/contact`, `請來信 ${CONTACT_EMAIL}。不公佈電話與門市地址。`)}
 ${line("Privacy", `${SITE_URL}/zh-tw/privacy`, "找藥需求與試點申請怎麼處理。公開目錄不是即時庫存。")}
-${line("Developer resources", `${SITE_URL}/docs`, "Public GETs, RFC 9457 JSON errors, X-uYao-API-Version, and the deprecation policy. Not live inventory.")}
+${line("Developer resources", `${SITE_URL}/docs`, "Public GETs, RateLimit conventions, RFC 9457 JSON errors, X-uYao-API-Version, and the deprecation policy. Not live inventory.")}
 ${line("All guides", `${SITE_URL}/en/guides`, "Index of every guide, grouped by pharmacy operations, finding medicine, and joining the pilot.")}
 ${line("Pilot application", `${SITE_URL}/en/pharmacy`, "How an independent pharmacy joins the pilot, and what the pilot does not require.")}
 ${line("Medicine finder", `${SHOP_URL}/en`, CONSUMER_DESCRIPTION.en)}
 
 ## Machine-readable
 
-${line("OpenAPI", `${SITE_URL}/openapi.json`, "Read-only catalog and pharmacy endpoints, error schemas, and header versioning. Write endpoints are listed but marked x-internal: they back this site's own forms and are not a public contract.")}
+${line("OpenAPI", `${SITE_URL}/openapi.json`, "Read-only catalog and pharmacy endpoints, RateLimit headers, error schemas, and header versioning. Write endpoints are listed but marked x-internal: they back this site's own forms and are not a public contract.")}
 ${line("Versioning and deprecation", `${SITE_URL}/docs#versioning-and-deprecation`, "Current X-uYao-API-Version contract and the Deprecation/Sunset policy.")}
 ${line("Sitemap", `${SITE_URL}/sitemap.xml`, "Every indexable company URL in both locales.")}
 ${line("Robots", `${SITE_URL}/robots.txt`, "Crawl policy. /console and /store-os are disallowed; the two read endpoints are allowed.")}
@@ -107,7 +107,7 @@ export function shopLlmsTxt(): string {
     ),
   );
 
-  return `# uYao Medicine Finder
+  return `# uYao 找藥 · Medicine Finder Agent and Developer Index
 
 > ${CONSUMER_DESCRIPTION.en}
 
@@ -128,8 +128,11 @@ ${items.join("\n")}
 
 ## Machine-readable
 
+${line("Developer resources", `${SITE_URL}/docs`, "Supported public GETs, JSON errors, versioning, deprecation, content negotiation, and rate-limit conventions.")}
 ${line("OpenAPI", `${SHOP_URL}/openapi.json`, "Read-only catalog and pharmacy endpoints. No price, stock, or availability is ever returned.")}
 ${line("Catalog API", `${SHOP_URL}/api/catalog`, "Every catalog record as JSON, in one request.")}
+${line("Pharmacy API", `${SHOP_URL}/api/pharmacies`, "Public pharmacy records. A listing is not a uYao partnership, opening-hours guarantee, or stock confirmation.")}
+${line("Versioning and deprecation", `${SITE_URL}/docs#versioning-and-deprecation`, "Current X-uYao-API-Version contract and the Deprecation/Sunset policy.")}
 ${line("Sitemap", `${SHOP_URL}/sitemap.xml`, "Every indexable consumer URL in both locales.")}
 ${line("Robots", `${SHOP_URL}/robots.txt`, "Crawl policy for the consumer host.")}
 

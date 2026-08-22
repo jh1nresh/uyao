@@ -1,7 +1,15 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
 import { __resetForTests } from "./kv";
-import { checkPublicRead, checkReservation, clientIp, PUBLIC_READ_LIMIT } from "./rate-limit";
+import {
+  checkPublicRead,
+  checkReservation,
+  clientIp,
+  PUBLIC_READ_LIMIT,
+  PUBLIC_READ_POLICY,
+  PUBLIC_READ_WINDOW_SEC,
+  rateLimitHeaders,
+} from "./rate-limit";
 
 const req = (ip: string) =>
   ({ headers: { get: (k: string) => (k === "x-forwarded-for" ? ip : null) } }) as Request;
@@ -76,6 +84,26 @@ describe("公開讀取節流", () => {
     }
     expect(last.ok).toBe(false);
     expect(last.remaining).toBe(0);
+  });
+
+  it("emits the current IETF draft fields and keeps legacy compatibility fields", () => {
+    const headers = rateLimitHeaders({
+      ok: true,
+      retryAfterSec: 0,
+      limit: PUBLIC_READ_LIMIT,
+      remaining: PUBLIC_READ_LIMIT - 1,
+      resetSec: PUBLIC_READ_WINDOW_SEC,
+    });
+
+    expect(headers["RateLimit-Policy"]).toBe(
+      `"${PUBLIC_READ_POLICY}";q=${PUBLIC_READ_LIMIT};w=${PUBLIC_READ_WINDOW_SEC}`,
+    );
+    expect(headers.RateLimit).toBe(
+      `"${PUBLIC_READ_POLICY}";r=${PUBLIC_READ_LIMIT - 1};t=${PUBLIC_READ_WINDOW_SEC}`,
+    );
+    expect(headers["RateLimit-Limit"]).toBe(String(PUBLIC_READ_LIMIT));
+    expect(headers["RateLimit-Remaining"]).toBe(String(PUBLIC_READ_LIMIT - 1));
+    expect(headers["RateLimit-Reset"]).toBe(String(PUBLIC_READ_WINDOW_SEC));
   });
 });
 

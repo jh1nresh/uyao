@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -268,6 +269,19 @@ describe("json-ld", () => {
     for (const banned of ["Offer", "availability", "price", "MedicalOrganization"]) {
       expect(graph).not.toContain(banned);
     }
+  });
+
+  it("embeds the canonical uYao Organization identity on the Shop homepage", () => {
+    const page = readFileSync(
+      new URL("../app/(consumer)/app/page.tsx", import.meta.url),
+      "utf8",
+    );
+    expect(page).toContain("organizationJsonLd(),");
+    expect(organizationJsonLd()).toMatchObject({
+      "@type": "Organization",
+      "@id": `${SITE_URL}/#organization`,
+      name: BRAND_NAME,
+    });
   });
 
   it("builds FAQ answers from visible question and answer copy", () => {

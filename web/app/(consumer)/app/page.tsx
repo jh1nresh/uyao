@@ -24,6 +24,7 @@ import {
   SITE_URL,
   consumerWebPageJsonLd,
   consumerWebSiteJsonLd,
+  organizationJsonLd,
   socialPreviewImages,
 } from "@/lib/seo";
 import { consumerIndexablePageRobots } from "@/lib/seo-server";
@@ -128,7 +129,11 @@ export default async function HomePage({
 
   return (
     <>
-      <JsonLd nodes={[consumerWebSiteJsonLd(locale), consumerWebPageJsonLd(locale)]} />
+      <JsonLd nodes={[
+        organizationJsonLd(),
+        consumerWebSiteJsonLd(locale),
+        consumerWebPageJsonLd(locale),
+      ]} />
       <SiteHeader showSearch={false} area={area} preserveAreaPath locatable />
 
       {/*

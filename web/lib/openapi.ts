@@ -19,13 +19,38 @@ import { PUBLIC_API_VERSION } from "./public-api";
  */
 
 const READ_HEADERS_NOTE =
-  "Cached at the edge for one hour and CORS-open. No authentication and no cookies. Rate-limited per client IP; 200 and 429 responses carry RateLimit headers. The response contains only data these pages already render publicly.";
+  "Cached at the edge for one hour and CORS-open. No authentication and no cookies. Rate-limited per client IP; successful and quota-checked error responses carry RateLimit-Policy and RateLimit using the current IETF HTTPAPI draft syntax, plus legacy compatibility fields. A 429 also carries Retry-After. The response contains only data these pages already render publicly.";
 
 const NO_INVENTORY_NOTE =
   "uYao has no live inventory for any pharmacy. This API never returns price, stock, or availability, and no response may be presented as confirmed stock.";
 
 const VERSION_POLICY_NOTE =
   `Clients may send X-uYao-API-Version: ${PUBLIC_API_VERSION}. Omitting the header selects the current version for backward compatibility. Every response returns the selected version. Before a version is retired, uYao will publish the migration path at /docs and signal it with the Deprecation and Sunset response headers.`;
+
+const PUBLIC_RATE_LIMIT_HEADERS = {
+  "RateLimit-Policy": {
+    schema: { type: "string", example: '"public-read";q=120;w=3600' },
+    description:
+      "Stable public-read quota policy using the current IETF HTTPAPI RateLimit draft syntax.",
+  },
+  RateLimit: {
+    schema: { type: "string", example: '"public-read";r=119;t=3600' },
+    description:
+      "Remaining public-read quota and effective window using the current IETF HTTPAPI RateLimit draft syntax.",
+  },
+  "RateLimit-Limit": {
+    schema: { type: "integer", example: 120 },
+    description: "Legacy compatibility field: request quota for the window.",
+  },
+  "RateLimit-Remaining": {
+    schema: { type: "integer", example: 119 },
+    description: "Legacy compatibility field: requests remaining in the window.",
+  },
+  "RateLimit-Reset": {
+    schema: { type: "integer", example: 3600 },
+    description: "Legacy compatibility field: seconds until the quota window resets.",
+  },
+};
 
 const PUBLIC_RESPONSE_HEADERS = {
   "X-uYao-API-Version": {
@@ -35,6 +60,15 @@ const PUBLIC_RESPONSE_HEADERS = {
   Link: {
     schema: { type: "string" },
     description: "Link to the versioning and deprecation policy. This link alone does not mean the endpoint is deprecated.",
+  },
+  ...PUBLIC_RATE_LIMIT_HEADERS,
+};
+
+const PUBLIC_RATE_LIMITED_RESPONSE_HEADERS = {
+  ...PUBLIC_RESPONSE_HEADERS,
+  "Retry-After": {
+    schema: { type: "integer", example: 3600 },
+    description: "Seconds the client should wait before retrying after a 429 response.",
   },
 };
 
@@ -118,7 +152,6 @@ export function openApiDocument(): Record<string, unknown> {
               description: "The full catalog. Not live inventory.",
               headers: {
                 ...PUBLIC_RESPONSE_HEADERS,
-                RateLimit: { schema: { type: "string" }, description: "limit, remaining, reset" },
               },
               content: {
                 "application/json": {
@@ -135,6 +168,7 @@ export function openApiDocument(): Record<string, unknown> {
             },
             "429": {
               description: "Rate limited. JSON error body plus RateLimit headers.",
+              headers: PUBLIC_RATE_LIMITED_RESPONSE_HEADERS,
               content: {
                 "application/problem+json": { schema: { $ref: "#/components/schemas/Error" } },
               },
@@ -177,6 +211,14 @@ export function openApiDocument(): Record<string, unknown> {
             },
             "404": {
               description: "No item with that slug.",
+              headers: PUBLIC_RESPONSE_HEADERS,
+              content: {
+                "application/problem+json": { schema: { $ref: "#/components/schemas/Error" } },
+              },
+            },
+            "429": {
+              description: "Rate limited. JSON error body plus RateLimit and Retry-After headers.",
+              headers: PUBLIC_RATE_LIMITED_RESPONSE_HEADERS,
               content: {
                 "application/problem+json": { schema: { $ref: "#/components/schemas/Error" } },
               },
@@ -206,7 +248,6 @@ export function openApiDocument(): Record<string, unknown> {
               description: "Matching pharmacy records.",
               headers: {
                 ...PUBLIC_RESPONSE_HEADERS,
-                RateLimit: { schema: { type: "string" }, description: "limit, remaining, reset" },
               },
               content: {
                 "application/json": {
@@ -222,6 +263,7 @@ export function openApiDocument(): Record<string, unknown> {
             },
             "429": {
               description: "Rate limited. JSON error body plus RateLimit headers.",
+              headers: PUBLIC_RATE_LIMITED_RESPONSE_HEADERS,
               content: {
                 "application/problem+json": { schema: { $ref: "#/components/schemas/Error" } },
               },
