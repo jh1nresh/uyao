@@ -96,7 +96,7 @@ describe("consumer admission gate", () => {
   it("dates every catalog item with a real, non-future ISO day", () => {
     // Seeded from `git log -- lib/data.ts`; from here it is hand-maintained
     // per item, so a new product without a date is a bug, not a default.
-    const today = process.env.UYAO_TEST_TODAY ?? "2026-08-18";
+    const today = process.env.UYAO_TEST_TODAY ?? "2026-08-22";
 
     for (const drug of allDrugs()) {
       expect(drug.updatedOn, drug.slug).toMatch(/^\d{4}-\d{2}-\d{2}$/);

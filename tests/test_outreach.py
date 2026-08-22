@@ -195,7 +195,7 @@ class TestLabels:
         assert labels.get("hugu-gaishu-100") == "護谷鈣素 100粒"
         assert labels.get("huzhikang-60") == "護智慷 60粒"
         assert labels.get("huzhikang-150") == "護智慷 150粒"
-        assert labels.get("keqiqing-capsule") == "克氣清膠囊"
+        assert labels.get("keqiqing-capsule") == "克氣清膠囊 50粒"
 
     def test_missing_file_is_not_fatal(self, tmp_path):
         assert load_labels(tmp_path / "nope.ts") == {}

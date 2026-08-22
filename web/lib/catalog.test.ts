@@ -19,7 +19,7 @@ const EXPECTED_CATALOG = [
   { slug: "shengkangning-150", label: "勝康寧 150粒" },
   { slug: "entineng-230", label: "恩體能 230粒" },
   { slug: "jinjiweichang-60", label: "進磯為常-D 60粒" },
-  { slug: "keqiqing-capsule", label: "克氣清膠囊" },
+  { slug: "keqiqing-capsule", label: "克氣清膠囊 50粒" },
   { slug: "huzhikang-60", label: "護智慷 60粒" },
   { slug: "huzhikang-150", label: "護智慷 150粒" },
   { slug: "top-fish-oil-60", label: "TOP高單位頂級魚油軟膠囊 60顆" },
@@ -29,29 +29,29 @@ const EXPECTED_CATALOG = [
   { slug: "baiyi-capsule-60", label: "百益膠囊食品 60粒" },
   { slug: "cm-sheliwei-softgel", label: "中美 攝利威軟膠囊" },
   { slug: "wewell-vision-softgel", label: "維維樂 視清／小視清軟膠囊" },
-  { slug: "cm-jinguguanjian-sr", label: "中美 金固關健緩釋錠" },
+  { slug: "cm-jinguguanjian-sr", label: "中美 金固關健緩釋錠 60錠" },
   { slug: "likuo-fish-oil-30", label: "立國 精粹魚油膠囊 30粒" },
-  { slug: "tianxia-yangshen-jingqu", label: "天下生物科技 養身景麴膠囊" },
+  { slug: "tianxia-yangshen-jingqu", label: "天下生物科技 養身景麴膠囊 90粒" },
   { slug: "hongren-riqingsheng-lm", label: "鴻仁 日清勝 LM機能益生菌" },
   { slug: "cm-guer-gan-150mg", label: "中美 顧爾肝膠囊 150 mg" },
   { slug: "gude-yishengning-p", label: "益聖寧-P軟膠囊" },
-  { slug: "jingcui-huxinan", label: "護欣胺微粒膠囊" },
-  { slug: "toyo-cukang-b", label: "醋康B膠囊" },
-  { slug: "icheng-meileshi", label: "美樂適素食膠囊" },
-  { slug: "icheng-siyunmeng", label: "思韻蒙軟膠囊" },
+  { slug: "jingcui-huxinan", label: "護欣胺微粒膠囊 120粒" },
+  { slug: "toyo-cukang-b", label: "醋康B膠囊 120粒" },
+  { slug: "icheng-meileshi", label: "美樂適素食膠囊 60粒" },
+  { slug: "icheng-siyunmeng", label: "思韻蒙軟膠囊 60粒" },
   { slug: "jixiang-jishukang", label: "吉舒康軟膠囊" },
-  { slug: "bio-stand-calcium-softgel", label: "Bio-Stand 挺液鈣軟膠囊" },
-  { slug: "rending-gujieyou", label: "固捷優" },
-  { slug: "ouye-jingyong", label: "勁勇軟膠囊" },
+  { slug: "bio-stand-calcium-softgel", label: "Bio-Stand 挺液鈣軟膠囊 100粒" },
+  { slug: "rending-gujieyou", label: "固捷優 60顆" },
+  { slug: "ouye-jingyong", label: "勁勇軟膠囊 60粒" },
   { slug: "greenplus-vasopower", label: "舒絡寶 Vasopower" },
   { slug: "greenplus-discpower", label: "龍固寶 DiscPower" },
   { slug: "greenplus-elgucare", label: "益固康 Elgucare" },
   { slug: "puda-grape-seed", label: "安格雅葡萄籽膠囊" },
   { slug: "puda-green-tea-compound", label: "普大綠茶複方膠囊" },
-  { slug: "yingkai-guguanjian-ucii", label: "固關鍵 UC II" },
-  { slug: "youquan-super-magnesium", label: "新優力超級鎂" },
-  { slug: "chung-jih-youweining", label: "佑衛寧 高麗菜濃縮複方膠囊" },
-  { slug: "luhsin-l-glutamine", label: "賜利康療養素－左旋麩醯胺酸" },
+  { slug: "yingkai-guguanjian-ucii", label: "固關鍵 UC II 60粒" },
+  { slug: "youquan-super-magnesium", label: "新優力超級鎂 60顆" },
+  { slug: "chung-jih-youweining", label: "佑衛寧 高麗菜濃縮複方膠囊 30粒" },
+  { slug: "luhsin-l-glutamine", label: "賜利康療養素－左旋麩醯胺酸 30包（每包5公克）" },
   { slug: "aob-vitality-beauty-45", label: "New AOB Vitality Beauty 45包" },
   { slug: "chungchi-yiyuansu-gastrodia-100", label: "憶元素 天麻100膠囊 60粒" },
   { slug: "yuanding-puregps-defense-450", label: "強抗力優 450+ Defense 60粒" },
@@ -164,9 +164,45 @@ describe("合作藥局常見品項目錄", () => {
       expect(drug.indications).toEqual([]);
       expect(drug.manufacturer).toBeTruthy();
       expect(drug.origin).toBeTruthy();
-      expect(drug.source).toEqual({ label: "合作藥局提供商品資料", kind: "partner" });
+      expect(drug.source?.kind).toBe("partner");
+      expect(drug.source?.label).toMatch(/^合作藥局提供商品資料/);
+      if (drug.source?.url) expect(drug.source.url).toMatch(/^https:\/\//);
       expect(storesForDrug(drug.slug)).toEqual([]);
     }
+  });
+
+  it.each([
+    { slug: "cm-jinguguanjian-sr", form: "緩釋錠", spec: "60錠" },
+    { slug: "tianxia-yangshen-jingqu", form: "膠囊", spec: "90粒" },
+    { slug: "jingcui-huxinan", form: "微粒膠囊", spec: "120粒" },
+    { slug: "toyo-cukang-b", form: "膠囊", spec: "120粒" },
+    { slug: "icheng-meileshi", form: "素食膠囊", spec: "60粒" },
+    { slug: "icheng-siyunmeng", form: "軟膠囊", spec: "60粒" },
+    { slug: "bio-stand-calcium-softgel", form: "軟膠囊", spec: "100粒" },
+    { slug: "rending-gujieyou", form: "膠囊", spec: "60顆" },
+    { slug: "ouye-jingyong", form: "軟膠囊", spec: "60粒" },
+    { slug: "yingkai-guguanjian-ucii", form: "膠囊", spec: "60粒" },
+    { slug: "youquan-super-magnesium", form: "膠囊", spec: "60顆" },
+    { slug: "chung-jih-youweining", form: "膠囊", spec: "30粒" },
+    { slug: "luhsin-l-glutamine", form: "粉狀", spec: "30包（每包5公克）" },
+  ])("$slug 的規格已由同品項公開資料核對", ({ slug, form, spec }) => {
+    const drug = getDrug(slug);
+
+    expect(drug).toMatchObject({ form, spec, updatedOn: "2026-08-22" });
+    expect(drug?.source).toMatchObject({ kind: "partner" });
+    expect(drug?.source?.url).toMatch(/^https:\/\//);
+  });
+
+  it("克氣清保留公開資料可核對的規格、製造商與產地", () => {
+    expect(getDrug("keqiqing-capsule")).toMatchObject({
+      spec: "50粒",
+      manufacturer: "UNITED PHARMA LLC",
+      origin: "美國",
+      updatedOn: "2026-08-22",
+      source: {
+        url: "https://www.rakuten.com.tw/shop/querterr/product/z8jbj38x3/",
+      },
+    });
   });
 
   it("不把原料來源誤寫成攝利威成品產地", () => {
