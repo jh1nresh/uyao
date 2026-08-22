@@ -1,34 +1,21 @@
-import Link from "next/link";
-
-import { AreaStores } from "./AreaStores";
 import { NotifyMe } from "./NotifyMe";
-import { formatDistance } from "@/lib/format";
-import { hoursSummary } from "@/lib/hours";
-import { localizedPath } from "@/lib/i18n";
-import { getRequestLocale } from "@/lib/locale-server";
-import type { AreaSlug, Store } from "@/lib/types";
+import type { AreaSlug } from "@/lib/types";
 
 /**
  * 藥品頁的空狀態。
  *
- * 沒有任何藥局裝盒子，所以沒有庫存可以列。這裡不假裝有貨，而是把這一區
- * 已經登錄的藥局列出來讓人直接打電話 —— 對消費者是可用的退路，對我們
- * 是把「有人在找這個藥」變成看得見的需求。
+ * 沒有任何藥局裝盒子，所以沒有庫存可以列。這裡不拿同區但未確認販售的
+ * 藥局來填空，只保留找藥需求，避免商品頁暗示那些店家有這個品項。
  */
-export async function NoInventoryYet({
+export function NoInventoryYet({
   drugName,
   drugSlug,
   area,
-  areaLabel,
-  stores,
 }: {
   drugName: string;
   drugSlug: string;
   area: AreaSlug;
-  areaLabel: string;
-  stores: Store[];
 }) {
-  const locale = await getRequestLocale();
   return (
     <section id="pharmacy-list" className="shop-shell scroll-mt-24 py-10 sm:py-14">
       <NotifyMe
@@ -38,29 +25,6 @@ export async function NoInventoryYet({
         drugName={drugName}
         area={area}
       />
-
-      <div className="mt-2.5 flex flex-wrap items-baseline gap-2.5">
-        <h2 className="text-[17px] font-black">{locale === "en" ? `Pharmacies in ${areaLabel}` : `${areaLabel}的藥局`}</h2>
-        {/* 店名、營業時段與電話已經在上方側欄，這一段的差別是地址與可重排的實際距離。 */}
-        <p className="text-[14px] text-muted-2">{locale === "en" ? `${stores.length} stores · Addresses and distance from you` : `${stores.length} 家 · 地址與距離你多遠`}</p>
-      </div>
-
-      <div className="mt-2">
-        <AreaStores
-          stores={stores}
-          area={area}
-          areaLabel={areaLabel}
-          limit={10}
-          showPhone
-        />
-      </div>
-
-      <p className="mt-3 text-[14px] leading-[1.6] text-muted-2">
-        {locale === "en" ? "Run a pharmacy?" : "開藥局的？"}
-        <Link href={localizedPath("/pharmacy", locale)} className="-my-3 ml-1 inline-flex min-h-11 items-center text-green">
-          {locale === "en" ? "Install the box and make your inventory visible →" : "裝上盒子，你的庫存就會出現在這裡 →"}
-        </Link>
-      </p>
     </section>
   );
 }
