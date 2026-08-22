@@ -76,7 +76,7 @@ describe("trust pages", () => {
     expect(TRUST_PAGES["/contact"].body).toMatch(/不在信裡做診斷/);
     expect(TRUST_PAGES["/contact"].body).toMatch(/prototype/);
     expect(TRUST_PAGES["/privacy"].body).toMatch(/不是即時庫存/);
-    expect(TRUST_PAGES["/privacy"].body).toMatch(/不搜集病歷/);
+    expect(TRUST_PAGES["/privacy"].body).toMatch(/不蒐集病歷/);
     expect(TRUST_PAGES["/docs"].body).toMatch(/not live inventory/i);
     expect(TRUST_PAGES["/docs"].body).toMatch(/prototype/i);
   });
@@ -86,6 +86,10 @@ describe("trust pages", () => {
     expect(TRUST_PAGES["/contact"].body).toContain("我們不公佈電話與門市地址");
     expect(TRUST_PAGES["/about"].body).toContain("不是 POS");
     expect(TRUST_PAGES["/about"].body).toContain("不能當診斷");
+    expect(TRUST_PAGES["/about"].body).toContain("示範數字是示範");
+    expect(TRUST_PAGES["/about"].body).not.toContain("簡範");
+    expect(TRUST_PAGES["/privacy"].body).toContain("不蒐集病歷");
+    expect(TRUST_PAGES["/privacy"].body).not.toContain("搜集");
   });
 });
 
