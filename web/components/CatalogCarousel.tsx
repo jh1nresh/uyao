@@ -39,11 +39,14 @@ export function CatalogCarousel({
   area,
   locale,
   label,
+  expanded = false,
 }: {
   drugs: Drug[];
   area: AreaSlug;
   locale: Locale;
   label: string;
+  /** 完整展開所有卡片；預設仍是原本的橫向瀏覽列。 */
+  expanded?: boolean;
 }) {
   const railRef = useRef<HTMLDivElement>(null);
   const dragRef = useRef<DragState | null>(null);
@@ -63,13 +66,14 @@ export function CatalogCarousel({
   }, []);
 
   useEffect(() => {
+    if (expanded) return;
     sync();
     const el = railRef.current;
     if (!el) return;
     const observer = new ResizeObserver(sync);
     observer.observe(el);
     return () => observer.disconnect();
-  }, [sync]);
+  }, [expanded, sync]);
 
   function nudge(direction: 1 | -1) {
     const el = railRef.current;
@@ -156,46 +160,50 @@ export function CatalogCarousel({
 
   return (
     <div className="relative">
-      <div className="mb-3 flex items-center justify-between gap-3">
-        <p className="m-0 text-[12.5px] font-medium text-muted-2">
-          {locale === "en" ? "Swipe or drag to browse" : "左右滑動或按住拖曳瀏覽"}
-        </p>
-        <div className="flex shrink-0 items-center gap-2">
-          <button
-            type="button"
-            onClick={() => nudge(-1)}
-            disabled={atStart}
-            aria-label={locale === "en" ? "Scroll left" : "往左"}
-            className={arrow}
-          >
-            <span aria-hidden>←</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => nudge(1)}
-            disabled={atEnd}
-            aria-label={locale === "en" ? "Scroll right" : "往右"}
-            className={arrow}
-          >
-            <span aria-hidden>→</span>
-          </button>
+      {!expanded && (
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <p className="m-0 text-[12.5px] font-medium text-muted-2">
+            {locale === "en" ? "Swipe or drag to browse" : "左右滑動或按住拖曳瀏覽"}
+          </p>
+          <div className="flex shrink-0 items-center gap-2">
+            <button
+              type="button"
+              onClick={() => nudge(-1)}
+              disabled={atStart}
+              aria-label={locale === "en" ? "Scroll left" : "往左"}
+              className={arrow}
+            >
+              <span aria-hidden>←</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => nudge(1)}
+              disabled={atEnd}
+              aria-label={locale === "en" ? "Scroll right" : "往右"}
+              className={arrow}
+            >
+              <span aria-hidden>→</span>
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       <div
         ref={railRef}
-        onScroll={sync}
-        onPointerDown={startDrag}
-        onPointerMove={moveDrag}
-        onPointerUp={finishDrag}
-        onPointerCancel={cancelDrag}
-        onClickCapture={suppressDraggedClick}
-        onDragStart={(event) => event.preventDefault()}
-        data-dragging={isDragging}
+        onScroll={expanded ? undefined : sync}
+        onPointerDown={expanded ? undefined : startDrag}
+        onPointerMove={expanded ? undefined : moveDrag}
+        onPointerUp={expanded ? undefined : finishDrag}
+        onPointerCancel={expanded ? undefined : cancelDrag}
+        onClickCapture={expanded ? undefined : suppressDraggedClick}
+        onDragStart={expanded ? undefined : (event) => event.preventDefault()}
+        data-dragging={expanded ? undefined : isDragging}
         aria-label={label}
         // tabIndex 讓鍵盤使用者能聚焦這條列並用左右鍵捲動
-        tabIndex={0}
-        className="catalog-rail -mx-1 flex cursor-grab snap-x snap-mandatory select-none gap-3 overflow-x-auto px-1 pb-2 data-[dragging=true]:cursor-grabbing"
+        tabIndex={expanded ? undefined : 0}
+        className={expanded
+          ? "grid gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+          : "catalog-rail -mx-1 flex cursor-grab snap-x snap-mandatory select-none gap-3 overflow-x-auto px-1 pb-2 data-[dragging=true]:cursor-grabbing"}
       >
         {drugs.map((item) => {
           const drug = drugCopy(item, locale);
@@ -203,7 +211,9 @@ export function CatalogCarousel({
             <Link
               key={item.slug}
               href={`${localizedPath(`/drug/${item.slug}`, locale)}?area=${area}`}
-              className="history-link group flex shrink-0 snap-start flex-col bg-paper no-underline transition-[background-color,transform] hover:-translate-y-px hover:bg-surface-hover w-[calc((100%-12px)/2)] sm:w-[calc((100%-24px)/3)] md:w-[calc((100%-36px)/4)] lg:w-[calc((100%-48px)/5)] xl:w-[calc((100%-60px)/6)]"
+              className={`history-link group flex flex-col bg-paper no-underline transition-[background-color,transform] hover:-translate-y-px hover:bg-surface-hover ${expanded
+                ? "w-full"
+                : "w-[calc((100%-12px)/2)] shrink-0 snap-start sm:w-[calc((100%-24px)/3)] md:w-[calc((100%-36px)/4)] lg:w-[calc((100%-48px)/5)] xl:w-[calc((100%-60px)/6)]"}`}
             >
               <span className="relative block aspect-square w-full border-b border-line">
                 {item.image ? (
