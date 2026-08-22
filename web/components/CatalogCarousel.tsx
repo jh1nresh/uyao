@@ -2,13 +2,29 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  type MouseEvent as ReactMouseEvent,
+  type PointerEvent as ReactPointerEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { CatalogImagePlaceholder } from "./CatalogImagePlaceholder";
 import { catalogSourceStatus } from "./CatalogItemGrid";
 import { known } from "@/lib/pending";
 import { drugCopy, localizedPath, type Locale } from "@/lib/i18n";
 import type { AreaSlug, Drug } from "@/lib/types";
+
+const DRAG_THRESHOLD = 6;
+
+type DragState = {
+  pointerId: number;
+  startX: number;
+  startY: number;
+  startScrollLeft: number;
+};
 
 /**
  * 目錄橫向瀏覽：左右滑動看不同商品。
@@ -30,8 +46,11 @@ export function CatalogCarousel({
   label: string;
 }) {
   const railRef = useRef<HTMLDivElement>(null);
+  const dragRef = useRef<DragState | null>(null);
+  const didDragRef = useRef(false);
   const [atStart, setAtStart] = useState(true);
   const [atEnd, setAtEnd] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
 
   const sync = useCallback(() => {
     const el = railRef.current;
@@ -59,6 +78,77 @@ export function CatalogCarousel({
     el.scrollBy({ left: direction * el.clientWidth * 0.8, behavior: "smooth" });
   }
 
+  function startDrag(event: ReactPointerEvent<HTMLDivElement>) {
+    // Touch already gets native scrolling and momentum from the overflow rail.
+    if (event.pointerType === "touch" || event.button !== 0 || !event.isPrimary) return;
+
+    dragRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      startScrollLeft: event.currentTarget.scrollLeft,
+    };
+    didDragRef.current = false;
+  }
+
+  function moveDrag(event: ReactPointerEvent<HTMLDivElement>) {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+
+    const deltaX = event.clientX - drag.startX;
+    const deltaY = event.clientY - drag.startY;
+
+    if (!didDragRef.current) {
+      if (Math.abs(deltaX) < DRAG_THRESHOLD) return;
+      if (Math.abs(deltaX) <= Math.abs(deltaY)) {
+        dragRef.current = null;
+        return;
+      }
+
+      didDragRef.current = true;
+      setIsDragging(true);
+      event.currentTarget.setPointerCapture(event.pointerId);
+      // Snap fights the pointer while it is down. Restore it on release.
+      event.currentTarget.style.scrollSnapType = "none";
+    }
+
+    event.preventDefault();
+    event.currentTarget.scrollLeft = drag.startScrollLeft - deltaX;
+  }
+
+  function finishDrag(event: ReactPointerEvent<HTMLDivElement>) {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+
+    const el = event.currentTarget;
+    if (el.hasPointerCapture(event.pointerId)) {
+      el.releasePointerCapture(event.pointerId);
+    }
+    el.style.scrollSnapType = "";
+    dragRef.current = null;
+    setIsDragging(false);
+
+    // A click is dispatched immediately after pointerup. Keep the flag for that
+    // click, then clear it so a later intentional link click still works.
+    if (didDragRef.current) {
+      window.setTimeout(() => {
+        didDragRef.current = false;
+      }, 0);
+    }
+  }
+
+  function cancelDrag(event: ReactPointerEvent<HTMLDivElement>) {
+    finishDrag(event);
+    didDragRef.current = false;
+  }
+
+  function suppressDraggedClick(event: ReactMouseEvent<HTMLDivElement>) {
+    if (!didDragRef.current) return;
+    event.preventDefault();
+    event.stopPropagation();
+    didDragRef.current = false;
+  }
+
   if (drugs.length === 0) return null;
 
   const arrow =
@@ -66,34 +156,46 @@ export function CatalogCarousel({
 
   return (
     <div className="relative">
-      <div className="mb-3 flex items-center justify-end gap-2">
-        <button
-          type="button"
-          onClick={() => nudge(-1)}
-          disabled={atStart}
-          aria-label={locale === "en" ? "Scroll left" : "往左"}
-          className={arrow}
-        >
-          <span aria-hidden>←</span>
-        </button>
-        <button
-          type="button"
-          onClick={() => nudge(1)}
-          disabled={atEnd}
-          aria-label={locale === "en" ? "Scroll right" : "往右"}
-          className={arrow}
-        >
-          <span aria-hidden>→</span>
-        </button>
+      <div className="mb-3 flex items-center justify-between gap-3">
+        <p className="m-0 text-[12.5px] font-medium text-muted-2">
+          {locale === "en" ? "Swipe or drag to browse" : "左右滑動或按住拖曳瀏覽"}
+        </p>
+        <div className="flex shrink-0 items-center gap-2">
+          <button
+            type="button"
+            onClick={() => nudge(-1)}
+            disabled={atStart}
+            aria-label={locale === "en" ? "Scroll left" : "往左"}
+            className={arrow}
+          >
+            <span aria-hidden>←</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => nudge(1)}
+            disabled={atEnd}
+            aria-label={locale === "en" ? "Scroll right" : "往右"}
+            className={arrow}
+          >
+            <span aria-hidden>→</span>
+          </button>
+        </div>
       </div>
 
       <div
         ref={railRef}
         onScroll={sync}
+        onPointerDown={startDrag}
+        onPointerMove={moveDrag}
+        onPointerUp={finishDrag}
+        onPointerCancel={cancelDrag}
+        onClickCapture={suppressDraggedClick}
+        onDragStart={(event) => event.preventDefault()}
+        data-dragging={isDragging}
         aria-label={label}
         // tabIndex 讓鍵盤使用者能聚焦這條列並用左右鍵捲動
         tabIndex={0}
-        className="catalog-rail -mx-1 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2"
+        className="catalog-rail -mx-1 flex cursor-grab snap-x snap-mandatory select-none gap-3 overflow-x-auto px-1 pb-2 data-[dragging=true]:cursor-grabbing"
       >
         {drugs.map((item) => {
           const drug = drugCopy(item, locale);
