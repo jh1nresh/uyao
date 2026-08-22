@@ -19,7 +19,6 @@ export async function SiteHeader({
   area = DEFAULT_AREA,
   preserveAreaPath = false,
   locatable = false,
-  presentation = "default",
 }: {
   query?: string;
   showSearch?: boolean;
@@ -28,24 +27,18 @@ export async function SiteHeader({
   area?: AreaSlug;
   preserveAreaPath?: boolean;
   locatable?: boolean;
-  presentation?: "default" | "pearl";
 }) {
   const locale = await getRequestLocale();
-  const pearl = presentation === "pearl";
   return (
-    <header className={`sticky top-0 z-40 border-b border-line-strong backdrop-blur-sm ${pearl ? "shop-pearl-header bg-paper/95" : "bg-ivory/95"}`}>
-      <div className={`shop-shell flex items-center gap-3 ${pearl ? "h-[72px] sm:h-[78px]" : "h-[68px] sm:h-[72px]"}`}>
+    <header className="sticky top-0 z-40 border-b border-line-strong bg-ivory/95 backdrop-blur-sm">
+      <div className="shop-shell flex h-[68px] items-center gap-3 sm:h-[72px]">
         {/* 品牌 logo 回到 company landing；地區狀態只留在找藥流程。 */}
         <Link
           href={`${SITE_URL}${localizedPath("/", locale)}`}
           aria-label={locale === "en" ? "Back to uYao homepage" : "回到 uYao 首頁"}
           className="flex min-h-11 flex-none items-center gap-2 no-underline"
         >
-          {pearl ? (
-            <span className="editorial-display whitespace-nowrap text-[25px] font-semibold tracking-[-.035em] text-forest sm:text-[31px]">
-              uYao 有藥
-            </span>
-          ) : showSearch ? (
+          {showSearch ? (
             <>
               <span className="sm:hidden"><BrandMark size={34} /></span>
               <span className="hidden sm:block"><BrandLogo height={34} /></span>
@@ -57,7 +50,7 @@ export async function SiteHeader({
             </>
           )}
           {showTagline && (
-            <span className={`ml-1 hidden border-l border-line-strong pl-3 font-medium text-muted lg:inline ${pearl ? "text-[14px] tracking-0" : "text-[12px] tracking-[.04em]"}`}>
+            <span className="ml-1 hidden border-l border-line-strong pl-3 text-[12px] font-medium tracking-[.04em] text-muted lg:inline">
               {locale === "en" ? "Nearby pharmacies · Medicine requests" : "附近藥局・找藥需求"}
             </span>
           )}
@@ -74,16 +67,16 @@ export async function SiteHeader({
         <div className={showSearch ? "hidden flex-1 sm:block" : "flex-1"} />
 
         <div className="hidden md:block">
-          <AreaSwitch area={area} preservePath={preserveAreaPath} locatable={pearl ? false : locatable} compact />
+          <AreaSwitch area={area} preservePath={preserveAreaPath} locatable={locatable} compact />
         </div>
-        {!pearl && <ThemeToggle locale={locale} />}
-        <LanguageSwitch className={pearl ? "shop-pearl-language text-[14px]" : ""} />
+        <ThemeToggle locale={locale} />
+        <LanguageSwitch />
         {/* 供給側入口。合作說明留在公司站；已開通店家從 Store OS 網域登入。
             手機有搜尋框時先讓寬度給找藥主流程（頁尾仍有藥局合作入口）；
             沒有搜尋框的頁面則保留這顆 CTA。 */}
         <Link
           href={`${SITE_URL}${localizedPath("/pharmacy", locale)}`}
-          className={`${showSearch ? "hidden sm:inline-flex" : "inline-flex"} min-h-11 flex-none items-center border bg-paper px-3 font-bold text-forest no-underline transition-colors hover:border-forest hover:bg-surface ${pearl ? "rounded-[4px] border-forest px-5 text-[14px]" : "border-line-strong text-xs"}`}
+          className={`${showSearch ? "hidden sm:inline-flex" : "inline-flex"} min-h-11 flex-none items-center border border-line-strong bg-paper px-3 text-xs font-bold text-forest no-underline transition-colors hover:border-forest hover:bg-surface`}
         >
           {locale === "en" ? "For pharmacies" : "我是藥局"}
         </Link>
