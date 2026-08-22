@@ -186,7 +186,7 @@ export default async function HomePage({
         evidenceHref={`${SITE_URL}${locale === "en" ? "/en" : "/zh-tw"}/evidence#partners`}
       />
 
-      {/* 首頁直接橫向瀏覽整個目錄；要搜尋與篩選時再進列表頁。 */}
+      {/* 首頁直接完整顯示整個目錄；要搜尋與篩選時再進列表頁。 */}
       <section className="bg-ivory">
         <div className="shop-shell py-10 sm:py-12">
           <div className="mb-6 max-w-[720px]">
@@ -208,12 +208,13 @@ export default async function HomePage({
               </Link>
             ))}
           </nav>
-          {/* 整個目錄橫向瀏覽：有圖的品項排前面，讓第一眼就看到商品而不是文字卡。 */}
+          {/* 完整目錄直接展開，不把後面的品項藏在橫向捲動區。 */}
           <CatalogCarousel
             drugs={catalogRail}
             area={area}
             locale={locale}
             label={locale === "en" ? "Catalog items" : "目錄品項"}
+            expanded
           />
           <div className="mt-6 flex justify-end">
             <Link
