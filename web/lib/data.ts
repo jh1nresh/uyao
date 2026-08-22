@@ -79,6 +79,7 @@ function partnerProvidedProduct({
   highlights,
   dosage,
   cautions,
+  verificationSource,
 }: {
   slug: string;
   name: string;
@@ -99,6 +100,7 @@ function partnerProvidedProduct({
   highlights?: Drug["highlights"];
   dosage?: string;
   cautions?: string;
+  verificationSource?: { label: string; url: string };
 }): Drug {
   return {
     slug,
@@ -123,7 +125,13 @@ function partnerProvidedProduct({
     highlights,
     dosage,
     cautions,
-    source: { label: "合作藥局提供商品資料", kind: "partner" },
+    source: verificationSource
+      ? {
+          label: `合作藥局提供商品資料；${verificationSource.label}`,
+          url: verificationSource.url,
+          kind: "partner",
+        }
+      : { label: "合作藥局提供商品資料", kind: "partner" },
   };
 }
 
@@ -210,11 +218,11 @@ const DRUGS: Drug[] = [
   },
   {
     slug: "keqiqing-capsule",
-    updatedOn: "2026-08-18",
+    updatedOn: "2026-08-22",
     name: "克氣清膠囊",
     aliases: ["克氣清咳嗽膠囊", "克氣清", "合氣清", "LAKALIN"],
     form: "軟膠囊",
-    spec: "規格待確認",
+    spec: "50粒",
     licenseNo: "",
     drugClass: "非藥品",
     category: "partner-item",
@@ -223,9 +231,11 @@ const DRUGS: Drug[] = [
     nutritionFocus: "呼吸道日常保養",
     nutritionFocusEn: "Daily respiratory wellness",
     searchTerms: ["呼吸道保養", "換季保養", "粉塵環境保養"],
+    manufacturer: "UNITED PHARMA LLC",
+    origin: "美國",
     source: {
-      label: "麗登藥妝產品資料",
-      url: "https://www.citycare.com.tw/product/lakalin-sp02/",
+      label: "樂天市場克氣清商品資料",
+      url: "https://www.rakuten.com.tw/shop/querterr/product/z8jbj38x3/",
     },
   },
   {
@@ -407,15 +417,21 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "cm-jinguguanjian-sr",
-    updatedOn: "2026-08-18",
+    updatedOn: "2026-08-22",
     name: "中美 金固關健緩釋錠",
     aliases: ["金固關健", "金固關健緩釋錠"],
     form: "緩釋錠",
+    spec: "60錠",
     ingredients: ["雞胸軟骨萃取物（含非變性二型膠原蛋白）", "乳木果油萃取", "MSM（甲基硫醯基甲烷）", "葡萄糖酸鋅", "維生素D3"],
     nutritionFocus: "非變性二型膠原蛋白、MSM、鋅與維生素 D3 的產品組成",
     searchTerms: ["二型膠原蛋白", "MSM", "鋅", "維生素D3", "關節營養補給"],
     manufacturer: "中美醫藥",
     origin: "台灣（通路標示）",
+    dosage: "每日2錠，飯後食用；一日請勿超過2錠。",
+    verificationSource: {
+      label: "中美醫藥公開產品資料核對",
+      url: "https://chungmei.pixo-lab.com/product/%E9%87%91%E5%9B%BA%E9%97%9C%E5%81%A5%E7%B7%A9%E9%87%8B%E9%8C%A0/",
+    },
     detailImages: [
       { src: "/products/detail/jinguguanjian-1-main.webp", alt: "主圖：中美 金固關健緩釋錠 的商品說明圖主視覺，含品名、規格與重點標示", altEn: "Detail hero card for 中美 金固關健緩釋錠, showing the name, pack size and key callouts" },
       { src: "/products/detail/jinguguanjian-2-features.webp", alt: "產品特色：中美 金固關健緩釋錠 的重點條列", altEn: "Feature summary card for 中美 金固關健緩釋錠" },
@@ -453,15 +469,22 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "tianxia-yangshen-jingqu",
-    updatedOn: "2026-08-18",
+    updatedOn: "2026-08-22",
     name: "天下生物科技 養身景麴膠囊",
     aliases: ["養身景麴", "養身景麴膠囊"],
     form: "膠囊",
+    spec: "90粒",
     ingredients: ["紅麴", "紅景天萃取物", "納豆萃取物（納豆激酶）", "人參", "肌醇", "維生素E", "葡萄籽萃取粉", "銀杏果", "甘蔗蠟萃取物", "靈芝菌絲體", "維生素B1", "維生素B2", "維生素B6", "葉酸", "維生素B12"],
     nutritionFocus: "紅麴、紅景天、納豆萃取物與多種維生素的產品組成",
     searchTerms: ["紅麴", "紅景天", "納豆激酶", "人參", "維生素B群"],
     manufacturer: "天下生物科技",
     origin: "台灣",
+    dosage: "每日1～2次，每次1～2粒。",
+    cautions: "孕婦及12歲以下兒童不宜食用。",
+    verificationSource: {
+      label: "歐頤康實體藥局公開商品資料核對",
+      url: "https://www.rakuten.com.tw/shop/ojuriru/product/05170021/",
+    },
     detailImages: [
       { src: "/products/detail/congshen-1-main.webp", alt: "主圖：天下生物科技 養身景麴膠囊 的商品說明圖主視覺，含品名、規格與重點標示", altEn: "Detail hero card for 天下生物科技 養身景麴膠囊, showing the name, pack size and key callouts" },
       { src: "/products/detail/congshen-2-features.webp", alt: "產品特色：天下生物科技 養身景麴膠囊 的重點條列", altEn: "Feature summary card for 天下生物科技 養身景麴膠囊" },
@@ -553,15 +576,21 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "jingcui-huxinan",
-    updatedOn: "2026-08-18",
+    updatedOn: "2026-08-22",
     name: "護欣胺微粒膠囊",
     aliases: ["護欣胺"],
     form: "微粒膠囊",
+    spec: "120粒",
     ingredients: ["L-精胺酸", "維生素C", "松樹皮萃取物", "L-麩醯胺酸", "綠茶萃取物", "丹參萃取物", "維生素E", "葉酸"],
     nutritionFocus: "L-精胺酸、胺基酸、植物萃取物與維生素的產品組成",
     searchTerms: ["L-精胺酸", "L-麩醯胺酸", "松樹皮", "維生素C", "維生素E", "葉酸"],
     manufacturer: "精萃載體科技股份有限公司",
     origin: "台灣",
+    dosage: "每日2次，每次1～2粒。",
+    verificationSource: {
+      label: "蜂藥師實體藥局公開商品資料核對",
+      url: "https://www.rakuten.com.tw/shop/honeypharm/product/X2K04AZOF/",
+    },
     detailImages: [
       { src: "/products/detail/arginine-1-main.webp", alt: "主圖：護欣胺微粒膠囊 的商品說明圖主視覺，含品名、規格與重點標示", altEn: "Detail hero card for 護欣胺微粒膠囊, showing the name, pack size and key callouts" },
       { src: "/products/detail/arginine-2-features.webp", alt: "產品特色：護欣胺微粒膠囊 的重點條列", altEn: "Feature summary card for 護欣胺微粒膠囊" },
@@ -577,15 +606,22 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "toyo-cukang-b",
-    updatedOn: "2026-08-18",
+    updatedOn: "2026-08-22",
     name: "醋康B膠囊",
     aliases: ["醋康B", "東洋醋康B"],
     form: "膠囊",
+    spec: "120粒",
     ingredients: ["黑醋萃取物 90 mg", "紅花籽油", "維生素E", "維生素B1", "維生素B6", "蜂蠟"],
     nutritionFocus: "黑醋萃取物、紅花籽油與維生素的產品組成",
     searchTerms: ["黑醋", "紅花籽油", "維生素B1", "維生素B6", "維生素E"],
     manufacturer: "東洋",
     origin: "日本",
+    dosage: "每日早餐後3～4粒。",
+    cautions: "請置於兒童無法取得處。",
+    verificationSource: {
+      label: "一成藥品公開產品資料核對",
+      url: "https://www.success-medical.com.tw/productdetail_tw.php?id=38",
+    },
     detailImages: [
       { src: "/products/detail/kurozu-1-main.webp", alt: "主圖：醋康B膠囊 的商品說明圖主視覺，含品名、規格與重點標示", altEn: "Detail hero card for 醋康B膠囊, showing the name, pack size and key callouts" },
       { src: "/products/detail/kurozu-2-features.webp", alt: "產品特色：醋康B膠囊 的重點條列", altEn: "Feature summary card for 醋康B膠囊" },
@@ -601,15 +637,22 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "icheng-meileshi",
-    updatedOn: "2026-08-18",
+    updatedOn: "2026-08-22",
     name: "美樂適素食膠囊",
     aliases: ["美樂適"],
     form: "素食膠囊",
+    spec: "60粒",
     ingredients: ["紅花籽油", "薯蕷皂素 Diosgenin", "輔酶Q10", "脂肪酸聚合甘油酯"],
     nutritionFocus: "紅花籽油、薯蕷皂素與輔酶 Q10 的產品組成",
     searchTerms: ["紅花籽油", "薯蕷皂素", "Diosgenin", "輔酶Q10"],
     manufacturer: "一成藥品股份有限公司",
     origin: "日本",
+    dosage: "每日早餐後2粒。",
+    cautions: "15歲以下、孕婦、哺乳婦及服用抗凝血劑者不宜食用。",
+    verificationSource: {
+      label: "一成藥品公開產品資料核對",
+      url: "https://www.success-medical.com.tw/productdetail_tw.php?id=33",
+    },
     image: {
       src: "/products/icheng-meileshi.webp",
       width: 900,
@@ -621,15 +664,22 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "icheng-siyunmeng",
-    updatedOn: "2026-08-18",
+    updatedOn: "2026-08-22",
     name: "思韻蒙軟膠囊",
     aliases: ["思韻蒙"],
     form: "軟膠囊",
+    spec: "60粒",
     ingredients: ["紅花籽油", "薯蕷皂素 Diosgenin", "輔酶Q10"],
     nutritionFocus: "紅花籽油、薯蕷皂素與輔酶 Q10 的產品組成",
     searchTerms: ["紅花籽油", "薯蕷皂素", "Diosgenin", "輔酶Q10"],
     manufacturer: "一成藥品股份有限公司",
     origin: "日本",
+    dosage: "每日早餐後2粒。",
+    cautions: "15歲以下、孕婦、哺乳婦及服用抗凝血劑者不宜食用。",
+    verificationSource: {
+      label: "一成藥品公開產品資料核對",
+      url: "https://www.success-medical.com.tw/productdetail_tw.php?id=33",
+    },
     image: {
       src: "/products/icheng-siyunmeng.webp",
       width: 900,
@@ -653,15 +703,20 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "bio-stand-calcium-softgel",
-    updatedOn: "2026-08-18",
+    updatedOn: "2026-08-22",
     name: "Bio-Stand 挺液鈣軟膠囊",
     aliases: ["挺液鈣", "Bio-Stand挺液鈣"],
     form: "軟膠囊",
+    spec: "100粒",
     ingredients: ["磷酸氫鈣", "葡萄糖酸鈣", "維生素D3", "大豆油", "大豆卵磷脂", "蜂膠"],
     nutritionFocus: "鈣、維生素 D3 與蜂膠等成分的產品組成",
     searchTerms: ["鈣", "葡萄糖酸鈣", "維生素D3", "補鈣"],
     manufacturer: "臺灣默化實業有限公司",
     origin: "美國（進口品）",
+    verificationSource: {
+      label: "公開通路商品資料核對",
+      url: "https://shopee.tw/%E2%AD%90%E6%AD%A3%E5%93%81%E2%AD%90-%E9%BB%98%E5%8C%96-%E6%8C%BA%E6%B6%B2%E9%88%A3%E8%BB%9F%E8%86%A0%E5%9B%8A-100%E9%A1%86-BIO-STAND-%E6%B6%B2%E6%85%8B%E9%88%A3-%E7%BE%8E%E5%9C%8B%E5%8E%9F%E8%A3%9D%E9%80%B2%E5%8F%A3-%E5%AD%95%E5%A9%A6%E5%8F%AF%E9%A3%9F-%E5%81%A5%E5%BA%B7%E9%A3%9F%E5%93%81-%E7%87%9F%E9%A4%8A%E8%BC%94%E5%8A%A9-i.15008689.20184705654",
+    },
     detailImages: [
       { src: "/products/detail/biostand-1-main.webp", alt: "主圖：Bio-Stand 挺液鈣軟膠囊 的商品說明圖主視覺，含品名、規格與重點標示", altEn: "Detail hero card for Bio-Stand 挺液鈣軟膠囊, showing the name, pack size and key callouts" },
       { src: "/products/detail/biostand-2-features.webp", alt: "產品特色：Bio-Stand 挺液鈣軟膠囊 的重點條列", altEn: "Feature summary card for Bio-Stand 挺液鈣軟膠囊" },
@@ -678,15 +733,20 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "rending-gujieyou",
-    updatedOn: "2026-08-18",
+    updatedOn: "2026-08-22",
     name: "固捷優",
     aliases: ["固捷優膠囊"],
-    form: "劑型待確認",
+    form: "膠囊",
+    spec: "60顆",
     ingredients: ["BioCell Collagen II 二型膠原蛋白 200 mg", "Hytolive 橄欖果萃取 100 mg", "MSM 100 mg", "檸檬酸鈣 70 mg", "維生素C 40 mg", "UC-II 非變性二型膠原蛋白 20 mg"],
     nutritionFocus: "二型膠原蛋白、MSM、鈣與維生素 C 的產品組成",
     searchTerms: ["二型膠原蛋白", "UC-II", "MSM", "檸檬酸鈣", "維生素C"],
     manufacturer: "仁鼎生技有限公司",
     origin: "台灣（通路標示）",
+    verificationSource: {
+      label: "建利健康生活網公開商品資料核對",
+      url: "https://mall.iopenmall.tw/018419/index.php?action=product_detail&prod_no=P1841902726138&web_currency=",
+    },
     image: {
       src: "/products/rending-gujieyou.webp",
       width: 900,
@@ -698,15 +758,22 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "ouye-jingyong",
-    updatedOn: "2026-08-18",
+    updatedOn: "2026-08-22",
     name: "勁勇軟膠囊",
     aliases: ["勁勇"],
     form: "軟膠囊",
+    spec: "60粒",
     ingredients: ["馬卡根萃取", "鹿鞭", "葫蘆巴萃取", "透納葉", "鹿茸", "南瓜子粉", "管花肉蓯蓉", "L-精胺酸", "銀杏", "鋅", "維生素B群"],
     nutritionFocus: "馬卡、植物與動物來源成分、L-精胺酸、鋅與維生素 B 群的產品組成",
     searchTerms: ["馬卡", "南瓜子", "L-精胺酸", "鋅", "維生素B群"],
     manufacturer: "歐業藥品",
-    origin: "台灣",
+    origin: "美國（通路標示）",
+    dosage: "每日1粒，飯後食用。",
+    cautions: "本品含堅果種子類成分；管花肉蓯蓉不建議嬰幼兒、孕婦與哺乳婦食用。",
+    verificationSource: {
+      label: "富康活力藥局公開商品資料核對",
+      url: "https://shop.fu-kang.com/product_detail.php?product_sn=2358",
+    },
     detailImages: [
       { src: "/products/detail/maca-1-main.webp", alt: "主圖：勁勇軟膠囊 的商品說明圖主視覺，含品名、規格與重點標示", altEn: "Detail hero card for 勁勇軟膠囊, showing the name, pack size and key callouts" },
       { src: "/products/detail/maca-2-features.webp", alt: "產品特色：勁勇軟膠囊 的重點條列", altEn: "Feature summary card for 勁勇軟膠囊" },
@@ -841,15 +908,20 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "yingkai-guguanjian-ucii",
-    updatedOn: "2026-08-18",
+    updatedOn: "2026-08-22",
     name: "固關鍵 UC II",
     aliases: ["固關鍵", "固關鍵UC II", "固關鍵UCII"],
-    form: "劑型待確認",
+    form: "膠囊",
+    spec: "60粒",
     ingredients: ["UC-II® 非變性二型膠原蛋白 40 mg", "北海道鮭魚鼻軟骨", "乳油木果萃取", "葡萄糖胺", "95% 玻尿酸", "MSM"],
     nutritionFocus: "非變性二型膠原蛋白、鮭魚鼻軟骨、葡萄糖胺、玻尿酸與 MSM 的產品組成",
     searchTerms: ["UC-II", "二型膠原蛋白", "葡萄糖胺", "玻尿酸", "MSM"],
     manufacturer: "迎凱有限公司",
     origin: "台灣（依合作藥局提供的產品資料）",
+    verificationSource: {
+      label: "迎凱公開產品資料核對",
+      url: "https://ying-kai.weebly.com/pruduct.html",
+    },
     detailImages: [
       { src: "/products/detail/guguanjian-1-main.webp", alt: "主圖：固關鍵 UC II 的商品說明圖主視覺，含品名、規格與重點標示", altEn: "Detail hero card for 固關鍵 UC II, showing the name, pack size and key callouts" },
       { src: "/products/detail/guguanjian-2-features.webp", alt: "產品特色：固關鍵 UC II 的重點條列", altEn: "Feature summary card for 固關鍵 UC II" },
@@ -866,15 +938,20 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "youquan-super-magnesium",
-    updatedOn: "2026-08-18",
+    updatedOn: "2026-08-22",
     name: "新優力超級鎂",
     aliases: ["超級鎂", "新優力鎂"],
-    form: "劑型待確認",
+    form: "膠囊",
+    spec: "60顆",
     ingredients: ["無水檸檬酸鎂", "水溶性海藻鈣", "D-核糖", "束絲藻", "L-精胺酸", "離胺酸", "異白胺酸", "纈胺酸", "白胺酸", "維生素D3"],
     nutritionFocus: "鎂、海藻鈣、D-核糖、胺基酸與維生素 D3 的產品組成",
     searchTerms: ["鎂", "檸檬酸鎂", "海藻鈣", "D-核糖", "胺基酸", "維生素D3"],
     manufacturer: "優全生技有限公司",
     origin: "台灣",
+    verificationSource: {
+      label: "東亞健康公開商品資料核對",
+      url: "https://dongya.com.tw/index.php?product_id=24&route=product%2Fproduct",
+    },
     detailImages: [
       { src: "/products/detail/mg-1-main.webp", alt: "主圖：新優力超級鎂 的商品說明圖主視覺，含品名、規格與重點標示", altEn: "Detail hero card for 新優力超級鎂, showing the name, pack size and key callouts" },
       { src: "/products/detail/mg-2-features.webp", alt: "產品特色：新優力超級鎂 的重點條列", altEn: "Feature summary card for 新優力超級鎂" },
@@ -890,15 +967,20 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "chung-jih-youweining",
-    updatedOn: "2026-08-18",
+    updatedOn: "2026-08-22",
     name: "佑衛寧 高麗菜濃縮複方膠囊",
     aliases: ["佑衛寧", "高麗菜濃縮複方膠囊"],
     form: "膠囊",
+    spec: "30粒",
     ingredients: ["全食物型高麗菜濃縮粉（含天然維生素U／S-甲基蛋胺酸）", "SOR-10 秋葵萃取物", "牛蒡濃縮", "芹菜", "蔥", "洋蔥", "鋅"],
     nutritionFocus: "高麗菜、秋葵、牛蒡與多種植物成分的產品組成",
     searchTerms: ["高麗菜", "維生素U", "S-甲基蛋胺酸", "秋葵", "牛蒡", "鋅"],
     manufacturer: "中日藥品",
     origin: "台灣",
+    verificationSource: {
+      label: "公開通路商品資料核對",
+      url: "https://mall.iopenmall.tw/035954/index.php?action=product_detail&prod_no=P3595415163394",
+    },
     detailImages: [
       { src: "/products/detail/youweining-1-main.webp", alt: "主圖：佑衛寧 高麗菜濃縮複方膠囊 的商品說明圖主視覺，含品名、規格與重點標示", altEn: "Detail hero card for 佑衛寧 高麗菜濃縮複方膠囊, showing the name, pack size and key callouts" },
       { src: "/products/detail/youweining-2-features.webp", alt: "產品特色：佑衛寧 高麗菜濃縮複方膠囊 的重點條列", altEn: "Feature summary card for 佑衛寧 高麗菜濃縮複方膠囊" },
@@ -915,16 +997,22 @@ const DRUGS: Drug[] = [
   }),
   partnerProvidedProduct({
     slug: "luhsin-l-glutamine",
-    updatedOn: "2026-08-18",
+    updatedOn: "2026-08-22",
     name: "賜利康療養素－左旋麩醯胺酸",
     aliases: ["賜利康療養素", "左旋麩醯胺酸", "L-Glutamine"],
     nameEn: "L-Glutamine",
-    form: "劑型待確認",
+    form: "粉狀",
+    spec: "30包（每包5公克）",
     ingredients: ["左旋麩醯胺酸（L-Glutamine）"],
     nutritionFocus: "左旋麩醯胺酸的產品組成",
     searchTerms: ["左旋麩醯胺酸", "L-Glutamine", "麩醯胺酸"],
     manufacturer: "綠心藥品生化科技有限公司",
     origin: "台灣",
+    dosage: "每日1包，以溫水或飲品沖泡後食用。",
+    verificationSource: {
+      label: "公開通路商品資料核對",
+      url: "https://mall.iopenmall.tw/100961/index.php?action=product_detail&prod_no=P10096113650656",
+    },
     detailImages: [
       { src: "/products/detail/glutamine-1-main.webp", alt: "主圖：賜利康療養素－左旋麩醯胺酸 的商品說明圖主視覺，含品名、規格與重點標示", altEn: "Detail hero card for 賜利康療養素－左旋麩醯胺酸, showing the name, pack size and key callouts" },
       { src: "/products/detail/glutamine-2-features.webp", alt: "產品特色：賜利康療養素－左旋麩醯胺酸 的重點條列", altEn: "Feature summary card for 賜利康療養素－左旋麩醯胺酸" },
