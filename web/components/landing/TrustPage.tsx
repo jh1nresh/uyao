@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import type { Metadata } from "next";
 
 import { KnowledgeShell } from "@/components/landing/KnowledgeShell";
@@ -13,9 +14,33 @@ export function trustPageMetadata(path: TrustPath): Metadata {
   return {
     title: page.title,
     description: page.description,
-    alternates: { canonical: path },
+    alternates: { canonical: page.canonicalPath },
     robots: { index: false, follow: true },
   };
+}
+
+function PacketParagraph({ text }: { text: string }) {
+  const nodes: ReactNode[] = [];
+  const pattern = /(\/zh-tw\/evidence|uyao@agentmail\.to)/g;
+  let last = 0;
+  let match = pattern.exec(text);
+  let key = 0;
+  while (match) {
+    if (match.index > last) nodes.push(text.slice(last, match.index));
+    const token = match[0];
+    nodes.push(
+      token.includes("@") ? (
+        <a key={key} href={`mailto:${token}`}>{token}</a>
+      ) : (
+        <a key={key} href={token}>{token}</a>
+      ),
+    );
+    key += 1;
+    last = match.index + token.length;
+    match = pattern.exec(text);
+  }
+  if (last < text.length) nodes.push(text.slice(last));
+  return <p className="text-[16px] leading-[1.8] text-ink-2">{nodes}</p>;
 }
 
 export function TrustPage({ path }: { path: TrustPath }) {
@@ -28,24 +53,22 @@ export function TrustPage({ path }: { path: TrustPath }) {
           webPageJsonLd({
             name: page.title,
             description: page.description,
-            path,
+            path: page.canonicalPath,
             dateModified: "2026-08-22",
-            inLanguage: "en",
+            inLanguage: page.locale === "en" ? "en" : "zh-Hant-TW",
           }),
         ]}
       />
-      <KnowledgeShell kicker={page.kicker} locale="en">
+      <KnowledgeShell kicker={page.kicker} locale={page.locale}>
         <h1 className="editorial-display mb-6 mt-0 text-[clamp(36px,5vw,52px)] leading-[1.15]">
           {page.title}
         </h1>
         {page.body.split("\n\n").map((paragraph) => (
-          <p key={paragraph.slice(0, 32)} className="text-[16px] leading-[1.8] text-ink-2">
-            {paragraph}
-          </p>
+          <PacketParagraph key={paragraph.slice(0, 32)} text={paragraph} />
         ))}
         {path === "/docs" ? <DocsEndpoints /> : null}
         <p className="mt-10 text-[15px] text-muted">
-          Email <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+          <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
           {" · "}
           <a href="/llms.txt">llms.txt</a>
         </p>

@@ -34,8 +34,8 @@ export function CompanyHomeHonesty() {
         </ul>
         <h3 className="mt-10 text-[18px] font-bold text-ink">For agents</h3>
         <p className="mt-3 text-[16px] leading-[1.75] text-ink-2">
-          Read <Link href="/about">/about</Link>, <Link href="/contact">/contact</Link>,{" "}
-          <Link href="/privacy">/privacy</Link>, <Link href="/docs">/docs</Link>, and{" "}
+          Read <Link href="/zh-tw/about">/zh-tw/about</Link>, <Link href="/zh-tw/contact">/zh-tw/contact</Link>,{" "}
+          <Link href="/zh-tw/privacy">/zh-tw/privacy</Link>, <Link href="/docs">/docs</Link>, and{" "}
           <Link href="/llms.txt">/llms.txt</Link>. The public GETs are{" "}
           <Link href="/api/catalog">/api/catalog</Link> and{" "}
           <Link href="/api/pharmacies">/api/pharmacies</Link>. They are not live inventory.

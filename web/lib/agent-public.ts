@@ -36,6 +36,8 @@ export const HOMEPAGE_LIMITS = [
 
 type TrustPage = {
   path: PublicPagePath;
+  canonicalPath: string;
+  locale: "zh" | "en";
   title: string;
   kicker: string;
   description: string;
@@ -45,47 +47,58 @@ type TrustPage = {
 export const TRUST_PAGES: Record<Exclude<PublicPagePath, "/">, TrustPage> = {
   "/about": {
     path: "/about",
-    title: "About uYao",
-    kicker: "About",
+    canonicalPath: "/zh-tw/about",
+    locale: "zh",
+    title: "關於 uYao 有藥",
+    kicker: "關於",
     description:
-      "uYao is a pilot prototype for independent pharmacies. It does not sell medicine online, does not diagnose, and does not publish live stock.",
+      "uYao 是台灣獨立藥局的 AI Operating System。不是線上藥局、不是 POS、不是即時庫存平台，也不是醫療或用藥建議。",
     body: [
-      "uYao is building an AI operating system for independent pharmacies in Taiwan. The public site explains the pilot, lists partner catalog records, and collects pharmacy applications. Store OS is a prototype console for draft work such as returns, reorders, and pickup requests. A pharmacist still approves any high-impact action.",
-      "uYao is not an online pharmacy and not a marketplace. Nothing on this site is purchasable. Catalog entries are records a partner pharmacy provided. They are not live inventory and not a recommendation for a symptom.",
-      "uYao does not diagnose illness or advise on medication. Substitution, dose, and whether a product is appropriate are answered in the pharmacy, not by this website or its APIs.",
-      "Store OS is a prototype. Screens, demo work items, and interactive previews use demonstration data. They are not a live feed of a pharmacy's shelves.",
-      `Corrections go to ${CONTACT_EMAIL}. This page does not publish a street address or phone number.`,
+      "uYao 是台灣獨立藥局的 AI Operating System。它把店內掃描、效期與附近找藥需求整理成待處理工作，關鍵決定由藥師批准，並留下結果紀錄。",
+      "uYao 不是線上藥局，不做線上交易。不是 POS，也不取代健保申報。不是即時庫存平台：網站上的目錄與公開藥局資料，不能當成現貨保證。不是醫療或用藥建議服務；症狀描述只用來縮小搜尋方向，不能當診斷。",
+      "消費者端（shop.uyaohealth.com）讓人搜尋品名、成分或日常保養方向，查看附近公開藥局資料，並在找不到時留下找藥需求。出發前仍應由藥局或藥師確認品項、數量與領取安排。",
+      "藥局端的 Store OS 目前是 prototype，正在招募試點。目標是訊號 → 核准 → 執行 → receipt，不是再做一塊庫存儀表板。現場退貨閉環、節省金額與即時庫存尚未驗證。簡範數字是簡範。",
+      `公開證據見 /zh-tw/evidence。聯絡：${CONTACT_EMAIL}`,
     ].join("\n\n"),
   },
   "/contact": {
     path: "/contact",
-    title: "Contact uYao",
-    kicker: "Contact",
-    description:
-      "Email uyao@agentmail.to. uYao does not publish a public street address or phone number.",
+    canonicalPath: "/zh-tw/contact",
+    locale: "zh",
+    title: "聯絡 uYao",
+    kicker: "聯絡",
+    description: `找藥需求、藥局試點、產品證據或網站問題，請來信 ${CONTACT_EMAIL}。不公佈電話與門市地址。`,
     body: [
-      `The public inbox is ${CONTACT_EMAIL}. Use it for corrections, pilot questions, and catalog mistakes. There is no public street address and no public phone number. This page does not invent clinic hours, a walk-in desk, or a fax line.`,
-      "Pharmacy operators who want to join the pilot can also use the application form on the pharmacy page. That form emails the uYao team. It is not an order desk and it does not reserve stock.",
-      "Agents reading this site should not call a pharmacy on uYao's behalf unless the user already has that pharmacy's own public number from a pharmacy record. uYao's organization contact is email only.",
-      "This site does not diagnose, does not publish live stock, and does not sell medicine. Store OS is a prototype. If a person needs a product today, they still talk to a pharmacist.",
+      `找藥需求、藥局試點、產品證據或網站問題，請來信 ${CONTACT_EMAIL}。`,
+      "請在信裡寫清楚：你是消費者還是藥局、地區（若找藥）、品項或想驗證的工作流。我們不在信裡做診斷、不保證附近有貨、不代替藥師核准。",
+      "消費者：uYao 可以幫你看公開藥局資料或記下找藥需求；供應與用藥問題仍由藥局確認。建議在大同或中山等已收錄地區寫品項+地區。",
+      "藥局：試點不要求更換 POS，也不碰病患或處方個資。Store OS 仍是 prototype。",
+      "我們不公佈電話與門市地址。請用這封信箱。",
+      `uYao 有藥 · ${CONTACT_EMAIL} · https://uyaohealth.com/zh-tw`,
     ].join("\n\n"),
   },
   "/privacy": {
     path: "/privacy",
-    title: "Privacy",
-    kicker: "Privacy",
+    canonicalPath: "/zh-tw/privacy",
+    locale: "zh",
+    title: "隱私說明",
+    kicker: "隱私",
     description:
-      "What uYao collects on the public site, and what this prototype does not do with inventory or diagnosis.",
+      "uYao 處理找藥需求、藥局試點申請與維運紀錄。不是醫療機構，不搜集病歷，公開目錄不是即時庫存。",
     body: [
-      "The public site stores what a person types into a form they submit: a pharmacy pilot application, a medicine request, or a reservation contact number. Those writes are for this site's own forms. They are not a public write API for agents.",
-      "GET /api/catalog and GET /api/pharmacies are read-only. They return fields the corresponding pages already show. They do not return live stock, price, or availability, and they do not accept personal data.",
-      "Reservation requests can include a Taiwanese mobile number so a pharmacy can complete pickup. That is personal data. Automated submission is not a supported public contract.",
-      "uYao does not sell medicine online and does not diagnose. Public catalog reads are not advice about what a person should take. Store OS is a prototype. Demo inventory on preview screens is simulated and must not be treated as a real shelf count.",
-      `Privacy questions go to ${CONTACT_EMAIL}. This policy does not list a street address or phone number.`,
+      "uYao 有藥（uyaohealth.com、shop.uyaohealth.com、store.uyaohealth.com）處理的是找藥需求、藥局試點申請，以及網站運作所需的技術紀錄。",
+      "我們不是醫療機構，不搜集病歷，不把找藥需求當成處方。請不要在表單或信件裡傳送身分證字號、完整健保資料或他人處方。",
+      "你可能主動提供：電子郵件、地區、品項名稱、藥局名稱、試點意願。這些用來回覆找藥或試點，不賣給第三方廣告網。",
+      "網站會留下必要的伺服器日誌（時間、路徑、粗略技術資訊）以便維運與資安。我們使用托管供應商（例如網站與信件服務）時，資料會依其處理者義務處理。",
+      "公開藥局資料來自公開來源與合作藥局提供的品項目錄，不是即時庫存，也不表示我們持有該店的病患資料。",
+      `要查詢、更正或刪除你留給我們的聯絡資料，請來信 ${CONTACT_EMAIL}。我們沒有電話客服。`,
+      "本頁不是完整個資告知書的替代；若試點合約另有約定，以合約為準。",
     ].join("\n\n"),
   },
   "/docs": {
     path: "/docs",
+    canonicalPath: "/docs",
+    locale: "en",
     title: "uYao public read API",
     kicker: "Docs",
     description:
@@ -126,9 +139,9 @@ export function homepageMarkdown(): string {
     "",
     "## Next",
     "",
-    "- [About](/about)",
-    "- [Contact](/contact)",
-    "- [Privacy](/privacy)",
+    "- [About](/zh-tw/about)",
+    "- [Contact](/zh-tw/contact)",
+    "- [Privacy](/zh-tw/privacy)",
     "- [Docs](/docs)",
     "- [llms.txt](/llms.txt)",
     `- Email: ${CONTACT_EMAIL}`,
@@ -150,8 +163,8 @@ export function notFoundMarkdown(): string {
     "This URL is not a uYao page. Try one of these:",
     "",
     "- [Home](/)",
-    "- [About](/about)",
-    "- [Contact](/contact)",
+    "- [About](/zh-tw/about)",
+    "- [Contact](/zh-tw/contact)",
     "- [Docs](/docs)",
     "- [llms.txt](/llms.txt)",
     "- [Sitemap](/sitemap.xml)",
@@ -173,8 +186,8 @@ export function notFoundHtml(): string {
 <p>This URL is not a uYao page. uYao does not publish live stock and does not diagnose.</p>
 <ul>
 <li><a href="/">Home</a></li>
-<li><a href="/about">About</a></li>
-<li><a href="/contact">Contact</a></li>
+<li><a href="/zh-tw/about">About</a></li>
+<li><a href="/zh-tw/contact">Contact</a></li>
 <li><a href="/docs">Docs</a></li>
 <li><a href="/llms.txt">llms.txt</a></li>
 <li><a href="/sitemap.xml">Sitemap</a></li>
@@ -235,10 +248,13 @@ export function isKnownBarePath(barePath: string): boolean {
 }
 
 /**
- * Unprefixed company routes that still 308 to /zh-tw/... so existing
- * canonical URLs stay locale-explicit. New agent pages stay at /about etc.
+ * Unprefixed company routes that 308 to /zh-tw/... so canonical URLs
+ * stay locale-explicit. /docs stays unprefixed for the agent contract.
  */
 export const LEGACY_LOCALE_PREFIX_ROUTES = [
+  "/about",
+  "/contact",
+  "/privacy",
   "/pharmacy",
   "/evidence",
   "/guides",

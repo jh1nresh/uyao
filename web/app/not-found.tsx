@@ -18,8 +18,8 @@ export default async function NotFound() {
         </p>
         <ul className="mt-4 flex flex-col items-start gap-2 text-[15px]">
           <li><Link href="/" className="text-green">Home</Link></li>
-          <li><Link href="/about" className="text-green">About</Link></li>
-          <li><Link href="/contact" className="text-green">Contact</Link></li>
+          <li><Link href="/zh-tw/about" className="text-green">About</Link></li>
+          <li><Link href="/zh-tw/contact" className="text-green">Contact</Link></li>
           <li><Link href="/docs" className="text-green">Docs</Link></li>
           <li><Link href="/llms.txt" className="text-green">llms.txt</Link></li>
           <li><Link href="/sitemap.xml" className="text-green">Sitemap</Link></li>

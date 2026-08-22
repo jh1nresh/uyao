@@ -32,7 +32,8 @@ import { SHOP_URL } from "@/lib/shop";
  * （如 shop.uyaohealth.com）時，`shop.` 開頭的 host 也會被這裡認出來。
  *
  * 公開網址一律明示 `/zh-tw` 或 `/en`；舊的無語系路徑永久導向中文版。
- * `/about` `/contact` `/privacy` `/docs` 留在短路徑，給 agent 用。
+ * `/about` `/contact` `/privacy` 308 到 `/zh-tw/...`，跟 evidence 同一套。
+ * `/docs` 留在短路徑，給 agent 用。
  */
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)"],
@@ -61,7 +62,21 @@ const COMPANY_ONLY_ROUTES = [
   "/docs",
 ];
 const CONSUMER_ROUTES = ["/app", "/demo", "/drug", "/store", "/search", "/category", "/r", "/stock-badges"];
-const PUBLIC_CACHE_PATHS = new Set(["/", "/zh-tw", "/en", "/about", "/contact", "/privacy", "/docs"]);
+const PUBLIC_CACHE_PATHS = new Set([
+  "/",
+  "/zh-tw",
+  "/en",
+  "/about",
+  "/contact",
+  "/privacy",
+  "/docs",
+  "/zh-tw/about",
+  "/zh-tw/contact",
+  "/zh-tw/privacy",
+  "/en/about",
+  "/en/contact",
+  "/en/privacy",
+]);
 
 function routeStartsWith(pathname: string, prefixes: string[]): boolean {
   return prefixes.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));

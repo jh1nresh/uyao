@@ -144,9 +144,9 @@ export function CompanyFooter({
             <div className="mt-2 flex flex-col items-start">
               <FooterLink href={`${companyPrefix}/evidence`}>{copy.evidence}</FooterLink>
               <FooterLink href={`${companyPrefix}/evidence#partners`}>{copy.partnership}</FooterLink>
-              <FooterLink href="/about">{copy.about}</FooterLink>
-              <FooterLink href="/contact">{copy.contactPage}</FooterLink>
-              <FooterLink href="/privacy">{copy.privacy}</FooterLink>
+              <FooterLink href={`${companyPrefix}/about`}>{copy.about}</FooterLink>
+              <FooterLink href={`${companyPrefix}/contact`}>{copy.contactPage}</FooterLink>
+              <FooterLink href={`${companyPrefix}/privacy`}>{copy.privacy}</FooterLink>
               <FooterLink href="/docs">{copy.docs}</FooterLink>
               <FooterLink href="/llms.txt">{copy.llms}</FooterLink>
             </div>

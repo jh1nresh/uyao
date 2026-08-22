@@ -5,7 +5,21 @@ const nextConfig = {
   turbopack: { root: import.meta.dirname },
   async headers() {
     const cache = "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400";
-    const publicPages = ["/", "/about", "/contact", "/privacy", "/docs", "/zh-tw", "/en"];
+    const publicPages = [
+      "/",
+      "/about",
+      "/contact",
+      "/privacy",
+      "/docs",
+      "/zh-tw",
+      "/en",
+      "/zh-tw/about",
+      "/zh-tw/contact",
+      "/zh-tw/privacy",
+      "/en/about",
+      "/en/contact",
+      "/en/privacy",
+    ];
     return publicPages.map((source) => ({
       source,
       headers: [

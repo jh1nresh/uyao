@@ -128,6 +128,12 @@ describe("canonical host routing", () => {
     expect(response.headers.get("location")).toBe(`${SITE_URL}/zh-tw/pharmacy`);
   });
 
+  it("sends the packet pages to /zh-tw like the rest of the company site", () => {
+    const about = request("https://uyaohealth.com/about");
+    expect(about.status).toBe(308);
+    expect(about.headers.get("location")).toBe(`${SITE_URL}/zh-tw/about`);
+  });
+
   it("keeps Store OS off the consumer shop host", () => {
     const response = request("https://shop.uyaohealth.com/zh-tw/store-os");
     expect(response.status).toBe(308);
