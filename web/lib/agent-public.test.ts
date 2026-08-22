@@ -16,6 +16,7 @@ import {
   notFoundHtml,
   notFoundMarkdown,
   pageMarkdown,
+  shopHomepageMarkdown,
   trustPageVisibleText,
   visibleTextLength,
 } from "./agent-public";
@@ -30,6 +31,23 @@ describe("homepage SSR copy", () => {
     expect(text).toMatch(/prototype/i);
     expect(text).toMatch(/not live inventory|does not sell medicine/i);
     expect(text).not.toMatch(/diagnos(e|is)s? you/i);
+  });
+
+  it("gives each Shop locale a structured markdown homepage without changing the visual page", () => {
+    const zh = shopHomepageMarkdown("zh");
+    const en = shopHomepageMarkdown("en");
+
+    expect(zh.startsWith("# uYao 找藥\n")).toBe(true);
+    expect(en.startsWith("# uYao Medicine Finder\n")).toBe(true);
+    for (const markdown of [zh, en]) {
+      expect(markdown.match(/^# /gm)).toHaveLength(1);
+      expect(markdown.match(/^## /gm)?.length).toBeGreaterThanOrEqual(3);
+      expect(visibleTextLength(markdown)).toBeGreaterThanOrEqual(500);
+      expect(markdown).toContain("/api/catalog");
+      expect(markdown).toContain("/api/pharmacies");
+      expect(markdown).toContain("https://uyaohealth.com/docs");
+      expect(markdown).toMatch(/not live inventory|不是即時庫存/i);
+    }
   });
 
   it("links about, contact, and privacy from the company footer on locale routes", () => {

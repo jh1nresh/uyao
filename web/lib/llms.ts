@@ -107,7 +107,7 @@ export function shopLlmsTxt(): string {
     ),
   );
 
-  return `# uYao Medicine Finder
+  return `# uYao 找藥 · Medicine Finder Agent and Developer Index
 
 > ${CONSUMER_DESCRIPTION.en}
 
@@ -128,8 +128,11 @@ ${items.join("\n")}
 
 ## Machine-readable
 
+${line("Developer resources", `${SITE_URL}/docs`, "Supported public GETs, JSON errors, versioning, deprecation, content negotiation, and rate-limit conventions.")}
 ${line("OpenAPI", `${SHOP_URL}/openapi.json`, "Read-only catalog and pharmacy endpoints. No price, stock, or availability is ever returned.")}
 ${line("Catalog API", `${SHOP_URL}/api/catalog`, "Every catalog record as JSON, in one request.")}
+${line("Pharmacy API", `${SHOP_URL}/api/pharmacies`, "Public pharmacy records. A listing is not a uYao partnership, opening-hours guarantee, or stock confirmation.")}
+${line("Versioning and deprecation", `${SITE_URL}/docs#versioning-and-deprecation`, "Current X-uYao-API-Version contract and the Deprecation/Sunset policy.")}
 ${line("Sitemap", `${SHOP_URL}/sitemap.xml`, "Every indexable consumer URL in both locales.")}
 ${line("Robots", `${SHOP_URL}/robots.txt`, "Crawl policy for the consumer host.")}
 

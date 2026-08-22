@@ -44,6 +44,9 @@ describe("llms.txt", () => {
     expect(company).toContain(`${SITE_URL}/openapi.json`);
     expect(shop).toContain(`${SHOP_URL}/openapi.json`);
     expect(shop).toContain(`${SHOP_URL}/api/catalog`);
+    expect(shop).toContain(`${SHOP_URL}/api/pharmacies`);
+    expect(shop).toContain(`${SITE_URL}/docs`);
+    expect(shop).toContain(`${SITE_URL}/docs#versioning-and-deprecation`);
     // The write endpoints must never be advertised as a usable surface here.
     expect(company).toMatch(/x-internal/);
   });
@@ -78,6 +81,7 @@ describe("llms.txt", () => {
   it("keeps the two hosts on their own canonical namespace", () => {
     expect(company.split("\n")[0]).toContain("uYao");
     expect(shop.split("\n")[0]).toContain("Medicine Finder");
+    expect(shop.split("\n")[0]).toContain("uYao 找藥");
     expect(nonCanonicalLlmsTxt()).toContain(SITE_URL);
   });
 
