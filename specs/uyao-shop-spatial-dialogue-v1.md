@@ -56,6 +56,7 @@ idle
 
 - The first meaningful character begins the spatial transition immediately; the UI does not wait for form submission to reveal the composing surface.
 - Partial input is not classified. The composing surface preserves live editing, and submit/Enter is the boundary that either continues through the native GET search or opens an approved safety/wellness question.
+- During composing, the moved cards use the neutral label `目錄品項・暫時收起`; the UI must not call them candidates before classification.
 
 ### Desktop, 1280 px and wider
 
