@@ -31,6 +31,7 @@ const OK: RateLimit = { ok: true, retryAfterSec: 0 };
 /** Public catalog/pharmacy reads. Generous on purpose: these payloads are already on the pages. */
 export const PUBLIC_READ_LIMIT = 120;
 export const PUBLIC_READ_WINDOW_SEC = 3600;
+export const PUBLIC_READ_POLICY = "public-read";
 
 async function hit(key: string, limit: number, windowSec: number): Promise<RateLimit> {
   try {
@@ -115,10 +116,12 @@ export async function checkPublicRead(request: Request): Promise<CountedRateLimi
 
 export function rateLimitHeaders(result: CountedRateLimit): Record<string, string> {
   return {
+    "RateLimit-Policy": `"${PUBLIC_READ_POLICY}";q=${result.limit};w=${result.resetSec}`,
+    RateLimit: `"${PUBLIC_READ_POLICY}";r=${result.remaining};t=${result.resetSec}`,
+    // Compatibility fields for clients that still implement the older drafts.
     "RateLimit-Limit": String(result.limit),
     "RateLimit-Remaining": String(result.remaining),
     "RateLimit-Reset": String(result.resetSec),
-    RateLimit: `limit=${result.limit}, remaining=${result.remaining}, reset=${result.resetSec}`,
   };
 }
 

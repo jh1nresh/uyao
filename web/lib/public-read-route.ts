@@ -55,7 +55,7 @@ export function publicApiHeaders(): Record<string, string> {
   };
 }
 
-function baseHeaders(result: CountedRateLimit): Record<string, string> {
+export function publicReadHeaders(result: CountedRateLimit): Record<string, string> {
   return {
     "cache-control": PUBLIC_CACHE_CONTROL,
     ...CORS,
@@ -157,10 +157,10 @@ export function negotiatePublicRead(input: {
   const chosen = prefersMarkdown(accept, API_TYPES);
   if (chosen) {
     return new Response(input.markdownBody, {
-      headers: markdownHeaders(baseHeaders(input.rate)),
+      headers: markdownHeaders(publicReadHeaders(input.rate)),
     });
   }
   return new Response(JSON.stringify(input.jsonBody), {
-    headers: jsonHeaders(baseHeaders(input.rate)),
+    headers: jsonHeaders(publicReadHeaders(input.rate)),
   });
 }

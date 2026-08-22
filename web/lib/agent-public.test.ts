@@ -86,6 +86,8 @@ describe("trust pages", () => {
     expect(TRUST_PAGES["/docs"].body).toMatch(/prototype/i);
     expect(TRUST_PAGES["/docs"].title).toMatch(/uYao Developer Resources/);
     expect(TRUST_PAGES["/docs"].body).toMatch(/application\/problem\+json/);
+    expect(TRUST_PAGES["/docs"].body).toMatch(/RateLimit-Policy.*RateLimit/);
+    expect(TRUST_PAGES["/docs"].body).toMatch(/Retry-After/);
     expect(TRUST_PAGES["/docs"].body).toMatch(/X-uYao-API-Version/);
     expect(TRUST_PAGES["/docs"].body).toMatch(/Deprecation header.*Sunset date/i);
   });

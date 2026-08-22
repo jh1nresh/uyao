@@ -35,6 +35,7 @@ describe("llms.txt", () => {
     expect(company).toContain(`${SITE_URL}/docs`);
     expect(company).toContain(`${SITE_URL}/docs#versioning-and-deprecation`);
     expect(company).toContain("X-uYao-API-Version");
+    expect(company).toContain("RateLimit");
     expect(company).toContain("RFC 9457 JSON errors");
     expect(company).toContain(`Contact: uyao@agentmail.to`);
   });
