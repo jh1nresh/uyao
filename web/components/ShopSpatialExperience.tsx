@@ -85,10 +85,12 @@ function SpatialWing({
   drugs,
   locale,
   side,
+  mode,
 }: {
   drugs: Drug[];
   locale: Locale;
   side: "left" | "right";
+  mode: "composing" | "question";
 }) {
   return (
     <aside
@@ -96,7 +98,9 @@ function SpatialWing({
       className={`shop-spatial-wing shop-spatial-wing--${side}`}
     >
       <p className="shop-spatial-wing-label m-0 text-[12px] font-semibold tracking-[.06em] text-muted-2">
-        {locale === "en" ? "Candidate items · organizing" : "候選品項・整理中"}
+        {mode === "composing"
+          ? locale === "en" ? "Catalog items · set aside" : "目錄品項・暫時收起"
+          : locale === "en" ? "Candidate items · organizing" : "候選品項・整理中"}
       </p>
       <div className="mt-3 grid gap-4">
         {drugs.map((drug) => (
@@ -320,7 +324,7 @@ export function ShopSpatialExperience({
         )}
 
         <div className={`shop-spatial-grid ${isComposing ? "" : "mt-8"}`}>
-          {showWings && <SpatialWing drugs={leftCards} locale={locale} side="left" />}
+          {showWings && <SpatialWing drugs={leftCards} locale={locale} side="left" mode={isComposing ? "composing" : "question"} />}
 
           <div className={`shop-spatial-dialogue border border-line-strong bg-paper px-5 py-6 sm:px-14 sm:py-12 ${isComposing ? "shop-spatial-dialogue--composing" : ""}`}>
             {active.phase === "composing" && (
@@ -492,7 +496,7 @@ export function ShopSpatialExperience({
             )}
           </div>
 
-          {showWings && <SpatialWing drugs={rightCards} locale={locale} side="right" />}
+          {showWings && <SpatialWing drugs={rightCards} locale={locale} side="right" mode={isComposing ? "composing" : "question"} />}
         </div>
         {isQuestion && (
           <p className="shop-spatial-stage-note mb-0 mt-8 text-center text-[14px] leading-[1.7] text-ink-2 sm:text-[16px]">
