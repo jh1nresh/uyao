@@ -25,6 +25,7 @@ describe("GPS 選區", () => {
     [25.0849, 121.4737, "luzhou"],
     [25.0359, 121.4322, "xinzhuang"],
     [25.0637, 121.5265, "zhongshan"],
+    [25.095, 121.5246, "shilin"],
     [24.1813, 120.6466, "xitun"],
     [24.566667, 120.816444, "miaoli"],
     [24.7570, 121.7533, "yilan"],
@@ -50,6 +51,7 @@ describe("首波店家縣市與行政區分組", () => {
         areas: [
           { area: "大同區", stores: ["建利西藥房", "大豐藥局"] },
           { area: "中山區", stores: ["中山藥局"] },
+          { area: "士林區", stores: ["天養藥局", "美麗田藥局"] },
         ],
       },
       {
@@ -74,6 +76,6 @@ describe("首波店家縣市與行政區分組", () => {
       },
     ]);
 
-    expect(groups.flatMap((group) => group.areas).flatMap((entry) => entry.stores)).toHaveLength(14);
+    expect(groups.flatMap((group) => group.areas).flatMap((entry) => entry.stores)).toHaveLength(16);
   });
 });

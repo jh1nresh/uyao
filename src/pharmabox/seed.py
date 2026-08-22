@@ -32,6 +32,7 @@ from pharmabox.paths import data_path, repo_root
 # 服務區 slug 對照。要開新區就加這裡，順序即消費端的預設順序。
 AREA_BY_DISTRICT = {
     "中山區": "zhongshan",
+    "士林區": "shilin",
     "信義區": "xinyi",
     "大同區": "datong",
     "林口區": "linkou",
@@ -47,6 +48,7 @@ AREA_BY_DISTRICT = {
 # 所以跨區的距離不可互相比較 —— 消費端凡是混區的列表都要標行政區。
 AREA_CENTER = {
     "zhongshan": (25.0637, 121.5265),
+    "shilin": (25.0950, 121.5246),
     "xinyi": (25.0330, 121.5654),
     "datong": (25.0633, 121.5130),
     "linkou": (25.0772, 121.3916),
@@ -75,6 +77,8 @@ LISTED_STORES = (
     ("大豐藥局", "臺北市", "大同區"),
     ("喜來樂中西藥局", "新北市", "新莊區"),
     ("一銘藥局", "新北市", "新莊區"),
+    ("天養藥局", "臺北市", "士林區"),
+    ("美麗田藥局", "臺北市", "士林區"),
 )
 
 # 食藥署「藥局基本資料」不含一般西藥房。建利仍有有效的西藥零售商業登記，
@@ -132,7 +136,7 @@ MANUAL_STORE_HOURS = {
     ],
 }
 
-DEFAULT_SCOPES = "臺北市:大同區,中山區;新北市:林口區,新莊區,蘆洲區;臺中市:西屯區;苗栗縣:苗栗市;宜蘭縣:宜蘭市,羅東鎮"
+DEFAULT_SCOPES = "臺北市:大同區,中山區,士林區;新北市:林口區,新莊區,蘆洲區;臺中市:西屯區;苗栗縣:苗栗市;宜蘭縣:宜蘭市,羅東鎮"
 DEFAULT_STORE_NAMES = ",".join(name for name, _, _ in LISTED_STORES)
 
 WEEKDAY_LABEL = {
@@ -234,6 +238,7 @@ def build(
     places_cache: Path,
     today: str,
     only_stores: set[str] | None = None,
+    only_store_locations: set[tuple[str, str, str]] | None = None,
     reuse_from: Path | None = None,
 ) -> tuple[list[dict[str, Any]], dict[str, int]]:
     rows = prospects_mod.parse(prospects_mod.fetch_csv(fda_cache))
@@ -247,7 +252,15 @@ def build(
 
     # 公開收錄店家白名單。找不到的店名直接報錯 ——
     # 名單是手打的，錯字比「那家店真的不在開放資料裡」常見得多。
-    if only_stores:
+    if only_store_locations:
+        picked = [
+            p for p in picked
+            if (p.name, p.city, p.district) in only_store_locations
+        ]
+        missing = {name for name, _, _ in only_store_locations} - {p.name for p in picked}
+        if missing:
+            raise SystemExit(f"這些店在開放資料的指定區域裡找不到：{'、'.join(sorted(missing))}")
+    elif only_stores:
         picked = [p for p in picked if p.name in only_stores]
         missing = only_stores - {p.name for p in picked}
         if missing:
@@ -441,6 +454,7 @@ def main(argv: list[str] | None = None) -> int:
         Path(args.fda_cache), Path(args.nhi_cache), Path(args.places_cache),
         args.today,
         only_stores=only_stores,
+        only_store_locations=set(LISTED_STORES) if args.stores == DEFAULT_STORE_NAMES else None,
         reuse_from=Path(args.reuse_from) if args.reuse_from else None,
     )
 

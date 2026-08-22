@@ -36,6 +36,7 @@ export const AREAS: Area[] = [
   { slug: "luzhou", countyCity: "新北市", name: "新北市蘆洲區", shortName: "蘆洲區" },
   { slug: "xinzhuang", countyCity: "新北市", name: "新北市新莊區", shortName: "新莊區" },
   { slug: "zhongshan", countyCity: "臺北市", name: "臺北市中山區", shortName: "中山區" },
+  { slug: "shilin", countyCity: "臺北市", name: "臺北市士林區", shortName: "士林區" },
   { slug: "xitun", countyCity: "臺中市", name: "臺中市西屯區", shortName: "西屯區" },
   { slug: "miaoli", countyCity: "苗栗縣", name: "苗栗縣苗栗市", shortName: "苗栗市" },
   { slug: "yilan", countyCity: "宜蘭縣", name: "宜蘭縣宜蘭市", shortName: "宜蘭市" },
