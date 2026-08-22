@@ -7,6 +7,14 @@ const STORE_VIEW_SOURCE = readFileSync(
   new URL("../components/StoreView.tsx", import.meta.url),
   "utf8",
 );
+const STORE_BUY_BOX_SOURCE = readFileSync(
+  new URL("../components/StoreBuyBox.tsx", import.meta.url),
+  "utf8",
+);
+const NO_INVENTORY_SOURCE = readFileSync(
+  new URL("../components/NoInventoryYet.tsx", import.meta.url),
+  "utf8",
+);
 
 /**
  * 漏斗刻意只有一個方向：搜尋品項 → 品項頁列出提供它的合作藥局 → 藥局頁。
@@ -29,5 +37,10 @@ describe("藥局頁只給基本資料", () => {
         expect(partnersForProduct(product).map((p) => p.storeSlug)).toContain(partner.storeSlug);
       }
     }
+  });
+
+  it("品項頁不顯示未確認販售該品項的其他藥局", () => {
+    expect(STORE_BUY_BOX_SOURCE).not.toContain("otherStores");
+    expect(NO_INVENTORY_SOURCE).not.toContain("AreaStores");
   });
 });
