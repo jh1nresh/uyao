@@ -19,7 +19,7 @@ import { PUBLIC_API_VERSION } from "./public-api";
  */
 
 const READ_HEADERS_NOTE =
-  "Cached at the edge for one hour and CORS-open. No authentication and no cookies. Rate-limited per client IP; 200 and 429 responses carry RateLimit headers. The response contains only data these pages already render publicly.";
+  "Cached at the edge for one hour and CORS-open. No authentication, no cookies, no rate limit: the response contains only data these pages already render publicly.";
 
 const NO_INVENTORY_NOTE =
   "uYao has no live inventory for any pharmacy. This API never returns price, stock, or availability, and no response may be presented as confirmed stock.";
@@ -86,21 +86,11 @@ export function openApiDocument(): Record<string, unknown> {
           parameters: [localeParam()],
           responses: {
             "200": {
-              description: "The full catalog. Not live inventory.",
-              headers: {
-                RateLimit: { schema: { type: "string" }, description: "limit, remaining, reset" },
-              },
+              description: "The full catalog.",
               content: {
                 "application/json": {
                   schema: { $ref: "#/components/schemas/CatalogList" },
                 },
-                "text/markdown": { schema: { type: "string" } },
-              },
-            },
-            "429": {
-              description: "Rate limited. JSON error body plus RateLimit headers.",
-              content: {
-                "application/json": { schema: { $ref: "#/components/schemas/Error" } },
               },
             },
           },
@@ -166,13 +156,7 @@ export function openApiDocument(): Record<string, unknown> {
               },
             },
             "400": {
-              description: "Unknown area slug. JSON error body.",
-              content: {
-                "application/json": { schema: { $ref: "#/components/schemas/Error" } },
-              },
-            },
-            "429": {
-              description: "Rate limited. JSON error body plus RateLimit headers.",
+              description: "Unknown area slug.",
               content: {
                 "application/json": { schema: { $ref: "#/components/schemas/Error" } },
               },
@@ -558,56 +542,5 @@ export function openApiDocument(): Record<string, unknown> {
         },
       },
     },
-  };
-}
-
-/**
- * Agent-facing /docs contract: only the two public GETs.
- * The full /openapi.json still lists site-form writes as x-internal.
- */
-export function publicReadOpenApiDocument(): Record<string, unknown> {
-  const full = openApiDocument();
-  const paths = full.paths as Record<string, unknown>;
-  const components = full.components as { schemas?: Record<string, unknown> };
-  const keepSchemas = [
-    "Error",
-    "ResponseEnvelope",
-    "CatalogList",
-    "CatalogItem",
-    "PharmacyList",
-    "Pharmacy",
-  ];
-  const schemas = Object.fromEntries(
-    keepSchemas
-      .map((name) => [name, components.schemas?.[name]] as const)
-      .filter((entry) => entry[1] !== undefined),
-  );
-
-  return {
-    openapi: full.openapi,
-    info: {
-      ...(full.info as Record<string, unknown>),
-      title: "uYao public read API",
-      summary: "GET /api/catalog and GET /api/pharmacies only. Not live inventory.",
-      description: [
-        "Public read contract for agents. Two GET endpoints.",
-        "",
-        `- ${NO_INVENTORY_NOTE}`,
-        "- These responses repeat fields the catalog and pharmacy pages already render.",
-        "- They are not a diagnosis API and not a Store OS control plane. Store OS is a prototype.",
-        "- Site-form POST endpoints exist on this host for humans; they are not part of this document.",
-      ].join("\n"),
-    },
-    servers: full.servers,
-    externalDocs: { url: `${SITE_URL}/docs`, description: "Human-readable notes for these two GETs" },
-    tags: [
-      { name: "catalog", description: "Partner-listed catalog items. Read-only. Not live inventory." },
-      { name: "pharmacies", description: "Public pharmacy records. Read-only. Not live inventory." },
-    ],
-    paths: {
-      "/api/catalog": paths["/api/catalog"],
-      "/api/pharmacies": paths["/api/pharmacies"],
-    },
-    components: { schemas },
   };
 }

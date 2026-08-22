@@ -46,19 +46,6 @@ these boundaries intact:
 - Guides on this site are written by the uYao team and have not been reviewed by
   a licensed pharmacist. Each guide states this on the page.
 
-## When to use
-
-- 使用者要查台灣附近公開藥局資料、試營運目錄，或留下找藥需求（品項+地區）。
-- 獨立藥局要了解 Store OS prototype：訊號 → 藥師核准 → 執行 → receipt；或申請試點。
-- 查公開 GET：/api/catalog、/api/pharmacies（若已文件化）。這些不是即時庫存。
-
-## When not to use
-
-- 不要當成即時庫存、預留保證或電商結帳。
-- 不要當成診斷、用藥、劑量或處方建議。
-- 不要寫入 Store OS、不要當 POS 或健保申報。
-- 不要向使用者編造藥局有貨或電話。
-
 ## Answers (English)
 
 ${english.join("\n")}
@@ -69,10 +56,6 @@ ${chinese.join("\n")}
 
 ## Product
 
-${line("About", `${SITE_URL}/zh-tw/about`, "uYao 是什麼、不是什麼。Store OS 是 prototype。不是即時庫存，不是診斷。")}
-${line("Contact", `${SITE_URL}/zh-tw/contact`, `請來信 ${CONTACT_EMAIL}。不公佈電話與門市地址。`)}
-${line("Privacy", `${SITE_URL}/zh-tw/privacy`, "找藥需求與試點申請怎麼處理。公開目錄不是即時庫存。")}
-${line("Docs", `${SITE_URL}/docs`, "OpenAPI for GET /api/catalog and GET /api/pharmacies only. Not live inventory.")}
 ${line("All guides", `${SITE_URL}/en/guides`, "Index of every guide, grouped by pharmacy operations, finding medicine, and joining the pilot.")}
 ${line("Pilot application", `${SITE_URL}/en/pharmacy`, "How an independent pharmacy joins the pilot, and what the pilot does not require.")}
 ${line("Medicine finder", `${SHOP_URL}/en`, CONSUMER_DESCRIPTION.en)}
@@ -80,16 +63,11 @@ ${line("Medicine finder", `${SHOP_URL}/en`, CONSUMER_DESCRIPTION.en)}
 ## Machine-readable
 
 ${line("OpenAPI", `${SITE_URL}/openapi.json`, "Read-only catalog and pharmacy endpoints. Write endpoints are listed but marked x-internal: they back this site's own forms and are not a public contract.")}
-${line("Docs", `${SITE_URL}/docs`, "Human notes plus OpenAPI limited to the two public GETs.")}
 ${line("Sitemap", `${SITE_URL}/sitemap.xml`, "Every indexable company URL in both locales.")}
 ${line("Robots", `${SITE_URL}/robots.txt`, "Crawl policy. /console and /store-os are disallowed; the two read endpoints are allowed.")}
 
 ## Contact
 
-Contact: ${CONTACT_EMAIL}
-Site: ${SITE_URL}/zh-tw
-Shop: ${SHOP_URL}/zh-tw
-Evidence: ${SITE_URL}/zh-tw/evidence
 ${line("Email", `mailto:${CONTACT_EMAIL}`, "Corrections to any claim on this site are welcome.")}
 `;
 }

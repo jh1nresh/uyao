@@ -1,11 +1,5 @@
 import { AREAS } from "@/lib/data";
 import { pharmaciesPayload, readLocale, PUBLIC_API_VERSION } from "@/lib/public-api";
-import {
-  jsonError,
-  negotiatePublicRead,
-  pharmaciesMarkdown,
-  publicReadGate,
-} from "@/lib/public-read-route";
 
 export const runtime = "nodejs";
 
@@ -17,36 +11,33 @@ export const runtime = "nodejs";
  * 免得被摘要成「這家 24 小時營業」。
  */
 export async function GET(request: Request) {
-  const gated = await publicReadGate(request);
-  if (!gated.ok) return gated.response;
+  const url = new URL(request.url);
+  const locale = readLocale(url.searchParams.get("locale"));
+  const rawArea = url.searchParams.get("area");
 
-  try {
-    const url = new URL(request.url);
-    const locale = readLocale(url.searchParams.get("locale"));
-    const rawArea = url.searchParams.get("area");
-
-    if (rawArea && !AREAS.some((area) => area.slug === rawArea)) {
-      return jsonError("unknown_area", 400, {
-        area: rawArea,
-        known: AREAS.map((area) => area.slug),
-      }, gated.rate);
-    }
-
-    const pharmacies = pharmaciesPayload(locale, rawArea ?? undefined);
-    return negotiatePublicRead({
-      request,
-      rate: gated.rate,
-      markdownBody: pharmaciesMarkdown(locale, rawArea ?? undefined),
-      jsonBody: {
-        version: PUBLIC_API_VERSION,
-        locale,
-        count: pharmacies.length,
-        disclaimer:
-          "Public pharmacy records from Taiwan open data. Listing does not mean a uYao partnership, an installed device, or available stock. When hoursSource is \"nhi\", the hours are National Health Insurance dispensing hours, not store opening hours.",
-        pharmacies,
-      },
-    });
-  } catch {
-    return jsonError("pharmacies_unavailable", 500);
+  if (rawArea && !AREAS.some((area) => area.slug === rawArea)) {
+    return Response.json(
+      { error: "unknown_area", area: rawArea, known: AREAS.map((a) => a.slug) },
+      { status: 400 },
+    );
   }
+
+  const pharmacies = pharmaciesPayload(locale, rawArea ?? undefined);
+
+  return Response.json(
+    {
+      version: PUBLIC_API_VERSION,
+      locale,
+      count: pharmacies.length,
+      disclaimer:
+        "Public pharmacy records from Taiwan open data. Listing does not mean a uYao partnership, an installed device, or available stock. When hoursSource is \"nhi\", the hours are National Health Insurance dispensing hours, not store opening hours.",
+      pharmacies,
+    },
+    {
+      headers: {
+        "cache-control": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400",
+        "access-control-allow-origin": "*",
+      },
+    },
+  );
 }

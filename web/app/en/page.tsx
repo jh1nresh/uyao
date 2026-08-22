@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 
 import { JsonLd } from "@/components/JsonLd";
 import { AgentLandingExperience } from "@/components/landing/AgentLandingExperience";
-import { CompanyHomeHonesty } from "@/components/landing/CompanyHomeHonesty";
 import {
   BRAND_NAME,
   organizationJsonLd,
@@ -11,8 +10,6 @@ import {
   webSiteJsonLd,
 } from "@/lib/seo";
 import { indexablePageRobots } from "@/lib/seo-server";
-
-export const revalidate = 3600;
 
 const TITLE = "uYao | The AI Operating System for Independent Pharmacies";
 // Keep this in the 120-160 char window SEO audits check for.
@@ -52,7 +49,6 @@ export default function EnglishLandingPage() {
     <>
       <JsonLd nodes={[organizationJsonLd(), webSiteJsonLd("en"), softwareApplicationJsonLd("en")]} />
       <AgentLandingExperience locale="en" />
-      <CompanyHomeHonesty />
     </>
   );
 }

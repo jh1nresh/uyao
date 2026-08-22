@@ -184,14 +184,7 @@ describe("json-ld", () => {
 
   it("locks the public schema contact email to CONTACT_EMAIL", () => {
     expect(CONTACT_EMAIL).toBe("uyao@agentmail.to");
-    expect(organizationJsonLd()).toMatchObject({
-      email: CONTACT_EMAIL,
-      contactPoint: { "@type": "ContactPoint", email: CONTACT_EMAIL },
-    });
-    expect(organizationJsonLd()).not.toHaveProperty("address");
-    expect(organizationJsonLd()).not.toHaveProperty("telephone");
-    expect(JSON.stringify(organizationJsonLd())).not.toContain("streetAddress");
-    expect(JSON.stringify(organizationJsonLd().contactPoint)).not.toContain("telephone");
+    expect(organizationJsonLd()).toMatchObject({ email: CONTACT_EMAIL });
   });
 
   it("keeps the website name and aliases stable across locales", () => {

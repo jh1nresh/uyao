@@ -20,17 +20,7 @@ export interface RateLimit {
   retryAfterSec: number;
 }
 
-export interface CountedRateLimit extends RateLimit {
-  limit: number;
-  remaining: number;
-  resetSec: number;
-}
-
 const OK: RateLimit = { ok: true, retryAfterSec: 0 };
-
-/** Public catalog/pharmacy reads. Generous on purpose: these payloads are already on the pages. */
-export const PUBLIC_READ_LIMIT = 120;
-export const PUBLIC_READ_WINDOW_SEC = 3600;
 
 async function hit(key: string, limit: number, windowSec: number): Promise<RateLimit> {
   try {
@@ -92,34 +82,6 @@ export async function checkReservation(
 /** 表單類端點（需求訊號、試點申請）。這些不會觸發推播，門檻放寬。 */
 export async function checkForm(request: Request, scope: string): Promise<RateLimit> {
   return hit(`${scope}:i:${clientIp(request)}`, 30, 3600);
-}
-
-/**
- * Read-only public GETs. Fail open when KV is missing so a catalog fetch
- * still works on a laptop; the headers still advertise the policy.
- */
-export async function checkPublicRead(request: Request): Promise<CountedRateLimit> {
-  const limit = PUBLIC_READ_LIMIT;
-  const resetSec = PUBLIC_READ_WINDOW_SEC;
-  try {
-    const used = await kv.incr(`rl:pub:${clientIp(request)}`, resetSec);
-    const remaining = Math.max(0, limit - used);
-    if (used > limit) {
-      return { ok: false, retryAfterSec: resetSec, limit, remaining: 0, resetSec };
-    }
-    return { ok: true, retryAfterSec: 0, limit, remaining, resetSec };
-  } catch {
-    return { ok: true, retryAfterSec: 0, limit, remaining: limit, resetSec };
-  }
-}
-
-export function rateLimitHeaders(result: CountedRateLimit): Record<string, string> {
-  return {
-    "RateLimit-Limit": String(result.limit),
-    "RateLimit-Remaining": String(result.remaining),
-    "RateLimit-Reset": String(result.resetSec),
-    RateLimit: `limit=${result.limit}, remaining=${result.remaining}, reset=${result.resetSec}`,
-  };
 }
 
 export interface SupportRateLimit extends RateLimit {
