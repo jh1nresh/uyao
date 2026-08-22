@@ -27,6 +27,7 @@ export function SearchInput({
   className = "",
   autoFocus = false,
   area,
+  onSubmitQuery,
 }: {
   defaultValue?: string;
   size?: "sm" | "lg" | "xl";
@@ -34,6 +35,8 @@ export function SearchInput({
   className?: string;
   autoFocus?: boolean;
   area?: AreaSlug;
+  /** Return true to keep the query on the current surface. */
+  onSubmitQuery?: (query: string) => boolean;
 }) {
   const locale = useLocale();
   const examples = locale === "en" ? SEARCH_EXAMPLES_EN : SEARCH_EXAMPLES_ZH;
@@ -78,6 +81,11 @@ export function SearchInput({
     <form
       action={localizedPath("/search", locale)}
       role="search"
+      onSubmit={(event) => {
+        if (!onSubmitQuery) return;
+        const query = String(new FormData(event.currentTarget).get("q") ?? "").trim();
+        if (onSubmitQuery(query)) event.preventDefault();
+      }}
       className={`flex items-center bg-paper transition-[border-color,box-shadow,transform] duration-200 ${
         xl
           ? "h-16 gap-3 border border-line-strong px-2 sm:h-20 sm:px-3"

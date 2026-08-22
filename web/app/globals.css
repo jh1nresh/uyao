@@ -286,6 +286,59 @@ html[data-theme="dark"] .theme-logo-dark {
   box-shadow: 0 22px 52px rgb(var(--shadow-paper) / 0.09);
 }
 
+/* The shop homepage is a fixed pearl-light product surface. It deliberately
+   does not inherit the account's dark preference: the approved art direction
+   uses warm white material, green ink, and soft architectural shadows as one
+   continuous visual system. Other consumer routes keep the global theme. */
+.shop-pearl-home {
+  color-scheme: light;
+  --color-ink: 28 39 34;
+  --color-forest: 23 57 44;
+  --color-brand-surface: 23 57 44;
+  --color-brand-surface-strong: 28 39 34;
+  --color-on-dark: 248 244 233;
+  --color-ink-2: 62 75 68;
+  --color-muted: 89 102 95;
+  --color-muted-2: 96 109 102;
+  --color-green: 8 123 67;
+  --color-green-hover: 6 103 55;
+  --color-green-tint: 226 238 229;
+  --color-green-tint-line: 184 210 192;
+  --color-oxblood: 116 53 47;
+  --color-line: 210 205 193;
+  --color-line-strong: 184 177 164;
+  --color-line-soft: 226 220 207;
+  --color-surface: 236 231 219;
+  --color-surface-hover: 229 223 210;
+  --color-canvas: 231 225 212;
+  --color-ivory: 242 239 230;
+  --color-paper: 248 244 233;
+  --color-sage: 220 231 217;
+  --shadow-paper: 37 54 45;
+  min-height: 100vh;
+  background: rgb(var(--color-ivory));
+  color: rgb(var(--color-ink));
+}
+
+.consumer-shell:has(> .shop-pearl-home) > .consumer-demo-banner {
+  display: none;
+}
+
+.shop-pearl-header .area-switch-compact {
+  border-color: transparent;
+  background: transparent;
+}
+
+.shop-pearl-header .area-switch-compact select {
+  font-size: 0.875rem;
+}
+
+.shop-pearl-language::after {
+  margin-left: 0.35rem;
+  color: rgb(var(--color-muted-2));
+  content: "⌄";
+}
+
 /* The shop gets one pearl-stage product moment around its real search form.
    The spatial treatment stops at the hero boundary; catalog and evidence
    sections keep the existing flat paper system. */
@@ -336,6 +389,7 @@ html[data-theme="dark"] .theme-logo-dark {
 
 .shop-pearl-search {
   position: relative;
+  min-height: 6.75rem;
   border-color: rgb(var(--color-line-strong) / 0.72) !important;
   border-radius: 999px;
   background: rgb(var(--color-paper) / 0.76) !important;
@@ -348,10 +402,273 @@ html[data-theme="dark"] .theme-logo-dark {
 }
 
 .shop-pearl-search .action-primary {
-  min-height: 3.5rem;
+  min-height: 4.5rem;
   border-radius: 999px;
   padding-inline: 2rem;
   box-shadow: 0 10px 24px rgb(var(--color-forest) / 0.16);
+}
+
+/* After an interpreted need, the flat catalog becomes an ambient spatial
+   index around one active dialogue surface. Side cards are deliberately
+   non-interactive; a real product link appears only after a safe, sourced
+   daily-wellness route resolves. */
+.shop-spatial-stage {
+  position: relative;
+  isolation: isolate;
+  min-height: clamp(720px, 78vh, 850px);
+  overflow: hidden;
+  border-bottom: 1px solid rgb(var(--color-line-soft));
+  background:
+    radial-gradient(ellipse at 50% 2%, rgb(var(--color-paper) / 0.96) 0%, transparent 58%),
+    radial-gradient(ellipse at 50% 100%, rgb(var(--color-line) / 0.2) 0%, transparent 44%),
+    linear-gradient(145deg, rgb(var(--color-paper)) 0%, rgb(var(--color-ivory)) 70%);
+}
+
+.shop-spatial-stage::after {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: -1;
+  height: 23%;
+  border-top: 1px solid rgb(var(--color-line-soft) / 0.62);
+  background:
+    linear-gradient(180deg, rgb(var(--color-paper) / 0.16), rgb(var(--color-paper) / 0.76)),
+    repeating-linear-gradient(92deg, transparent 0 13%, rgb(var(--color-line-soft) / 0.18) 13.1% 13.2%);
+  content: "";
+}
+
+.shop-spatial-query {
+  min-height: 5.25rem;
+  border: 1px solid rgb(var(--color-line-strong) / 0.72);
+  border-radius: 999px;
+  background: rgb(var(--color-paper) / 0.82);
+  box-shadow:
+    0 18px 30px rgb(var(--shadow-paper) / 0.13),
+    inset 0 1px 0 rgb(255 255 255 / 0.86),
+    inset 0 -1px 0 rgb(var(--color-line) / 0.46);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  animation: shop-query-settle 420ms var(--ease-brand) both;
+}
+
+.shop-spatial-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.shop-spatial-stage .shop-spatial-grid {
+  margin-top: 2.75rem;
+}
+
+.shop-spatial-stage--resolved .shop-spatial-grid {
+  grid-template-columns: minmax(0, 740px);
+  justify-content: center;
+}
+
+.shop-spatial-wing {
+  display: none;
+  min-width: 0;
+  opacity: 0.88;
+  filter: saturate(0.76);
+  pointer-events: none;
+}
+
+.shop-spatial-card {
+  border-radius: 0.9rem;
+  box-shadow:
+    0 18px 38px rgb(var(--shadow-paper) / 0.085),
+    inset 0 1px 0 rgb(255 255 255 / 0.76);
+}
+
+.shop-spatial-wing-label {
+  text-align: center;
+}
+
+.shop-spatial-dialogue {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 740px);
+  min-height: 500px;
+  margin-inline: auto;
+  border-radius: 1.5rem;
+  box-shadow:
+    0 24px 46px rgb(var(--shadow-paper) / 0.16),
+    inset 0 1px 0 rgb(255 255 255 / 0.82),
+    inset 0 -1px 0 rgb(var(--color-line) / 0.35);
+  animation: shop-dialogue-settle 540ms var(--ease-brand) both;
+}
+
+.shop-spatial-dialogue h2:focus-visible {
+  outline: none;
+}
+
+.shop-spatial-dialogue .shop-kicker {
+  color: rgb(var(--color-ink-2));
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  letter-spacing: 0.02em;
+}
+
+.shop-spatial-answer {
+  min-height: 4.65rem;
+  border: 1px solid rgb(var(--color-line-strong));
+  border-radius: 0.8rem;
+  background: rgb(var(--color-paper));
+  padding: 0.85rem 1.25rem;
+  color: rgb(var(--color-forest));
+  font-size: 0.925rem;
+  font-weight: 700;
+  line-height: 1.45;
+  transition:
+    color 180ms var(--ease-brand),
+    background-color 180ms var(--ease-brand),
+    border-color 180ms var(--ease-brand),
+    transform 180ms var(--ease-brand);
+}
+
+.shop-spatial-supplement {
+  min-height: 4.75rem;
+  border: 1px solid rgb(var(--color-line-strong));
+  border-radius: 999px;
+  background: rgb(var(--color-paper) / 0.82);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.82);
+}
+
+.shop-spatial-send {
+  box-shadow: 0 9px 20px rgb(var(--color-green) / 0.18);
+}
+
+.shop-spatial-stage-note {
+  text-shadow: 0 1px 0 rgb(var(--color-paper));
+}
+
+.shop-spatial-answer:hover {
+  border-color: rgb(var(--color-green));
+  background: rgb(var(--color-green));
+  color: rgb(var(--color-on-dark));
+  transform: translateY(-1px);
+}
+
+.shop-spatial-result {
+  overflow: hidden;
+  border-radius: 1.25rem;
+  box-shadow: 0 18px 42px rgb(var(--shadow-paper) / 0.085);
+}
+
+.shop-spatial-result--left {
+  animation: shop-result-left 560ms var(--ease-brand) both;
+}
+
+.shop-spatial-result--right {
+  animation: shop-result-right 560ms var(--ease-brand) both;
+}
+
+@keyframes shop-query-settle {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 20px, 0) scale(1.035);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes shop-dialogue-settle {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 54px, 0) scale(0.975);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes shop-wing-left {
+  from {
+    opacity: 0;
+    transform: translate3d(70px, 190px, 0) scale(0.92);
+  }
+  to {
+    opacity: 0.76;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes shop-wing-right {
+  from {
+    opacity: 0;
+    transform: translate3d(-70px, 190px, 0) scale(0.92);
+  }
+  to {
+    opacity: 0.76;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes shop-result-left {
+  from {
+    opacity: 0;
+    transform: translate3d(-34px, 18px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes shop-result-right {
+  from {
+    opacity: 0;
+    transform: translate3d(34px, 18px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@media (min-width: 900px) {
+  .shop-spatial-grid {
+    grid-template-columns: minmax(0, 740px) minmax(176px, 230px);
+    justify-content: center;
+    gap: 1.75rem;
+  }
+
+  .shop-spatial-wing--right {
+    display: block;
+    animation: shop-wing-right 580ms var(--ease-brand) both;
+  }
+
+  .shop-spatial-stage--resolved .shop-spatial-grid {
+    grid-template-columns: minmax(0, 740px);
+  }
+}
+
+@media (min-width: 1280px) {
+  .shop-spatial-grid {
+    grid-template-columns: minmax(190px, 250px) minmax(600px, 740px) minmax(190px, 250px);
+    gap: clamp(1.5rem, 2.2vw, 2.75rem);
+  }
+
+  .shop-spatial-wing--left {
+    display: block;
+    animation: shop-wing-left 580ms var(--ease-brand) both;
+  }
+
+  .shop-spatial-stage--resolved .shop-spatial-grid {
+    grid-template-columns: minmax(0, 740px);
+  }
+}
+
+html[data-theme="dark"] .shop-spatial-stage {
+  background:
+    radial-gradient(ellipse at 50% 2%, rgb(var(--color-paper) / 0.88) 0%, transparent 60%),
+    radial-gradient(ellipse at 50% 100%, rgb(var(--color-green) / 0.13) 0%, transparent 45%),
+    linear-gradient(145deg, rgb(var(--color-ivory)) 0%, rgb(var(--color-canvas)) 72%);
 }
 
 .shop-pearl-search:focus-within {
@@ -389,6 +706,7 @@ html:not([data-theme]) .shop-pearl-hero {
   }
 
   .shop-pearl-search {
+    min-height: 4rem;
     border-radius: 1rem;
     background: rgb(var(--color-paper) / 0.92) !important;
     box-shadow: 0 14px 32px rgb(var(--shadow-paper) / 0.075) !important;
@@ -400,6 +718,19 @@ html:not([data-theme]) .shop-pearl-hero {
     min-height: 3rem;
     border-radius: 0.75rem;
     padding-inline: 1.25rem;
+  }
+
+  .shop-spatial-stage {
+    min-height: 600px;
+  }
+
+  .shop-spatial-query {
+    border-radius: 1rem;
+  }
+
+  .shop-spatial-dialogue {
+    min-height: 0;
+    border-radius: 1.5rem;
   }
 }
 
@@ -558,6 +889,10 @@ html:not([data-theme]) .shop-pearl-hero {
   .search-placeholder-enter,
   .search-placeholder-exit,
   .partner-marquee-track,
+  .shop-spatial-query,
+  .shop-spatial-dialogue,
+  .shop-spatial-wing,
+  .shop-spatial-result,
   [data-motion-section="true"] {
     animation: none;
     opacity: 1;

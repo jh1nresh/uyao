@@ -1,22 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 
-import { AreaSwitch } from "@/components/AreaSwitch";
-import { CatalogCarousel } from "@/components/CatalogCarousel";
 import { JsonLd } from "@/components/JsonLd";
-import { SearchInput } from "@/components/SearchInput";
+import { ShopSpatialExperience } from "@/components/ShopSpatialExperience";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { PartnerMarquee } from "@/components/landing/PartnerMarquee";
-import {
-  CATEGORIES,
-  allDrugs,
-  getArea,
-  storesInArea,
-  toAreaSlug,
-} from "@/lib/data";
-import { CATALOG_GROUPS } from "@/lib/catalog-groups";
-import { areaCopy, categoryName, localizedPath } from "@/lib/i18n";
+import { allDrugs, getArea, storesInArea, toAreaSlug } from "@/lib/data";
+import { areaCopy, localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
 import { PARTNER_STORE_ITEMS } from "@/lib/partner-stores";
 import {
@@ -127,57 +118,17 @@ export default async function HomePage({
   const steps = locale === "en" ? STEPS_EN : STEPS_ZH;
 
   return (
-    <>
+    <div className="shop-pearl-home">
       <JsonLd nodes={[consumerWebSiteJsonLd(locale), consumerWebPageJsonLd(locale)]} />
-      <SiteHeader showSearch={false} area={area} preserveAreaPath locatable />
+      <SiteHeader showSearch={false} area={area} preserveAreaPath locatable presentation="pearl" />
 
-      {/*
-        第一屏只有一件事：搜尋。
-        原本這裡列了該區 91 家藥局，那是目錄不是產品，而且連電話鈕都沒有
-        （`showPhone` 預設 false），使用者看完什麼也做不了。更糟的是它定義了
-        第一印象「這是藥局名錄」，而名錄 Google Maps 做得更好。
-        藥局家數留下來當可信度證據，但收成一行字。
-      */}
-      <section className="shop-pearl-hero">
-        <div className="shop-pearl-hero-content shop-shell">
-          <div className="mx-auto w-full max-w-[960px] text-center">
-            <h1 className="editorial-display m-0 text-[clamp(38px,4.2vw,58px)] leading-[1.1]">
-              {locale === "en" ? "You do not need to know the product name." : "不用先知道品名。描述需求就能開始。"}
-            </h1>
-            <p className="mx-auto mt-5 max-w-[650px] text-[16px] leading-[1.75] text-ink-2 sm:text-[17px]">
-              {locale === "en" ? "Search by product, ingredient, or daily-wellness need. Recognized common symptoms open safety guidance instead of automatic product results." : "可輸入品名、成分或日常保養方向；辨識到常見症狀時，會先顯示安全提醒，不會自動帶商品。"}
-            </p>
-            <div className="mt-8 text-left">
-              <SearchInput size="xl" presentation="pearl" area={area} className="w-full" />
-            </div>
-
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-[14px] text-muted">
-              <nav aria-label={locale === "en" ? "Categories" : "品類"} className="contents">
-                {CATEGORIES.map((c) => (
-                  <Link
-                    key={c.slug}
-                    href={`${localizedPath(`/category/${c.slug}`, locale)}?area=${area}`}
-                    className="history-link inline-flex min-h-11 items-center border-b border-line-strong font-medium text-forest no-underline transition-[border-color,color] hover:border-green hover:text-green"
-                  >
-                    {categoryName(c.slug, c.name, locale)}
-                  </Link>
-                ))}
-              </nav>
-            </div>
-
-            <div className="mt-5 flex flex-col items-center justify-center gap-3 text-center text-[14px] leading-[1.65] text-muted sm:flex-row">
-              <p className="m-0">
-                {locale === "en"
-                  ? `${currentArea.shortName}: ${storeCount} listed pharmacies`
-                  : `${currentArea.shortName}收錄 ${storeCount} 家藥局`}
-              </p>
-              <div className="md:hidden">
-                <AreaSwitch area={area} preservePath locatable compact />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <ShopSpatialExperience
+        drugs={catalogRail}
+        area={area}
+        locale={locale}
+        areaName={currentArea.shortName}
+        storeCount={storeCount}
+      />
 
       <PartnerMarquee
         id="pharmacies"
@@ -185,46 +136,6 @@ export default async function HomePage({
         locale={locale}
         evidenceHref={`${SITE_URL}${locale === "en" ? "/en" : "/zh-tw"}/evidence#partners`}
       />
-
-      {/* 首頁直接橫向瀏覽整個目錄；要搜尋與篩選時再進列表頁。 */}
-      <section className="bg-ivory">
-        <div className="shop-shell py-12 sm:py-16">
-          <div className="mb-6 max-w-[720px]">
-            <h2 className="editorial-display m-0 text-[32px] leading-[1.25] sm:text-[40px]">
-              {locale === "en" ? "Items provided by partner pharmacies" : "合作藥局提供品項"}
-            </h2>
-            <p className="mb-0 mt-3 text-[14px] leading-[1.7] text-muted">
-              {locale === "en" ? "Browse verified catalog records. Supply and pickup still require pharmacy confirmation." : "先瀏覽已整理的品項資料；是否供應與到店安排，仍需由藥局確認。"}
-            </p>
-          </div>
-          <nav aria-label={locale === "en" ? "Catalog categories" : "品項分類"} className="mb-7 flex flex-wrap gap-2.5">
-            {CATALOG_GROUPS.map((group) => (
-              <Link
-                key={group.slug}
-                href={`${localizedPath("/category/partner-item", locale)}?area=${area}&group=${group.slug}`}
-                className="inline-flex min-h-11 items-center bg-surface px-4 text-[14px] font-semibold text-forest no-underline transition-colors hover:bg-surface-hover"
-              >
-                {locale === "en" ? group.nameEn : group.name}
-              </Link>
-            ))}
-          </nav>
-          {/* 整個目錄橫向瀏覽：有圖的品項排前面，讓第一眼就看到商品而不是文字卡。 */}
-          <CatalogCarousel
-            drugs={catalogRail}
-            area={area}
-            locale={locale}
-            label={locale === "en" ? "Catalog items" : "目錄品項"}
-          />
-          <div className="mt-6 flex justify-end">
-            <Link
-              href={`${localizedPath("/category/partner-item", locale)}?area=${area}`}
-              className="inline-flex min-h-11 items-center border-b border-forest text-[14px] font-bold text-forest no-underline hover:border-green hover:text-green"
-            >
-              {locale === "en" ? `View all ${drugs.length} items →` : `查看全部 ${drugs.length} 項 →`}
-            </Link>
-          </div>
-        </div>
-      </section>
 
       <section className="bg-paper">
         <div className="shop-shell py-14 sm:py-20">
@@ -318,6 +229,6 @@ export default async function HomePage({
       </section>
 
       <SiteFooter />
-    </>
+    </div>
   );
 }

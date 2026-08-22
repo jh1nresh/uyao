@@ -13,7 +13,7 @@ import { getRequestLocale } from "@/lib/locale-server";
 export async function DemoBanner() {
   const locale = await getRequestLocale();
   return (
-    <div className="border-b border-green-tint-line bg-sage/70 text-muted">
+    <div className="consumer-demo-banner border-b border-green-tint-line bg-sage/70 text-muted">
       <details className="group shop-shell">
         <summary className="cursor-pointer py-3 text-[14px] font-medium leading-[1.55] marker:text-green">
           <b className="mr-2 inline-flex bg-green-tint px-2 py-0.5 font-bold text-forest">
