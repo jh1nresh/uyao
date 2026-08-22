@@ -320,6 +320,41 @@ html[data-theme="dark"] .theme-logo-dark {
   color: rgb(var(--color-ink));
 }
 
+/* Theme tokens live on `html`. Repeat the pearl pair on the shop surface
+   with higher specificity so dark `data-theme` or `prefers-color-scheme`
+   cannot flatten the wall, floor, or marquee contrast. Site-wide :root
+   ivory/paper stay on the main values. */
+html[data-theme="dark"] .shop-pearl-home,
+html:not([data-theme]) .shop-pearl-home,
+.consumer-shell:has(> .shop-pearl-home) {
+  color-scheme: light;
+  --color-ink: 28 39 34;
+  --color-forest: 23 57 44;
+  --color-brand-surface: 23 57 44;
+  --color-brand-surface-strong: 28 39 34;
+  --color-on-dark: 248 244 233;
+  --color-ink-2: 62 75 68;
+  --color-muted: 89 102 95;
+  --color-muted-2: 96 109 102;
+  --color-green: 8 123 67;
+  --color-green-hover: 6 103 55;
+  --color-green-tint: 226 238 229;
+  --color-green-tint-line: 184 210 192;
+  --color-oxblood: 116 53 47;
+  --color-line: 210 205 193;
+  --color-line-strong: 184 177 164;
+  --color-line-soft: 226 220 207;
+  --color-surface: 236 231 219;
+  --color-surface-hover: 229 223 210;
+  --color-canvas: 231 225 212;
+  --color-ivory: 248 246 241;
+  --color-paper: 252 251 248;
+  --color-sage: 220 231 217;
+  --shadow-paper: 37 54 45;
+  background: rgb(var(--color-ivory));
+  color: rgb(var(--color-ink));
+}
+
 .consumer-shell:has(> .shop-pearl-home) > .consumer-demo-banner {
   display: none;
 }
@@ -407,6 +442,19 @@ html[data-theme="dark"] .theme-logo-dark {
   padding-bottom: 4.75rem;
 }
 
+.shop-pearl-object::after {
+  position: absolute;
+  right: 12%;
+  bottom: 3.35rem;
+  left: 12%;
+  z-index: 0;
+  height: 1.15rem;
+  border-radius: 50%;
+  background: rgb(var(--shadow-paper) / 0.28);
+  filter: blur(12px);
+  content: "";
+}
+
 .shop-pearl-reflection {
   position: absolute;
   inset-inline: 0;
@@ -448,9 +496,9 @@ html[data-theme="dark"] .theme-logo-dark {
 
 .shop-pearl-hero-content {
   display: flex;
-  min-height: clamp(400px, 26vw, 440px);
+  min-height: clamp(280px, 20vw, 340px);
   align-items: center;
-  padding-block: 2.5rem 3.25rem;
+  padding-block: 2rem 2.25rem;
 }
 
 .shop-pearl-search {
@@ -509,13 +557,50 @@ html[data-theme="dark"] .theme-logo-dark {
     inset 0 1px 0 rgb(255 255 255 / 0.18);
 }
 
+/* The idle first screen has to show this band. Ivory-on-ivory plus muted
+   type made the 16 names disappear against the pearl floor. Sit it on a
+   paper sheet with forest ink so the moving row stays readable. */
 .shop-pearl-home .partner-marquee {
-  border-block: 1px solid rgb(var(--color-line-soft) / 0.82);
-  background:
-    linear-gradient(90deg, rgb(var(--color-paper) / 0.96), rgb(var(--color-ivory)) 48%, rgb(var(--color-paper) / 0.96));
+  position: relative;
+  z-index: 1;
+  border-block: 1px solid rgb(var(--color-line-strong) / 0.62);
+  background: rgb(var(--color-paper));
+  color: rgb(var(--color-ink));
   box-shadow:
-    inset 0 1px 0 rgb(255 255 255 / 0.8),
-    inset 0 -12px 28px rgb(var(--shadow-paper) / 0.025);
+    0 -18px 36px rgb(var(--color-paper) / 0.9),
+    inset 0 1px 0 rgb(255 255 255 / 0.88);
+}
+
+.shop-pearl-home .partner-marquee h2 {
+  color: rgb(var(--color-ink));
+}
+
+.shop-pearl-home .partner-marquee li span:first-child {
+  color: rgb(var(--color-forest));
+}
+
+.shop-pearl-home .partner-marquee-edge:first-of-type {
+  background: linear-gradient(to right, rgb(var(--color-paper)), transparent);
+}
+
+.shop-pearl-home .partner-marquee-edge:last-of-type {
+  background: linear-gradient(to left, rgb(var(--color-paper)), transparent);
+}
+
+.shop-pearl-catalog {
+  background: rgb(var(--color-paper));
+}
+
+.shop-pearl-catalog-sheet {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+@media (min-width: 1024px) {
+  .shop-pearl-catalog-sheet {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 /* After an interpreted need, the flat catalog becomes an ambient spatial
@@ -523,15 +608,17 @@ html[data-theme="dark"] .theme-logo-dark {
    non-interactive; a real product link appears only after a safe, sourced
    daily-wellness route resolves. */
 .shop-spatial-stage {
+  --pearl-horizon: 48%;
   position: relative;
   isolation: isolate;
   min-height: clamp(720px, 78vh, 850px);
   overflow: hidden;
   border-bottom: 1px solid rgb(var(--color-line-soft));
   background:
-    radial-gradient(ellipse at 50% 2%, rgb(var(--color-paper) / 0.96) 0%, transparent 58%),
-    radial-gradient(ellipse at 50% 100%, rgb(var(--color-line) / 0.2) 0%, transparent 44%),
-    linear-gradient(145deg, rgb(var(--color-paper)) 0%, rgb(var(--color-ivory)) 70%);
+    linear-gradient(101deg, transparent 0 6%, rgb(255 255 255 / 0.9) 13%, rgb(255 255 255 / 0.34) 22%, transparent 33%),
+    radial-gradient(ellipse at 14% -6%, rgb(255 255 255 / 0.98) 0%, transparent 44%),
+    radial-gradient(ellipse at 88% 14%, rgb(var(--color-sage) / 0.55) 0%, transparent 38%),
+    linear-gradient(176deg, rgb(var(--color-paper)) 0%, rgb(var(--color-ivory)) 38%, rgb(var(--color-surface) / 0.72) 100%);
 }
 
 .shop-spatial-stage::after {
@@ -539,11 +626,16 @@ html[data-theme="dark"] .theme-logo-dark {
   inset-inline: 0;
   bottom: 0;
   z-index: -1;
-  height: 23%;
-  border-top: 1px solid rgb(var(--color-line-soft) / 0.62);
+  height: calc(100% - var(--pearl-horizon));
+  border-top: 1px solid rgb(var(--color-line-strong) / 0.5);
   background:
-    linear-gradient(180deg, rgb(var(--color-paper) / 0.16), rgb(var(--color-paper) / 0.76)),
-    repeating-linear-gradient(92deg, transparent 0 13%, rgb(var(--color-line-soft) / 0.18) 13.1% 13.2%);
+    radial-gradient(ellipse at 50% -10%, rgb(255 255 255 / 0.9) 0%, transparent 58%),
+    repeating-linear-gradient(
+      180deg,
+      rgb(var(--color-line-soft) / 0.36) 0 1px,
+      transparent 1px 9px
+    ),
+    linear-gradient(180deg, rgb(var(--color-surface) / 0.5) 0%, rgb(var(--color-canvas) / 0.92) 62%, rgb(var(--color-surface) / 0.8) 100%);
   content: "";
 }
 
@@ -584,8 +676,12 @@ html[data-theme="dark"] .theme-logo-dark {
 .shop-spatial-wing {
   display: none;
   min-width: 0;
-  opacity: 0.88;
-  filter: saturate(0.76);
+  opacity: 0.7;
+  filter: saturate(0.68) contrast(0.94);
+  pointer-events: none;
+}
+
+.shop-spatial-wing a {
   pointer-events: none;
 }
 
@@ -785,13 +881,6 @@ html[data-theme="dark"] .theme-logo-dark {
   }
 }
 
-html[data-theme="dark"] .shop-spatial-stage {
-  background:
-    radial-gradient(ellipse at 50% 2%, rgb(var(--color-paper) / 0.88) 0%, transparent 60%),
-    radial-gradient(ellipse at 50% 100%, rgb(var(--color-green) / 0.13) 0%, transparent 45%),
-    linear-gradient(145deg, rgb(var(--color-ivory)) 0%, rgb(var(--color-canvas)) 72%);
-}
-
 .shop-pearl-search:focus-within {
   border-color: rgb(var(--color-green)) !important;
   box-shadow:
@@ -820,13 +909,18 @@ html[data-theme="dark"] .shop-spatial-stage {
 
   .shop-pearl-hero-content {
     min-height: 0;
-    padding-block: 2rem 4rem;
+    padding-block: 1.75rem 2.5rem;
   }
 
   /* The capsule is shorter on mobile, so the mirror must shrink with it or it
      bleeds past the horizon into the marquee. */
   .shop-pearl-object {
     padding-bottom: 2.75rem;
+  }
+
+  .shop-pearl-object::after {
+    bottom: 1.85rem;
+    height: 0.7rem;
   }
 
   .shop-pearl-reflection {

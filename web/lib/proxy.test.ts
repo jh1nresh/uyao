@@ -56,6 +56,16 @@ describe("canonical host routing", () => {
     );
   });
 
+  it("keeps Vercel preview hosts on the branch shop instead of production", () => {
+    const response = request(
+      "https://uyao-git-codex-shop-pearl-stage-jhinreshs-projects.vercel.app/zh-tw",
+    );
+    expect(response.status).toBe(200);
+    expect(response.headers.get("x-middleware-rewrite")).toBe(
+      "https://uyao-git-codex-shop-pearl-stage-jhinreshs-projects.vercel.app/app",
+    );
+  });
+
   it("permanently removes the old app segment on the shop host", () => {
     const response = request("https://shop.uyaohealth.com/zh-tw/app?area=datong");
     expect(response.status).toBe(308);

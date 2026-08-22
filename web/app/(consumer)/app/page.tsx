@@ -5,8 +5,8 @@ import { JsonLd } from "@/components/JsonLd";
 import { ShopSpatialExperience } from "@/components/ShopSpatialExperience";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { allDrugs, getArea, storesInArea, toAreaSlug } from "@/lib/data";
-import { areaCopy, localizedPath } from "@/lib/i18n";
+import { allDrugs, toAreaSlug } from "@/lib/data";
+import { localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
 import { PARTNER_STORE_ITEMS } from "@/lib/partner-stores";
 import {
@@ -106,14 +106,12 @@ export default async function HomePage({
   const { area: rawArea } = await searchParams;
   const locale = await getRequestLocale();
   const area = toAreaSlug(rawArea);
-  const storeCount = storesInArea(area).length;
   const drugs = allDrugs();
   // 有商品圖的排前面 —— 橫向列第一眼要看到商品，不是一排文字卡。
   // 同組內維持目錄原順序，才不會每次進站順序都在跳。
   const catalogRail = [...drugs].sort(
     (a, b) => Number(Boolean(b.image)) - Number(Boolean(a.image)),
   );
-  const currentArea = areaCopy(getArea(area), locale);
   const steps = locale === "en" ? STEPS_EN : STEPS_ZH;
 
   return (
@@ -125,8 +123,6 @@ export default async function HomePage({
         drugs={catalogRail}
         area={area}
         locale={locale}
-        areaName={currentArea.shortName}
-        storeCount={storeCount}
         partnerStores={PARTNER_STORE_ITEMS}
         partnerEvidenceHref={`${SITE_URL}${locale === "en" ? "/en" : "/zh-tw"}/evidence#partners`}
       />

@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, type FormEvent } from "react";
 
 import { AreaSwitch } from "./AreaSwitch";
-import { CatalogCarousel } from "./CatalogCarousel";
 import { CatalogImagePlaceholder } from "./CatalogImagePlaceholder";
 import { catalogSourceStatus } from "./CatalogItemGrid";
 import { SearchInput } from "./SearchInput";
@@ -117,16 +116,12 @@ export function ShopSpatialExperience({
   drugs,
   area,
   locale,
-  areaName,
-  storeCount,
   partnerStores,
   partnerEvidenceHref,
 }: {
   drugs: Drug[];
   area: AreaSlug;
   locale: Locale;
-  areaName: string;
-  storeCount: number;
   partnerStores: readonly PartnerStoreItem[];
   partnerEvidenceHref: string;
 }) {
@@ -237,7 +232,7 @@ export function ShopSpatialExperience({
                   ? "Enter a product, ingredient, or daily-wellness need. Recognized symptoms open safety guidance first."
                   : "可輸入品名、成分或日常保養方向；常見症狀會先顯示安全提醒。"}
               </p>
-              <div className="shop-pearl-object mt-8 text-left">
+              <div className="shop-pearl-object mt-6 text-left">
                 <SearchInput
                   key={`${draftQuery}-${focusSearch}`}
                   size="xl"
@@ -256,15 +251,8 @@ export function ShopSpatialExperience({
                   <div className="shop-pearl-reflection-action" />
                 </div>
               </div>
-              <div className="mt-6 flex flex-col items-center justify-center gap-3 text-center text-[14px] leading-[1.65] text-muted sm:flex-row">
-                <p className="m-0">
-                  {locale === "en"
-                    ? `${areaName}: ${storeCount} listed pharmacies`
-                    : `${areaName}收錄 ${storeCount} 家藥局`}
-                </p>
-                <div className="md:hidden">
-                  <AreaSwitch area={area} preservePath locatable compact />
-                </div>
+              <div className="mt-4 md:hidden">
+                <AreaSwitch area={area} preservePath locatable compact />
               </div>
             </div>
           </div>
@@ -277,10 +265,10 @@ export function ShopSpatialExperience({
           evidenceHref={partnerEvidenceHref}
         />
 
-        <section className="bg-paper">
-          <div className="shop-shell py-8">
-            <div className="mb-4 max-w-[720px]">
-              <h2 className="editorial-display m-0 text-[30px] leading-[1.25] sm:text-[34px]">
+        <section className="shop-pearl-catalog">
+          <div className="shop-shell py-6 sm:py-7">
+            <div className="mb-3 max-w-[720px]">
+              <h2 className="editorial-display m-0 text-[28px] leading-[1.25] sm:text-[32px]">
                 {locale === "en" ? "Items provided by partner pharmacies" : "合作藥局提供品項"}
               </h2>
               <p className="mb-0 mt-2 text-[14px] leading-[1.7] text-muted">
@@ -304,13 +292,17 @@ export function ShopSpatialExperience({
                 </Link>
               ))}
             </nav>
-            <CatalogCarousel
-              drugs={sideCards}
-              area={area}
-              locale={locale}
-              label={locale === "en" ? "Catalog items" : "目錄品項"}
-              presentation="showcase"
-            />
+            <div className="shop-pearl-catalog-sheet" aria-label={locale === "en" ? "Catalog items" : "目錄品項"}>
+              {sideCards.map((drug) => (
+                <Link
+                  key={drug.slug}
+                  href={`${localizedPath(`/drug/${drug.slug}`, locale)}?area=${area}`}
+                  className="history-link no-underline"
+                >
+                  <SpatialCard drug={drug} locale={locale} />
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
       </>

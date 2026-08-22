@@ -37,7 +37,7 @@ function MarqueeList({
           key={item.name}
           className="flex shrink-0 items-center gap-3 whitespace-nowrap border-l-2 border-green pl-4"
         >
-          <span className="text-[18px] font-black tracking-[-.015em] text-forest sm:text-[19px]">
+          <span className="text-[18px] font-black tracking-[-.015em] text-forest sm:text-[20px]">
             {item.name}
           </span>
           <span className="num text-[12.5px] font-semibold tracking-[.04em] text-muted">
