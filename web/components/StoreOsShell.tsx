@@ -292,6 +292,13 @@ function ReservationInbox({
                   <strong>{english ? "Customer context" : "顧客需求脈絡"}</strong>
                   <span>{english ? "Shared with customer consent" : "顧客已同意提供"}</span>
                 </header>
+                <div>
+                  <span>{english ? "Known allergies" : "已知過敏原"}</span>
+                  <p>{reservation.intake.allergyStatus === "none"
+                    ? english ? "No known allergies reported" : "顧客回答目前沒有已知過敏"
+                    : reservation.intake.allergens
+                      ?? (english ? "Not collected on this older reservation" : "舊預留單未收集過敏回答")}</p>
+                </div>
                 {reservation.intake.searchQuery && (
                   <div>
                     <span>{english ? "Original Shop search" : "Shop 原始搜尋"}</span>

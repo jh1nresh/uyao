@@ -76,6 +76,8 @@ describe("取貨憑證的鍵", () => {
       contact: "0911222333",
       intake: {
         source: "shop_search",
+        allergyStatus: "has_allergies",
+        allergens: "青黴素",
         searchQuery: "睡不好",
         note: "請藥師協助判斷",
         consentedAt: "2026-08-16T00:00:00.000Z",
@@ -90,6 +92,8 @@ describe("取貨憑證的鍵", () => {
       contactTail: "333",
       intake: {
         source: "shop_search",
+        allergyStatus: "has_allergies",
+        allergens: "青黴素",
         searchQuery: "睡不好",
         note: "請藥師協助判斷",
       },
@@ -121,6 +125,7 @@ describe("取貨憑證的鍵", () => {
       demo: true,
       intake: {
         source: "reservation_note",
+        allergyStatus: "none",
         note: "希望現場詢問藥師",
         consentedAt: "2026-08-16T00:00:00.000Z",
       },
@@ -136,6 +141,7 @@ describe("取貨憑證的鍵", () => {
       sourceStoreName: "A 藥局",
       intake: {
         source: "reservation_note",
+        allergyStatus: "none",
         note: "希望現場詢問藥師",
       },
     });

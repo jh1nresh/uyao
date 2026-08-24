@@ -5,7 +5,9 @@ import type { ReactNode } from "react";
 
 import {
   RESERVATION_INTAKE_STORAGE_KEY,
+  SHOP_SEARCH_INTAKE_STORAGE_KEY,
   createReservationIntakeDraft,
+  readShopSearchIntakeDraft,
 } from "@/lib/reservation-intake";
 
 export function SearchResultLink({
@@ -22,12 +24,21 @@ export function SearchResultLink({
   children: ReactNode;
 }) {
   function rememberSearch() {
-    const draft = createReservationIntakeDraft(query, drugSlug);
-    if (!draft) return;
     try {
+      const searchDraft = readShopSearchIntakeDraft(
+        sessionStorage.getItem(SHOP_SEARCH_INTAKE_STORAGE_KEY),
+        query,
+      );
+      const draft = createReservationIntakeDraft(
+        query,
+        drugSlug,
+        searchDraft?.capturedAt,
+        searchDraft ?? undefined,
+      );
+      if (!draft) return;
       sessionStorage.setItem(RESERVATION_INTAKE_STORAGE_KEY, JSON.stringify(draft));
     } catch {
-      // 隱私模式或儲存額度不足時仍可繼續找藥，只是不自動帶入搜尋脈絡。
+      // 隱私模式或儲存額度不足時仍可繼續找藥，只是不自動帶入搜尋與過敏回答。
     }
   }
 

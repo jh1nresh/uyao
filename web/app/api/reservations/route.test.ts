@@ -28,6 +28,8 @@ vi.mock("@/lib/store-os-live", () => ({
 
 import { DELETE, POST } from "./route";
 
+const NO_KNOWN_ALLERGIES = { allergyStatus: "none", consent: true } as const;
+
 beforeEach(() => {
   __resetForTests();
   vi.clearAllMocks();
@@ -51,6 +53,8 @@ describe("Store OS reservation delivery", () => {
         contact: "0912345678",
         demo: true,
         intake: {
+          allergyStatus: "has_allergies",
+          allergens: "青黴素",
           searchQuery: "睡不好",
           note: "最近三天比較明顯，希望藥師協助判斷",
           consent: true,
@@ -74,6 +78,8 @@ describe("Store OS reservation delivery", () => {
         contactTail: "678",
         intake: {
           source: "shop_search",
+          allergyStatus: "has_allergies",
+          allergens: "青黴素",
           searchQuery: "睡不好",
           note: "最近三天比較明顯，希望藥師協助判斷",
         },
@@ -86,6 +92,8 @@ describe("Store OS reservation delivery", () => {
     expect(await reservationStore.getByToken(body.token)).toMatchObject({
       intake: {
         source: "shop_search",
+        allergyStatus: "has_allergies",
+        allergens: "青黴素",
         searchQuery: "睡不好",
         note: "最近三天比較明顯，希望藥師協助判斷",
       },
@@ -120,6 +128,7 @@ describe("Store OS reservation delivery", () => {
         storeSlug: store.slug,
         contact: "0912345678",
         demo: true,
+        intake: NO_KNOWN_ALLERGIES,
       }),
     }));
 
@@ -150,6 +159,7 @@ describe("Store OS reservation delivery", () => {
         drugSlug: offer.drugSlug,
         storeSlug: store.slug,
         contact: "0912345678",
+        intake: NO_KNOWN_ALLERGIES,
       }),
     }));
 
@@ -182,6 +192,7 @@ describe("Store OS reservation delivery", () => {
         drugSlug: drug.slug,
         storeSlug: store.slug,
         contact: "0912345678",
+        intake: NO_KNOWN_ALLERGIES,
       }),
     }));
 
@@ -210,6 +221,7 @@ describe("Store OS reservation delivery", () => {
         drugSlug: drug.slug,
         storeSlug: store.slug,
         contact: "0912345678",
+        intake: NO_KNOWN_ALLERGIES,
       }),
     }));
 
@@ -238,6 +250,7 @@ describe("Store OS reservation delivery", () => {
         storeSlug: store.slug,
         contact: "0912345678",
         demo: true,
+        intake: NO_KNOWN_ALLERGIES,
       }),
     }));
 
@@ -264,6 +277,7 @@ describe("Store OS reservation delivery", () => {
         drugSlug: drug.slug,
         storeSlug: store.slug,
         contact: "0912345678",
+        intake: NO_KNOWN_ALLERGIES,
       }),
     }));
 
@@ -294,6 +308,7 @@ describe("Store OS reservation delivery", () => {
         storeSlug: store.slug,
         contact: "0912345678",
         demo: true,
+        intake: NO_KNOWN_ALLERGIES,
       }),
     }));
 
@@ -324,6 +339,7 @@ describe("Store OS reservation delivery", () => {
         drugSlug: drug.slug,
         storeSlug: outsider.slug,
         contact: "0912345678",
+        intake: NO_KNOWN_ALLERGIES,
       }),
     }));
 
@@ -346,12 +362,32 @@ describe("Store OS reservation delivery", () => {
         storeSlug: store.slug,
         contact: "0912345678",
         demo: true,
-        intake: { searchQuery: "睡不好" },
+        intake: { allergyStatus: "none", searchQuery: "睡不好" },
       }),
     }));
 
     expect(response.status).toBe(422);
     expect(await response.json()).toMatchObject({ error: expect.stringContaining("同意") });
+    expect(await reservationStore.listStoreReservations("uyao-demo")).toEqual([]);
+    expect(mocks.appendRecord).not.toHaveBeenCalled();
+  });
+
+  it("rejects a reservation that skips the required allergy question", async () => {
+    const store = STORE_DEMO_STORE;
+    const offer = previewOffers(store.slug)[0];
+    const response = await POST(new Request("http://localhost/api/reservations", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-forwarded-for": "127.0.0.38" },
+      body: JSON.stringify({
+        drugSlug: offer.drugSlug,
+        storeSlug: store.slug,
+        contact: "0912345678",
+        demo: true,
+      }),
+    }));
+
+    expect(response.status).toBe(422);
+    expect(await response.json()).toMatchObject({ error: expect.stringContaining("過敏") });
     expect(await reservationStore.listStoreReservations("uyao-demo")).toEqual([]);
     expect(mocks.appendRecord).not.toHaveBeenCalled();
   });
@@ -371,6 +407,7 @@ describe("Store OS reservation delivery", () => {
         storeSlug: realStore.slug,
         contact: "0912345678",
         demo: true,
+        intake: NO_KNOWN_ALLERGIES,
       }),
     }));
 
@@ -392,6 +429,7 @@ describe("預留的廣告歸因", () => {
         storeSlug: store.slug,
         contact: "0912345678",
         demo: true,
+        intake: NO_KNOWN_ALLERGIES,
         ...(source === undefined ? {} : { source }),
       }),
     }));

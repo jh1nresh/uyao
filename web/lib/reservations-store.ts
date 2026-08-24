@@ -187,6 +187,8 @@ export async function listStoreReservations(
       ...(reservation.intake ? {
         intake: {
           source: reservation.intake.source,
+          allergyStatus: reservation.intake.allergyStatus,
+          ...(reservation.intake.allergens ? { allergens: reservation.intake.allergens } : {}),
           ...(reservation.intake.searchQuery ? { searchQuery: reservation.intake.searchQuery } : {}),
           ...(reservation.intake.note ? { note: reservation.intake.note } : {}),
         },
