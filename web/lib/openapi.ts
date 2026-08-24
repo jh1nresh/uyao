@@ -326,7 +326,7 @@ export function openApiDocument(): Record<string, unknown> {
           operationId: "createReservation",
           summary: "Create a pickup reservation",
           description:
-            "Creates work in a real pharmacy's Store OS and can trigger a push notification on that pharmacy's devices. Accepts a Taiwanese mobile number, which must belong to the person collecting the item. `storeSlug` must be a pharmacy that lists this item — see `availableAt` on the catalog item. Online reservation is additionally limited to pharmacies already working in Store OS; every other pharmacy returns 409 and must be reached by phone, so tell the person to call the number on the pharmacy record rather than retrying. No pharmacy is onboarded yet, so 409 is currently the expected response for every real pharmacy. Every reservation is a request, not a stock guarantee: the pharmacy confirms availability and price in store. Rate limited to 5 per contact number per hour, and numbers with repeated no-shows are blocked. Browser traffic is additionally limited to 20 per IP per hour; assistants and other server-side callers should send an agent key (see `agentKey`) to get their own quota instead of sharing one.",
+            "Creates work in a real pharmacy's Store OS and can trigger a push notification on that pharmacy's devices. Before every submission, the caller must ask the person whether they have known medication, food, or other allergies; never infer or reuse an answer. The required `intake` is shown to the signed-in pharmacy for pharmacist review and requires the person's consent. Accepts a Taiwanese mobile number, which must belong to the person collecting the item. `storeSlug` must be a pharmacy that lists this item — see `availableAt` on the catalog item. Online reservation is additionally limited to pharmacies already working in Store OS; every other pharmacy returns 409 and must be reached by phone, so tell the person to call the number on the pharmacy record rather than retrying. No pharmacy is onboarded yet, so 409 is currently the expected response for every real pharmacy. Every reservation is a request, not a stock guarantee: the pharmacy confirms availability and price in store. Rate limited to 5 per contact number per hour, and numbers with repeated no-shows are blocked. Browser traffic is additionally limited to 20 per IP per hour; assistants and other server-side callers should send an agent key (see `agentKey`) to get their own quota instead of sharing one.",
           security: [{ agentKey: [] }, {}],
           requestBody: {
             required: true,
@@ -652,8 +652,36 @@ export function openApiDocument(): Record<string, unknown> {
               description: "Taiwanese mobile number. Personal data.",
             },
             demo: { type: "boolean", description: "Sandbox reservation; never mixed with real ones." },
+            intake: {
+              type: "object",
+              description: "Required health context shown only in the signed-in Store OS for pharmacist review.",
+              properties: {
+                allergyStatus: {
+                  type: "string",
+                  enum: ["none", "has_allergies"],
+                  description: "The person's explicit answer. Ask on every reservation; do not infer or reuse it.",
+                },
+                allergens: {
+                  type: "string",
+                  maxLength: 200,
+                  description: "Required when allergyStatus is has_allergies. List the person's known allergens.",
+                },
+                searchQuery: { type: "string", maxLength: 160 },
+                note: { type: "string", maxLength: 500 },
+                consent: {
+                  type: "boolean",
+                  const: true,
+                  description: "The person agreed to share this context with the pharmacy for pharmacist review.",
+                },
+              },
+              required: ["allergyStatus", "consent"],
+              allOf: [{
+                if: { properties: { allergyStatus: { const: "has_allergies" } } },
+                then: { required: ["allergens"] },
+              }],
+            },
           },
-          required: ["drugSlug", "storeSlug", "contact"],
+          required: ["drugSlug", "storeSlug", "contact", "intake"],
         },
       },
     },

@@ -27,8 +27,11 @@ describe("classic shop homepage", () => {
     expect(appPage).not.toContain("shop-pearl");
   });
 
-  it("submits searches to the dedicated results route", () => {
+  it("asks for allergens before navigating to the dedicated results route", () => {
     expect(searchInput).toContain('action={localizedPath("/search", locale)}');
+    expect(searchInput).toContain("onSubmit={askAllergies}");
+    expect(searchInput).toContain("先確認已知過敏原");
+    expect(searchInput).toContain("continueToResults");
     expect(searchInput).not.toContain("onSubmitQuery");
     expect(searchInput).not.toContain('presentation="pearl"');
   });
