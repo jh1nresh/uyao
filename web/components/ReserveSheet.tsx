@@ -106,7 +106,13 @@ export function ReserveSheet({
         sessionStorage.getItem(RESERVATION_INTAKE_STORAGE_KEY),
         target.drug.slug,
       );
-      if (draft) setSearchQuery(draft.searchQuery);
+      if (draft) {
+        setSearchQuery(draft.searchQuery);
+        if (draft.allergyStatus) {
+          setAllergyStatus(draft.allergyStatus);
+          setAllergens(draft.allergens ?? "");
+        }
+      }
     } catch {
       // sessionStorage 不可用時，仍可在下方手動補充需求。
     }
@@ -279,6 +285,13 @@ export function ReserveSheet({
                       className="mt-1.5 h-11 w-full border border-line-strong bg-paper px-3 text-[13px] font-normal text-ink outline-none placeholder:text-muted-2 focus:border-forest"
                     />
                   </label>
+                )}
+                {searchQuery && allergyStatus && (
+                  <p className="mb-0 mt-2 text-[11.5px] leading-[1.55] text-muted">
+                    {locale === "en"
+                      ? "Carried over from your search. You can change it before sending."
+                      : "已從搜尋帶入；送出前仍可修改。"}
+                  </p>
                 )}
               </fieldset>
 

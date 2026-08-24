@@ -3,10 +3,13 @@ export const RESERVATION_INTAKE_NOTE_MAX = 500;
 export const RESERVATION_INTAKE_ALLERGENS_MAX = 200;
 export const RESERVATION_INTAKE_DRAFT_TTL_MS = 30 * 60 * 1000;
 export const RESERVATION_INTAKE_STORAGE_KEY = "uyao.reservation-intake";
+export const SHOP_SEARCH_INTAKE_STORAGE_KEY = "uyao.shop-search-intake";
+
+export type AllergyStatus = "none" | "has_allergies";
 
 export interface ReservationIntake {
   source: "shop_search" | "reservation_note" | "allergen_check";
-  allergyStatus: "none" | "has_allergies";
+  allergyStatus: AllergyStatus;
   allergens?: string;
   searchQuery?: string;
   note?: string;
@@ -18,6 +21,15 @@ export type ReservationIntakeSummary = Omit<ReservationIntake, "consentedAt">;
 export interface ReservationIntakeDraft {
   drugSlug: string;
   searchQuery: string;
+  allergyStatus?: AllergyStatus;
+  allergens?: string;
+  capturedAt: number;
+}
+
+export interface ShopSearchIntakeDraft {
+  searchQuery: string;
+  allergyStatus: AllergyStatus;
+  allergens?: string;
   capturedAt: number;
 }
 
@@ -82,10 +94,79 @@ export function createReservationIntakeDraft(
   searchQuery: string,
   drugSlug: string,
   capturedAt = Date.now(),
+  allergy?: Pick<ShopSearchIntakeDraft, "allergyStatus" | "allergens">,
 ): ReservationIntakeDraft | null {
   const query = cleanText(searchQuery, "搜尋內容", RESERVATION_INTAKE_QUERY_MAX);
   if (!query.value || query.error || !drugSlug) return null;
-  return { drugSlug, searchQuery: query.value, capturedAt };
+  const cleanedAllergens = allergy
+    ? cleanText(allergy.allergens, "過敏原", RESERVATION_INTAKE_ALLERGENS_MAX)
+    : {};
+  if (
+    (allergy && allergy.allergyStatus !== "none" && allergy.allergyStatus !== "has_allergies")
+    || cleanedAllergens.error
+    || (allergy?.allergyStatus === "has_allergies" && !cleanedAllergens.value)
+  ) return null;
+  return {
+    drugSlug,
+    searchQuery: query.value,
+    ...(allergy ? {
+      allergyStatus: allergy.allergyStatus,
+      ...(allergy.allergyStatus === "has_allergies" ? { allergens: cleanedAllergens.value } : {}),
+    } : {}),
+    capturedAt,
+  };
+}
+
+export function createShopSearchIntakeDraft(
+  searchQuery: string,
+  allergyStatus: AllergyStatus,
+  allergens = "",
+  capturedAt = Date.now(),
+): ShopSearchIntakeDraft | null {
+  const query = cleanText(searchQuery, "搜尋內容", RESERVATION_INTAKE_QUERY_MAX);
+  const cleanedAllergens = cleanText(allergens, "過敏原", RESERVATION_INTAKE_ALLERGENS_MAX);
+  if (
+    !query.value
+    || query.error
+    || (allergyStatus !== "none" && allergyStatus !== "has_allergies")
+    || cleanedAllergens.error
+    || (allergyStatus === "has_allergies" && !cleanedAllergens.value)
+  ) return null;
+  return {
+    searchQuery: query.value,
+    allergyStatus,
+    ...(allergyStatus === "has_allergies" ? { allergens: cleanedAllergens.value } : {}),
+    capturedAt,
+  };
+}
+
+function fresh(capturedAt: unknown, now: number): capturedAt is number {
+  return typeof capturedAt === "number"
+    && Number.isFinite(capturedAt)
+    && capturedAt <= now
+    && now - capturedAt <= RESERVATION_INTAKE_DRAFT_TTL_MS;
+}
+
+export function readShopSearchIntakeDraft(
+  raw: string | null,
+  searchQuery: string,
+  now = Date.now(),
+): ShopSearchIntakeDraft | null {
+  if (!raw) return null;
+  try {
+    const value = JSON.parse(raw) as Partial<ShopSearchIntakeDraft>;
+    if (!fresh(value.capturedAt, now)) return null;
+    const draft = createShopSearchIntakeDraft(
+      typeof value.searchQuery === "string" ? value.searchQuery : "",
+      value.allergyStatus as AllergyStatus,
+      typeof value.allergens === "string" ? value.allergens : "",
+      value.capturedAt,
+    );
+    const expected = cleanText(searchQuery, "搜尋內容", RESERVATION_INTAKE_QUERY_MAX).value;
+    return draft && draft.searchQuery === expected ? draft : null;
+  } catch {
+    return null;
+  }
 }
 
 /** 只讓同一品項在 30 分鐘內接續剛才的 Shop 搜尋，避免舊症狀黏到別張單。 */
@@ -100,12 +181,18 @@ export function readReservationIntakeDraft(
     if (
       value.drugSlug !== drugSlug
       || typeof value.searchQuery !== "string"
-      || typeof value.capturedAt !== "number"
-      || !Number.isFinite(value.capturedAt)
-      || value.capturedAt > now
-      || now - value.capturedAt > RESERVATION_INTAKE_DRAFT_TTL_MS
+      || !fresh(value.capturedAt, now)
     ) return null;
-    return createReservationIntakeDraft(value.searchQuery, value.drugSlug, value.capturedAt);
+    const hasAllergy = value.allergyStatus !== undefined || value.allergens !== undefined;
+    return createReservationIntakeDraft(
+      value.searchQuery,
+      value.drugSlug,
+      value.capturedAt,
+      hasAllergy ? {
+        allergyStatus: value.allergyStatus as AllergyStatus,
+        allergens: value.allergens,
+      } : undefined,
+    );
   } catch {
     return null;
   }

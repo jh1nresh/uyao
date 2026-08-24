@@ -3,8 +3,10 @@ import { describe, expect, it } from "vitest";
 import {
   RESERVATION_INTAKE_DRAFT_TTL_MS,
   createReservationIntakeDraft,
+  createShopSearchIntakeDraft,
   parseReservationIntake,
   readReservationIntakeDraft,
+  readShopSearchIntakeDraft,
 } from "./reservation-intake";
 
 describe("reservation intake consent boundary", () => {
@@ -68,9 +70,29 @@ describe("reservation intake consent boundary", () => {
 });
 
 describe("shop search handoff", () => {
+  it("keeps the required allergy answer with the matching search", () => {
+    const now = 1_000_000;
+    const searchDraft = createShopSearchIntakeDraft("  補鈣  ", "has_allergies", "  花生  ", now);
+    expect(searchDraft).toEqual({
+      searchQuery: "補鈣",
+      allergyStatus: "has_allergies",
+      allergens: "花生",
+      capturedAt: now,
+    });
+    const raw = JSON.stringify(searchDraft);
+    expect(readShopSearchIntakeDraft(raw, "補鈣", now + 1000)).toEqual(searchDraft);
+    expect(readShopSearchIntakeDraft(raw, "睡不好", now + 1000)).toBeNull();
+    expect(readShopSearchIntakeDraft(raw, "補鈣", now + RESERVATION_INTAKE_DRAFT_TTL_MS + 1)).toBeNull();
+  });
+
   it("returns only a fresh draft for the selected item", () => {
     const now = 1_000_000;
-    const draft = createReservationIntakeDraft("睡不好", "item-a", now);
+    const draft = createReservationIntakeDraft(
+      "睡不好",
+      "item-a",
+      now,
+      { allergyStatus: "has_allergies", allergens: "青黴素" },
+    );
     expect(draft).not.toBeNull();
     const raw = JSON.stringify(draft);
     expect(readReservationIntakeDraft(raw, "item-a", now + 1000)).toEqual(draft);
@@ -80,5 +102,6 @@ describe("shop search handoff", () => {
 
   it("ignores corrupt storage instead of blocking reservation", () => {
     expect(readReservationIntakeDraft("not-json", "item-a")).toBeNull();
+    expect(readShopSearchIntakeDraft("not-json", "睡不好")).toBeNull();
   });
 });
