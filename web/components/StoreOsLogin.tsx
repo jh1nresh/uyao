@@ -65,7 +65,7 @@ export function StoreOsLogin({ configured }: { configured: boolean }) {
         </header>
         <div className={styles.intro}>
           <p>STORE ACCESS</p>
-          <h1>{english ? "Sign in to your pharmacy" : "登入你的藥局"}</h1>
+          <h2>{english ? "Sign in to your pharmacy" : "登入你的藥局"}</h2>
           <span>{english ? "Review customer reservation codes and their latest status." : "查看客戶預留單號與最新處理狀態。"}</span>
         </div>
         <form onSubmit={submit}>
@@ -144,7 +144,7 @@ export function StoreOsActivate({ token, configured, locale = "zh" }: { token: s
         </header>
         <div className={styles.intro}>
           <p>PHARMACY INVITE</p>
-          <h1>{english ? "Create a store account" : "建立店家帳號"}</h1>
+          <h2>{english ? "Create a store account" : "建立店家帳號"}</h2>
           <span>{english ? "Once activated, this account can only access the pharmacy linked to the invitation." : "完成後，這個帳號只會進入邀請所屬的藥局。"}</span>
         </div>
         <form onSubmit={submit}>

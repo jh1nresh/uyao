@@ -1,7 +1,7 @@
 import { headers } from "next/headers";
 
-import { companyLlmsTxt, nonCanonicalLlmsTxt, shopLlmsTxt } from "@/lib/llms";
-import { CANONICAL_HOST, SHOP_CANONICAL_HOST } from "@/lib/seo";
+import { companyLlmsTxt, nonCanonicalLlmsTxt, shopLlmsTxt, storeLlmsTxt } from "@/lib/llms";
+import { CANONICAL_HOST, SHOP_CANONICAL_HOST, STORE_CANONICAL_HOST } from "@/lib/seo";
 
 export const runtime = "nodejs";
 
@@ -15,10 +15,13 @@ export const runtime = "nodejs";
 export async function GET() {
   const host = ((await headers()).get("host") ?? "").toLowerCase().split(":")[0];
   const isShop = host === SHOP_CANONICAL_HOST;
-  const isCanonical = host === CANONICAL_HOST || isShop;
+  const isStore = host === STORE_CANONICAL_HOST;
+  const isCanonical = host === CANONICAL_HOST || isShop || isStore;
 
   const body = process.env.VERCEL_ENV !== "production" || !isCanonical
     ? nonCanonicalLlmsTxt()
+    : isStore
+      ? storeLlmsTxt()
     : isShop
       ? shopLlmsTxt()
       : companyLlmsTxt();
@@ -27,6 +30,7 @@ export async function GET() {
     headers: {
       "content-type": "text/plain; charset=utf-8",
       "cache-control": "public, max-age=0, s-maxage=3600, stale-while-revalidate=86400",
+      vary: "Accept-Encoding",
     },
   });
 }

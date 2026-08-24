@@ -9,6 +9,7 @@ import {
   indexingAllowed,
   socialPreviewAudience,
   socialPreviewImages,
+  storeIndexingAllowed,
 } from "./seo";
 
 /**
@@ -39,6 +40,14 @@ export async function defaultSocialPreview(locale: SocialPreviewLocale) {
 export async function consumerIndexablePageRobots(): Promise<NonNullable<Metadata["robots"]>> {
   const host = (await headers()).get("host");
   return consumerIndexingAllowed(host)
+    ? { index: true, follow: true }
+    : { index: false, follow: false };
+}
+
+/** Store OS public login root only: production store canonical host may index. */
+export async function storeIndexablePageRobots(): Promise<NonNullable<Metadata["robots"]>> {
+  const host = (await headers()).get("host");
+  return storeIndexingAllowed(host)
     ? { index: true, follow: true }
     : { index: false, follow: false };
 }
