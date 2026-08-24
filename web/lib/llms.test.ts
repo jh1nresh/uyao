@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { AEO_ANSWER_PAGES } from "./aeo";
 import { companyLlmsTxt, nonCanonicalLlmsTxt, shopLlmsTxt, storeLlmsTxt } from "./llms";
+import { storePublicLeaks } from "./store-public-leaks";
 import { SITE_URL } from "./seo";
 import { SHOP_URL } from "./shop";
 import { indexableCatalogItems } from "./shop-index";
@@ -59,6 +60,7 @@ describe("llms.txt", () => {
     expect(store).toContain("## When not to use");
     expect(store).toMatch(/not a public API/i);
     expect(store).toMatch(/no.*MCP server|MCP server.*none/i);
+    expect(storePublicLeaks(store)).toEqual([]);
   });
 
   it("lists only catalog items that passed the admission gate, on a URL that exists", () => {
