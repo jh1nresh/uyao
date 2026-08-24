@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { AEO_ANSWER_PAGES } from "./aeo";
-import { companyLlmsTxt, nonCanonicalLlmsTxt, shopLlmsTxt } from "./llms";
+import { companyLlmsTxt, nonCanonicalLlmsTxt, shopLlmsTxt, storeLlmsTxt } from "./llms";
 import { SITE_URL } from "./seo";
 import { SHOP_URL } from "./shop";
 import { indexableCatalogItems } from "./shop-index";
@@ -9,6 +9,7 @@ import { indexableCatalogItems } from "./shop-index";
 describe("llms.txt", () => {
   const company = companyLlmsTxt();
   const shop = shopLlmsTxt();
+  const store = storeLlmsTxt();
 
   it("lists every registered answer in both locales with an absolute URL", () => {
     for (const page of AEO_ANSWER_PAGES) {
@@ -49,6 +50,15 @@ describe("llms.txt", () => {
     expect(shop).toContain(`${SITE_URL}/docs#versioning-and-deprecation`);
     // The write endpoints must never be advertised as a usable surface here.
     expect(company).toMatch(/x-internal/);
+    expect(store).toContain("https://store.uyaohealth.com/openapi.json");
+    expect(store).toContain("https://store.uyaohealth.com/api/catalog");
+  });
+
+  it("gives Store OS specific when-to-use guidance without advertising private actions", () => {
+    expect(store).toContain("## When to use");
+    expect(store).toContain("## When not to use");
+    expect(store).toMatch(/not a public API/i);
+    expect(store).toMatch(/no.*MCP server|MCP server.*none/i);
   });
 
   it("lists only catalog items that passed the admission gate, on a URL that exists", () => {
@@ -71,7 +81,7 @@ describe("llms.txt", () => {
   });
 
   it("never claims a price, stock level, or medical recommendation", () => {
-    for (const document of [company, shop]) {
+    for (const document of [company, shop, store]) {
       expect(document).not.toMatch(/\bin stock\b/i);
       expect(document).not.toMatch(/\bbuy now\b/i);
       expect(document).not.toMatch(/NT\$|\$\d/);
@@ -86,7 +96,7 @@ describe("llms.txt", () => {
   });
 
   it("emits valid llms.txt structure: one H1, a blockquote, and linked sections", () => {
-    for (const document of [company, shop]) {
+    for (const document of [company, shop, store]) {
       const h1 = document.split("\n").filter((l) => l.startsWith("# "));
       expect(h1).toHaveLength(1);
       expect(document).toMatch(/\n> /);

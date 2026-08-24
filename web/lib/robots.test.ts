@@ -8,7 +8,7 @@ vi.mock("next/headers", () => ({
 }));
 
 const robots = (await import("../app/robots")).default;
-const { CANONICAL_HOST, SHOP_CANONICAL_HOST, SITE_URL } = await import("./seo");
+const { CANONICAL_HOST, SHOP_CANONICAL_HOST, SITE_URL, STORE_CANONICAL_HOST, STORE_URL } = await import("./seo");
 const { SHOP_URL } = await import("./shop");
 
 function rules(result: Awaited<ReturnType<typeof robots>>) {
@@ -48,6 +48,9 @@ describe("robots policy", () => {
     expect((await robots()).sitemap).toBe(`${SITE_URL}/sitemap.xml`);
     host = SHOP_CANONICAL_HOST;
     expect((await robots()).sitemap).toBe(`${SHOP_URL}/sitemap.xml`);
+    host = STORE_CANONICAL_HOST;
+    expect((await robots()).sitemap).toBe(`${STORE_URL}/sitemap.xml`);
+    expect(rules(await robots()).allow).toContain("/");
   });
 
   it("disallows everything on a non-canonical host or a preview deployment", async () => {

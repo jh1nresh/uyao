@@ -8,7 +8,7 @@ vi.mock("next/headers", () => ({
 
 const sitemap = (await import("../app/sitemap")).default;
 
-const { INDEXABLE_PATHS, SHOP_CANONICAL_HOST, CANONICAL_HOST, SITE_URL } =
+const { INDEXABLE_PATHS, SHOP_CANONICAL_HOST, CANONICAL_HOST, SITE_URL, STORE_CANONICAL_HOST, STORE_URL } =
   await import("./seo");
 const { SHOP_URL } = await import("./shop");
 const { shopIndexablePaths, indexableCatalogItems } = await import("./shop-index");
@@ -39,6 +39,14 @@ describe("sitemap host routing", () => {
     }
   });
 
+  it("serves only the canonical public root on the Store OS host", async () => {
+    host = STORE_CANONICAL_HOST;
+    expect(await sitemap()).toEqual([expect.objectContaining({
+      url: `${STORE_URL}/`,
+      lastModified: "2026-08-24",
+    })]);
+  });
+
   it("ignores the port when matching the host", async () => {
     host = `${SHOP_CANONICAL_HOST}:443`;
     const urls = (await sitemap()).map((entry) => entry.url);
@@ -46,7 +54,7 @@ describe("sitemap host routing", () => {
   });
 
   it("publishes freshness on every URL of both sitemaps", async () => {
-    for (const canonical of [CANONICAL_HOST, SHOP_CANONICAL_HOST]) {
+    for (const canonical of [CANONICAL_HOST, SHOP_CANONICAL_HOST, STORE_CANONICAL_HOST]) {
       host = canonical;
       const entries = await sitemap();
       expect(entries.length).toBeGreaterThan(0);

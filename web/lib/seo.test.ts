@@ -12,6 +12,8 @@ import {
   INSTAGRAM_URL,
   ORGANIZATION_LOGO_URL,
   SHOP_CANONICAL_HOST,
+  STORE_CANONICAL_HOST,
+  STORE_URL,
   SITE_URL,
   SOCIAL_PREVIEW_IMAGES,
   X_URL,
@@ -27,6 +29,8 @@ import {
   socialPreviewAudience,
   socialPreviewImages,
   softwareApplicationJsonLd,
+  storeIndexingAllowed,
+  storeOsSoftwareApplicationJsonLd,
   webSiteJsonLd,
   webPageJsonLd,
 } from "./seo";
@@ -109,6 +113,15 @@ describe("consumerIndexingAllowed", () => {
   });
 });
 
+describe("storeIndexingAllowed", () => {
+  it("allows only the owned Store OS host on production", () => {
+    expect(storeIndexingAllowed(STORE_CANONICAL_HOST, "production")).toBe(true);
+    expect(storeIndexingAllowed(`${STORE_CANONICAL_HOST}:443`, "production")).toBe(true);
+    expect(storeIndexingAllowed(CANONICAL_HOST, "production")).toBe(false);
+    expect(storeIndexingAllowed(STORE_CANONICAL_HOST, "preview")).toBe(false);
+  });
+});
+
 describe("indexable paths", () => {
   it("includes the GEO/AEO benchmark answer pages", () => {
     expect(INDEXABLE_PATHS).toEqual(
@@ -177,6 +190,15 @@ describe("json-ld", () => {
     expect(JSON.stringify(softwareApplicationJsonLd("zh"))).toContain(
       ENTITY_DESCRIPTION.zh.slice(0, 20),
     );
+  });
+
+  it("publishes a Store OS application identity on its canonical URL", () => {
+    expect(storeOsSoftwareApplicationJsonLd()).toMatchObject({
+      "@type": "SoftwareApplication",
+      name: "uYao Store OS",
+      url: `${STORE_URL}/`,
+      publisher: { "@id": `${SITE_URL}/#organization` },
+    });
   });
 
   it("links the organization to the official uYao X and Instagram accounts", () => {

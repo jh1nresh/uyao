@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { openApiDocument, publicReadOpenApiDocument } from "./openapi";
-import { SITE_URL } from "./seo";
+import { SITE_URL, STORE_URL } from "./seo";
 import { SHOP_URL } from "./shop";
 
 const doc = openApiDocument();
@@ -30,6 +30,7 @@ describe("openapi document", () => {
     const servers = (doc.servers as { url: string }[]).map((s) => s.url);
     expect(servers).toContain(SHOP_URL);
     expect(servers).toContain(SITE_URL);
+    expect(servers).toContain(STORE_URL);
   });
 
   it("documents every read endpoint as a public GET", () => {
@@ -204,5 +205,11 @@ describe("openapi document", () => {
       const name = ref.replace(/"|#\/components\/schemas\//g, "");
       expect(schemas, `dangling $ref ${name}`).toContain(name);
     }
+  });
+
+  it("documents structured errors with a code, message, and resolution hint", () => {
+    const schemas = (doc.components as Record<string, Record<string, Record<string, unknown>>>).schemas;
+    const error = schemas.Error;
+    expect(error.required).toEqual(expect.arrayContaining(["code", "message", "resolution"]));
   });
 });

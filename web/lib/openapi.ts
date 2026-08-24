@@ -1,5 +1,5 @@
 import { AREAS } from "./data";
-import { CONTACT_EMAIL, SITE_URL } from "./seo";
+import { CONTACT_EMAIL, SITE_URL, STORE_URL } from "./seo";
 import { SHOP_URL } from "./shop";
 import { PUBLIC_API_VERSION } from "./public-api";
 
@@ -128,6 +128,7 @@ export function openApiDocument(): Record<string, unknown> {
     servers: [
       { url: SHOP_URL, description: "Consumer host. Serves the catalog and pharmacy endpoints." },
       { url: SITE_URL, description: "Company host. Same API surface." },
+      { url: STORE_URL, description: "Store OS host. Same public read API surface; signed-in Store OS actions are not public." },
     ],
     externalDocs: { url: `${SITE_URL}/docs`, description: "uYao developer resources, errors, versioning, and deprecation policy" },
     tags: [

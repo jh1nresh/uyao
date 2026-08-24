@@ -17,8 +17,9 @@ import {
   pageMarkdown,
   shopHomepageMarkdown,
 } from "@/lib/agent-public";
-import { SITE_URL } from "@/lib/seo";
+import { SITE_URL, STORE_CANONICAL_HOST, STORE_URL } from "@/lib/seo";
 import { SHOP_URL } from "@/lib/shop";
+import { storeHomepageMarkdown } from "@/lib/store-public";
 
 /**
  * Host-based routing：同一份部署掛兩個網域。
@@ -43,11 +44,9 @@ export const config = {
 const SHOP_HOSTS = new Set(
   ["shop-uyao.vercel.app", process.env.SHOP_HOST ?? ""].filter(Boolean),
 );
-const STORE_URL = "https://store.uyaohealth.com";
-const STORE_HOST = new URL(STORE_URL).host;
 const STORE_ALIASES = new Set(
   ["store.uyao.com", process.env.STORE_HOST ?? ""]
-    .filter((host) => Boolean(host) && host !== STORE_HOST),
+    .filter((host) => Boolean(host) && host !== STORE_CANONICAL_HOST),
 );
 
 const COMPANY_HOST = new URL(SITE_URL).host;
@@ -158,7 +157,7 @@ export function proxy(req: NextRequest) {
   // shop frontend PR was unreviewable on its own preview URL.
   const isPreviewHost = host.endsWith(".vercel.app") && !SHOP_HOSTS.has(host);
   const isShop = SHOP_HOSTS.has(host) || host.startsWith("shop.") || isPreviewHost;
-  const isStore = host === STORE_HOST
+  const isStore = host === STORE_CANONICAL_HOST
     || (process.env.NODE_ENV !== "production" && host === "store.localhost");
   const isStoreAlias = STORE_ALIASES.has(host);
 
@@ -184,9 +183,16 @@ export function proxy(req: NextRequest) {
       return redirectTo(req, STORE_URL, "/");
     }
 
+    const markdown = negotiatedMarkdown(req, storeHomepageMarkdown());
+    if (markdown) return markdown;
+
     const url = req.nextUrl.clone();
     url.pathname = "/store-os";
-    return NextResponse.rewrite(url, { request: { headers: requestHeaders } });
+    const response = NextResponse.rewrite(url, { request: { headers: requestHeaders } });
+    appendVaryAccept(response.headers);
+    response.headers.set("cache-control", "private, no-cache, no-store, max-age=0, must-revalidate");
+    response.headers.set("cdn-cache-control", "no-store");
+    return response;
   }
 
   if (!isShop && host === `www.${COMPANY_HOST}`) {
