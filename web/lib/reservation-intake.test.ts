@@ -8,23 +8,51 @@ import {
 } from "./reservation-intake";
 
 describe("reservation intake consent boundary", () => {
-  it("keeps an ordinary reservation free of health context", () => {
-    expect(parseReservationIntake(undefined)).toEqual({ ok: true });
-    expect(parseReservationIntake({ searchQuery: " ", note: "" })).toEqual({ ok: true });
+  it("requires an explicit allergy answer on every reservation", () => {
+    expect(parseReservationIntake(undefined)).toMatchObject({ ok: false, error: expect.stringContaining("過敏") });
+    expect(parseReservationIntake({ consent: true })).toMatchObject({ ok: false, error: expect.stringContaining("過敏") });
+    expect(parseReservationIntake({ allergyStatus: "none", consent: true })).toEqual({
+      ok: true,
+      intake: {
+        source: "allergen_check",
+        allergyStatus: "none",
+        consentedAt: expect.any(String),
+      },
+    });
+  });
+
+  it("requires named allergens when the customer reports allergies", () => {
+    expect(parseReservationIntake({ allergyStatus: "has_allergies", consent: true })).toMatchObject({
+      ok: false,
+      error: expect.stringContaining("過敏原"),
+    });
+    expect(parseReservationIntake(
+      { allergyStatus: "has_allergies", allergens: "  青黴素、花生  ", consent: true },
+      () => new Date("2026-08-16T00:00:00.000Z"),
+    )).toEqual({
+      ok: true,
+      intake: {
+        source: "allergen_check",
+        allergyStatus: "has_allergies",
+        allergens: "青黴素、花生",
+        consentedAt: "2026-08-16T00:00:00.000Z",
+      },
+    });
   });
 
   it("requires explicit consent and stamps it on the server", () => {
-    expect(parseReservationIntake({ searchQuery: "睡不好" })).toMatchObject({
+    expect(parseReservationIntake({ allergyStatus: "none", searchQuery: "睡不好" })).toMatchObject({
       ok: false,
       error: expect.stringContaining("同意"),
     });
     expect(parseReservationIntake(
-      { searchQuery: "  睡不好  ", note: "  最近三天   比較明顯  ", consent: true },
+      { allergyStatus: "none", searchQuery: "  睡不好  ", note: "  最近三天   比較明顯  ", consent: true },
       () => new Date("2026-08-16T00:00:00.000Z"),
     )).toEqual({
       ok: true,
       intake: {
         source: "shop_search",
+        allergyStatus: "none",
         searchQuery: "睡不好",
         note: "最近三天 比較明顯",
         consentedAt: "2026-08-16T00:00:00.000Z",
@@ -33,7 +61,8 @@ describe("reservation intake consent boundary", () => {
   });
 
   it("rejects oversized or malformed health context", () => {
-    expect(parseReservationIntake({ note: "症".repeat(501), consent: true })).toMatchObject({ ok: false });
+    expect(parseReservationIntake({ allergyStatus: "none", note: "症".repeat(501), consent: true })).toMatchObject({ ok: false });
+    expect(parseReservationIntake({ allergyStatus: "has_allergies", allergens: "敏".repeat(201), consent: true })).toMatchObject({ ok: false });
     expect(parseReservationIntake("睡不好")).toMatchObject({ ok: false });
   });
 });

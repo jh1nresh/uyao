@@ -83,6 +83,8 @@ describe("GET /api/store/reservations", () => {
       ...reservation("A 藥局", "A-111", "0911222333"),
       intake: {
         source: "shop_search",
+        allergyStatus: "has_allergies",
+        allergens: "青黴素",
         searchQuery: "睡不好",
         note: "最近三天比較明顯",
         consentedAt: "2026-08-16T00:00:00.000Z",
@@ -102,6 +104,8 @@ describe("GET /api/store/reservations", () => {
       contactTail: "333",
       intake: {
         source: "shop_search",
+        allergyStatus: "has_allergies",
+        allergens: "青黴素",
         searchQuery: "睡不好",
         note: "最近三天比較明顯",
       },

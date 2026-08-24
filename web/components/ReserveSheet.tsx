@@ -11,6 +11,7 @@ import { PRICE_NOTICE } from "@/lib/pricing";
 import { hoursSummary } from "@/lib/hours";
 import { localizedPath } from "@/lib/i18n";
 import {
+  RESERVATION_INTAKE_ALLERGENS_MAX,
   RESERVATION_INTAKE_NOTE_MAX,
   RESERVATION_INTAKE_STORAGE_KEY,
   readReservationIntakeDraft,
@@ -60,8 +61,11 @@ export function ReserveSheet({
   const [success, setSuccess] = useState<Success | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [requestNote, setRequestNote] = useState("");
+  const [allergyStatus, setAllergyStatus] = useState<"" | "none" | "has_allergies">("");
+  const [allergens, setAllergens] = useState("");
   const [shareIntake, setShareIntake] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const allergyRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -80,7 +84,7 @@ export function ReserveSheet({
    * 不要每次預留都重打一次號碼。
    *
    * 存在 localStorage 而不是後端：這樣不需要登入，而號碼本來就是這台
-   * 裝置的主人自己填的。帶回來之後送出鈕直接可按，等於一鍵預留。
+   * 裝置的主人自己填的。過敏回答仍需每次重新詢問，不能沿用上次答案。
    */
   useEffect(() => {
     if (success) return;
@@ -89,12 +93,11 @@ export function ReserveSheet({
       if (saved) {
         setContact(saved);
         setRemembered(true);
-        return; // 已經有值就不要搶焦點，讓他直接按送出
       }
     } catch {
       /* 隱私模式讀不到就當沒存過 */
     }
-    inputRef.current?.focus();
+    allergyRef.current?.focus();
   }, [success]);
 
   useEffect(() => {
@@ -109,11 +112,17 @@ export function ReserveSheet({
     }
   }, [target.drug.slug]);
 
-  const hasIntake = Boolean(searchQuery || requestNote.trim());
-  const needsIntakeConsent = hasIntake && !shareIntake;
+  const allergyIncomplete = allergyStatus === "" || (allergyStatus === "has_allergies" && !allergens.trim());
+  const needsIntakeConsent = !allergyIncomplete && !shareIntake;
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (allergyIncomplete || !shareIntake) {
+      setError(locale === "en"
+        ? "Answer the allergy question and consent to share it with the pharmacist."
+        : "請回答過敏問題，並同意提供給藥師查看。");
+      return;
+    }
     setPending(true);
     setError(null);
     try {
@@ -125,13 +134,13 @@ export function ReserveSheet({
           storeSlug: target.store.slug,
           contact,
           source: captureAdSource(),
-          ...(hasIntake && shareIntake ? {
-            intake: {
-              ...(searchQuery ? { searchQuery } : {}),
-              ...(requestNote.trim() ? { note: requestNote } : {}),
-              consent: true,
-            },
-          } : {}),
+          intake: {
+            allergyStatus,
+            ...(allergyStatus === "has_allergies" ? { allergens: allergens.trim() } : {}),
+            ...(searchQuery ? { searchQuery } : {}),
+            ...(requestNote.trim() ? { note: requestNote } : {}),
+            consent: true,
+          },
           ...(demo ? { demo: true } : {}),
         }),
       });
@@ -224,6 +233,55 @@ export function ReserveSheet({
                 </span>
               </div>
 
+              <fieldset className="mt-3 border border-line-strong bg-ivory px-3 py-3">
+                <legend className="px-1 text-[12px] font-bold text-ink">
+                  {locale === "en" ? "Any known medication, food, or other allergies? (required)" : "是否有已知的藥物、食物或其他過敏？（必填）"}
+                </legend>
+                <div className="mt-1.5 grid gap-2 sm:grid-cols-2">
+                  <label className="flex min-h-11 cursor-pointer items-center gap-2 border border-line bg-paper px-3 text-[12.5px] text-ink">
+                    <input
+                      type="radio"
+                      ref={allergyRef}
+                      name="reservation-allergy-status"
+                      value="none"
+                      required
+                      checked={allergyStatus === "none"}
+                      onChange={() => {
+                        setAllergyStatus("none");
+                        setAllergens("");
+                      }}
+                      className="h-4 w-4 accent-forest"
+                    />
+                    {locale === "en" ? "No known allergies" : "目前沒有已知過敏"}
+                  </label>
+                  <label className="flex min-h-11 cursor-pointer items-center gap-2 border border-line bg-paper px-3 text-[12.5px] text-ink">
+                    <input
+                      type="radio"
+                      name="reservation-allergy-status"
+                      value="has_allergies"
+                      checked={allergyStatus === "has_allergies"}
+                      onChange={() => setAllergyStatus("has_allergies")}
+                      className="h-4 w-4 accent-forest"
+                    />
+                    {locale === "en" ? "Yes, I have allergies" : "有已知過敏"}
+                  </label>
+                </div>
+                {allergyStatus === "has_allergies" && (
+                  <label className="mt-2.5 block text-[12px] font-bold text-ink" htmlFor="reservation-allergens">
+                    {locale === "en" ? "List known allergens (required)" : "請填寫已知過敏原（必填）"}
+                    <input
+                      id="reservation-allergens"
+                      value={allergens}
+                      required
+                      onChange={(event) => setAllergens(event.target.value)}
+                      maxLength={RESERVATION_INTAKE_ALLERGENS_MAX}
+                      placeholder={locale === "en" ? "For example: penicillin, peanuts" : "例如：青黴素、花生"}
+                      className="mt-1.5 h-11 w-full border border-line-strong bg-paper px-3 text-[13px] font-normal text-ink outline-none placeholder:text-muted-2 focus:border-forest"
+                    />
+                  </label>
+                )}
+              </fieldset>
+
               {searchQuery && (
                 <div className="mt-2.5 border-l-2 border-green pl-2.5 text-[13px] leading-[1.55]">
                   <span className="block text-[11px] font-bold text-muted-2">
@@ -232,10 +290,7 @@ export function ReserveSheet({
                   <span className="text-ink">{searchQuery}</span>
                   <button
                     type="button"
-                    onClick={() => {
-                      setSearchQuery("");
-                      if (!requestNote.trim()) setShareIntake(false);
-                    }}
+                    onClick={() => setSearchQuery("")}
                     className="ml-2 min-h-11 text-[11px] text-muted underline"
                   >
                     {locale === "en" ? "Do not attach" : "不要附上"}
@@ -249,35 +304,30 @@ export function ReserveSheet({
               <textarea
                 id="reservation-intake-note"
                 value={requestNote}
-                onChange={(event) => {
-                  setRequestNote(event.target.value);
-                  if (!event.target.value.trim() && !searchQuery) setShareIntake(false);
-                }}
+                onChange={(event) => setRequestNote(event.target.value)}
                 maxLength={RESERVATION_INTAKE_NOTE_MAX}
                 rows={3}
                 placeholder={locale === "en" ? "For example: started three days ago; please advise in store" : "例如：最近三天開始不舒服，希望到店請藥師協助判斷"}
                 className="mt-1.5 w-full resize-none border border-line-strong bg-ivory px-3 py-2 text-[13px] leading-[1.55] text-ink outline-none placeholder:text-muted-2 focus:border-forest"
               />
 
-              {hasIntake && (
-                <label className="mt-2.5 flex cursor-pointer items-start gap-2 text-[12.5px] leading-[1.55] text-ink-2">
-                  <input
-                    type="checkbox"
-                    checked={shareIntake}
-                    onChange={(event) => setShareIntake(event.target.checked)}
-                    className="mt-0.5 h-4 w-4 accent-forest"
-                  />
-                  <span>
-                    {locale === "en"
-                      ? "I agree to share the description above with this pharmacy so its pharmacist can assess it in store."
-                      : "我同意把上述描述提供給這間藥局，讓藥師在門市協助判斷。"}
-                  </span>
-                </label>
-              )}
+              <label className="mt-2.5 flex cursor-pointer items-start gap-2 text-[12.5px] leading-[1.55] text-ink-2">
+                <input
+                  type="checkbox"
+                  checked={shareIntake}
+                  onChange={(event) => setShareIntake(event.target.checked)}
+                  className="mt-0.5 h-4 w-4 accent-forest"
+                />
+                <span>
+                  {locale === "en"
+                    ? "I agree to share my allergy answer and the description above with this pharmacy for its pharmacist to review."
+                    : "我同意把過敏回答與上述描述提供給這間藥局，讓藥師查看。"}
+                </span>
+              </label>
               <p className="mb-0 mt-2 text-[11.5px] leading-[1.55] text-muted">
                 {locale === "en"
-                  ? "This is not an online diagnosis or medicine recommendation. The context stays inside the signed-in Store OS and expires with the reservation record."
-                  : "這不是線上診斷或用藥推薦；內容只留在登入後的 Store OS，並會隨預留資料到期。"}
+                  ? "This is not an online diagnosis or medicine recommendation. The allergy answer and context stay inside the signed-in Store OS and expire with the reservation record."
+                  : "這不是線上診斷或用藥推薦；過敏回答與需求內容只留在登入後的 Store OS，並會隨預留資料到期。"}
               </p>
             </section>
 
@@ -318,9 +368,14 @@ export function ReserveSheet({
                   {error}
                 </p>
               )}
+              {allergyIncomplete && (
+                <p className="text-[12px] font-medium text-oxblood" aria-live="polite">
+                  {locale === "en" ? "Answer the required allergy question before sending." : "送出前請完成必填的過敏問題。"}
+                </p>
+              )}
               {needsIntakeConsent && (
                 <p className="text-[12px] font-medium text-oxblood" aria-live="polite">
-                  {locale === "en" ? "Please consent before attaching this context." : "請先勾選同意，才會把這份需求脈絡附在單號上。"}
+                  {locale === "en" ? "Consent is required to share the allergy answer with the pharmacist." : "請先勾選同意，才會把過敏回答提供給藥師。"}
                 </p>
               )}
               <p className="mt-1 text-[13px] leading-[1.6] text-muted">
@@ -330,7 +385,7 @@ export function ReserveSheet({
               </p>
               <button
                 type="submit"
-                disabled={pending || contact.trim() === "" || needsIntakeConsent}
+                disabled={pending || contact.trim() === "" || allergyIncomplete || !shareIntake}
                 className="action-primary mt-1.5 h-12 text-[16px] tracking-[.1em] disabled:shadow-none"
               >
                 {pending ? (locale === "en" ? "Submitting…" : "送出中…") : (locale === "en" ? "Send reservation" : "送出預留")}
@@ -382,8 +437,8 @@ function SuccessBody({
           </b>
           <p className="mb-0 mt-1 text-muted">
             {locale === "en"
-              ? "The pharmacy can review your Shop search and note before confirming; the pharmacist still decides what is appropriate in store."
-              : "藥局確認前可以看到你的 Shop 搜尋與補充描述；實際適合的藥品或服務仍由藥師在門市判斷。"}
+              ? "The pharmacy can review your allergy answer, Shop search, and note before confirming; the pharmacist still decides what is appropriate in store."
+              : "藥局確認前可以看到你的過敏回答、Shop 搜尋與補充描述；實際適合的藥品或服務仍由藥師在門市判斷。"}
           </p>
         </div>
       )}

@@ -154,6 +154,14 @@ describe("openapi document", () => {
     expect(reservation).toMatch(/Store OS/);
     expect(reservation).toMatch(/push notification/i);
     expect(reservation).toMatch(/rate limited/i);
+    expect(reservation).toMatch(/ask the person.*allerg/i);
+    expect(reservation).toMatch(/pharmacist review/i);
+
+    const schemas = (doc.components as Record<string, Record<string, Record<string, unknown>>>).schemas;
+    const schema = schemas.Reservation;
+    expect(schema.required).toEqual(expect.arrayContaining(["intake"]));
+    expect(JSON.stringify(schema.properties)).toContain("allergyStatus");
+    expect(JSON.stringify(schema.properties)).toContain("allergens");
   });
 
   it("warns that nhi hours are not opening hours", () => {
