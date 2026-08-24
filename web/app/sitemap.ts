@@ -2,7 +2,13 @@ import type { MetadataRoute } from "next";
 import { headers } from "next/headers";
 
 import { sitemapLastModified } from "@/lib/aeo";
-import { INDEXABLE_PATHS, SHOP_CANONICAL_HOST, SITE_URL } from "@/lib/seo";
+import {
+  INDEXABLE_PATHS,
+  SHOP_CANONICAL_HOST,
+  SITE_URL,
+  STORE_CANONICAL_HOST,
+  STORE_URL,
+} from "@/lib/seo";
 import { SHOP_URL } from "@/lib/shop";
 import { shopSitemapEntries } from "@/lib/shop-index";
 
@@ -23,6 +29,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       lastModified: entry.lastModified,
     }));
+  }
+
+  if (host === STORE_CANONICAL_HOST) {
+    return [{
+      url: `${STORE_URL}/`,
+      changeFrequency: "monthly",
+      lastModified: "2026-08-24",
+    }];
   }
 
   return INDEXABLE_PATHS.map((path) => ({

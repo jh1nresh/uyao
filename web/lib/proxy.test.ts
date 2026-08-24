@@ -5,8 +5,8 @@ import { proxy } from "../proxy";
 import { SITE_URL } from "./seo";
 import { SHOP_URL } from "./shop";
 
-function request(url: string) {
-  return proxy(new NextRequest(url));
+function request(url: string, headers?: HeadersInit) {
+  return proxy(new NextRequest(url, { headers }));
 }
 
 describe("canonical host routing", () => {
@@ -16,6 +16,30 @@ describe("canonical host routing", () => {
     expect(response.headers.get("x-middleware-rewrite")).toBe(
       "https://store.uyaohealth.com/store-os?work=WI-2031",
     );
+    expect(response.headers.get("vary")).toMatch(/Accept/i);
+    expect(response.headers.get("cache-control")).toMatch(/private.*no-store/);
+    expect(response.headers.get("cdn-cache-control")).toBe("no-store");
+  });
+
+  it("serves Store OS Markdown with cache-safe negotiation headers", async () => {
+    const response = request("https://store.uyaohealth.com/", {
+      accept: "text/markdown, text/html;q=0.8",
+    });
+
+    expect(response.status).toBe(200);
+    expect(response.headers.get("content-type")).toMatch(/text\/markdown/);
+    expect(response.headers.get("vary")).toMatch(/Accept/i);
+    expect(response.headers.get("vary")).toMatch(/Accept-Encoding/i);
+    await expect(response.text()).resolves.toMatch(/^# uYao Store OS/m);
+  });
+
+  it("returns 406 when the Store OS homepage cannot satisfy Accept", () => {
+    const response = request("https://store.uyaohealth.com/", {
+      accept: "application/xml",
+    });
+
+    expect(response.status).toBe(406);
+    expect(response.headers.get("vary")).toMatch(/Accept/i);
   });
 
   it("collapses localized Store OS paths to the store domain root", () => {
