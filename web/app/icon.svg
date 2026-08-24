@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc">
-  <title id="title">uYao app icon</title>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="title desc" data-brand-version="v4-20260824">
+  <title id="title">uYao app icon v4</title>
   <desc id="desc">uYao 有藥 reference-locked outlined vector artwork.</desc>
   <defs>
     <linearGradient id="app-mark" gradientUnits="userSpaceOnUse" x1="145" y1="258" x2="275" y2="520">
