@@ -10,6 +10,7 @@ import {
   storeHomepageMarkdown,
   storeHomepageVisibleText,
 } from "./store-public";
+import { storePublicLeaks } from "./store-public-leaks";
 
 describe("Store OS public agent surface", () => {
   it("server-renders a branded H1 and more than 500 characters without JavaScript", () => {
@@ -25,6 +26,8 @@ describe("Store OS public agent surface", () => {
     expect(html).toContain("/openapi.json");
     expect(html).toContain("/llms.txt");
     expect(text).toMatch(/不是即時庫存/);
+    expect(storePublicLeaks(html)).toEqual([]);
+    expect(storePublicLeaks(text)).toEqual([]);
   });
 
   it("publishes the same boundaries and developer links as Markdown", () => {
@@ -35,6 +38,7 @@ describe("Store OS public agent surface", () => {
     expect(markdown).toContain("## When not to use");
     expect(markdown).toContain("https://store.uyaohealth.com/openapi.json");
     expect(markdown).toMatch(/not live inventory|不是即時庫存/i);
+    expect(storePublicLeaks(markdown)).toEqual([]);
   });
 
   it("declares canonical, brand metadata, and structured data on the Store page", () => {

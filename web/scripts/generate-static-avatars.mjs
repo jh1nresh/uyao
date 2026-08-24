@@ -137,4 +137,4 @@ for (const [fileName, componentName, data, animationName] of avatars) {
     path.join(outputRoot, `${fileName}.svg.tsx`),
     renderComponent(componentName, data, animationName),
   );
-}
+};

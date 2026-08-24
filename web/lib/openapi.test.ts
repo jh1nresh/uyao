@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 
-import { openApiDocument, publicReadOpenApiDocument } from "./openapi";
-import { SITE_URL, STORE_URL } from "./seo";
+import { openApiDocument, openApiDocumentForHost, publicReadOpenApiDocument } from "./openapi";
+import { CANONICAL_HOST, CONTACT_EMAIL, SITE_URL, STORE_CANONICAL_HOST, STORE_URL } from "./seo";
+import { storePublicLeaks } from "./store-public-leaks";
 import { SHOP_URL } from "./shop";
 
 const doc = openApiDocument();
@@ -180,6 +181,15 @@ describe("openapi document", () => {
     expect(JSON.stringify(docs)).not.toContain("/api/reservations");
     expect(JSON.stringify(docs)).toContain("X-uYao-API-Version");
     expect(JSON.stringify(docs)).toContain("application/problem+json");
+    expect(JSON.stringify(docs)).toContain(CONTACT_EMAIL);
+    expect(storePublicLeaks(JSON.stringify(docs))).toEqual([]);
+    expect((docs.components as { securitySchemes?: unknown }).securitySchemes).toBeUndefined();
+  });
+
+  it("serves the public-read document only on the Store host", () => {
+    expect(openApiDocumentForHost(STORE_CANONICAL_HOST)).toEqual(publicReadOpenApiDocument());
+    expect(openApiDocumentForHost(CANONICAL_HOST)).toEqual(openApiDocument());
+    expect(Object.keys(openApiDocumentForHost(null).paths as object)).toContain("/api/reservations");
   });
 
   it("defines machine-actionable RFC 9457 error responses", () => {

@@ -4,6 +4,7 @@ import { describe, expect, it } from "vitest";
 import { proxy } from "../proxy";
 import { SITE_URL } from "./seo";
 import { SHOP_URL } from "./shop";
+import { storePublicLeaks } from "./store-public-leaks";
 
 function request(url: string, headers?: HeadersInit) {
   return proxy(new NextRequest(url, { headers }));
@@ -30,7 +31,9 @@ describe("canonical host routing", () => {
     expect(response.headers.get("content-type")).toMatch(/text\/markdown/);
     expect(response.headers.get("vary")).toMatch(/Accept/i);
     expect(response.headers.get("vary")).toMatch(/Accept-Encoding/i);
-    await expect(response.text()).resolves.toMatch(/^# uYao Store OS/m);
+    const markdown = await response.text();
+    expect(markdown).toMatch(/^# uYao Store OS/m);
+    expect(storePublicLeaks(markdown)).toEqual([]);
   });
 
   it("returns 406 when the Store OS homepage cannot satisfy Accept", () => {

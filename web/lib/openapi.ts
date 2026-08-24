@@ -1,5 +1,5 @@
 import { AREAS } from "./data";
-import { CONTACT_EMAIL, SITE_URL, STORE_URL } from "./seo";
+import { CONTACT_EMAIL, SITE_URL, STORE_CANONICAL_HOST, STORE_URL } from "./seo";
 import { SHOP_URL } from "./shop";
 import { PUBLIC_API_VERSION } from "./public-api";
 
@@ -690,8 +690,9 @@ export function openApiDocument(): Record<string, unknown> {
 }
 
 /**
- * Agent-facing /docs contract: only the two public GETs.
- * The full /openapi.json still lists site-form writes as x-internal.
+ * Public-read contract: GET /api/catalog and GET /api/pharmacies only.
+ * store.uyaohealth.com /openapi.json serves this. Company and shop hosts
+ * keep the full document, including site-form writes marked x-internal.
  */
 export function publicReadOpenApiDocument(): Record<string, unknown> {
   const full = openApiDocument();
@@ -723,7 +724,6 @@ export function publicReadOpenApiDocument(): Record<string, unknown> {
         `- ${NO_INVENTORY_NOTE}`,
         "- These responses repeat fields the catalog and pharmacy pages already render.",
         "- They are not a diagnosis API and not a Store OS control plane. Store OS is a prototype.",
-        "- Site-form POST endpoints exist on this host for humans; they are not part of this document.",
         `- ${VERSION_POLICY_NOTE}`,
       ].join("\n"),
     },
@@ -739,4 +739,15 @@ export function publicReadOpenApiDocument(): Record<string, unknown> {
     },
     components: { schemas },
   };
+}
+
+/** Store public host gets the read contract. Other hosts keep the full spec. */
+export function openApiDocumentForHost(
+  requestHost: string | null | undefined,
+): Record<string, unknown> {
+  const host = (requestHost ?? "").toLowerCase().split(":")[0];
+  if (host === STORE_CANONICAL_HOST) {
+    return publicReadOpenApiDocument();
+  }
+  return openApiDocument();
 }
