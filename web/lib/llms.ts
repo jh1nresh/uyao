@@ -5,6 +5,7 @@ import {
   CONTACT_EMAIL,
   ENTITY_DESCRIPTION,
   SITE_URL,
+  STORE_URL,
 } from "./seo";
 import { SHOP_URL } from "./shop";
 import { indexableCatalogItems } from "./shop-index";
@@ -140,6 +141,47 @@ ${line("Robots", `${SHOP_URL}/robots.txt`, "Crawl policy for the consumer host."
 
 ${line("uYao", `${SITE_URL}/en`, ENTITY_DESCRIPTION.en)}
 ${line("Product evidence", `${SITE_URL}/en/evidence`, "What is verified in code and tests versus what is still a prototype claim.")}
+`;
+}
+
+/** Store OS host: public discovery only; never advertise tenant actions. */
+export function storeLlmsTxt(): string {
+  return `# uYao Store OS
+
+> Pharmacist-authorized pilot workspace for independent pharmacies in Taiwan.
+
+uYao Store OS turns pharmacy supply and nearby demand signals into traceable
+work. The public homepage explains the product; signed-in tenant data and
+actions are private. Store OS is a pilot prototype, not a shipped POS,
+insurance-claim system, live-inventory service, or autonomous purchasing agent.
+
+## When to use
+
+${line("Understand uYao Store OS", `${STORE_URL}/`, "Use the public product context to understand the pharmacist-approval boundary.")}
+${line("Read the public trial catalog", `${STORE_URL}/api/catalog`, "Use for partner-listed catalog content, never live inventory.")}
+${line("Inspect the uYao Public API contract", `${STORE_URL}/openapi.json`, "Use for schemas, versions, structured errors, and rate limits.")}
+
+## When not to use
+
+${line("No stock or medical claims", `${SITE_URL}/docs`, "Do not claim live stock, price, availability, diagnosis, dosage, or a pharmacist decision.")}
+${line("No private Store OS automation", `${STORE_URL}/`, "Login, support, notifications, and tenant workflows are not a public API.")}
+${line("No inferred integration surface", `${STORE_URL}/openapi.json`, "No MCP server, public webhook, or Store OS control API is published.")}
+
+## uYao developer resources
+
+${line("uYao Public API documentation", `${SITE_URL}/docs`, "Human-readable documentation for the supported public reads.")}
+${line("OpenAPI 3.1 specification", `${STORE_URL}/openapi.json`, "Versioned schemas, JSON errors, and endpoint boundaries.")}
+${line("Catalog API", `${STORE_URL}/api/catalog`, "Partner-listed catalog content; not live inventory or a price.")}
+${line("Public pharmacy API", `${STORE_URL}/api/pharmacies`, "Taiwan public pharmacy records; a listing is not stock or a partnership.")}
+${line("Sitemap", `${STORE_URL}/sitemap.xml`, "Canonical public Store OS entry point.")}
+${line("Robots", `${STORE_URL}/robots.txt`, "Crawler policy for the Store OS host.")}
+
+## Company
+
+${line("uYao 有藥", `${SITE_URL}/zh-tw`, ENTITY_DESCRIPTION.zh)}
+${line("Product evidence", `${SITE_URL}/zh-tw/evidence`, "Verified code and test evidence versus prototype claims.")}
+
+Contact: ${CONTACT_EMAIL}
 `;
 }
 

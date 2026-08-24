@@ -13,6 +13,8 @@ export const SITE_URL = (
 
 export const CANONICAL_HOST = new URL(SITE_URL).host;
 export const SHOP_CANONICAL_HOST = new URL(SHOP_URL).host;
+export const STORE_URL = "https://store.uyaohealth.com";
+export const STORE_CANONICAL_HOST = new URL(STORE_URL).host;
 
 /** Canonical public identity. Keep these values aligned with visible homepage copy. */
 export const BRAND_NAME = "uYao 有藥";
@@ -113,6 +115,15 @@ export function consumerIndexingAllowed(
   if (vercelEnv !== "production") return false;
   const host = (requestHost ?? "").toLowerCase().split(":")[0];
   return host === SHOP_CANONICAL_HOST;
+}
+
+export function storeIndexingAllowed(
+  requestHost: string | null | undefined,
+  vercelEnv: string | undefined = process.env.VERCEL_ENV,
+): boolean {
+  if (vercelEnv !== "production") return false;
+  const host = (requestHost ?? "").toLowerCase().split(":")[0];
+  return host === STORE_CANONICAL_HOST;
 }
 
 /**
@@ -218,6 +229,20 @@ export function softwareApplicationJsonLd(locale: Locale): JsonLd {
     operatingSystem: "Web",
     url: `${SITE_URL}${locale === "en" ? "/en" : "/zh-tw"}`,
     description: ENTITY_DESCRIPTION[locale],
+    publisher: { "@id": `${SITE_URL}/#organization` },
+  };
+}
+
+export function storeOsSoftwareApplicationJsonLd(): JsonLd {
+  return {
+    "@type": "SoftwareApplication",
+    "@id": `${STORE_URL}/#software`,
+    name: "uYao Store OS",
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    url: `${STORE_URL}/`,
+    description:
+      "A pilot workspace that turns pharmacy supply and local demand signals into pharmacist-authorized work with traceable outcomes.",
     publisher: { "@id": `${SITE_URL}/#organization` },
   };
 }
