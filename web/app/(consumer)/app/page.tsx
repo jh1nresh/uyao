@@ -22,6 +22,7 @@ import { PARTNER_STORE_ITEMS } from "@/lib/partner-stores";
 import {
   CONSUMER_DESCRIPTION,
   SITE_URL,
+  STORE_URL,
   consumerWebPageJsonLd,
   consumerWebSiteJsonLd,
   organizationJsonLd,
@@ -32,8 +33,8 @@ import { SHOP_URL } from "@/lib/shop";
 
 const UPDATED_AT = "2026-08-12";
 
-// `/app` 只保留為內部 implementation route；公開 canonical 是 shop host
-// 的 `/zh-tw` 與 `/en`，由 proxy rewrite 到這裡。
+// `/app` 只保留為內部 implementation route；公開 canonical 是主網域的
+// `/zh-tw` 與 `/en`，由 proxy rewrite 到這裡。
 export async function generateMetadata(): Promise<Metadata> {
   const locale = await getRequestLocale();
   const robots = await consumerIndexablePageRobots();
@@ -143,20 +144,24 @@ export default async function HomePage({
         第一印象「這是藥局名錄」，而名錄 Google Maps 做得更好。
         藥局家數留下來當可信度證據，但收成一行字。
       */}
-      <section className="bg-ivory">
-        <div className="shop-shell pb-8 pt-8 sm:pb-10 sm:pt-10 lg:pb-12 lg:pt-12">
-          <div className="mx-auto w-full max-w-[960px] text-center">
-            <h1 className="editorial-display m-0 text-[clamp(38px,4.2vw,58px)] leading-[1.1]">
-              {locale === "en" ? "You do not need to know the product name." : "不用先知道品名。描述需求就能開始。"}
+      <section className="relative overflow-hidden border-b border-line bg-ivory">
+        <div className="shop-shell relative pb-10 pt-12 sm:pb-12 sm:pt-16 lg:pb-14 lg:pt-20">
+          <div className="w-full max-w-[1160px]">
+            <h1 className="editorial-display m-0 max-w-[1050px] text-[clamp(40px,7vw,96px)] leading-[1.02] [text-wrap:balance]">
+              {locale === "en" ? (
+                <><span className="block">You do not need</span><span className="block">the product name.</span></>
+              ) : (
+                <><span className="block">不用先知道品名。</span><span className="block">描述需求就能開始。</span></>
+              )}
             </h1>
-            <p className="mx-auto mt-5 max-w-[650px] text-[16px] leading-[1.75] text-ink-2 sm:text-[17px]">
+            <p className="mt-6 max-w-[610px] text-[15px] leading-[1.8] text-ink-2 sm:text-[17px]">
               {locale === "en" ? "Search by product, ingredient, or daily-wellness need. Recognized common symptoms open safety guidance instead of automatic product results." : "可輸入品名、成分或日常保養方向；辨識到常見症狀時，會先顯示安全提醒，不會自動帶商品。"}
             </p>
-            <div className="mt-8 text-left">
+            <div className="mt-8 max-w-[1120px] text-left">
               <SearchInput size="xl" area={area} className="w-full shadow-none" />
             </div>
 
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-[14px] text-muted">
+            <div className="mt-4 flex flex-wrap items-center justify-start gap-x-5 gap-y-1 text-[14px] text-muted">
               <nav aria-label={locale === "en" ? "Categories" : "品類"} className="contents">
                 {CATEGORIES.map((c) => (
                   <Link
@@ -170,7 +175,7 @@ export default async function HomePage({
               </nav>
             </div>
 
-            <div className="mt-5 flex flex-col items-center justify-between gap-3 text-[14px] leading-[1.65] text-muted sm:flex-row sm:text-left">
+            <div className="mt-5 flex max-w-[1120px] flex-col items-start justify-between gap-3 text-[14px] leading-[1.65] text-muted sm:flex-row sm:items-center">
               <p className="m-0">
                 {locale === "en"
                   ? `${currentArea.shortName}: ${storeCount} listed pharmacies`
@@ -304,22 +309,45 @@ export default async function HomePage({
         </div>
       </section>
 
-      <section className="bg-sage text-ink">
-        <div className="shop-shell py-14 sm:py-20">
-          <div className="max-w-[700px] border-l border-green pl-5 sm:pl-7">
-          <p className="m-0 text-[14px] font-bold text-forest">{locale === "en" ? "For pharmacies" : "給藥局"}</p>
-          <h2 className="editorial-display mb-0 mt-3 text-[34px] sm:text-[44px]">{locale === "en" ? "Run an independent pharmacy?" : "開藥局的？"}</h2>
-          <p className="mt-3 text-[15px] leading-[1.8] text-ink-2">
-            {locale === "en" ? "A small box connects to your existing scanner, captures batch and expiry evidence during receiving, and creates the next action in Store OS." : "一個小盒子串在你現有的條碼掃描器上，自動記下每批藥的效期。快過退貨期限就送進 Store OS，並可提醒已開啟通知的裝置。"}
-          </p>
-          <Link
-            href={localizedPath("/pharmacy", locale)}
-            className="mt-5 inline-flex min-h-12 items-center bg-paper px-5 text-[14px] font-bold text-forest no-underline hover:bg-surface-hover"
-          >
-            {locale === "en" ? "See how the box works →" : "看盒子怎麼運作 →"}
-          </Link>
+      <section id="store-os-bridge" className="bg-sage text-ink" aria-labelledby="store-os-bridge-heading">
+        <div className="shop-shell grid gap-10 py-14 sm:py-20 lg:grid-cols-[.9fr_1.1fr] lg:gap-16">
+          <div className="border-l border-green pl-5 sm:pl-7">
+            <p className="m-0 text-[14px] font-bold text-forest">{locale === "en" ? "FOR PARTNER PHARMACIES" : "給合作藥局"}</p>
+            <h2 id="store-os-bridge-heading" className="editorial-display mb-0 mt-3 text-[34px] leading-[1.2] sm:text-[44px]">
+              {locale === "en" ? "You ask. A pharmacist takes over in Store OS." : "你提出需求，藥師在 Store OS 接手。"}
+            </h2>
+            <p className="mb-0 mt-4 text-[15px] leading-[1.8] text-ink-2">
+              {locale === "en" ? "uYao organizes the request and safety answers. With your consent, a partner pharmacy can review the source, confirm supply, and reply with the next step." : "uYao 先整理你的需求與安全問答；取得你的同意後，合作藥局可在 Store OS 查看來源、確認供應並回覆下一步。"}
+            </p>
+            <div className="mt-6 flex flex-wrap gap-3">
+              <Link
+                href={`${localizedPath("/pharmacy", locale)}#store-os-preview`}
+                className="inline-flex min-h-12 items-center bg-paper px-5 text-[14px] font-bold text-forest no-underline hover:bg-surface-hover"
+              >
+                {locale === "en" ? "How Store OS works →" : "了解 Store OS 如何運作 →"}
+              </Link>
+              <a
+                href={STORE_URL}
+                className="inline-flex min-h-12 items-center border border-forest px-5 text-[14px] font-bold text-forest no-underline hover:border-green hover:text-green"
+              >
+                {locale === "en" ? "Partner sign in ↗" : "合作藥局登入 ↗"}
+              </a>
+            </div>
           </div>
-        </div>
+          <ol className="m-0 grid list-none border-l border-t border-forest/25 p-0 sm:grid-cols-3 lg:grid-cols-1">
+            {[
+              locale === "en" ? ["01", "Request", "The consumer describes a product, ingredient, or wellness need."] : ["01", "提出需求", "消費者描述品項、成分或日常保養方向。"],
+              locale === "en" ? ["02", "Consent", "Only an approved handoff sends the relevant context to a partner pharmacy."] : ["02", "同意交接", "只有在你同意後，相關資訊才會交給合作藥局。"],
+              locale === "en" ? ["03", "Pharmacist decision", "Store OS organizes the work; supply and guidance stay with the pharmacist."] : ["03", "藥師確認", "Store OS 整理工作；供應與專業判斷仍由藥師負責。"],
+            ].map(([number, title, body]) => (
+              <li key={number} className="grid gap-2 border-b border-r border-forest/25 bg-paper/45 p-5 sm:grid-rows-[auto_auto_1fr] lg:grid-cols-[48px_140px_1fr] lg:items-start lg:gap-5">
+                <span className="num text-[12px] font-bold text-green">{number}</span>
+                <strong className="text-[14px] text-ink">{title}</strong>
+                <span className="text-[13px] leading-[1.7] text-ink-2">{body}</span>
+              </li>
+            ))}
+          </ol>
+          </div>
       </section>
 
       <SiteFooter />

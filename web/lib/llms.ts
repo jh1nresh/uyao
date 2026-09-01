@@ -22,6 +22,17 @@ function line(title: string, url: string, note: string): string {
   return `- [${title}](${url}): ${note}`;
 }
 
+function consumerCatalogLines(): string[] {
+  return indexableCatalogItems("zh").map((drug) =>
+    line(
+      drug.nameEn ?? drug.name,
+      `${SHOP_URL}${drug.nameEn ? "/en" : "/zh-tw"}/drug/${drug.slug}`,
+      drug.nutritionFocusEn
+        ?? "Partner-listed catalog item. Product details and supply require pharmacy confirmation.",
+    ),
+  );
+}
+
 /** 公司站：知識頁索引 + 產品邊界。 */
 export function companyLlmsTxt(): string {
   const english = AEO_ANSWER_PAGES.map((page) =>
@@ -78,6 +89,10 @@ ${line("All guides", `${SITE_URL}/en/guides`, "Index of every guide, grouped by 
 ${line("Pilot application", `${SITE_URL}/en/pharmacy`, "How an independent pharmacy joins the pilot, and what the pilot does not require.")}
 ${line("Medicine finder", `${SHOP_URL}/en`, CONSUMER_DESCRIPTION.en)}
 
+## Consumer catalog
+
+${consumerCatalogLines().join("\n")}
+
 ## Machine-readable
 
 ${line("OpenAPI", `${SITE_URL}/openapi.json`, "Read-only catalog and pharmacy endpoints, RateLimit headers, error schemas, and header versioning. Write endpoints are listed but marked x-internal: they back this site's own forms and are not a public contract.")}
@@ -97,17 +112,6 @@ ${line("Email", `mailto:${CONTACT_EMAIL}`, "Corrections to any claim on this sit
 
 /** Shop 站：目錄索引 + 消費端邊界。 */
 export function shopLlmsTxt(): string {
-  // 中文站的品項也列出來：agent 讀得到中文，而英文網址只有真的有英文
-  // 名稱時才存在（見 shop-index.ts）。連結一律指向該品項可用的語系。
-  const items = indexableCatalogItems("zh").map((drug) =>
-    line(
-      drug.nameEn ?? drug.name,
-      `${SHOP_URL}${drug.nameEn ? "/en" : "/zh-tw"}/drug/${drug.slug}`,
-      drug.nutritionFocusEn
-        ?? "Partner-listed catalog item. Product details and supply require pharmacy confirmation.",
-    ),
-  );
-
   return `# uYao 找藥 · Medicine Finder Agent and Developer Index
 
 > ${CONSUMER_DESCRIPTION.en}
@@ -125,7 +129,7 @@ Boundaries that must survive any summary of this site:
 
 ## Catalog
 
-${items.join("\n")}
+${consumerCatalogLines().join("\n")}
 
 ## Machine-readable
 

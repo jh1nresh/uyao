@@ -1,12 +1,12 @@
 import { headers } from "next/headers";
 
-import { companyLlmsTxt, nonCanonicalLlmsTxt, shopLlmsTxt, storeLlmsTxt } from "@/lib/llms";
-import { CANONICAL_HOST, SHOP_CANONICAL_HOST, STORE_CANONICAL_HOST } from "@/lib/seo";
+import { companyLlmsTxt, nonCanonicalLlmsTxt, storeLlmsTxt } from "@/lib/llms";
+import { CANONICAL_HOST, STORE_CANONICAL_HOST } from "@/lib/seo";
 
 export const runtime = "nodejs";
 
 /**
- * `/llms.txt`。兩個 canonical host 各一份（內容見 lib/llms.ts）。
+ * `/llms.txt`。主站是一份整合後的公司＋consumer 索引；Store OS 仍獨立。
  * 非 production 或非 canonical host 只回一行說明，理由與 robots.ts 相同 ——
  * preview deployment 不該被當成正式來源引用。
  *
@@ -14,16 +14,13 @@ export const runtime = "nodejs";
  */
 export async function GET() {
   const host = ((await headers()).get("host") ?? "").toLowerCase().split(":")[0];
-  const isShop = host === SHOP_CANONICAL_HOST;
   const isStore = host === STORE_CANONICAL_HOST;
-  const isCanonical = host === CANONICAL_HOST || isShop || isStore;
+  const isCanonical = host === CANONICAL_HOST || isStore;
 
   const body = process.env.VERCEL_ENV !== "production" || !isCanonical
     ? nonCanonicalLlmsTxt()
     : isStore
       ? storeLlmsTxt()
-    : isShop
-      ? shopLlmsTxt()
       : companyLlmsTxt();
 
   return new Response(body, {

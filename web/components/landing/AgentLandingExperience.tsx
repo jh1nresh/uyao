@@ -633,6 +633,17 @@ function StoreOsPreview({
   );
 }
 
+export function StoreOsProductPreview({ locale }: { locale: Locale }) {
+  const reducedMotion = useReducedMotion();
+  return (
+    <StoreOsPreview
+      copy={COPY[locale]}
+      locale={locale}
+      reducedMotion={reducedMotion}
+    />
+  );
+}
+
 function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; locale: Locale; reducedMotion: boolean }) {
   const avatarRef = useRef<HTMLDivElement>(null);
   const pilotHref = locale === "en" ? "/en/pharmacy" : "/zh-tw/pharmacy";

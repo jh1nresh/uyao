@@ -36,13 +36,13 @@ import {
 } from "./seo";
 
 describe("social preview metadata", () => {
-  it("uses versioned locale images on the correct audience host", () => {
+  it("uses versioned locale images on the unified public host", () => {
     for (const locale of ["zh", "en"] as const) {
       expect(SOCIAL_PREVIEW_IMAGES.company[locale].url).toBe(
         `${SITE_URL}/brand/social/uyao-company-${locale}-v1.png`,
       );
       expect(SOCIAL_PREVIEW_IMAGES.shop[locale].url).toBe(
-        `https://${SHOP_CANONICAL_HOST}/brand/social/uyao-shop-${locale}-v1.png`,
+        `${SITE_URL}/brand/social/uyao-shop-${locale}-v1.png`,
       );
       expect(SOCIAL_PREVIEW_IMAGES.company[locale].url).not.toBe(
         SOCIAL_PREVIEW_IMAGES.shop[locale].url,
@@ -70,14 +70,13 @@ describe("social preview metadata", () => {
 });
 
 describe("socialPreviewAudience", () => {
-  it("gives the shop host the consumer card", () => {
+  it("gives the consumer-first public host the shop card", () => {
     expect(socialPreviewAudience(SHOP_CANONICAL_HOST)).toBe("shop");
     expect(socialPreviewAudience(`${SHOP_CANONICAL_HOST}:443`)).toBe("shop");
     expect(socialPreviewAudience(SHOP_CANONICAL_HOST.toUpperCase())).toBe("shop");
   });
 
-  it("falls back to the company card so no page shares without an image", () => {
-    expect(socialPreviewAudience(CANONICAL_HOST)).toBe("company");
+  it("falls back to the company card on previews so no page shares without an image", () => {
     expect(socialPreviewAudience("uyao-abc123.vercel.app")).toBe("company");
     expect(socialPreviewAudience(null)).toBe("company");
     expect(socialPreviewAudience(undefined)).toBe("company");
@@ -104,10 +103,9 @@ describe("indexingAllowed", () => {
 });
 
 describe("consumerIndexingAllowed", () => {
-  it("allows only the owned shop host on production", () => {
+  it("allows only the unified public host on production", () => {
     expect(consumerIndexingAllowed(SHOP_CANONICAL_HOST, "production")).toBe(true);
     expect(consumerIndexingAllowed(`${SHOP_CANONICAL_HOST}:443`, "production")).toBe(true);
-    expect(consumerIndexingAllowed(CANONICAL_HOST, "production")).toBe(false);
     expect(consumerIndexingAllowed("shop-uyao.vercel.app", "production")).toBe(false);
     expect(consumerIndexingAllowed(SHOP_CANONICAL_HOST, "preview")).toBe(false);
   });

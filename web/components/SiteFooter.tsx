@@ -13,7 +13,7 @@ import { SHOP_URL } from "@/lib/shop";
 export async function SiteFooter({ note }: { note?: string }) {
   const locale = await getRequestLocale();
   const shopHome = `${SHOP_URL.replace(/\/$/, "")}${locale === "en" ? "/en" : "/zh-tw"}`;
-  const companyHome = `${SITE_URL}${locale === "en" ? "/en" : "/zh-tw"}`;
+  const aboutUyao = `${SITE_URL}${locale === "en" ? "/en" : "/zh-tw"}/about`;
   const companyPath = (path: string) => `${SITE_URL}${locale === "en" ? "/en" : "/zh-tw"}${path}`;
 
   return (
@@ -112,7 +112,7 @@ export async function SiteFooter({ note }: { note?: string }) {
               <a href={`mailto:${CONTACT_EMAIL}`} className="inline-flex min-h-11 items-center text-forest hover:text-green">
                 {locale === "en" ? "Email" : "電子郵件"}
               </a>
-              <a href={companyHome} className="inline-flex min-h-11 items-center text-forest hover:text-green">
+              <a href={aboutUyao} className="inline-flex min-h-11 items-center text-forest hover:text-green">
                 {locale === "en" ? "About uYao" : "關於 uYao"}
               </a>
             </div>
