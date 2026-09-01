@@ -26,7 +26,7 @@ Preconditions:
 - Isolated Chrome profile so locale stays `zh` (default).
 - Do not wait idle for 15s on preview before finishing the drive.
 
-- **Open the workspace.** Run `verify-uyao drive reservation-inbox`. The page is `/store-os-preview` (after the `/zh-tw` 308). Heading `需要你`. Region `門市預留單` contains `A-482` and `確認有貨`.
+- **Open the workspace.** Run `verify-uyao drive reservation-inbox`. The page is `/store-os-preview` on the company host. Heading `需要你`. Region `門市預留單` contains `A-482` and `確認有貨`.
 - **Filter All work.** The driver clicks `全部工作`. Heading becomes `全部工作` and `A-481` is visible.
 - **Return to Needs you.** The driver clicks `需要你`. Heading is `需要你` again and `確認有貨` is still visible.
 - **Live mutation (session only).** On a signed-in store (not preview), click `確認有貨` on a real pending code. Observable end state: status text `已確認` and composer notice `${code} 已確認有貨`. Re-open `全部工作` and confirm the new status. Preview PATCH returns 401 and reloads — do not report that as a successful confirm.

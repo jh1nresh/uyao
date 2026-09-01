@@ -3,7 +3,8 @@
  * Agent-facing storeOS control CLI. Every command prints one JSON object
  * to stdout. Diagnostics go to the run log, never to stdout.
  */
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
+import http from "node:http";
 import {
   existsSync,
   mkdirSync,
@@ -138,9 +139,9 @@ async function whoOwnsPort(port) {
   const { promisify } = await import("node:util");
   const exec = promisify(execFile);
   try {
-    const { stdout } = await exec("ss", ["-ltnp", `sport = :${port}`], { encoding: "utf8" });
-    const match = stdout.match(/pid=(\d+)/);
-    return match ? Number(match[1]) : null;
+    const { stdout } = await exec("lsof", ["-iTCP:" + port, "-sTCP:LISTEN", "-t"], { encoding: "utf8" });
+    const pid = Number(stdout.trim().split("\n")[0]);
+    return Number.isInteger(pid) && pid > 0 ? pid : null;
   } catch {
     return null;
   }
@@ -182,12 +183,45 @@ async function fetchText(url, { headers = {}, timeoutMs = 8000, method = "GET" }
   }
 }
 
+function httpGet({ hostname, port, path: reqPath, headers = {}, timeoutMs = 8000 }) {
+  return new Promise((resolve) => {
+    const req = http.request({
+      hostname,
+      port,
+      path: reqPath,
+      method: "GET",
+      headers: { accept: "text/html", ...headers },
+    }, (res) => {
+      const chunks = [];
+      res.on("data", (chunk) => chunks.push(chunk));
+      res.on("end", () => {
+        resolve({
+          ok: (res.statusCode ?? 0) >= 200 && (res.statusCode ?? 0) < 300,
+          status: res.statusCode ?? 0,
+          url: `http://${headers.host ?? hostname}:${port}${reqPath}`,
+          location: res.headers.location ?? null,
+          body: Buffer.concat(chunks).toString("utf8"),
+        });
+      });
+    });
+    req.setTimeout(timeoutMs, () => {
+      req.destroy();
+      resolve({ ok: false, status: 0, url: reqPath, body: "", error: "timeout" });
+    });
+    req.on("error", (error) => {
+      resolve({ ok: false, status: 0, url: reqPath, body: "", error: String(error) });
+    });
+    req.end();
+  });
+}
+
 function inspectStoreHtml(body, finalUrl = "") {
   const login = /登入你的藥局|Sign in to your pharmacy/.test(body);
-  const workspace = /門市預留單|Store reservations|需要你|Needs you/.test(body);
+  const workspace = /門市預留單|Store reservations|uYao 示範藥局|林藥師/.test(body)
+    || (/需要你|Needs you/.test(body) && /A-482|確認有貨|Confirm in stock/.test(body));
   const preview = /store-os-preview/.test(finalUrl) || /uYao 示範藥局|林藥師/.test(body);
   const authDisabled = /這個環境尚未設定店家帳號|Store accounts are not configured/.test(body);
-  const authEnabled = login && /name="username"/.test(body) && !authDisabled && !/disabled/.test(body);
+  const authEnabled = login && /name="username"/.test(body) && !authDisabled;
   return {
     surface: workspace ? (preview ? "preview-workspace" : "workspace") : login ? "login" : "unknown",
     login,
@@ -361,14 +395,54 @@ async function ariaSnapshot(page) {
 }
 
 async function probeLocal(port) {
-  const store = await fetchText(`http://127.0.0.1:${port}/`, {
+  const store = await httpGet({
+    hostname: "127.0.0.1",
+    port,
+    path: "/",
     headers: { host: `store.localhost:${port}` },
   });
-  const preview = await fetchText(`http://127.0.0.1:${port}/store-os-preview`);
+  const preview = await httpGet({
+    hostname: "127.0.0.1",
+    port,
+    path: "/store-os-preview",
+  });
   return {
-    store: { status: store.status, url: store.url, ...inspectStoreHtml(store.body, store.url) },
-    preview: { status: preview.status, url: preview.url, ...inspectStoreHtml(preview.body, preview.url) },
+    store: { status: store.status, url: store.url, location: store.location, ...inspectStoreHtml(store.body, store.url) },
+    preview: { status: preview.status, url: preview.url, location: preview.location, ...inspectStoreHtml(preview.body, preview.url) },
   };
+}
+
+const HOSTS_MARK = "verify-uyao-store-localhost";
+
+function storeLocalhostLine() {
+  return `127.0.0.1 store.localhost # ${HOSTS_MARK}\n`;
+}
+
+function hostsHasStoreLocalhost() {
+  try {
+    return readFileSync("/etc/hosts", "utf8").includes("store.localhost");
+  } catch {
+    return false;
+  }
+}
+
+function ensureStoreLocalhost() {
+  if (hostsHasStoreLocalhost()) return { added: false, present: true };
+  const result = spawnSync("sudo", ["tee", "-a", "/etc/hosts"], {
+    input: storeLocalhostLine(),
+    encoding: "utf8",
+  });
+  return {
+    added: result.status === 0,
+    present: hostsHasStoreLocalhost(),
+    error: result.status === 0 ? null : (result.stderr || result.stdout || "sudo tee failed"),
+  };
+}
+
+function removeStoreLocalhost(added) {
+  if (!added) return { removed: false };
+  const result = spawnSync("sudo", ["sed", "-i", `/${HOSTS_MARK}/d`, "/etc/hosts"], { encoding: "utf8" });
+  return { removed: result.status === 0 };
 }
 
 function usage() {
@@ -477,6 +551,7 @@ async function launch() {
   }
 
   await ensureWebDeps();
+  const hosts = ensureStoreLocalhost();
   mkdirSync(RUN_DIR, { recursive: true });
   mkdirSync(EVIDENCE_DIR, { recursive: true });
   const appLog = path.join(RUN_DIR, "next.log");
@@ -525,6 +600,7 @@ async function launch() {
     `--remote-debugging-port=${debugPort}`,
     `--remote-debugging-address=127.0.0.1`,
     `--user-data-dir=${userDataDir}`,
+    "--host-resolver-rules=MAP store.localhost 127.0.0.1",
     "--no-first-run",
     "--no-default-browser-check",
     "--disable-extensions",
@@ -573,6 +649,7 @@ async function launch() {
     urls,
     lastPath: null,
     lastUrl: null,
+    hostsAdded: Boolean(hosts.added),
   };
   saveRun(run);
   emit({
@@ -817,6 +894,7 @@ async function cleanup() {
     app: run.app?.owned ? pidAlive(run.app.pid) : false,
     browser: run.browser?.owned ? pidAlive(run.browser.pid) : false,
   };
+  const hosts = removeStoreLocalhost(Boolean(run.hostsAdded));
   rmSync(path.join(RUN_DIR, "chrome-profile"), { recursive: true, force: true });
   if (existsSync(RUN_FILE)) rmSync(RUN_FILE);
   emit({
@@ -827,6 +905,7 @@ async function cleanup() {
     urls: run.urls,
     artifacts: [],
     evidence: evidenceStill,
+    hosts,
     note: "Killed only pids recorded for this run. Evidence was not deleted.",
   });
 }

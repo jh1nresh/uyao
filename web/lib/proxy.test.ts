@@ -189,6 +189,12 @@ describe("canonical host routing", () => {
     expect(about.headers.get("location")).toBe(`${SITE_URL}/zh-tw/about`);
   });
 
+  it("serves the dev Store OS preview without a locale redirect loop", () => {
+    const response = request("http://127.0.0.1/store-os-preview");
+    expect(response.status).toBe(200);
+    expect(response.headers.get("location")).toBeNull();
+  });
+
   it("keeps Store OS off the consumer shop host", () => {
     const response = request("https://shop.uyaohealth.com/zh-tw/store-os");
     expect(response.status).toBe(308);

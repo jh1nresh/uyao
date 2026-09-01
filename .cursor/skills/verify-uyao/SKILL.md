@@ -81,7 +81,7 @@ Stable handles from `web/components/StoreOsLogin.tsx` and `web/components/StoreO
 - Support: `支援 Agent · 待命` → region `uYao 支援`
 - Agents sidebar: `aria-label="Store Agents"`
 
-Host rules (`web/proxy.ts`): `localhost` / `127.0.0.1` is the company host. `/store-os` on that host **308s to production** `store.uyaohealth.com`. Store OS login locally is **only** `store.localhost`. `/store-os-preview` is a known company-host path and 308s to `/zh-tw/store-os-preview` before rewriting back to the preview page.
+Host rules (`web/proxy.ts`): `localhost` / `127.0.0.1` is the company host. `/store-os` on that host **308s to production** `store.uyaohealth.com`. Store OS login locally is **only** `store.localhost` (launch adds a marked `/etc/hosts` line and Chrome `--host-resolver-rules` as verification scaffolding). `/store-os-preview` is served on the company host without a locale prefix — prefixing it 308s to `/zh-tw/store-os-preview`, which rewrites back and loops.
 
 ## Evidence
 

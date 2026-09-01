@@ -199,6 +199,12 @@ export function proxy(req: NextRequest) {
     return redirectTo(req, SITE_URL, pathname);
   }
 
+  // Dev-only pharmacist workspace. Locale-prefixing /store-os-preview 308s to
+  // /zh-tw/store-os-preview, which rewrites back to this path and loops.
+  if (!isShop && route.barePath === "/store-os-preview") {
+    return NextResponse.next({ request: { headers: requestHeaders } });
+  }
+
   if (isShop) {
     if (routeStartsWith(route.barePath, COMPANY_ONLY_ROUTES)) {
       return redirectTo(req, SITE_URL, localizedPath(route.barePath, route.locale));
