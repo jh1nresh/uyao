@@ -147,21 +147,21 @@ export default async function HomePage({
       <section className="relative overflow-hidden border-b border-line bg-ivory">
         <div className="shop-shell relative pb-10 pt-12 sm:pb-12 sm:pt-16 lg:pb-14 lg:pt-20">
           <div className="w-full">
-            <h1 className="editorial-display m-0 max-w-[1050px] text-[clamp(40px,7vw,96px)] leading-[1.02] [text-wrap:balance]">
+            <h1 className="editorial-display mx-auto m-0 max-w-[1050px] text-center text-[clamp(40px,7vw,96px)] leading-[1.02] [text-wrap:balance]">
               {locale === "en" ? (
                 <><span className="block">You do not need</span><span className="block">the product name.</span></>
               ) : (
                 <><span className="block">不用先知道品名。</span><span className="block">描述需求就能開始。</span></>
               )}
             </h1>
-            <p className="mt-6 max-w-[610px] text-[15px] leading-[1.8] text-ink-2 sm:text-[17px]">
+            <p className="mx-auto mt-6 max-w-[610px] text-center text-[15px] leading-[1.8] text-ink-2 sm:text-[17px]">
               {locale === "en" ? "Search by product, ingredient, or daily-wellness need. Recognized common symptoms open safety guidance instead of automatic product results." : "可輸入品名、成分或日常保養方向；辨識到常見症狀時，會先顯示安全提醒，不會自動帶商品。"}
             </p>
             <div className="mx-auto mt-8 max-w-[1120px] text-left">
               <SearchInput size="xl" area={area} className="w-full shadow-none" />
             </div>
 
-            <div className="mt-4 flex flex-wrap items-center justify-start gap-x-5 gap-y-1 text-[14px] text-muted">
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-[14px] text-muted">
               <nav aria-label={locale === "en" ? "Categories" : "品類"} className="contents">
                 {CATEGORIES.map((c) => (
                   <Link
@@ -175,7 +175,7 @@ export default async function HomePage({
               </nav>
             </div>
 
-            <div className="mt-5 flex max-w-[1120px] flex-col items-start justify-between gap-3 text-[14px] leading-[1.65] text-muted sm:flex-row sm:items-center">
+            <div className="mx-auto mt-5 flex max-w-[1120px] flex-col items-center justify-center gap-3 text-center text-[14px] leading-[1.65] text-muted sm:flex-row">
               <p className="m-0">
                 {locale === "en"
                   ? `${currentArea.shortName}: ${storeCount} listed pharmacies`
