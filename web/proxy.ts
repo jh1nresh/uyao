@@ -18,14 +18,14 @@ import {
   shopHomepageMarkdown,
 } from "@/lib/agent-public";
 import { SITE_URL, STORE_CANONICAL_HOST, STORE_URL } from "@/lib/seo";
-import { SHOP_URL } from "@/lib/shop";
+import { LEGACY_SHOP_HOST } from "@/lib/shop";
 import { storeHomepageMarkdown } from "@/lib/store-public";
 
 /**
- * Host-based routing：同一份部署掛兩個網域。
+ * Host-based routing：同一份部署掛公開主站、舊 Shop alias 與 Store OS。
  *
- *   uyaohealth.com         → `/` 公司 landing（SSR，不再 308 走掉）
- *   shop.uyaohealth.com    → `/` 導向 `/zh-tw` Consumer Web
+ *   uyaohealth.com         → Consumer-first 公開站＋公司資訊頁
+ *   shop.uyaohealth.com    → 永久導向主站同一路徑
  *   store.uyaohealth.com   → `/` 顯示 Store OS（唯一 canonical）
  *   store.uyao.com         → 永久導向 canonical
  *
@@ -41,8 +41,8 @@ export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)"],
 };
 
-const SHOP_HOSTS = new Set(
-  ["shop-uyao.vercel.app", process.env.SHOP_HOST ?? ""].filter(Boolean),
+const LEGACY_SHOP_HOSTS = new Set(
+  [LEGACY_SHOP_HOST, "shop-uyao.vercel.app", process.env.SHOP_HOST ?? ""].filter(Boolean),
 );
 const STORE_ALIASES = new Set(
   ["store.uyao.com", process.env.STORE_HOST ?? ""]
@@ -50,18 +50,6 @@ const STORE_ALIASES = new Set(
 );
 
 const COMPANY_HOST = new URL(SITE_URL).host;
-const COMPANY_ONLY_ROUTES = [
-  "/pharmacy",
-  "/evidence",
-  "/guides",
-  "/compare",
-  "/store-os",
-  "/about",
-  "/contact",
-  "/privacy",
-  "/docs",
-];
-const CONSUMER_ROUTES = ["/app", "/demo", "/drug", "/store", "/search", "/category", "/r", "/stock-badges"];
 const PUBLIC_CACHE_PATHS = new Set([
   "/",
   "/zh-tw",
@@ -77,10 +65,6 @@ const PUBLIC_CACHE_PATHS = new Set([
   "/en/contact",
   "/en/privacy",
 ]);
-
-function routeStartsWith(pathname: string, prefixes: string[]): boolean {
-  return prefixes.some((prefix) => pathname === prefix || pathname.startsWith(`${prefix}/`));
-}
 
 function publicPath(pathname: string): {
   barePath: string;
@@ -151,12 +135,10 @@ export function proxy(req: NextRequest) {
   requestHeaders.set("x-uyao-locale", route.locale);
 
   const host = (req.headers.get("host") ?? req.nextUrl.hostname).toLowerCase().split(":")[0];
-  // Vercel preview deployments are branch-scoped hosts such as
-  // `uyao-git-<branch>-<team>.vercel.app`. They match neither `shop.` nor
-  // SHOP_HOST, so consumer routes used to 308 straight to production and every
-  // shop frontend PR was unreviewable on its own preview URL.
-  const isPreviewHost = host.endsWith(".vercel.app") && !SHOP_HOSTS.has(host);
-  const isShop = SHOP_HOSTS.has(host) || host.startsWith("shop.") || isPreviewHost;
+  // Branch preview hosts are treated like the unified public site. Only the
+  // exact former Shop aliases redirect to production, so a frontend PR remains
+  // reviewable on its own Vercel URL.
+  const isLegacyShop = LEGACY_SHOP_HOSTS.has(host) || host.startsWith("shop.");
   const isStore = host === STORE_CANONICAL_HOST
     || (process.env.NODE_ENV !== "production" && host === "store.localhost");
   const isStoreAlias = STORE_ALIASES.has(host);
@@ -195,50 +177,33 @@ export function proxy(req: NextRequest) {
     return response;
   }
 
-  if (!isShop && host === `www.${COMPANY_HOST}`) {
+  if (!isLegacyShop && host === `www.${COMPANY_HOST}`) {
     return redirectTo(req, SITE_URL, pathname);
   }
 
-  if (isShop) {
-    if (routeStartsWith(route.barePath, COMPANY_ONLY_ROUTES)) {
-      return redirectTo(req, SITE_URL, localizedPath(route.barePath, route.locale));
-    }
+  // Shop 與公司站已合併。舊 host 不再維護第二份 canonical namespace；所有
+  // 書籤、廣告與搜尋結果保留 query，永久搬到主站相同的公開路徑。
+  if (isLegacyShop) {
+    const targetPath = route.barePath === "/app"
+      ? localizedPath("/", route.locale)
+      : route.localized
+        ? pathname
+        : localizedPath(route.barePath, route.locale);
+    return redirectTo(req, SITE_URL, targetPath);
+  }
 
-    if (route.barePath === "/") {
-      const markdown = negotiatedMarkdown(req, shopHomepageMarkdown(route.locale));
-      if (markdown) return markdown;
-    }
-
-    // `/app` was the internal implementation path. The shop host owns the
-    // clean public namespace, so every locale alias permanently collapses to
-    // the locale homepage while retaining meaningful query state.
-    if (route.barePath === "/app") {
-      return redirectTo(req, SHOP_URL, localizedPath("/", route.locale));
-    }
-
-    if (!isKnownBarePath(route.barePath)) {
-      return negotiateNotFound(req);
-    }
-
-    if (!route.localized) {
-      const url = req.nextUrl.clone();
-      url.pathname = localizedPath(route.barePath, route.locale);
-      return NextResponse.redirect(url, 308);
-    }
-
+  // `/app` remains an internal implementation route. Public links collapse to
+  // the locale homepage on both the canonical host and branch previews.
+  if (route.barePath === "/app") {
     const url = req.nextUrl.clone();
-    url.pathname = route.barePath === "/" ? "/app" : route.barePath;
-    return NextResponse.rewrite(url, { request: { headers: requestHeaders } });
+    url.pathname = localizedPath("/", route.locale);
+    return NextResponse.redirect(url, 308);
   }
 
-  // Consumer content has one canonical host. Old company-host links redirect
-  // instead of serving a duplicate copy.
-  if (routeStartsWith(route.barePath, CONSUMER_ROUTES)) {
-    const consumerPath = route.barePath === "/app" ? "/" : route.barePath;
-    return redirectTo(req, SHOP_URL, localizedPath(consumerPath, route.locale));
-  }
-
-  const markdown = negotiatedMarkdown(req, pageMarkdown(pathname));
+  const markdown = negotiatedMarkdown(
+    req,
+    route.barePath === "/" ? shopHomepageMarkdown(route.locale) : pageMarkdown(pathname),
+  );
   if (markdown) return markdown;
 
   if (!isKnownBarePath(route.barePath)) {
@@ -247,14 +212,12 @@ export function proxy(req: NextRequest) {
 
   const cacheThis = PUBLIC_CACHE_PATHS.has(pathname) || PUBLIC_CACHE_PATHS.has(route.barePath);
 
-  // `/en` has its own editorial landing. Every nested English path reuses the
-  // canonical product route so business logic, reservation state, and tests
-  // never fork into two implementations.
+  // Locale homepages are now the consumer product. Company information remains
+  // under /about, /pharmacy, /evidence, /guides and /compare on the same host.
   if (pathname === "/en") {
-    return decoratePublic(
-      NextResponse.next({ request: { headers: requestHeaders } }),
-      cacheThis,
-    );
+    const url = req.nextUrl.clone();
+    url.pathname = "/app";
+    return decoratePublic(NextResponse.rewrite(url, { request: { headers: requestHeaders } }), cacheThis);
   }
   if (pathname.startsWith("/en/")) {
     const url = req.nextUrl.clone();
@@ -265,9 +228,12 @@ export function proxy(req: NextRequest) {
     );
   }
 
-  // Chinese uses the same explicit locale prefix as English. The root page
-  // remains the implementation route; `/zh-tw` is the public canonical URL.
-  if (pathname === "/zh-tw" || pathname.startsWith("/zh-tw/")) {
+  if (pathname === "/zh-tw") {
+    const url = req.nextUrl.clone();
+    url.pathname = "/app";
+    return decoratePublic(NextResponse.rewrite(url, { request: { headers: requestHeaders } }), cacheThis);
+  }
+  if (pathname.startsWith("/zh-tw/")) {
     const url = req.nextUrl.clone();
     url.pathname = pathname.slice(6) || "/";
     return decoratePublic(
@@ -276,9 +242,15 @@ export function proxy(req: NextRequest) {
     );
   }
 
-  // Agent trust pages and the homepage stay on the unprefixed URL so a
-  // crawler that fetches `/` or `/about` gets HTML, not a 308.
-  if (pathname === "/" || !needsLocalePrefixRedirect(pathname)) {
+  // Root stays HTML/Markdown-addressable for agents, but renders the same
+  // consumer-first homepage as /zh-tw. Predictable trust URLs such as /docs
+  // remain unprefixed; company pages still receive an explicit locale.
+  if (pathname === "/") {
+    const url = req.nextUrl.clone();
+    url.pathname = "/app";
+    return decoratePublic(NextResponse.rewrite(url, { request: { headers: requestHeaders } }), cacheThis);
+  }
+  if (!needsLocalePrefixRedirect(pathname)) {
     return decoratePublic(
       NextResponse.next({ request: { headers: requestHeaders } }),
       cacheThis,

@@ -1,9 +1,9 @@
 # uYao Web
 
-uYao 的 Next.js 16 App Router 應用，包含公司 landing、消費端附近找藥、Store OS、PWA Web Push、試點申請與營運 console。
+uYao 的 Next.js 16 App Router 應用，包含 consumer-first 公開站、公司資訊頁、Store OS、PWA Web Push、試點申請與營運 console。
 
-- Landing：[uyao.vercel.app](https://uyao.vercel.app)
-- Consumer app：[shop-uyao.vercel.app](https://shop-uyao.vercel.app)
+- Public site：[uyaohealth.com](https://uyaohealth.com)
+- Store OS：[store.uyaohealth.com](https://store.uyaohealth.com)
 
 ## 本機開發
 
@@ -21,13 +21,14 @@ npm run build
 
 | 路由 | 用途 |
 |---|---|
-| `/`、`/en` | 公司 landing 與試點申請 |
-| `/app` | 消費端搜尋首頁 |
+| `/`、`/zh-tw`、`/en` | 消費端搜尋與品項瀏覽首頁 |
+| `/app` | 內部 implementation route；公開網址會導回語系首頁 |
 | `/drug/[slug]` | 藥品與附近藥局 |
 | `/store/[slug]` | 藥局店頁與可預留品項 |
 | `/search`、`/category/[slug]` | 搜尋結果與品類入口 |
 | `https://store.uyaohealth.com/` | Store OS 店家登入、預留工作與通知設定 |
 | `/pharmacy` | 藥局合作與試點申請 |
+| `/about`、`/evidence`、`/guides` | 公司資訊、產品證據與知識內容 |
 | `/console` | 掃描、Store OS 預留、Web Push 與逾時處理流水 |
 
 主要 API：

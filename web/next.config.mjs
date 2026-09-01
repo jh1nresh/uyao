@@ -45,6 +45,14 @@ const nextConfig = {
         destination: "https://uyaohealth.com/:path*",
         permanent: true,
       },
+      // Shop 已合併進主站。放在 config redirects 才能連 robots.txt、
+      // sitemap.xml、圖片等 proxy matcher 不處理的 dotted paths 一起搬走。
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "shop.uyaohealth.com" }],
+        destination: "https://uyaohealth.com/:path*",
+        permanent: true,
+      },
     ];
   },
 };

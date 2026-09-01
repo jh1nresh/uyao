@@ -32,7 +32,7 @@ export async function SiteHeader({
   return (
     <header className="sticky top-0 z-40 border-b border-line-strong bg-ivory/95 backdrop-blur-sm">
       <div className="shop-shell flex h-[68px] items-center gap-3 sm:h-[72px]">
-        {/* 品牌 logo 回到 company landing；地區狀態只留在找藥流程。 */}
+        {/* 品牌 logo 回到統一的 consumer-first 首頁；地區狀態只留在找藥流程。 */}
         <Link
           href={`${SITE_URL}${localizedPath("/", locale)}`}
           aria-label={locale === "en" ? "Back to uYao homepage" : "回到 uYao 首頁"}

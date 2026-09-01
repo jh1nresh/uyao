@@ -3,12 +3,10 @@ import { headers } from "next/headers";
 
 import {
   CANONICAL_HOST,
-  SHOP_CANONICAL_HOST,
   SITE_URL,
   STORE_CANONICAL_HOST,
   STORE_URL,
 } from "@/lib/seo";
-import { SHOP_URL } from "@/lib/shop";
 
 /**
  * robots.txt（spec §2）。production 開放爬取讓 crawler 讀得到各頁的
@@ -18,14 +16,10 @@ import { SHOP_URL } from "@/lib/shop";
  */
 export default async function robots(): Promise<MetadataRoute.Robots> {
   const host = ((await headers()).get("host") ?? "").toLowerCase().split(":")[0];
-  const canonicalBase = host === SHOP_CANONICAL_HOST
-    ? SHOP_URL
-    : host === STORE_CANONICAL_HOST
-      ? STORE_URL
-      : SITE_URL;
-  const canonicalHost = host === CANONICAL_HOST
-    || host === SHOP_CANONICAL_HOST
-    || host === STORE_CANONICAL_HOST;
+  const canonicalBase = host === STORE_CANONICAL_HOST
+    ? STORE_URL
+    : SITE_URL;
+  const canonicalHost = host === CANONICAL_HOST || host === STORE_CANONICAL_HOST;
 
   if (process.env.VERCEL_ENV !== "production" || !canonicalHost) {
     return { rules: { userAgent: "*", disallow: "/" } };

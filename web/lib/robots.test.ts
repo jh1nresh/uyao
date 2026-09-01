@@ -8,8 +8,7 @@ vi.mock("next/headers", () => ({
 }));
 
 const robots = (await import("../app/robots")).default;
-const { CANONICAL_HOST, SHOP_CANONICAL_HOST, SITE_URL, STORE_CANONICAL_HOST, STORE_URL } = await import("./seo");
-const { SHOP_URL } = await import("./shop");
+const { CANONICAL_HOST, SITE_URL, STORE_CANONICAL_HOST, STORE_URL } = await import("./seo");
 
 function rules(result: Awaited<ReturnType<typeof robots>>) {
   return result.rules as { allow?: string | string[]; disallow?: string | string[] };
@@ -44,10 +43,8 @@ describe("robots policy", () => {
     }
   });
 
-  it("points each canonical host at its own sitemap", async () => {
+  it("points the unified public host and Store OS at their own sitemap", async () => {
     expect((await robots()).sitemap).toBe(`${SITE_URL}/sitemap.xml`);
-    host = SHOP_CANONICAL_HOST;
-    expect((await robots()).sitemap).toBe(`${SHOP_URL}/sitemap.xml`);
     host = STORE_CANONICAL_HOST;
     expect((await robots()).sitemap).toBe(`${STORE_URL}/sitemap.xml`);
     expect(rules(await robots()).allow).toContain("/");

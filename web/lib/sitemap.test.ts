@@ -8,7 +8,7 @@ vi.mock("next/headers", () => ({
 
 const sitemap = (await import("../app/sitemap")).default;
 
-const { INDEXABLE_PATHS, SHOP_CANONICAL_HOST, CANONICAL_HOST, SITE_URL, STORE_CANONICAL_HOST, STORE_URL } =
+const { INDEXABLE_PATHS, CANONICAL_HOST, SITE_URL, STORE_CANONICAL_HOST, STORE_URL } =
   await import("./seo");
 const { SHOP_URL } = await import("./shop");
 const { shopIndexablePaths, indexableCatalogItems } = await import("./shop-index");
@@ -18,24 +18,15 @@ describe("sitemap host routing", () => {
     host = "";
   });
 
-  it("serves the company namespace on the company host", async () => {
+  it("serves the merged company and consumer namespace on the public host", async () => {
     host = CANONICAL_HOST;
     const urls = (await sitemap()).map((entry) => entry.url);
+    const expectedPaths = [...new Set([...INDEXABLE_PATHS, ...shopIndexablePaths()])];
 
-    expect(urls).toEqual(INDEXABLE_PATHS.map((path) => `${SITE_URL}${path}`));
-    for (const url of urls) {
-      expect(url.startsWith(SITE_URL)).toBe(true);
-    }
-  });
-
-  it("serves the consumer namespace on the shop host", async () => {
-    host = SHOP_CANONICAL_HOST;
-    const urls = (await sitemap()).map((entry) => entry.url);
-
-    expect(urls).toEqual(shopIndexablePaths().map((path) => `${SHOP_URL}${path}`));
+    expect(urls).toEqual(expectedPaths.map((path) => `${SITE_URL}${path}`));
     expect(urls.length).toBeGreaterThan(INDEXABLE_PATHS.length);
     for (const url of urls) {
-      expect(url.startsWith(SHOP_URL)).toBe(true);
+      expect(url.startsWith(SITE_URL)).toBe(true);
     }
   });
 
@@ -48,13 +39,13 @@ describe("sitemap host routing", () => {
   });
 
   it("ignores the port when matching the host", async () => {
-    host = `${SHOP_CANONICAL_HOST}:443`;
+    host = `${CANONICAL_HOST}:443`;
     const urls = (await sitemap()).map((entry) => entry.url);
-    expect(urls[0].startsWith(SHOP_URL)).toBe(true);
+    expect(urls[0].startsWith(SITE_URL)).toBe(true);
   });
 
   it("publishes freshness on every URL of both sitemaps", async () => {
-    for (const canonical of [CANONICAL_HOST, SHOP_CANONICAL_HOST, STORE_CANONICAL_HOST]) {
+    for (const canonical of [CANONICAL_HOST, STORE_CANONICAL_HOST]) {
       host = canonical;
       const entries = await sitemap();
       expect(entries.length).toBeGreaterThan(0);
@@ -67,7 +58,7 @@ describe("sitemap host routing", () => {
   });
 
   it("gives each consumer item its own freshness rather than one blanket date", async () => {
-    host = SHOP_CANONICAL_HOST;
+    host = CANONICAL_HOST;
     const byUrl = new Map(
       (await sitemap()).map((entry) => [entry.url, String(entry.lastModified)]),
     );

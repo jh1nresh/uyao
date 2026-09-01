@@ -56,7 +56,7 @@ export const TRUST_PAGES: Record<Exclude<PublicPagePath, "/">, TrustPage> = {
     body: [
       "uYao 是台灣獨立藥局的 AI Operating System。它把店內掃描、效期與附近找藥需求整理成待處理工作，關鍵決定由藥師批准，並留下結果紀錄。",
       "uYao 不是線上藥局，不做線上交易。不是 POS，也不取代健保申報。不是即時庫存平台：網站上的目錄與公開藥局資料，不能當成現貨保證。不是醫療或用藥建議服務；症狀描述只用來縮小搜尋方向，不能當診斷。",
-      "消費者端（shop.uyaohealth.com）讓人搜尋品名、成分或日常保養方向，查看附近公開藥局資料，並在找不到時留下找藥需求。出發前仍應由藥局或藥師確認品項、數量與領取安排。",
+      "消費者端（uyaohealth.com）讓人搜尋品名、成分或日常保養方向，查看附近公開藥局資料，並在找不到時留下找藥需求。出發前仍應由藥局或藥師確認品項、數量與領取安排。",
       "藥局端的 Store OS 目前是 prototype，正在招募試點。目標是訊號 → 核准 → 執行 → receipt，不是再做一塊庫存儀表板。現場退貨閉環、節省金額與即時庫存尚未驗證。示範數字是示範。",
       `公開證據見 /zh-tw/evidence。聯絡：${CONTACT_EMAIL}`,
     ].join("\n\n"),
@@ -86,7 +86,7 @@ export const TRUST_PAGES: Record<Exclude<PublicPagePath, "/">, TrustPage> = {
     description:
       "uYao 處理找藥需求、藥局試點申請與維運紀錄。不是醫療機構，不蒐集病歷，公開目錄不是即時庫存。",
     body: [
-      "uYao 有藥（uyaohealth.com、shop.uyaohealth.com、store.uyaohealth.com）處理的是找藥需求、藥局試點申請，以及網站運作所需的技術紀錄。",
+      "uYao 有藥（uyaohealth.com、store.uyaohealth.com）處理的是找藥需求、藥局試點申請，以及網站運作所需的技術紀錄。",
       "我們不是醫療機構，不蒐集病歷，不把找藥需求當成處方。請不要在表單或信件裡傳送身分證字號、完整健保資料或他人處方。",
       "你可能主動提供：電子郵件、地區、品項名稱、藥局名稱、試點意願。這些用來回覆找藥或試點，不賣給第三方廣告網。",
       "網站會留下必要的伺服器日誌（時間、路徑、粗略技術資訊）以便維運與資安。我們使用托管供應商（例如網站與信件服務）時，資料會依其處理者義務處理。",
@@ -262,11 +262,14 @@ export function notFoundHtml(): string {
 }
 
 export function pageMarkdown(pathname: string): string | undefined {
-  if (pathname === "/" || pathname === "/zh-tw" || pathname === "/en") {
-    return homepageMarkdown();
+  if (pathname === "/" || pathname === "/zh-tw") {
+    return shopHomepageMarkdown("zh");
+  }
+  if (pathname === "/en") {
+    return shopHomepageMarkdown("en");
   }
   const bare = pathname.replace(/^\/(zh-tw|en)(?=\/|$)/, "") || "/";
-  if (bare === "/") return homepageMarkdown();
+  if (bare === "/") return shopHomepageMarkdown(pathname.startsWith("/en") ? "en" : "zh");
   if (bare === "/about" || bare === "/contact" || bare === "/privacy" || bare === "/docs") {
     return trustPageMarkdown(bare);
   }

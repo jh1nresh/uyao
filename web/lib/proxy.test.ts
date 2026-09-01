@@ -75,21 +75,21 @@ describe("canonical host routing", () => {
     expect(response.headers.get("location")).toBe(`${SITE_URL}/zh-tw/evidence`);
   });
 
-  it("serves the Consumer implementation at the clean localized shop URL", () => {
+  it("permanently redirects the old localized Shop URL to the unified public host", () => {
     const response = request("https://shop.uyaohealth.com/zh-tw?area=datong");
-    expect(response.status).toBe(200);
-    expect(response.headers.get("x-middleware-rewrite")).toBe(
-      "https://shop.uyaohealth.com/app?area=datong",
+    expect(response.status).toBe(308);
+    expect(response.headers.get("location")).toBe(
+      `${SITE_URL}/zh-tw?area=datong`,
     );
   });
 
-  it("serves structured Shop markdown with Vary: Accept on root and locale URLs", async () => {
+  it("serves structured consumer markdown on the unified root and locale URLs", async () => {
     for (const [path, heading] of [
       ["/", "# uYao 找藥"],
       ["/zh-tw", "# uYao 找藥"],
       ["/en", "# uYao Medicine Finder"],
     ] as const) {
-      const response = proxy(new NextRequest(`https://shop.uyaohealth.com${path}`, {
+      const response = proxy(new NextRequest(`${SITE_URL}${path}`, {
         headers: { accept: "text/markdown" },
       }));
 
@@ -117,19 +117,19 @@ describe("canonical host routing", () => {
     expect(response.headers.get("location")).toBe(`${SHOP_URL}/zh-tw?area=datong`);
   });
 
-  it("redirects company-host Consumer copies to the shop canonical", () => {
+  it("serves localized consumer routes on the unified public host", () => {
     const response = request("https://uyaohealth.com/zh-tw/drug/example?area=datong");
-    expect(response.status).toBe(308);
-    expect(response.headers.get("location")).toBe(
-      `${SHOP_URL}/zh-tw/drug/example?area=datong`,
+    expect(response.status).toBe(200);
+    expect(response.headers.get("x-middleware-rewrite")).toBe(
+      `${SITE_URL}/drug/example?area=datong`,
     );
   });
 
-  it("keeps the demo sandbox on the consumer shop host", () => {
+  it("keeps the demo sandbox on the unified public host", () => {
     const response = request("https://uyaohealth.com/zh-tw/demo/uyao-demo");
-    expect(response.status).toBe(308);
-    expect(response.headers.get("location")).toBe(
-      `${SHOP_URL}/zh-tw/demo/uyao-demo`,
+    expect(response.status).toBe(200);
+    expect(response.headers.get("x-middleware-rewrite")).toBe(
+      `${SITE_URL}/demo/uyao-demo`,
     );
   });
 
@@ -139,9 +139,10 @@ describe("canonical host routing", () => {
     expect(response.headers.get("location")).toBe(`${SITE_URL}/en/pharmacy`);
   });
 
-  it("serves the company homepage at / instead of redirecting", () => {
+  it("serves the consumer-first homepage at / instead of redirecting", () => {
     const response = request("https://uyaohealth.com/");
     expect(response.status).toBe(200);
+    expect(response.headers.get("x-middleware-rewrite")).toBe(`${SITE_URL}/app`);
     expect(response.headers.get("cache-control")).toMatch(/\bpublic\b/);
     expect(response.headers.get("cache-control")).not.toMatch(/\bprivate\b|\bno-store\b/);
     expect(response.headers.get("vary")).toMatch(/Accept/i);
@@ -163,7 +164,7 @@ describe("canonical host routing", () => {
     expect(response.status).toBe(200);
     expect(response.headers.get("content-type")).toMatch(/text\/markdown/);
     expect(response.headers.get("vary")).toMatch(/Accept/i);
-    await expect(response.text()).resolves.toContain("# uYao is a pilot prototype");
+    await expect(response.text()).resolves.toContain("# uYao 找藥");
   });
 
   it("serves markdown 404s when Accept prefers markdown", async () => {

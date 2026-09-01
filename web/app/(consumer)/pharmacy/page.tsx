@@ -3,8 +3,10 @@ import type { Metadata } from "next";
 import { PilotForm } from "@/components/PilotForm";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { StoreOsProductPreview } from "@/components/landing/AgentLandingExperience";
 import type { Locale } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
+import { STORE_URL } from "@/lib/seo";
 import { indexablePageRobots } from "@/lib/seo-server";
 
 type PharmacyPageCopy = {
@@ -20,6 +22,8 @@ type PharmacyPageCopy = {
   boundaryTitle: string;
   boundaryBody: string;
   boundaries: { label: string; body: string }[];
+  storeOsTitle: string;
+  storeOsBody: string;
   applicationTitle: string;
   applicationBody: string;
   partnerTitle: string;
@@ -53,6 +57,8 @@ const COPY: Record<Locale, PharmacyPageCopy> = {
       { label: "必須停下", body: "採購送出、退貨確認、品項判斷與其他高影響決定。" },
       { label: "留下結果", body: "每一步保留來源、人員回覆與最後結果，供下一次檢查。" },
     ],
+    storeOsTitle: "Store OS 把訊號變成藥師可以批准的工作。",
+    storeOsBody: "消費者需求、效期與補貨訊號會整理成同一張 WorkItem。Agent 準備來源與草稿；真正的供應、採購與交付仍由藥師決定。下面可直接切換角色，查看同一張工作單如何接力。",
     applicationTitle: "選一個你真的想解決的流程。",
     applicationBody: "留下藥局與聯絡方式，再勾選最常發生的問題。我們會先一起確認流程與可驗證結果，不會直接開通正式操作。",
     partnerTitle: "已經是合作藥局？",
@@ -84,6 +90,8 @@ const COPY: Record<Locale, PharmacyPageCopy> = {
       { label: "Agents must stop", body: "Supplier submission, return confirmation, product judgment, and other consequential decisions." },
       { label: "The workflow records", body: "Sources, staff responses, and the final outcome remain available for review." },
     ],
+    storeOsTitle: "Store OS turns signals into work a pharmacist can approve.",
+    storeOsBody: "Consumer requests, expiry signals, and reorder needs become one WorkItem. Agents prepare sources and drafts; pharmacists still decide supply, purchasing, and handoff. Switch roles below to see how one item moves through the team.",
     applicationTitle: "Choose a workflow you actually want to fix.",
     applicationBody: "Leave the pharmacy and contact details, then select the problems that happen most often. We first confirm the workflow and a verifiable outcome; this does not activate live operations.",
     partnerTitle: "Already a partner pharmacy?",
@@ -174,6 +182,17 @@ export default async function PharmacyPage() {
         </div>
       </section>
 
+      <section id="store-os-preview" className="scroll-mt-20 border-t border-line bg-ivory">
+        <div className="shop-shell max-w-[1120px] pt-12 sm:pt-16">
+          <div className="mb-10 max-w-[48em]">
+            <p className="shop-kicker mb-4">STORE OS</p>
+            <h2 className="editorial-display m-0 text-[32px] leading-[1.25] sm:text-[40px]">{copy.storeOsTitle}</h2>
+            <p className="mb-0 mt-5 text-[15px] leading-[1.85] text-ink-2">{copy.storeOsBody}</p>
+          </div>
+          <StoreOsProductPreview locale={locale} />
+        </div>
+      </section>
+
       <section className="border-t border-line bg-paper">
         <div className="shop-shell max-w-[1040px] py-12 sm:py-16">
           <div className="max-w-[46em]">
@@ -190,7 +209,10 @@ export default async function PharmacyPage() {
         <div className="shop-shell max-w-[1040px] py-8">
           <div className="border-l-2 border-green bg-surface px-5 py-4 text-[15px] leading-[1.75] text-ink-2">
             <div className="mb-1 font-bold text-ink">{copy.partnerTitle}</div>
-            {copy.partnerBody}
+            <p className="m-0">{copy.partnerBody}</p>
+            <a href={STORE_URL} className="mt-3 inline-flex min-h-11 items-center font-bold text-forest underline underline-offset-4 hover:text-green">
+              {locale === "en" ? "Sign in to Store OS ↗" : "登入 Store OS ↗"}
+            </a>
           </div>
         </div>
       </section>
