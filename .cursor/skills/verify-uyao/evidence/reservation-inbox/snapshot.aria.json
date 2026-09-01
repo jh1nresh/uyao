@@ -1,0 +1,89 @@
+{
+  "title": "uYao 有藥 — 獨立藥局的供需庫存 Agent",
+  "url": "http://127.0.0.1:43100/store-os-preview",
+  "lang": "zh-Hant-TW",
+  "nodes": [
+    {
+      "role": "button",
+      "name": "收合側邊欄"
+    },
+    {
+      "role": "button",
+      "name": "店長 Agent · 在線"
+    },
+    {
+      "role": "button",
+      "name": "庫存 Agent · 處理中"
+    },
+    {
+      "role": "button",
+      "name": "採購 Agent · 等你批准"
+    },
+    {
+      "role": "button",
+      "name": "結帳 Agent · 待命"
+    },
+    {
+      "role": "navigation",
+      "name": "工作分類"
+    },
+    {
+      "role": "button",
+      "name": "需要你 1",
+      "current": "page"
+    },
+    {
+      "role": "button",
+      "name": "全部工作 4"
+    },
+    {
+      "role": "button",
+      "name": "完成紀錄 2"
+    },
+    {
+      "role": "button",
+      "name": "支援 Agent · 待命"
+    },
+    {
+      "role": "button",
+      "name": "開啟帳號與門市設定"
+    },
+    {
+      "role": "switch",
+      "name": "目前為淺色介面，切換為深色介面",
+      "checked": "false"
+    },
+    {
+      "role": "heading",
+      "name": "需要你",
+      "level": 1
+    },
+    {
+      "role": "heading",
+      "name": "普拿疼 加強錠",
+      "level": 2
+    },
+    {
+      "role": "button",
+      "name": "確認有貨"
+    },
+    {
+      "role": "button",
+      "name": "回報無庫存"
+    },
+    {
+      "role": "textbox",
+      "name": "交代店長"
+    },
+    {
+      "role": "button",
+      "name": "送出訊息",
+      "disabled": true
+    },
+    {
+      "role": "heading",
+      "name": "預留連線狀態",
+      "level": 2
+    }
+  ]
+}
