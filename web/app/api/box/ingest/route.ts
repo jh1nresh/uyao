@@ -3,6 +3,7 @@ import { NextResponse } from "next/server";
 import { drugMatchForGtin, logConsole, recordReceivingScan } from "@/lib/box";
 import { getDrug, getStore } from "@/lib/data";
 import { drugCopy } from "@/lib/i18n";
+import { assessLot, normalizeBatch, parseExpiry, recordLot } from "@/lib/lots";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -26,7 +27,15 @@ interface IncomingEvent {
   id?: unknown;
   ts?: unknown;
   kind?: unknown; // receiving | dispensing | unknown
-  payload?: { gtin?: unknown; symbology?: unknown; raw?: unknown };
+  payload?: {
+    gtin?: unknown;
+    symbology?: unknown;
+    raw?: unknown;
+    /** GS1 AI 17，Python 端已解析成 ISO YYYY-MM-DD */
+    expiry?: unknown;
+    /** GS1 AI 10 */
+    batch?: unknown;
+  };
 }
 
 function authorized(request: Request): boolean {
@@ -98,6 +107,8 @@ export async function POST(request: Request) {
 
   let matched = 0;
   let unknownGtin = 0;
+  let lotsRecorded = 0;
+  let lotsActionable = 0;
 
   for (const e of events) {
     const kind = typeof e.kind === "string" ? e.kind : "unknown";
@@ -130,6 +141,53 @@ export async function POST(request: Request) {
     matched += 1;
     const demoPrefix = match.demo ? "[示範] " : "";
     const demoPrefixEn = match.demo ? "[DEMO] " : "";
+
+    // ── 批號效期 ────────────────────────────────────────────────────
+    //
+    // README 標成「最值錢」的那個洞：錯過藥商退貨窗口。條碼裡有 AI 17 時
+    // 才記得起來 —— 台灣藥品一維條碼不含效期，所以這裡的覆蓋率就是
+    // P0 field check 要量的那個數字。沒有效期不是錯誤，是常態。
+    const expiry = parseExpiry(e.payload?.expiry);
+    const batch = normalizeBatch(e.payload?.batch);
+    if (expiry && batch) {
+      try {
+        const { record, isNew, expiryConflict } = await recordLot({
+          storeSlug: storeSlug!,
+          drugSlug,
+          batch,
+          expiry,
+          demo: match.demo,
+        });
+        lotsRecorded += 1;
+        const lot = assessLot(record);
+        if (lot.needsAction) lotsActionable += 1;
+
+        if (expiryConflict) {
+          // 同一批號兩個效期 —— 解析錯誤或藥廠重用批號，兩種都要人看
+          logConsole(
+            "⚠️",
+            `${demoPrefix}${store.name}「${drug.name}」批號 ${batch} 效期衝突：原記 ${expiryConflict}，本次掃到 ${expiry}，已以本次為準`,
+            `${demoPrefixEn}${store.name} “${drugNameEn}” batch ${batch} has conflicting expiry dates: ${expiryConflict} on record, ${expiry} scanned now; the newer value was kept`,
+            { demo: match.demo },
+          );
+        } else if (isNew) {
+          logConsole(
+            lot.needsAction ? "⏳" : "🗓️",
+            lot.needsAction
+              ? `${demoPrefix}${store.name}「${drug.name}」批號 ${batch} 退貨窗口 ${lot.daysUntilWindowCloses} 天後關閉（效期 ${expiry}）→ 需要藥師決定`
+              : `${demoPrefix}${store.name}「${drug.name}」批號 ${batch} 效期 ${expiry}，退貨窗口 ${lot.returnWindowClosesAt} 關閉`,
+            lot.needsAction
+              ? `${demoPrefixEn}${store.name} “${drugNameEn}” batch ${batch} return window closes in ${lot.daysUntilWindowCloses} day(s) (expiry ${expiry}); a pharmacist decision is required`
+              : `${demoPrefixEn}${store.name} “${drugNameEn}” batch ${batch} expires ${expiry}; return window closes ${lot.returnWindowClosesAt}`,
+            { demo: match.demo },
+          );
+        }
+      } catch (err) {
+        // 效期寫入失敗不能讓整批 ingest 掉單 —— 掃描本身已經記下了
+        console.error("[box] 批號效期寫入失敗", String(err).slice(0, 200));
+      }
+    }
+
     logConsole(
       "🧠",
       kind === "receiving"
@@ -142,7 +200,13 @@ export async function POST(request: Request) {
     );
   }
 
-  return NextResponse.json({ accepted: events.length, matched, unknownGtin });
+  return NextResponse.json({
+    accepted: events.length,
+    matched,
+    unknownGtin,
+    lotsRecorded,
+    lotsActionable,
+  });
 }
 
 /** 設定自檢，不吐機密。 */
