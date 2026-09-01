@@ -146,7 +146,7 @@ export default async function HomePage({
       */}
       <section className="relative overflow-hidden border-b border-line bg-ivory">
         <div className="shop-shell relative pb-10 pt-12 sm:pb-12 sm:pt-16 lg:pb-14 lg:pt-20">
-          <div className="w-full max-w-[1160px]">
+          <div className="w-full">
             <h1 className="editorial-display m-0 max-w-[1050px] text-[clamp(40px,7vw,96px)] leading-[1.02] [text-wrap:balance]">
               {locale === "en" ? (
                 <><span className="block">You do not need</span><span className="block">the product name.</span></>
@@ -157,7 +157,7 @@ export default async function HomePage({
             <p className="mt-6 max-w-[610px] text-[15px] leading-[1.8] text-ink-2 sm:text-[17px]">
               {locale === "en" ? "Search by product, ingredient, or daily-wellness need. Recognized common symptoms open safety guidance instead of automatic product results." : "可輸入品名、成分或日常保養方向；辨識到常見症狀時，會先顯示安全提醒，不會自動帶商品。"}
             </p>
-            <div className="mt-8 max-w-[1120px] text-left">
+            <div className="mx-auto mt-8 max-w-[1120px] text-left">
               <SearchInput size="xl" area={area} className="w-full shadow-none" />
             </div>
 
