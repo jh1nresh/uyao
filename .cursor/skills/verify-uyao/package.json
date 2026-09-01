@@ -1,0 +1,13 @@
+{
+  "name": "verify-uyao",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Agent-facing CDP control CLI for uYao storeOS web",
+  "bin": {
+    "verify-uyao": "./bin/verify-uyao"
+  },
+  "dependencies": {
+    "playwright-core": "^1.55.1"
+  }
+}
