@@ -126,8 +126,7 @@ export function openApiDocument(): Record<string, unknown> {
       },
     },
     servers: [
-      { url: SHOP_URL, description: "Consumer host. Serves the catalog and pharmacy endpoints." },
-      { url: SITE_URL, description: "Company host. Same API surface." },
+      { url: SHOP_URL, description: "Unified public host for the consumer service and company information." },
       { url: STORE_URL, description: "Store OS host. Same public read API surface; signed-in Store OS actions are not public." },
     ],
     externalDocs: { url: `${SITE_URL}/docs`, description: "uYao developer resources, errors, versioning, and deprecation policy" },
@@ -691,8 +690,8 @@ export function openApiDocument(): Record<string, unknown> {
 
 /**
  * Public-read contract: GET /api/catalog and GET /api/pharmacies only.
- * store.uyaohealth.com /openapi.json serves this. Company and shop hosts
- * keep the full document, including site-form writes marked x-internal.
+ * store.uyaohealth.com /openapi.json serves this. The unified public host keeps
+ * the full document, including site-form writes marked x-internal.
  */
 export function publicReadOpenApiDocument(): Record<string, unknown> {
   const full = openApiDocument();

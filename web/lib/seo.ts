@@ -73,9 +73,9 @@ export const SOCIAL_PREVIEW_IMAGES = {
 >;
 
 /**
- * Which brand card a host shares. The shop host owns the consumer card; every
- * other host (company, preview, deployment URL) falls back to the company one
- * so no page can end up with no card at all.
+ * The unified canonical host defaults to the consumer card. Company content
+ * that needs its editorial card requests that audience in page metadata;
+ * previews fall back to the company card so no page shares without an image.
  */
 export function socialPreviewAudience(
   requestHost: string | null | undefined,
@@ -286,7 +286,7 @@ export function breadcrumbJsonLd(items: { name: string; path: string }[]): JsonL
   };
 }
 
-/** Breadcrumbs for consumer routes, anchored on the shop canonical host. */
+/** Breadcrumbs for consumer routes, anchored on the unified public host. */
 export function consumerBreadcrumbJsonLd(items: { name: string; path: string }[]): JsonLd {
   return {
     "@type": "BreadcrumbList",
