@@ -13,6 +13,7 @@ import {
 
 import { CatalogImagePlaceholder } from "./CatalogImagePlaceholder";
 import { catalogSourceStatus } from "./CatalogItemGrid";
+import { CATALOG_GROUPS, catalogGroupForDrug } from "@/lib/catalog-groups";
 import { known } from "@/lib/pending";
 import { drugCopy, localizedPath, type Locale } from "@/lib/i18n";
 import type { AreaSlug, Drug } from "@/lib/types";
@@ -207,36 +208,53 @@ export function CatalogCarousel({
       >
         {drugs.map((item) => {
           const drug = drugCopy(item, locale);
+          const groupSlug = catalogGroupForDrug(item);
+          const group = CATALOG_GROUPS.find((candidate) => candidate.slug === groupSlug);
+          const groupName = group
+            ? locale === "en" ? group.nameEn : group.name
+            : locale === "en" ? "Catalog item" : "品項資料";
           return (
             <Link
               key={item.slug}
               href={`${localizedPath(`/drug/${item.slug}`, locale)}?area=${area}`}
-              className={`history-link group flex flex-col bg-paper no-underline transition-[background-color,transform] hover:-translate-y-px hover:bg-surface-hover ${expanded
+              className={`history-link group flex flex-col border border-line bg-paper no-underline transition-[border-color,transform] hover:-translate-y-0.5 hover:border-line-strong ${expanded
                 ? "w-full"
-                : "w-[calc((100%-12px)/2)] shrink-0 snap-start sm:w-[calc((100%-24px)/3)] md:w-[calc((100%-36px)/4)] lg:w-[calc((100%-48px)/5)] xl:w-[calc((100%-60px)/6)]"}`}
+                : "w-[calc((100%-12px)/2)] shrink-0 snap-start sm:w-[calc((100%-24px)/3)] lg:w-[calc((100%-36px)/4)]"}`}
             >
-              <span className="relative block aspect-square w-full border-b border-line">
+              <span className="relative block aspect-[4/3] w-full overflow-hidden border-b border-line bg-surface">
+                <span className="num absolute left-3 top-3 z-[1] bg-paper/90 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-oxblood">
+                  {groupName}
+                </span>
                 {item.image ? (
                   <Image
                     src={item.image.src}
                     alt=""
                     fill
-                    sizes="196px"
-                    className="object-contain p-3"
+                    sizes="(max-width: 639px) 45vw, (max-width: 1023px) 30vw, 23vw"
+                    className="object-contain p-5 transition-transform duration-300 group-hover:scale-[1.025]"
                   />
                 ) : (
                   <CatalogImagePlaceholder locale={locale} />
                 )}
               </span>
-              <span className="flex flex-1 flex-col justify-between gap-2 px-3.5 py-3">
-                <span className="block text-[14.5px] font-bold leading-[1.45] text-ink">
+              <span className="flex flex-1 flex-col px-4 py-4 sm:px-5 sm:py-5">
+                <span className="block min-h-[2.9em] line-clamp-2 text-[15px] font-bold leading-[1.45] text-ink sm:text-[17px]">
                   {drug.name}
                 </span>
+                <span className="mt-2 block min-h-[3.1em] line-clamp-2 text-[12.5px] leading-[1.55] text-muted sm:text-[13.5px]">
+                  {locale === "en" ? item.nutritionFocusEn : item.nutritionFocus}
+                </span>
                 {/* 規格與出處都可能是空的 —— 有什麼講什麼，兩個都沒有就整行不留。 */}
-                <span className="block text-[12.5px] leading-[1.5] text-muted-2">
+                <span className="mt-4 block text-[11.5px] leading-[1.5] text-muted-2 sm:text-[12.5px]">
                   {[known(drug.spec), catalogSourceStatus(item, locale)]
                     .filter(Boolean)
                     .join(" · ")}
+                </span>
+              </span>
+              <span className="flex min-h-12 items-center justify-between gap-2 border-t border-line px-4 text-[11.5px] font-semibold text-oxblood sm:px-5 sm:text-[12.5px]">
+                <span>{locale === "en" ? "Supply requires confirmation" : "供應需確認"}</span>
+                <span className="text-forest transition-transform duration-200 group-hover:translate-x-1">
+                  {locale === "en" ? "View item →" : "查看品項 →"}
                 </span>
               </span>
             </Link>

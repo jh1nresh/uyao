@@ -33,12 +33,14 @@ export function SearchInput({
   className = "",
   autoFocus = false,
   area,
+  submitLabel,
 }: {
   defaultValue?: string;
   size?: "sm" | "lg" | "xl";
   className?: string;
   autoFocus?: boolean;
   area?: AreaSlug;
+  submitLabel?: string;
 }) {
   const locale = useLocale();
   const router = useRouter();
@@ -150,7 +152,7 @@ export function SearchInput({
         <label className="sr-only" htmlFor={`q-${size}`}>
           {locale === "en" ? "Search products or describe symptoms" : "搜尋品項或描述症狀"}
         </label>
-        <div className="group relative h-full min-w-0 flex-1">
+        <div className="group relative h-full w-0 min-w-0 flex-1">
           <input
             id={`q-${size}`}
             name="q"
@@ -189,7 +191,7 @@ export function SearchInput({
             type="submit"
             className={`action-primary flex-none ${xl ? "h-14 px-5 text-[16px] sm:px-9" : "h-12 px-6 text-[15px]"}`}
           >
-            {locale === "en" ? "Search" : "搜尋"}
+            {submitLabel ?? (locale === "en" ? "Search" : "搜尋")}
           </button>
         )}
       </form>
