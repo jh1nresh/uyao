@@ -19,6 +19,10 @@ const globalCss = readFileSync(
   join(import.meta.dirname, "..", "app", "globals.css"),
   "utf8",
 );
+const siteHeader = readFileSync(
+  join(import.meta.dirname, "..", "components", "SiteHeader.tsx"),
+  "utf8",
+);
 const pharmacyPage = readFileSync(
   join(import.meta.dirname, "..", "app", "(consumer)", "pharmacy", "page.tsx"),
   "utf8",
@@ -32,7 +36,9 @@ describe("household medicine storefront homepage", () => {
   it("integrates the search into a wall and keeps the full catalog below", () => {
     expect(appPage).toContain('<SearchInput size="xl" area={area}');
     expect(appPage).toContain("medicine-cabinet-hero");
-    expect(appPage).toContain('<h1 className="sr-only">');
+    expect(appPage).toContain("家裡的藥箱，現在會找答案");
+    expect(appPage).toContain("打開 uYao，先問再出門。");
+    expect(appPage).toContain("你說家裡需要什麼，uYao 整理需求，再由藥師確認下一步。");
     expect(appPage).toContain("medicine-cabinet-input");
     expect(appPage).not.toContain("家裡現在需要什麼？");
     expect(appPage).not.toContain("問藥時，上排品項留在原位。");
@@ -45,7 +51,17 @@ describe("household medicine storefront homepage", () => {
       appPage.indexOf("<CatalogCarousel"),
     );
     expect(appPage).toContain("shelfDrugs.map");
+    expect(appPage).not.toContain("medicine-cabinet-path");
+    expect(appPage).not.toContain("附近取貨");
     expect(appPage).not.toContain("d-household-medicine-cabinet");
+  });
+
+  it("uses the cabinet-toned compact header only on the storefront homepage", () => {
+    expect(appPage).toContain('tone="cabinet"');
+    expect(appPage).toContain('className="medicine-cabinet-stage relative"');
+    expect(siteHeader).toContain('tone?: "default" | "cabinet";');
+    expect(siteHeader).toContain('"absolute inset-x-0 top-0 z-40 bg-transparent"');
+    expect(siteHeader).toContain('cabinetTone ? "h-16 sm:h-[68px]"');
   });
 
   it("asks for allergens before navigating to the dedicated results route", () => {
@@ -61,6 +77,7 @@ describe("household medicine storefront homepage", () => {
     expect(globalCss).toContain("medicine-cabinet-products");
     expect(globalCss).toContain("grid-template-columns: 337fr 238fr 290fr;");
     expect(globalCss).toContain("background-position: 59% top;");
+    expect(globalCss).toContain("height: clamp(34rem, 49vw, 50rem);");
     expect(appPage).not.toContain("<Image");
     expect(appPage).not.toContain("object-contain object-bottom");
     expect(globalCss).not.toContain("medicine-cabinet-product::after");

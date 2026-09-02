@@ -80,7 +80,7 @@ export function PartnerMarquee({
     <section
       id={id}
       ref={sectionRef}
-      className="partner-marquee scroll-mt-24 bg-ivory"
+      className="partner-marquee scroll-mt-24 bg-paper"
       data-paused={!visible}
       aria-labelledby={`partner-marquee-heading-${locale}`}
     >
@@ -106,11 +106,11 @@ export function PartnerMarquee({
             <MarqueeList items={items} duplicate />
           </div>
           <span
-            className="partner-marquee-edge pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-ivory to-transparent sm:w-12"
+            className="partner-marquee-edge pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-paper to-transparent sm:w-12"
             aria-hidden
           />
           <span
-            className="partner-marquee-edge pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-ivory to-transparent sm:w-12"
+            className="partner-marquee-edge pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-paper to-transparent sm:w-12"
             aria-hidden
           />
         </div>
