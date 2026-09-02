@@ -286,10 +286,9 @@ html[data-theme="dark"] .theme-logo-dark {
   box-shadow: 0 22px 52px rgb(var(--shadow-paper) / 0.09);
 }
 
-/* Selected D direction: cabinet, products, lighting, and shelf contact share
-   one stocked composition. Transparent links preserve product navigation;
-   the concise ask-medicine entry sits directly on the lower cabinet wall. */
-.medicine-cabinet-stage {
+/* The landing page stays on the cabinet's fixed warm-light palette so lower
+   information sections do not split into a separate dark-mode surface. */
+.medicine-cabinet-home {
   color-scheme: light;
   --color-ink: 28 39 34;
   --color-forest: 23 57 44;
@@ -299,12 +298,35 @@ html[data-theme="dark"] .theme-logo-dark {
   --color-ink-2: 62 75 68;
   --color-muted: 89 102 95;
   --color-muted-2: 96 109 102;
+  --color-stale: 104 118 109;
+  --color-green: 8 123 67;
+  --color-green-hover: 6 103 55;
+  --color-green-tint: 226 238 229;
+  --color-green-tint-line: 184 210 192;
   --color-oxblood: 116 53 47;
+  --color-oxblood-tint: 233 217 210;
+  --color-warning: 148 98 0;
+  --color-warning-tint: 255 245 223;
+  --color-warning-line: 199 146 44;
   --color-line: 210 205 193;
   --color-line-strong: 184 177 164;
+  --color-line-soft: 226 220 207;
+  --color-surface: 236 231 219;
+  --color-surface-hover: 229 223 210;
+  --color-canvas: 231 225 212;
+  --color-ivory: 242 239 230;
   --color-paper: 248 244 233;
+  --color-agent-eye: var(--color-paper);
+  --color-sage: 220 231 217;
+  --color-map-bg: 229 233 226;
+  --color-map-grid: 217 224 215;
+  --shadow-paper: 37 54 45;
   color: rgb(var(--color-ink));
 }
+
+/* Selected D direction: cabinet, products, lighting, and shelf contact share
+   one stocked composition. Transparent links preserve product navigation;
+   the concise ask-medicine entry sits directly on the lower cabinet wall. */
 
 .medicine-cabinet-stage .theme-logo-light.theme-logo-light {
   display: none;
@@ -407,23 +429,73 @@ html[data-theme="dark"] .theme-logo-dark {
    Product colors behave like reflected light behind the active packshot,
    instead of turning the section into a separate, hard-edged color card. */
 .medicine-cabinet-showcase-section {
-  color-scheme: light;
-  --color-ink: 28 39 34;
-  --color-forest: 23 57 44;
-  --color-on-dark: 248 244 233;
-  --color-ink-2: 62 75 68;
-  --color-muted: 89 102 95;
-  --color-muted-2: 96 109 102;
-  --color-oxblood: 116 53 47;
-  --color-line: 210 205 193;
-  --color-line-strong: 184 177 164;
-  --color-paper: 248 244 233;
-  color: rgb(var(--color-ink));
   background-color: #ead8b8;
   background-image:
     radial-gradient(ellipse 48% 22% at 28% 8%, rgb(255 246 224 / 0.58), transparent 72%),
     linear-gradient(90deg, rgb(84 57 30 / 0.06), transparent 12%, transparent 88%, rgb(84 57 30 / 0.05)),
     linear-gradient(180deg, #dcc198 0, #ead8b8 16rem, #f8f4e9 48rem);
+}
+
+.medicine-cabinet-guide {
+  position: relative;
+  background-color: #f3e8d1;
+  background-image:
+    radial-gradient(ellipse 38% 45% at 12% 18%, rgb(255 249 233 / 0.62), transparent 76%),
+    linear-gradient(90deg, rgb(105 72 38 / 0.06), transparent 9%, transparent 91%, rgb(105 72 38 / 0.05));
+  box-shadow: inset 0 14px 24px rgb(88 58 29 / 0.06);
+  color: rgb(var(--color-ink));
+}
+
+.medicine-cabinet-guide::before,
+.medicine-cabinet-base::before {
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 1;
+  height: 10px;
+  background: linear-gradient(180deg, #e8d0aa 0, #caa16f 62%, #a77748 100%);
+  box-shadow:
+    inset 0 -1px rgb(85 54 27 / 0.22),
+    0 5px 10px rgb(72 48 25 / 0.14);
+  content: "";
+}
+
+.medicine-cabinet-guide-boundary {
+  border-top: 1px solid rgb(143 103 61 / 0.28);
+}
+
+.medicine-cabinet-base {
+  position: relative;
+  background:
+    linear-gradient(90deg, rgb(7 29 21 / 0.22), transparent 12%, transparent 88%, rgb(7 29 21 / 0.18)),
+    linear-gradient(180deg, #173f30 0, #103326 100%);
+  box-shadow: inset 0 -1px rgb(6 25 18 / 0.7);
+}
+
+.medicine-cabinet-home > footer {
+  --color-paper: 27 62 48;
+  --color-forest: 248 244 233;
+  --color-green: 223 235 218;
+  --color-oxblood: 225 190 145;
+  --color-line: 248 244 233;
+  --color-muted: 214 222 213;
+  --color-muted-2: 184 199 188;
+  --color-agent-eye: 27 62 48;
+  border-color: rgb(var(--color-line) / 0.18);
+}
+
+.medicine-cabinet-home > footer .theme-logo-light.theme-logo-light {
+  display: none;
+}
+
+.medicine-cabinet-home > footer .theme-logo-dark.theme-logo-dark {
+  display: block;
+}
+
+@media (min-width: 1024px) {
+  .medicine-cabinet-guide-boundary {
+    border-top: 0;
+    border-left: 1px solid rgb(143 103 61 / 0.28);
+  }
 }
 
 .product-showcase-canvas {

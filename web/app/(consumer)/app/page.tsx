@@ -135,8 +135,9 @@ export default async function HomePage({
         consumerWebSiteJsonLd(locale),
         consumerWebPageJsonLd(locale),
       ]} />
-      <div className="medicine-cabinet-stage relative">
-        <SiteHeader showSearch={false} area={area} preserveAreaPath locatable tone="cabinet" />
+      <div className="medicine-cabinet-home">
+        <div className="medicine-cabinet-stage relative">
+          <SiteHeader showSearch={false} area={area} preserveAreaPath locatable tone="cabinet" />
 
         {/* 商品與櫃體共用同一張陳列影像；透明熱區提供品項連結，問藥入口嵌在下層牆面。 */}
         <section className="medicine-cabinet-hero overflow-hidden border-b border-line">
@@ -176,7 +177,7 @@ export default async function HomePage({
             </div>
           </div>
         </section>
-      </div>
+        </div>
 
       <PartnerMarquee
         id="pharmacies"
@@ -222,121 +223,99 @@ export default async function HomePage({
         </div>
       </section>
 
-      <section className="bg-paper">
-        <div className="shop-shell py-14 sm:py-20">
-          <h2 className="editorial-display mb-7 mt-0 text-[32px] leading-[1.25] sm:text-[40px]">{locale === "en" ? "Three steps to the next reliable action" : "三步找到可靠的下一步"}</h2>
-          <ol className="m-0 grid list-none gap-7 p-0 sm:grid-cols-3 sm:gap-10">
-          {steps.map((s, i) => (
-            <li
-              key={s.title}
-              className="flex gap-4"
-            >
-              <span className="num flex-none text-[24px] font-semibold text-oxblood">
-                {String(i + 1).padStart(2, "0")}
-              </span>
-              <div>
-                <div className="text-[17px] font-bold text-ink">{s.title}</div>
-                <p className="mt-2 text-[14.5px] leading-[1.7] text-muted">{s.body}</p>
-              </div>
-            </li>
-          ))}
-          </ol>
-          <p className="mt-7 text-[14px] leading-[1.6] text-muted-2">
-            {locale === "en" ? "How should I read availability?" : "庫存狀態怎麼讀？"}
-            <Link href={localizedPath("/stock-badges", locale)} className="-my-3 ml-1 inline-flex min-h-11 items-center text-green">
-              {locale === "en" ? "Read the freshness labels →" : "看徽章分級說明 →"}
-            </Link>
-          </p>
-        </div>
-      </section>
+      <section className="medicine-cabinet-guide" aria-labelledby="consumer-answer-heading">
+        <div className="shop-shell grid py-12 sm:py-16 lg:grid-cols-[.9fr_1.1fr] lg:py-20">
+          <div className="pb-10 lg:pr-14 lg:pb-0">
+            <h2 className="editorial-display m-0 max-w-[12em] text-balance text-[30px] leading-[1.2] sm:text-[36px]">
+              {locale === "en" ? "Three steps to the next reliable action" : "三步找到可靠的下一步"}
+            </h2>
+            <ol className="mt-6 list-none border-t border-line p-0">
+              {steps.map((s, i) => (
+                <li key={s.title} className="grid grid-cols-[40px_1fr] gap-3 border-b border-line py-4">
+                  <span className="num pt-0.5 text-[12px] font-bold text-oxblood">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  <div>
+                    <div className="text-[15px] font-bold text-ink">{s.title}</div>
+                    <p className="mb-0 mt-1 max-w-[38em] text-pretty text-[13.5px] leading-[1.65] text-muted">{s.body}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+            <p className="mb-0 mt-4 text-[13.5px] leading-[1.6] text-muted-2">
+              {locale === "en" ? "How should I read availability?" : "庫存狀態怎麼讀？"}
+              <Link href={localizedPath("/stock-badges", locale)} className="-my-3 ml-1 inline-flex min-h-11 items-center font-bold text-forest">
+                {locale === "en" ? "Read the freshness labels →" : "看徽章分級說明 →"}
+              </Link>
+            </p>
+          </div>
 
-      <section className="bg-ivory" aria-labelledby="consumer-answer-heading">
-        <div className="shop-shell py-14 sm:py-20">
-          <h2 id="consumer-answer-heading" className="editorial-display mb-5 mt-0 text-[30px] leading-[1.25] [text-wrap:balance] sm:text-[40px]">
-            {locale === "en" ? "What can this service help you confirm?" : "現在可以幫你確認哪些資訊？"}
-          </h2>
-          <p className="m-0 max-w-[760px] text-[16px] leading-[1.85] text-ink-2">
-            {CONSUMER_DESCRIPTION[locale]}
-          </p>
-          <dl className="mt-8 grid gap-7 sm:grid-cols-3 sm:gap-10">
-            <div>
-              <dt className="text-[14px] font-bold text-forest">{locale === "en" ? "Known" : "目前可確認"}</dt>
-              <dd className="mb-0 mt-2 text-[14px] leading-[1.75] text-muted">
-                {locale === "en" ? "Trial catalog records, public pharmacy listings, and the request you submit." : "試營運目錄、公開藥局收錄資料，以及你送出的找藥需求。"}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-[14px] font-bold text-forest">{locale === "en" ? "Not yet known" : "目前不能確認"}</dt>
-              <dd className="mb-0 mt-2 text-[14px] leading-[1.75] text-muted">
-                {locale === "en" ? "Live stock, guaranteed availability, price, hold time, or medical suitability." : "即時庫存、保證供應、價格、保留時間或個人是否適合使用。"}
-              </dd>
-            </div>
-            <div>
-              <dt className="text-[14px] font-bold text-forest">{locale === "en" ? "Next step" : "下一步"}</dt>
-              <dd className="mb-0 mt-2 text-[14px] leading-[1.75] text-muted">
-                {locale === "en" ? "Search or leave a request, then wait for a pharmacy or pharmacist to confirm." : "搜尋或留下需求，再等待藥局或藥師確認供應與用藥問題。"}
-              </dd>
-            </div>
-          </dl>
-          <details className="mt-8 max-w-[900px] bg-paper px-5 py-4">
-            <summary className="cursor-pointer text-[14px] font-bold text-forest">
-              {locale === "en" ? "Sources and freshness" : "資料來源與更新說明"}
-            </summary>
-            <div className="mt-5 max-w-[38em]">
-              <h3 className="m-0 text-[16px] font-bold text-ink">{locale === "en" ? "Sources and freshness" : "資料來源與更新"}</h3>
-              <p className="mb-0 mt-2 text-[14px] leading-[1.75] text-muted">
+          <div className="medicine-cabinet-guide-boundary pt-10 lg:pl-14 lg:pt-0">
+            <h2 id="consumer-answer-heading" className="editorial-display m-0 max-w-[13em] text-balance text-[30px] leading-[1.2] sm:text-[36px]">
+              {locale === "en" ? "What can this service help you confirm?" : "現在可以幫你確認哪些資訊？"}
+            </h2>
+            <p className="mb-0 mt-4 max-w-[680px] text-pretty text-[14.5px] leading-[1.75] text-ink-2">
+              {CONSUMER_DESCRIPTION[locale]}
+            </p>
+            <dl className="mt-6 grid gap-x-9 gap-y-6 sm:grid-cols-2">
+              <div>
+                <dt className="text-[13.5px] font-bold text-forest">{locale === "en" ? "Known" : "目前可確認"}</dt>
+                <dd className="mb-0 mt-1.5 text-pretty text-[13.5px] leading-[1.7] text-muted">
+                  {locale === "en" ? "Trial catalog records, public pharmacy listings, and the request you submit." : "試營運目錄、公開藥局收錄資料，以及你送出的找藥需求。"}
+                </dd>
+              </div>
+              <div>
+                <dt className="text-[13.5px] font-bold text-forest">{locale === "en" ? "Not yet known" : "目前不能確認"}</dt>
+                <dd className="mb-0 mt-1.5 text-pretty text-[13.5px] leading-[1.7] text-muted">
+                  {locale === "en" ? "Live stock, guaranteed availability, price, hold time, or medical suitability." : "即時庫存、保證供應、價格、保留時間或個人是否適合使用。"}
+                </dd>
+              </div>
+            </dl>
+            <details className="mt-6 border-y border-line py-3.5">
+              <summary className="cursor-pointer text-[13.5px] font-bold text-forest">
+                {locale === "en" ? "Sources and freshness" : "資料來源與更新說明"}
+              </summary>
+              <p className="mb-0 mt-3 max-w-[38em] text-pretty text-[13.5px] leading-[1.7] text-muted">
                 {locale === "en" ? `Trial catalog and public pharmacy records. This page was last updated ${UPDATED_AT}.` : `試營運藥品目錄與公開藥局資料；本頁最後更新：${UPDATED_AT}。`}{" "}
                 <a href={`${SITE_URL}/zh-tw/evidence`} className="text-forest underline underline-offset-2 hover:text-green">
                   {locale === "en" ? "Read product evidence" : "查看產品證據"}
                 </a>
               </p>
-            </div>
-          </details>
+            </details>
+          </div>
         </div>
       </section>
 
-      <section id="store-os-bridge" className="bg-sage text-ink" aria-labelledby="store-os-bridge-heading">
-        <div className="shop-shell grid gap-10 py-14 sm:py-20 lg:grid-cols-[.9fr_1.1fr] lg:gap-16">
-          <div className="border-l border-green pl-5 sm:pl-7">
-            <p className="m-0 text-[14px] font-bold text-forest">{locale === "en" ? "FOR PARTNER PHARMACIES" : "給合作藥局"}</p>
-            <h2 id="store-os-bridge-heading" className="editorial-display mb-0 mt-3 text-[34px] leading-[1.2] sm:text-[44px]">
+      <section id="store-os-bridge" className="medicine-cabinet-base text-on-dark" aria-labelledby="store-os-bridge-heading">
+        <div className="shop-shell grid gap-7 py-10 sm:py-12 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-14">
+          <div>
+            <p className="m-0 text-[12px] font-bold tracking-[.08em] text-on-dark/65">{locale === "en" ? "FOR PARTNER PHARMACIES" : "給合作藥局"}</p>
+            <h2 id="store-os-bridge-heading" className="editorial-display mb-0 mt-2 max-w-[16em] text-balance text-[28px] leading-[1.18] sm:text-[34px]">
               {locale === "en" ? "You ask. A pharmacist takes over in Store OS." : "你提出需求，藥師在 Store OS 接手。"}
             </h2>
-            <p className="mb-0 mt-4 text-[15px] leading-[1.8] text-ink-2">
-              {locale === "en" ? "uYao organizes the request and safety answers. With your consent, a partner pharmacy can review the source, confirm supply, and reply with the next step." : "uYao 先整理你的需求與安全問答；取得你的同意後，合作藥局可在 Store OS 查看來源、確認供應並回覆下一步。"}
+            <p className="mb-0 mt-3 max-w-[760px] text-pretty text-[14px] leading-[1.75] text-on-dark/75">
+              {locale === "en" ? "uYao organizes the request and safety answers. With your consent, a partner pharmacy can review the source and confirm the next step. Supply and professional guidance stay with the pharmacist." : "uYao 先整理需求與安全問答；取得你的同意後，合作藥局可查看來源並確認下一步。供應與專業判斷仍由藥師負責。"}
             </p>
-            <div className="mt-6 flex flex-wrap gap-3">
-              <Link
-                href={`${localizedPath("/pharmacy", locale)}#store-os-preview`}
-                className="inline-flex min-h-12 items-center bg-paper px-5 text-[14px] font-bold text-forest no-underline hover:bg-surface-hover"
-              >
-                {locale === "en" ? "How Store OS works →" : "了解 Store OS 如何運作 →"}
-              </Link>
-              <a
-                href={STORE_URL}
-                className="inline-flex min-h-12 items-center border border-forest px-5 text-[14px] font-bold text-forest no-underline hover:border-green hover:text-green"
-              >
-                {locale === "en" ? "Partner sign in ↗" : "合作藥局登入 ↗"}
-              </a>
-            </div>
           </div>
-          <ol className="m-0 grid list-none border-l border-t border-forest/25 p-0 sm:grid-cols-3 lg:grid-cols-1">
-            {[
-              locale === "en" ? ["01", "Request", "The consumer describes a product, ingredient, or wellness need."] : ["01", "提出需求", "消費者描述品項、成分或日常保養方向。"],
-              locale === "en" ? ["02", "Consent", "Only an approved handoff sends the relevant context to a partner pharmacy."] : ["02", "同意交接", "只有在你同意後，相關資訊才會交給合作藥局。"],
-              locale === "en" ? ["03", "Pharmacist decision", "Store OS organizes the work; supply and guidance stay with the pharmacist."] : ["03", "藥師確認", "Store OS 整理工作；供應與專業判斷仍由藥師負責。"],
-            ].map(([number, title, body]) => (
-              <li key={number} className="grid gap-2 border-b border-r border-forest/25 bg-paper/45 p-5 sm:grid-rows-[auto_auto_1fr] lg:grid-cols-[48px_140px_1fr] lg:items-start lg:gap-5">
-                <span className="num text-[12px] font-bold text-green">{number}</span>
-                <strong className="text-[14px] text-ink">{title}</strong>
-                <span className="text-[13px] leading-[1.7] text-ink-2">{body}</span>
-              </li>
-            ))}
-          </ol>
+          <div className="flex flex-wrap gap-3 lg:justify-end">
+            <Link
+              href={`${localizedPath("/pharmacy", locale)}#store-os-preview`}
+              className="inline-flex min-h-11 items-center bg-paper px-4 text-[13.5px] font-bold text-forest no-underline hover:bg-surface-hover"
+            >
+              {locale === "en" ? "How Store OS works →" : "了解 Store OS 如何運作 →"}
+            </Link>
+            <a
+              href={STORE_URL}
+              className="inline-flex min-h-11 items-center border border-on-dark/45 px-4 text-[13.5px] font-bold text-on-dark no-underline hover:border-on-dark"
+            >
+              {locale === "en" ? "Partner sign in ↗" : "合作藥局登入 ↗"}
+            </a>
           </div>
+        </div>
       </section>
 
-      <SiteFooter />
+        <SiteFooter />
+      </div>
     </>
   );
 }
