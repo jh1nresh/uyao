@@ -286,6 +286,95 @@ html[data-theme="dark"] .theme-logo-dark {
   box-shadow: 0 22px 52px rgb(var(--shadow-paper) / 0.09);
 }
 
+/* Selected D direction: cabinet, products, lighting, and shelf contact share
+   one stocked composition. Transparent links preserve product navigation;
+   SearchInput is the only visible UI layered onto the cabinet. */
+.medicine-cabinet-hero {
+  position: relative;
+  isolation: isolate;
+  height: clamp(39rem, 56.28vw, 53.75rem);
+  color-scheme: light;
+  --color-ink: 28 39 34;
+  --color-forest: 23 57 44;
+  --color-brand-surface: 23 57 44;
+  --color-brand-surface-strong: 28 39 34;
+  --color-on-dark: 248 244 233;
+  --color-ink-2: 62 75 68;
+  --color-muted: 89 102 95;
+  --color-muted-2: 96 109 102;
+  --color-oxblood: 116 53 47;
+  --color-line: 210 205 193;
+  --color-line-strong: 184 177 164;
+  --color-paper: 248 244 233;
+  color: rgb(var(--color-ink));
+  background-color: #dcc198;
+  background-image: url("/brand/uyao-medicine-cabinet-stocked-v1.webp");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.medicine-cabinet-products {
+  position: absolute;
+  top: 3.8%;
+  right: 18.8%;
+  left: 26.2%;
+  display: grid;
+  grid-template-columns: 337fr 238fr 290fr;
+  height: 36%;
+  gap: 3%;
+}
+
+.medicine-cabinet-search {
+  position: absolute;
+  top: 60%;
+  left: 31%;
+  width: 40%;
+}
+
+.medicine-cabinet-input {
+  border-color: rgb(96 77 51 / 0.38) !important;
+  background: rgb(226 204 169 / 0.34) !important;
+  box-shadow:
+    inset 0 1px 0 rgb(255 244 221 / 0.28),
+    inset 0 -1px 0 rgb(72 55 34 / 0.1) !important;
+}
+
+@media (max-width: 767px) {
+  .medicine-cabinet-hero {
+    height: auto;
+    min-height: 29rem;
+    padding: 14.5rem 1rem 2rem;
+    background-position: 59% top;
+    background-size: auto 25rem;
+  }
+
+  .medicine-cabinet-hero::after {
+    position: absolute;
+    inset: 12.75rem 0 0;
+    z-index: 0;
+    background: linear-gradient(180deg, rgb(242 224 195 / 0.08), #ead8b8 18rem);
+    content: "";
+  }
+
+  .medicine-cabinet-products {
+    top: 1rem;
+    right: 0;
+    left: 0;
+    height: 9rem;
+    gap: 3%;
+  }
+
+  .medicine-cabinet-search {
+    position: relative;
+    top: auto;
+    left: auto;
+    width: auto;
+    padding: 1.25rem 1rem 0;
+    background: transparent;
+  }
+}
+
 /* Match Grok Bot's cutout treatment: eyes inherit the active page surface. */
 .agent-theme-eyes svg g[clip-path] path {
   fill: rgb(var(--color-agent-eye)) !important;
