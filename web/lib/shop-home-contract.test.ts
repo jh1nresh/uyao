@@ -59,6 +59,11 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).toContain("rail.scrollTo");
     expect(productSwipeShowcase).not.toContain("scrollIntoView");
     expect(productSwipeShowcase).toContain("motion-reduce:transition-none");
+    expect(appPage).toContain("medicine-cabinet-showcase-section");
+    expect(productSwipeShowcase).toContain("product-showcase-stage");
+    expect(productSwipeShowcase).not.toContain('clipPath: "polygon');
+    expect(productSwipeShowcase).not.toContain("--showcase-accent");
+    expect(globalCss).toContain(".product-showcase-stage::after");
     expect(productSwipeShowcase).not.toContain("transition-[transform,opacity,filter,left]");
     expect(appPage.indexOf('<SearchInput size="xl"')).toBeLessThan(
       appPage.indexOf("<ProductSwipeShowcase"),

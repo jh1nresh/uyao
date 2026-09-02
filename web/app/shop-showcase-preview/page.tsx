@@ -19,7 +19,7 @@ export default async function ShopShowcasePreviewPage() {
   return (
     <>
       <SiteHeader area="datong" />
-      <section className="bg-ivory">
+      <section className="medicine-cabinet-showcase-section overflow-hidden">
         <div className="shop-shell py-10 sm:py-14">
           <ProductSwipeShowcase
             items={items}

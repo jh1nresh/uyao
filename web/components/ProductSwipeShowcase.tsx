@@ -10,7 +10,7 @@ import { known } from "@/lib/pending";
 import type { ShowcaseItem } from "@/lib/product-showcase";
 
 /**
- * 品項橫向展示：左右滑動換品項，中央那一支放大，背景色塊跟著換。
+ * 品項橫向展示：左右滑動換品項，中央那一支放大，全部落在同一層藥櫃上。
  *
  * 這是 vidrate 那種「一排商品、滑動換主角」的貨架感，但拿掉電商的價格與
  * 購物車 —— 消費端頁面不顯示藥品價格，這一排是用來「看清楚有哪些品項」，
@@ -145,18 +145,7 @@ export function ProductSwipeShowcase({
   }
 
   return (
-    <div className="relative overflow-hidden border border-line bg-paper">
-      {/* 背景色塊：倒三角形，顏色跟著主角換。用 clip-path 而不是圖片，
-          換色是一個 CSS 變數的事，不用再產一輪素材。 */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-[46%] transition-colors duration-500 motion-reduce:transition-none"
-        style={{
-          backgroundColor: current.wedge,
-          clipPath: "polygon(0 0, 100% 0, 50% 100%)",
-        }}
-      />
-
+    <div className="product-showcase-canvas relative">
       <div className="relative px-5 pb-7 pt-8 sm:px-8 sm:pb-9 sm:pt-10">
         {eyebrow && <p className="shop-kicker mb-2 text-center !text-[#74352f]">{eyebrow}</p>}
         {title && (
@@ -201,7 +190,7 @@ export function ProductSwipeShowcase({
           onPointerUp={onPointerUp}
           onPointerCancel={onPointerCancel}
           style={{ "--showcase-drag-x": "0px" } as CSSProperties}
-          className="relative mt-5 h-[250px] cursor-grab touch-pan-y select-none outline-offset-4 [container-type:inline-size] active:cursor-grabbing sm:h-[300px]"
+          className="product-showcase-stage relative mt-5 h-[250px] cursor-grab touch-pan-y select-none outline-offset-4 [container-type:inline-size] active:cursor-grabbing sm:h-[300px]"
         >
           {items.map((item, i) => {
             const offset = offsetOf(i);
@@ -240,7 +229,7 @@ export function ProductSwipeShowcase({
                     alt={locale === "en" ? image.altEn : image.alt}
                     fill
                     sizes="(min-width: 768px) 230px, 180px"
-                    className="object-contain object-bottom drop-shadow-[0_10px_24px_rgba(0,0,0,0.18)]"
+                    className="object-contain object-bottom drop-shadow-[0_7px_10px_rgba(77,53,29,0.22)]"
                     priority={Math.abs(offset) <= 1}
                     draggable={false}
                   />

@@ -186,7 +186,7 @@ export default async function HomePage({
       />
 
       {/* 首頁用精選品項展示互動；完整目錄與分類仍保留明確出口。 */}
-      <section id="catalog" className="scroll-mt-20 bg-paper">
+      <section id="catalog" className="medicine-cabinet-showcase-section scroll-mt-20 overflow-hidden">
         <div className="shop-shell py-12 sm:py-16">
           <ProductSwipeShowcase
             items={showcaseItems}

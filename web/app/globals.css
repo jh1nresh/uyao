@@ -403,6 +403,48 @@ html[data-theme="dark"] .theme-logo-dark {
     inset 0 -1px 0 rgb(72 55 34 / 0.1) !important;
 }
 
+/* The catalog follows the cabinet hero onto the same warm material plane.
+   Product colors behave like reflected light behind the active packshot,
+   instead of turning the section into a separate, hard-edged color card. */
+.medicine-cabinet-showcase-section {
+  color-scheme: light;
+  --color-ink: 28 39 34;
+  --color-forest: 23 57 44;
+  --color-on-dark: 248 244 233;
+  --color-ink-2: 62 75 68;
+  --color-muted: 89 102 95;
+  --color-muted-2: 96 109 102;
+  --color-oxblood: 116 53 47;
+  --color-line: 210 205 193;
+  --color-line-strong: 184 177 164;
+  --color-paper: 248 244 233;
+  color: rgb(var(--color-ink));
+  background-color: #ead8b8;
+  background-image:
+    radial-gradient(ellipse 48% 22% at 28% 8%, rgb(255 246 224 / 0.58), transparent 72%),
+    linear-gradient(90deg, rgb(84 57 30 / 0.06), transparent 12%, transparent 88%, rgb(84 57 30 / 0.05)),
+    linear-gradient(180deg, #dcc198 0, #ead8b8 16rem, #f8f4e9 48rem);
+}
+
+.product-showcase-canvas {
+  isolation: isolate;
+}
+
+.product-showcase-stage::after {
+  position: absolute;
+  right: 1.5%;
+  bottom: -12px;
+  left: 1.5%;
+  z-index: 1;
+  height: 19px;
+  border-top: 1px solid rgb(255 246 224 / 0.8);
+  background: linear-gradient(180deg, #dec49c 0, #cba97a 58%, #b98e5e 100%);
+  box-shadow:
+    inset 0 -1px rgb(94 61 30 / 0.2),
+    0 9px 13px rgb(76 50 25 / 0.18);
+  content: "";
+}
+
 @media (max-width: 767px) {
   .medicine-cabinet-hero {
     height: auto;
@@ -443,6 +485,13 @@ html[data-theme="dark"] .theme-logo-dark {
 
   .medicine-cabinet-copy {
     font-size: 14px;
+  }
+
+  .medicine-cabinet-showcase-section {
+    background-image:
+      radial-gradient(ellipse 72% 18% at 22% 5%, rgb(255 246 224 / 0.52), transparent 74%),
+      linear-gradient(90deg, rgb(84 57 30 / 0.05), transparent 18%, transparent 82%, rgb(84 57 30 / 0.04)),
+      linear-gradient(180deg, #dcc198 0, #ead8b8 13rem, #f8f4e9 39rem);
   }
 }
 
