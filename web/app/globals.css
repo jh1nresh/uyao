@@ -323,6 +323,33 @@ html[data-theme="dark"] .theme-logo-dark {
   color: white;
 }
 
+.cabinet-header-controls > div > div,
+.cabinet-header-controls > button,
+.cabinet-header-controls > a {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+.cabinet-header-controls > :not(:first-child) {
+  border-left: 1px solid rgb(var(--color-paper) / 0.42);
+}
+
+.cabinet-header-controls :is(button, a, select) {
+  color: rgb(var(--color-paper));
+  text-shadow: 0 1px 8px rgb(28 39 34 / 0.28);
+}
+
+.cabinet-header-controls :is(button, a, select):hover {
+  background-color: rgb(var(--color-paper) / 0.12);
+  color: white;
+}
+
+.cabinet-header-controls option {
+  background: rgb(var(--color-paper));
+  color: rgb(var(--color-ink));
+}
+
 .medicine-cabinet-hero {
   position: relative;
   isolation: isolate;
@@ -348,7 +375,7 @@ html[data-theme="dark"] .theme-logo-dark {
 .medicine-cabinet-search {
   position: absolute;
   z-index: 1;
-  top: 47.5%;
+  top: 52%;
   left: 31%;
   width: 40%;
 }
