@@ -138,50 +138,48 @@ export default async function HomePage({
         consumerWebSiteJsonLd(locale),
         consumerWebPageJsonLd(locale),
       ]} />
-      <SiteHeader showSearch={false} area={area} preserveAreaPath locatable />
+      <div className="medicine-cabinet-stage relative">
+        <SiteHeader showSearch={false} area={area} preserveAreaPath locatable tone="cabinet" />
 
-      {/* 商品與櫃體共用同一張陳列影像；透明熱區提供品項連結，問藥入口嵌在下層牆面。 */}
-      <section className="medicine-cabinet-hero overflow-hidden border-b border-line">
-        <nav
-          className="medicine-cabinet-products"
-          aria-label={locale === "en" ? "Browse items in the cabinet" : "瀏覽藥櫃品項"}
-        >
-          {shelfDrugs.map((drug) => {
-            const copy = drugCopy(drug, locale);
-            return (
-              <Link
-                key={drug.slug}
-                href={`${localizedPath(`/drug/${drug.slug}`, locale)}?area=${area}`}
-                className="medicine-cabinet-product relative min-w-0 no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
-              >
-                <span className="sr-only">{copy.name}</span>
-              </Link>
-            );
-          })}
-        </nav>
+        {/* 商品與櫃體共用同一張陳列影像；透明熱區提供品項連結，問藥入口嵌在下層牆面。 */}
+        <section className="medicine-cabinet-hero overflow-hidden border-b border-line">
+          <nav
+            className="medicine-cabinet-products"
+            aria-label={locale === "en" ? "Browse items in the cabinet" : "瀏覽藥櫃品項"}
+          >
+            {shelfDrugs.map((drug) => {
+              const copy = drugCopy(drug, locale);
+              return (
+                <Link
+                  key={drug.slug}
+                  href={`${localizedPath(`/drug/${drug.slug}`, locale)}?area=${area}`}
+                  className="medicine-cabinet-product relative min-w-0 no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
+                >
+                  <span className="sr-only">{copy.name}</span>
+                </Link>
+              );
+            })}
+          </nav>
 
-        <div className="medicine-cabinet-search min-w-0">
-          <h1 className="sr-only">
-            {locale === "en" ? "Open uYao. Ask before you go." : "打開 uYao，先問再出門。"}
-          </h1>
-          <SearchInput size="xl" area={area} submitLabel={locale === "en" ? "Ask uYao" : "問 uYao"} className="medicine-cabinet-input w-full shadow-none" />
-          <div className="mt-3 md:hidden">
-            <AreaSwitch area={area} preservePath locatable compact />
+          <div className="medicine-cabinet-search min-w-0">
+            <p className="medicine-cabinet-kicker m-0 font-bold text-oxblood">
+              {locale === "en" ? "YOUR HOUSEHOLD MEDICINE CABINET, NOW WITH ANSWERS" : "家裡的藥箱，現在會找答案"}
+            </p>
+            <h1 className="editorial-display medicine-cabinet-heading mb-0 mt-2 leading-[1.06] text-ink">
+              {locale === "en" ? "Open uYao. Ask before you go." : "打開 uYao，先問再出門。"}
+            </h1>
+            <p className="medicine-cabinet-copy mb-0 mt-3 text-ink-2">
+              {locale === "en"
+                ? "Tell uYao what your household needs. We organize the request, then a pharmacist confirms the next step."
+                : "你說家裡需要什麼，uYao 整理需求，再由藥師確認下一步。"}
+            </p>
+            <SearchInput size="xl" area={area} submitLabel={locale === "en" ? "Ask uYao" : "問 uYao"} className="medicine-cabinet-input mt-5 w-full shadow-none" />
+            <div className="mt-3 md:hidden">
+              <AreaSwitch area={area} preservePath locatable compact />
+            </div>
           </div>
-        </div>
-      </section>
-
-      <ol className="medicine-cabinet-path m-0 grid list-none grid-cols-2 bg-brand-surface p-0 text-on-dark sm:grid-cols-4">
-        {(locale === "en"
-          ? ["Describe", "uYao organizes", "Pharmacist confirms", "Pick up nearby"]
-          : ["描述需求", "uYao 整理", "藥師確認", "附近取貨"]
-        ).map((label, index) => (
-          <li key={label} className="flex min-h-12 items-center justify-center gap-2 border-b border-r border-on-dark/15 px-3 text-[12px] font-semibold sm:border-b-0">
-            <span className="num text-green-tint-line">{String(index + 1).padStart(2, "0")}</span>
-            <span>{label}</span>
-          </li>
-        ))}
-      </ol>
+        </section>
+      </div>
 
       <PartnerMarquee
         id="pharmacies"
@@ -191,7 +189,7 @@ export default async function HomePage({
       />
 
       {/* 首頁直接橫向瀏覽整個目錄；要搜尋與篩選時再進列表頁。 */}
-      <section id="catalog" className="scroll-mt-20 bg-ivory">
+      <section id="catalog" className="scroll-mt-20 bg-paper">
         <div className="shop-shell py-12 sm:py-16">
           <div className="mb-8 grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-end lg:gap-12">
             <div>

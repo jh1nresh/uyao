@@ -288,11 +288,8 @@ html[data-theme="dark"] .theme-logo-dark {
 
 /* Selected D direction: cabinet, products, lighting, and shelf contact share
    one stocked composition. Transparent links preserve product navigation;
-   SearchInput is the only visible UI layered onto the cabinet. */
-.medicine-cabinet-hero {
-  position: relative;
-  isolation: isolate;
-  height: clamp(39rem, 56.28vw, 53.75rem);
+   the concise ask-medicine entry sits directly on the lower cabinet wall. */
+.medicine-cabinet-stage {
   color-scheme: light;
   --color-ink: 28 39 34;
   --color-forest: 23 57 44;
@@ -307,29 +304,68 @@ html[data-theme="dark"] .theme-logo-dark {
   --color-line-strong: 184 177 164;
   --color-paper: 248 244 233;
   color: rgb(var(--color-ink));
+}
+
+.medicine-cabinet-stage .theme-logo-light.theme-logo-light {
+  display: none;
+}
+
+.medicine-cabinet-stage .theme-logo-dark.theme-logo-dark {
+  display: block;
+}
+
+.cabinet-header-language {
+  color: rgb(var(--color-paper));
+  text-shadow: 0 1px 8px rgb(28 39 34 / 0.28);
+}
+
+.cabinet-header-language:hover {
+  color: white;
+}
+
+.medicine-cabinet-hero {
+  position: relative;
+  isolation: isolate;
+  height: clamp(34rem, 49vw, 50rem);
   background-color: #dcc198;
   background-image: url("/brand/uyao-medicine-cabinet-stocked-v1.webp");
-  background-position: center;
+  background-position: center top;
   background-repeat: no-repeat;
   background-size: cover;
 }
 
 .medicine-cabinet-products {
   position: absolute;
-  top: 3.8%;
+  top: 4.35%;
   right: 18.8%;
   left: 26.2%;
   display: grid;
   grid-template-columns: 337fr 238fr 290fr;
-  height: 36%;
+  height: 41.3%;
   gap: 3%;
 }
 
 .medicine-cabinet-search {
   position: absolute;
-  top: 60%;
+  z-index: 1;
+  top: 47.5%;
   left: 31%;
   width: 40%;
+}
+
+.medicine-cabinet-kicker {
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+
+.medicine-cabinet-heading {
+  font-size: clamp(2rem, 3.15vw, 3.25rem);
+}
+
+.medicine-cabinet-copy {
+  max-width: 36rem;
+  font-size: clamp(13px, 1vw, 15px);
+  line-height: 1.65;
 }
 
 .medicine-cabinet-input {
@@ -343,8 +379,8 @@ html[data-theme="dark"] .theme-logo-dark {
 @media (max-width: 767px) {
   .medicine-cabinet-hero {
     height: auto;
-    min-height: 29rem;
-    padding: 14.5rem 1rem 2rem;
+    min-height: 36rem;
+    padding: 14.75rem 1rem 2.5rem;
     background-position: 59% top;
     background-size: auto 25rem;
   }
@@ -372,6 +408,14 @@ html[data-theme="dark"] .theme-logo-dark {
     width: auto;
     padding: 1.25rem 1rem 0;
     background: transparent;
+  }
+
+  .medicine-cabinet-heading {
+    font-size: clamp(2rem, 9vw, 2.25rem);
+  }
+
+  .medicine-cabinet-copy {
+    font-size: 14px;
   }
 }
 
