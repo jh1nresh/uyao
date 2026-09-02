@@ -34,7 +34,7 @@ export async function SiteHeader({
   const cabinetTone = tone === "cabinet";
   return (
     <header className={cabinetTone
-      ? "absolute inset-x-0 top-0 z-40 bg-transparent"
+      ? "cabinet-overlay-header absolute inset-x-0 top-0 z-40 bg-transparent"
       : "sticky top-0 z-40 border-b border-line-strong bg-ivory/95 backdrop-blur-sm"
     }>
       <div className={`shop-shell flex items-center gap-3 ${
@@ -76,20 +76,22 @@ export async function SiteHeader({
 
         <div className={showSearch ? "hidden flex-1 sm:block" : "flex-1"} />
 
-        <div className="hidden md:block">
-          <AreaSwitch area={area} preservePath={preserveAreaPath} locatable={locatable} compact />
+        <div className={cabinetTone ? "cabinet-header-controls flex items-center" : "flex items-center gap-3"}>
+          <div className="hidden md:block">
+            <AreaSwitch area={area} preservePath={preserveAreaPath} locatable={locatable} compact />
+          </div>
+          <ThemeToggle locale={locale} />
+          <LanguageSwitch className={cabinetTone ? "cabinet-header-language" : ""} />
+          {/* 供給側入口。合作說明留在公司站；已開通店家從 Store OS 網域登入。
+              手機有搜尋框時先讓寬度給找藥主流程（頁尾仍有藥局合作入口）；
+              沒有搜尋框的頁面則保留這顆 CTA。 */}
+          <Link
+            href={`${SITE_URL}${localizedPath("/pharmacy", locale)}`}
+            className={`${showSearch ? "hidden sm:inline-flex" : "inline-flex"} min-h-11 flex-none items-center border border-line-strong bg-paper px-3 text-xs font-bold text-forest no-underline transition-colors hover:border-forest hover:bg-surface`}
+          >
+            {locale === "en" ? "For pharmacies" : "我是藥局"}
+          </Link>
         </div>
-        <ThemeToggle locale={locale} />
-        <LanguageSwitch className={cabinetTone ? "cabinet-header-language" : ""} />
-        {/* 供給側入口。合作說明留在公司站；已開通店家從 Store OS 網域登入。
-            手機有搜尋框時先讓寬度給找藥主流程（頁尾仍有藥局合作入口）；
-            沒有搜尋框的頁面則保留這顆 CTA。 */}
-        <Link
-          href={`${SITE_URL}${localizedPath("/pharmacy", locale)}`}
-          className={`${showSearch ? "hidden sm:inline-flex" : "inline-flex"} min-h-11 flex-none items-center border border-line-strong bg-paper px-3 text-xs font-bold text-forest no-underline transition-colors hover:border-forest hover:bg-surface`}
-        >
-          {locale === "en" ? "For pharmacies" : "我是藥局"}
-        </Link>
       </div>
     </header>
   );

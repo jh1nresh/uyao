@@ -100,7 +100,6 @@ COMMON_SOURCES = (
     "components/SiteFooter.tsx",
     "components/LanguageSwitch.tsx",
     "components/AreaSwitch.tsx",
-    "components/DemoBanner.tsx",
     "components/SupportAgent.tsx",
 )
 # 其餘三個 surface。lib/ 的資料模組要跟著渲染它的 surface 走，否則整批藥名、
@@ -142,7 +141,6 @@ SURFACE_SOURCES = (
             "components/AreaSwitch.tsx",
             "components/LocateButton.tsx",
             "components/PreviewShelf.tsx",
-            "components/DemoBanner.tsx",
             "components/SupportAgent.tsx",
             "components/ReserveSheet.tsx",
             "lib/data.ts",

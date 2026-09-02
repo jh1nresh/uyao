@@ -23,6 +23,10 @@ const siteHeader = readFileSync(
   join(import.meta.dirname, "..", "components", "SiteHeader.tsx"),
   "utf8",
 );
+const consumerLayout = readFileSync(
+  join(import.meta.dirname, "..", "app", "(consumer)", "layout.tsx"),
+  "utf8",
+);
 const pharmacyPage = readFileSync(
   join(import.meta.dirname, "..", "app", "(consumer)", "pharmacy", "page.tsx"),
   "utf8",
@@ -60,8 +64,16 @@ describe("household medicine storefront homepage", () => {
     expect(appPage).toContain('tone="cabinet"');
     expect(appPage).toContain('className="medicine-cabinet-stage relative"');
     expect(siteHeader).toContain('tone?: "default" | "cabinet";');
-    expect(siteHeader).toContain('"absolute inset-x-0 top-0 z-40 bg-transparent"');
+    expect(siteHeader).toContain('"cabinet-overlay-header absolute inset-x-0 top-0 z-40 bg-transparent"');
+    expect(siteHeader).toContain("cabinet-header-controls flex items-center");
     expect(siteHeader).toContain('cabinetTone ? "h-16 sm:h-[68px]"');
+    expect(globalCss).toContain(".cabinet-header-controls > div > div");
+    expect(globalCss).toContain("background: transparent;");
+  });
+
+  it("does not render the early-access banner above consumer routes", () => {
+    expect(consumerLayout).not.toContain("DemoBanner");
+    expect(consumerLayout).not.toContain("試營運");
   });
 
   it("asks for allergens before navigating to the dedicated results route", () => {
