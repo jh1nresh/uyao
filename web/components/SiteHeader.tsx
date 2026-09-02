@@ -19,6 +19,7 @@ export async function SiteHeader({
   area = DEFAULT_AREA,
   preserveAreaPath = false,
   locatable = false,
+  tone = "default",
 }: {
   query?: string;
   showSearch?: boolean;
@@ -27,11 +28,18 @@ export async function SiteHeader({
   area?: AreaSlug;
   preserveAreaPath?: boolean;
   locatable?: boolean;
+  tone?: "default" | "cabinet";
 }) {
   const locale = await getRequestLocale();
+  const cabinetTone = tone === "cabinet";
   return (
-    <header className="sticky top-0 z-40 border-b border-line-strong bg-ivory/95 backdrop-blur-sm">
-      <div className="shop-shell flex h-[68px] items-center gap-3 sm:h-[72px]">
+    <header className={cabinetTone
+      ? "absolute inset-x-0 top-0 z-40 bg-transparent"
+      : "sticky top-0 z-40 border-b border-line-strong bg-ivory/95 backdrop-blur-sm"
+    }>
+      <div className={`shop-shell flex items-center gap-3 ${
+        cabinetTone ? "h-16 sm:h-[68px]" : "h-[68px] sm:h-[72px]"
+      }`}>
         {/* 品牌 logo 回到統一的 consumer-first 首頁；地區狀態只留在找藥流程。 */}
         <Link
           href={`${SITE_URL}${localizedPath("/", locale)}`}
@@ -50,7 +58,9 @@ export async function SiteHeader({
             </>
           )}
           {showTagline && (
-            <span className="ml-1 hidden border-l border-line-strong pl-3 text-[12px] font-medium tracking-[.04em] text-muted lg:inline">
+            <span className={`ml-1 hidden border-l pl-3 text-[12px] font-medium tracking-[.04em] lg:inline ${
+              cabinetTone ? "border-paper/40 text-paper" : "border-line-strong text-muted"
+            }`}>
               {locale === "en" ? "Nearby pharmacies · Medicine requests" : "附近藥局・找藥需求"}
             </span>
           )}
@@ -70,7 +80,7 @@ export async function SiteHeader({
           <AreaSwitch area={area} preservePath={preserveAreaPath} locatable={locatable} compact />
         </div>
         <ThemeToggle locale={locale} />
-        <LanguageSwitch />
+        <LanguageSwitch className={cabinetTone ? "cabinet-header-language" : ""} />
         {/* 供給側入口。合作說明留在公司站；已開通店家從 Store OS 網域登入。
             手機有搜尋框時先讓寬度給找藥主流程（頁尾仍有藥局合作入口）；
             沒有搜尋框的頁面則保留這顆 CTA。 */}
