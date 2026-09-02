@@ -19,6 +19,10 @@ const productShowcase = readFileSync(
   join(import.meta.dirname, "product-showcase.ts"),
   "utf8",
 );
+const partnerMarquee = readFileSync(
+  join(import.meta.dirname, "..", "components", "landing", "PartnerMarquee.tsx"),
+  "utf8",
+);
 const globalCss = readFileSync(
   join(import.meta.dirname, "..", "app", "globals.css"),
   "utf8",
@@ -64,6 +68,10 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).not.toContain('clipPath: "polygon');
     expect(productSwipeShowcase).not.toContain("--showcase-accent");
     expect(globalCss).toContain(".product-showcase-stage::after");
+    expect(partnerMarquee).toContain("cabinet-partner-marquee");
+    expect(partnerMarquee).toContain("cabinet-marquee-edge-left");
+    expect(partnerMarquee).not.toContain("from-paper to-transparent");
+    expect(globalCss).toContain(".cabinet-partner-marquee::before");
     expect(productSwipeShowcase).not.toContain("transition-[transform,opacity,filter,left]");
     expect(appPage.indexOf('<SearchInput size="xl"')).toBeLessThan(
       appPage.indexOf("<ProductSwipeShowcase"),
