@@ -8,15 +8,9 @@ import { SearchInput } from "@/components/SearchInput";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { PartnerMarquee } from "@/components/landing/PartnerMarquee";
-import {
-  CATEGORIES,
-  allDrugs,
-  getArea,
-  storesInArea,
-  toAreaSlug,
-} from "@/lib/data";
+import { allDrugs, toAreaSlug } from "@/lib/data";
 import { CATALOG_GROUPS } from "@/lib/catalog-groups";
-import { areaCopy, categoryName, localizedPath } from "@/lib/i18n";
+import { drugCopy, localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
 import { PARTNER_STORE_ITEMS } from "@/lib/partner-stores";
 import {
@@ -32,6 +26,11 @@ import { consumerIndexablePageRobots } from "@/lib/seo-server";
 import { SHOP_URL } from "@/lib/shop";
 
 const UPDATED_AT = "2026-08-12";
+const HOME_CABINET_SLUGS = [
+  "greenplus-elgucare",
+  "chungchi-yiyuansu-gastrodia-100",
+  "yuanding-puregps-defense-450",
+] as const;
 
 // `/app` 只保留為內部 implementation route；公開 canonical 是主網域的
 // `/zh-tw` 與 `/en`，由 proxy rewrite 到這裡。
@@ -118,14 +117,18 @@ export default async function HomePage({
   const { area: rawArea } = await searchParams;
   const locale = await getRequestLocale();
   const area = toAreaSlug(rawArea);
-  const storeCount = storesInArea(area).length;
   const drugs = allDrugs();
   // 有商品圖的排前面 —— 橫向列第一眼要看到商品，不是一排文字卡。
   // 同組內維持目錄原順序，才不會每次進站順序都在跳。
   const catalogRail = [...drugs].sort(
     (a, b) => Number(Boolean(b.image)) - Number(Boolean(a.image)),
   );
-  const currentArea = areaCopy(getArea(area), locale);
+  // 上層櫃格只放少量真實品項作為瀏覽入口；完整目錄仍在下方，
+  // 避免把陳列品誤讀成搜尋結果或即時推薦。
+  const shelfDrugs = HOME_CABINET_SLUGS.flatMap((slug) => {
+    const drug = drugs.find((item) => item.slug === slug);
+    return drug?.image ? [drug] : [];
+  });
   const steps = locale === "en" ? STEPS_EN : STEPS_ZH;
 
   return (
@@ -137,57 +140,48 @@ export default async function HomePage({
       ]} />
       <SiteHeader showSearch={false} area={area} preserveAreaPath locatable />
 
-      {/*
-        第一屏只有一件事：搜尋。
-        原本這裡列了該區 91 家藥局，那是目錄不是產品，而且連電話鈕都沒有
-        （`showPhone` 預設 false），使用者看完什麼也做不了。更糟的是它定義了
-        第一印象「這是藥局名錄」，而名錄 Google Maps 做得更好。
-        藥局家數留下來當可信度證據，但收成一行字。
-      */}
-      <section className="relative overflow-hidden border-b border-line bg-ivory">
-        <div className="shop-shell relative pb-10 pt-12 sm:pb-12 sm:pt-16 lg:pb-14 lg:pt-20">
-          <div className="w-full">
-            <h1 className="editorial-display mx-auto m-0 max-w-[1050px] text-center text-[clamp(40px,7vw,96px)] leading-[1.02] [text-wrap:balance]">
-              {locale === "en" ? (
-                <><span className="block">You do not need</span><span className="block">the product name.</span></>
-              ) : (
-                <><span className="block">不用先知道品名。</span><span className="block">描述需求就能開始。</span></>
-              )}
-            </h1>
-            <p className="mx-auto mt-6 max-w-[610px] text-center text-[15px] leading-[1.8] text-ink-2 sm:text-[17px]">
-              {locale === "en" ? "Search by product, ingredient, or daily-wellness need. Recognized common symptoms open safety guidance instead of automatic product results." : "可輸入品名、成分或日常保養方向；辨識到常見症狀時，會先顯示安全提醒，不會自動帶商品。"}
-            </p>
-            <div className="mx-auto mt-8 max-w-[1120px] text-left">
-              <SearchInput size="xl" area={area} className="w-full shadow-none" />
-            </div>
+      {/* 商品與櫃體共用同一張陳列影像；透明熱區提供品項連結，問藥入口嵌在下層牆面。 */}
+      <section className="medicine-cabinet-hero overflow-hidden border-b border-line">
+        <nav
+          className="medicine-cabinet-products"
+          aria-label={locale === "en" ? "Browse items in the cabinet" : "瀏覽藥櫃品項"}
+        >
+          {shelfDrugs.map((drug) => {
+            const copy = drugCopy(drug, locale);
+            return (
+              <Link
+                key={drug.slug}
+                href={`${localizedPath(`/drug/${drug.slug}`, locale)}?area=${area}`}
+                className="medicine-cabinet-product relative min-w-0 no-underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-forest"
+              >
+                <span className="sr-only">{copy.name}</span>
+              </Link>
+            );
+          })}
+        </nav>
 
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-[14px] text-muted">
-              <nav aria-label={locale === "en" ? "Categories" : "品類"} className="contents">
-                {CATEGORIES.map((c) => (
-                  <Link
-                    key={c.slug}
-                    href={`${localizedPath(`/category/${c.slug}`, locale)}?area=${area}`}
-                    className="history-link inline-flex min-h-11 items-center border-b border-line-strong font-medium text-forest no-underline transition-[border-color,color] hover:border-green hover:text-green"
-                  >
-                    {categoryName(c.slug, c.name, locale)}
-                  </Link>
-                ))}
-              </nav>
-            </div>
-
-            <div className="mx-auto mt-5 flex max-w-[1120px] flex-col items-center justify-center gap-3 text-center text-[14px] leading-[1.65] text-muted sm:flex-row">
-              <p className="m-0">
-                {locale === "en"
-                  ? `${currentArea.shortName}: ${storeCount} listed pharmacies`
-                  : `${currentArea.shortName}收錄 ${storeCount} 家藥局`}
-              </p>
-              <div className="md:hidden">
-                <AreaSwitch area={area} preservePath locatable compact />
-              </div>
-            </div>
+        <div className="medicine-cabinet-search min-w-0">
+          <h1 className="sr-only">
+            {locale === "en" ? "Open uYao. Ask before you go." : "打開 uYao，先問再出門。"}
+          </h1>
+          <SearchInput size="xl" area={area} submitLabel={locale === "en" ? "Ask uYao" : "問 uYao"} className="medicine-cabinet-input w-full shadow-none" />
+          <div className="mt-3 md:hidden">
+            <AreaSwitch area={area} preservePath locatable compact />
           </div>
         </div>
       </section>
+
+      <ol className="medicine-cabinet-path m-0 grid list-none grid-cols-2 bg-brand-surface p-0 text-on-dark sm:grid-cols-4">
+        {(locale === "en"
+          ? ["Describe", "uYao organizes", "Pharmacist confirms", "Pick up nearby"]
+          : ["描述需求", "uYao 整理", "藥師確認", "附近取貨"]
+        ).map((label, index) => (
+          <li key={label} className="flex min-h-12 items-center justify-center gap-2 border-b border-r border-on-dark/15 px-3 text-[12px] font-semibold sm:border-b-0">
+            <span className="num text-green-tint-line">{String(index + 1).padStart(2, "0")}</span>
+            <span>{label}</span>
+          </li>
+        ))}
+      </ol>
 
       <PartnerMarquee
         id="pharmacies"
@@ -197,22 +191,29 @@ export default async function HomePage({
       />
 
       {/* 首頁直接橫向瀏覽整個目錄；要搜尋與篩選時再進列表頁。 */}
-      <section className="bg-ivory">
-        <div className="shop-shell py-10 sm:py-12">
-          <div className="mb-6 max-w-[720px]">
-            <h2 className="editorial-display m-0 text-[32px] leading-[1.25] sm:text-[40px]">
-              {locale === "en" ? "Items provided by partner pharmacies" : "合作藥局提供品項"}
-            </h2>
-            <p className="mb-0 mt-3 text-[14px] leading-[1.7] text-muted">
-              {locale === "en" ? "Browse verified catalog records. Supply and pickup still require pharmacy confirmation." : "先瀏覽已整理的品項資料；是否供應與到店安排，仍需由藥局確認。"}
+      <section id="catalog" className="scroll-mt-20 bg-ivory">
+        <div className="shop-shell py-12 sm:py-16">
+          <div className="mb-8 grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-end lg:gap-12">
+            <div>
+              <p className="shop-kicker m-0">
+                {locale === "en" ? `BROWSE THE SHELF / ${drugs.length} ITEMS` : `逛逛藥局貨架 / ${drugs.length} 項`}
+              </p>
+              <h2 className="editorial-display mb-0 mt-3 text-[36px] leading-[1.12] sm:text-[48px]">
+                {locale === "en" ? "Browse first. Let uYao ask next." : "先逛品項，再交給 uYao 去問。"}
+              </h2>
+            </div>
+            <p className="m-0 border-l border-oxblood pl-4 text-[13.5px] leading-[1.7] text-muted sm:text-[14px]">
+              {locale === "en"
+                ? "These are browsable catalog records, not live inventory or recommendations. A pharmacy still confirms supply and pickup."
+                : "這裡是可瀏覽的品項資料，不代表即時庫存或推薦。是否供應與到店安排，仍由藥局確認。"}
             </p>
           </div>
-          <nav aria-label={locale === "en" ? "Catalog categories" : "品項分類"} className="mb-7 flex flex-wrap gap-2.5">
+          <nav aria-label={locale === "en" ? "Catalog categories" : "品項分類"} className="mb-7 flex overflow-x-auto border-y border-line">
             {CATALOG_GROUPS.map((group) => (
               <Link
                 key={group.slug}
                 href={`${localizedPath("/category/partner-item", locale)}?area=${area}&group=${group.slug}`}
-                className="inline-flex min-h-11 items-center bg-surface px-4 text-[14px] font-semibold text-forest no-underline transition-colors hover:bg-surface-hover"
+                className="inline-flex min-h-12 shrink-0 items-center border-r border-line px-4 text-[13px] font-semibold text-forest no-underline transition-colors hover:bg-surface sm:px-5 sm:text-[14px]"
               >
                 {locale === "en" ? group.nameEn : group.name}
               </Link>
