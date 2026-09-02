@@ -58,6 +58,9 @@ describe("household medicine storefront homepage", () => {
     expect(appPage).toContain("<ProductSwipeShowcase");
     expect(appPage).toContain("productShowcaseItems(drugs)");
     expect(appPage).toContain("查看全部 ${drugs.length} 項 →");
+    expect(appPage).not.toContain("精選品項是可瀏覽的目錄資料");
+    expect(appPage).not.toContain("Catalog categories");
+    expect(appPage).not.toContain("CATALOG_GROUPS");
     expect(productShowcase).toContain('drug.image?.kind === "packshot"');
     expect(productSwipeShowcase).toContain("看這一項 →");
     expect(productSwipeShowcase).toContain("rail.scrollTo");
