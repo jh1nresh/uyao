@@ -124,6 +124,11 @@ describe("household medicine storefront homepage", () => {
     expect(appPage).toContain("你提出需求，藥師在 Store OS 接手。");
     expect(appPage).toContain('#store-os-preview`');
     expect(appPage).toContain("合作藥局登入 ↗");
+    expect(appPage).toContain("medicine-cabinet-guide");
+    expect(appPage).toContain("medicine-cabinet-guide-boundary");
+    expect(appPage).toContain("medicine-cabinet-base");
+    expect(appPage).not.toContain("lg:grid-cols-[48px_140px_1fr]");
+    expect(appPage).not.toContain("搜尋或留下需求，再等待藥局或藥師確認供應與用藥問題。");
     expect(pharmacyPage).toContain('id="store-os-preview"');
     expect(pharmacyPage).toContain("<StoreOsProductPreview locale={locale} />");
     expect(agentLanding).toContain("export function StoreOsProductPreview");
@@ -133,6 +138,10 @@ describe("household medicine storefront homepage", () => {
     expect(globalCss).toContain("--color-ivory: 242 239 230;");
     expect(globalCss).toContain("--color-brand-surface: 23 57 44;");
     expect(globalCss).toContain("--color-ink: 28 39 34;");
+    expect(appPage).toContain('className="medicine-cabinet-home"');
+    expect(globalCss).toContain(".medicine-cabinet-home {");
+    expect(globalCss).toContain(".medicine-cabinet-home > footer {");
+    expect(globalCss).toContain(".medicine-cabinet-guide::before");
     expect(appPage).not.toContain("mono-halftone-field");
     expect(appPage).toContain("<ProductSwipeShowcase");
     expect(agentLanding).not.toContain("mono-halftone-soft");
