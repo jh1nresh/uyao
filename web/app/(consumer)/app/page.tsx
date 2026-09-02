@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AreaSwitch } from "@/components/AreaSwitch";
-import { CatalogCarousel } from "@/components/CatalogCarousel";
 import { JsonLd } from "@/components/JsonLd";
+import { ProductSwipeShowcase } from "@/components/ProductSwipeShowcase";
 import { SearchInput } from "@/components/SearchInput";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -13,6 +13,7 @@ import { CATALOG_GROUPS } from "@/lib/catalog-groups";
 import { drugCopy, localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
 import { PARTNER_STORE_ITEMS } from "@/lib/partner-stores";
+import { productShowcaseItems } from "@/lib/product-showcase";
 import {
   CONSUMER_DESCRIPTION,
   SITE_URL,
@@ -118,12 +119,8 @@ export default async function HomePage({
   const locale = await getRequestLocale();
   const area = toAreaSlug(rawArea);
   const drugs = allDrugs();
-  // 有商品圖的排前面 —— 橫向列第一眼要看到商品，不是一排文字卡。
-  // 同組內維持目錄原順序，才不會每次進站順序都在跳。
-  const catalogRail = [...drugs].sort(
-    (a, b) => Number(Boolean(b.image)) - Number(Boolean(a.image)),
-  );
-  // 上層櫃格只放少量真實品項作為瀏覽入口；完整目錄仍在下方，
+  const showcaseItems = productShowcaseItems(drugs);
+  // 上層櫃格只放少量真實品項作為瀏覽入口；完整目錄仍由下方入口承接，
   // 避免把陳列品誤讀成搜尋結果或即時推薦。
   const shelfDrugs = HOME_CABINET_SLUGS.flatMap((slug) => {
     const drug = drugs.find((item) => item.slug === slug);
@@ -188,25 +185,30 @@ export default async function HomePage({
         evidenceHref={`${SITE_URL}${locale === "en" ? "/en" : "/zh-tw"}/evidence#partners`}
       />
 
-      {/* 首頁直接橫向瀏覽整個目錄；要搜尋與篩選時再進列表頁。 */}
+      {/* 首頁用精選品項展示互動；完整目錄與分類仍保留明確出口。 */}
       <section id="catalog" className="scroll-mt-20 bg-paper">
         <div className="shop-shell py-12 sm:py-16">
-          <div className="mb-8 grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px] lg:items-end lg:gap-12">
-            <div>
-              <p className="shop-kicker m-0">
-                {locale === "en" ? `BROWSE THE SHELF / ${drugs.length} ITEMS` : `逛逛藥局貨架 / ${drugs.length} 項`}
-              </p>
-              <h2 className="editorial-display mb-0 mt-3 text-[36px] leading-[1.12] sm:text-[48px]">
-                {locale === "en" ? "Browse first. Let uYao ask next." : "先逛品項，再交給 uYao 去問。"}
-              </h2>
-            </div>
-            <p className="m-0 border-l border-oxblood pl-4 text-[13.5px] leading-[1.7] text-muted sm:text-[14px]">
+          <ProductSwipeShowcase
+            items={showcaseItems}
+            eyebrow={locale === "en" ? `${showcaseItems.length} FEATURED ITEMS` : `精選 ${showcaseItems.length} 項`}
+            title={locale === "en" ? "Browse first. Let uYao ask next." : "先逛品項，再交給 uYao 去問。"}
+            hrefPrefix={localizedPath("/drug", locale)}
+            hrefQuery={`?area=${area}`}
+          />
+          <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
+            <p className="m-0 max-w-[720px] border-l border-oxblood pl-4 text-[13.5px] leading-[1.7] text-muted sm:text-[14px]">
               {locale === "en"
-                ? "These are browsable catalog records, not live inventory or recommendations. A pharmacy still confirms supply and pickup."
-                : "這裡是可瀏覽的品項資料，不代表即時庫存或推薦。是否供應與到店安排，仍由藥局確認。"}
+                ? "Featured items are browsable catalog records, not live inventory or recommendations. A pharmacy still confirms supply and pickup."
+                : "精選品項是可瀏覽的目錄資料，不代表即時庫存或推薦。是否供應與到店安排，仍由藥局確認。"}
             </p>
+            <Link
+              href={`${localizedPath("/category/partner-item", locale)}?area=${area}`}
+              className="inline-flex min-h-11 shrink-0 items-center self-end border-b border-forest text-[14px] font-bold text-forest no-underline hover:border-green hover:text-green sm:self-auto"
+            >
+              {locale === "en" ? `View all ${drugs.length} items →` : `查看全部 ${drugs.length} 項 →`}
+            </Link>
           </div>
-          <nav aria-label={locale === "en" ? "Catalog categories" : "品項分類"} className="mb-7 flex overflow-x-auto border-y border-line">
+          <nav aria-label={locale === "en" ? "Catalog categories" : "品項分類"} className="mt-7 flex overflow-x-auto border-y border-line">
             {CATALOG_GROUPS.map((group) => (
               <Link
                 key={group.slug}
@@ -217,21 +219,6 @@ export default async function HomePage({
               </Link>
             ))}
           </nav>
-          {/* 整個目錄橫向瀏覽：有圖的品項排前面，讓第一眼就看到商品而不是文字卡。 */}
-          <CatalogCarousel
-            drugs={catalogRail}
-            area={area}
-            locale={locale}
-            label={locale === "en" ? "Catalog items" : "目錄品項"}
-          />
-          <div className="mt-6 flex justify-end">
-            <Link
-              href={`${localizedPath("/category/partner-item", locale)}?area=${area}`}
-              className="inline-flex min-h-11 items-center border-b border-forest text-[14px] font-bold text-forest no-underline hover:border-green hover:text-green"
-            >
-              {locale === "en" ? `View all ${drugs.length} items →` : `查看全部 ${drugs.length} 項 →`}
-            </Link>
-          </div>
         </div>
       </section>
 
