@@ -223,7 +223,7 @@ export default async function HomePage({
         </div>
       </section>
 
-      <section className="medicine-cabinet-guide border-t border-line" aria-labelledby="consumer-answer-heading">
+      <section className="medicine-cabinet-guide" aria-labelledby="consumer-answer-heading">
         <div className="shop-shell grid py-12 sm:py-16 lg:grid-cols-[.9fr_1.1fr] lg:py-20">
           <div className="pb-10 lg:pr-14 lg:pb-0">
             <h2 className="editorial-display m-0 max-w-[12em] text-balance text-[30px] leading-[1.2] sm:text-[36px]">
@@ -286,7 +286,7 @@ export default async function HomePage({
         </div>
       </section>
 
-      <section id="store-os-bridge" className="bg-brand-surface text-on-dark" aria-labelledby="store-os-bridge-heading">
+      <section id="store-os-bridge" className="medicine-cabinet-base text-on-dark" aria-labelledby="store-os-bridge-heading">
         <div className="shop-shell grid gap-7 py-10 sm:py-12 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-14">
           <div>
             <p className="m-0 text-[12px] font-bold tracking-[.08em] text-on-dark/65">{locale === "en" ? "FOR PARTNER PHARMACIES" : "給合作藥局"}</p>
