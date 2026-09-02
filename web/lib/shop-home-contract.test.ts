@@ -11,8 +11,16 @@ const searchInput = readFileSync(
   join(import.meta.dirname, "..", "components", "SearchInput.tsx"),
   "utf8",
 );
-const catalogCarousel = readFileSync(
-  join(import.meta.dirname, "..", "components", "CatalogCarousel.tsx"),
+const productSwipeShowcase = readFileSync(
+  join(import.meta.dirname, "..", "components", "ProductSwipeShowcase.tsx"),
+  "utf8",
+);
+const productShowcase = readFileSync(
+  join(import.meta.dirname, "product-showcase.ts"),
+  "utf8",
+);
+const partnerMarquee = readFileSync(
+  join(import.meta.dirname, "..", "components", "landing", "PartnerMarquee.tsx"),
   "utf8",
 );
 const globalCss = readFileSync(
@@ -37,7 +45,7 @@ const agentLanding = readFileSync(
 );
 
 describe("household medicine storefront homepage", () => {
-  it("integrates the search into a wall and keeps the full catalog below", () => {
+  it("integrates the search into a wall and keeps the full catalog reachable below", () => {
     expect(appPage).toContain('<SearchInput size="xl" area={area}');
     expect(appPage).toContain("medicine-cabinet-hero");
     expect(appPage).toContain("家裡的藥箱，現在會找答案");
@@ -47,12 +55,26 @@ describe("household medicine storefront homepage", () => {
     expect(appPage).not.toContain("家裡現在需要什麼？");
     expect(appPage).not.toContain("問藥時，上排品項留在原位。");
     expect(appPage).toContain("先逛品項，再交給 uYao 去問。");
-    expect(appPage).toContain("<CatalogCarousel");
-    expect(catalogCarousel).toContain("aspect-[4/3]");
-    expect(catalogCarousel).toContain("供應需確認");
-    expect(catalogCarousel).toContain("查看品項 →");
+    expect(appPage).toContain("<ProductSwipeShowcase");
+    expect(appPage).toContain("productShowcaseItems(drugs)");
+    expect(appPage).toContain("查看全部 ${drugs.length} 項 →");
+    expect(productShowcase).toContain('drug.image?.kind === "packshot"');
+    expect(productSwipeShowcase).toContain("看這一項 →");
+    expect(productSwipeShowcase).toContain("rail.scrollTo");
+    expect(productSwipeShowcase).not.toContain("scrollIntoView");
+    expect(productSwipeShowcase).toContain("motion-reduce:transition-none");
+    expect(appPage).toContain("medicine-cabinet-showcase-section");
+    expect(productSwipeShowcase).toContain("product-showcase-stage");
+    expect(productSwipeShowcase).not.toContain('clipPath: "polygon');
+    expect(productSwipeShowcase).not.toContain("--showcase-accent");
+    expect(globalCss).toContain(".product-showcase-stage::after");
+    expect(partnerMarquee).toContain("cabinet-partner-marquee");
+    expect(partnerMarquee).toContain("cabinet-marquee-edge-left");
+    expect(partnerMarquee).not.toContain("from-paper to-transparent");
+    expect(globalCss).toContain(".cabinet-partner-marquee::before");
+    expect(productSwipeShowcase).not.toContain("transition-[transform,opacity,filter,left]");
     expect(appPage.indexOf('<SearchInput size="xl"')).toBeLessThan(
-      appPage.indexOf("<CatalogCarousel"),
+      appPage.indexOf("<ProductSwipeShowcase"),
     );
     expect(appPage).toContain("shelfDrugs.map");
     expect(appPage).not.toContain("medicine-cabinet-path");
@@ -112,7 +134,7 @@ describe("household medicine storefront homepage", () => {
     expect(globalCss).toContain("--color-brand-surface: 23 57 44;");
     expect(globalCss).toContain("--color-ink: 28 39 34;");
     expect(appPage).not.toContain("mono-halftone-field");
-    expect(appPage).toContain("<CatalogCarousel");
+    expect(appPage).toContain("<ProductSwipeShowcase");
     expect(agentLanding).not.toContain("mono-halftone-soft");
     expect(agentLanding).toContain("border-warning-line bg-warning-tint");
   });

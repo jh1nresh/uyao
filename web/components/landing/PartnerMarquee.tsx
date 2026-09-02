@@ -35,12 +35,12 @@ function MarqueeList({
       {items.map((item) => (
         <li
           key={item.name}
-          className="flex shrink-0 items-center gap-3 whitespace-nowrap border-l-2 border-green pl-4"
+          className="flex shrink-0 items-center gap-2.5 whitespace-nowrap border-l border-[#a98a61]/70 pl-4"
         >
-          <span className="text-[18px] font-black tracking-[-.015em] text-forest sm:text-[19px]">
+          <span className="text-[15px] font-bold tracking-[-.01em] text-[#f8f4e9] sm:text-[16px]">
             {item.name}
           </span>
-          <span className="num text-[12.5px] font-semibold tracking-[.04em] text-muted">
+          <span className="num text-[11.5px] font-semibold tracking-[.04em] text-[#d5c4a7]">
             {item.district}
           </span>
         </li>
@@ -80,39 +80,43 @@ export function PartnerMarquee({
     <section
       id={id}
       ref={sectionRef}
-      className="partner-marquee scroll-mt-24 bg-paper"
+      className="partner-marquee cabinet-partner-marquee scroll-mt-24"
       data-paused={!visible}
       aria-labelledby={`partner-marquee-heading-${locale}`}
     >
-      <div className="mx-auto max-w-[1240px] px-5 py-3 sm:px-8 sm:py-4">
-        <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-1">
-          <h2 id={`partner-marquee-heading-${locale}`} className="m-0 text-[18px] font-black">
-            <span className="num text-oxblood">{items.length}</span> {copy.headingSuffix}
+      <div className="mx-auto max-w-[1320px] px-5 pb-3 pt-5 sm:px-8 sm:pb-4 sm:pt-6">
+        <div className="grid grid-cols-[1fr_auto] items-center gap-x-5 lg:grid-cols-[auto_minmax(0,1fr)_auto]">
+          <h2
+            id={`partner-marquee-heading-${locale}`}
+            className="m-0 whitespace-nowrap text-[14px] font-bold tracking-[.01em] text-[#f8f4e9] sm:text-[15px]"
+          >
+            <span className="num text-[#e5aaa0]">{items.length}</span> {copy.headingSuffix}
           </h2>
+
+          <div
+            className="partner-marquee-viewport relative col-span-2 row-start-2 mt-2 overflow-hidden py-1.5 lg:col-span-1 lg:col-start-2 lg:row-start-1 lg:mt-0"
+            aria-label={copy.ariaLabel}
+          >
+            <div className="partner-marquee-track flex w-max">
+              <MarqueeList items={items} />
+              <MarqueeList items={items} duplicate />
+            </div>
+            <span
+              className="partner-marquee-edge cabinet-marquee-edge-left pointer-events-none absolute inset-y-0 left-0 w-8 sm:w-12"
+              aria-hidden
+            />
+            <span
+              className="partner-marquee-edge cabinet-marquee-edge-right pointer-events-none absolute inset-y-0 right-0 w-8 sm:w-12"
+              aria-hidden
+            />
+          </div>
+
           <Link
             href={evidenceHref}
-            className="inline-flex min-h-11 items-center text-xs font-semibold text-forest no-underline hover:text-green"
+            className="inline-flex min-h-11 items-center whitespace-nowrap text-[11.5px] font-semibold text-[#e8dcc4] no-underline hover:text-white"
           >
             {copy.evidence}
           </Link>
-        </div>
-
-        <div
-          className="partner-marquee-viewport relative mt-1 overflow-hidden py-2"
-          aria-label={copy.ariaLabel}
-        >
-          <div className="partner-marquee-track flex w-max">
-            <MarqueeList items={items} />
-            <MarqueeList items={items} duplicate />
-          </div>
-          <span
-            className="partner-marquee-edge pointer-events-none absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-paper to-transparent sm:w-12"
-            aria-hidden
-          />
-          <span
-            className="partner-marquee-edge pointer-events-none absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-paper to-transparent sm:w-12"
-            aria-hidden
-          />
         </div>
       </div>
     </section>
