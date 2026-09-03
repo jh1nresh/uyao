@@ -4,6 +4,8 @@ import {
   answerCommerceAgent,
   localCommerceAgentReply,
   parseCommerceAgentMessages,
+  parseCommerceAgentScreenState,
+  selectCommerceAgentSkill,
   type CommerceModelCaller,
   type CommerceModelResponse,
 } from "./commerce-agent";
@@ -68,7 +70,7 @@ describe("uYao commerce agent harness", () => {
     expect(reply).toMatchObject({ kind: "products", mode: "claude" });
     expect(reply.products[0]).toMatchObject({ slug: "hugu-gaishu-100" });
     const thirdRequest = caller.mock.calls[2][0];
-    expect(JSON.stringify(thirdRequest.messages)).toContain("Use only product_id values");
+    expect(JSON.stringify(thirdRequest.messages)).toContain("Use only server-issued product_id values");
   });
 
   it("falls back to grounded catalog behavior when the model fails", async () => {
@@ -91,5 +93,61 @@ describe("uYao commerce agent harness", () => {
       { role: "user", content: "看第一項" },
     ]);
     expect(parseCommerceAgentMessages([{ role: "assistant", content: "no" }])).toBeNull();
+  });
+
+  it("resolves a follow-up against the server-validated products already on screen", () => {
+    const first = localCommerceAgentReply(input("補鈣"));
+    const reply = localCommerceAgentReply({
+      messages: [
+        { role: "user", content: "補鈣" },
+        { role: "assistant", content: first.message },
+        { role: "user", content: "看第一個附近藥局" },
+      ],
+      area: "datong",
+      locale: "zh",
+      screen: { productSlugs: first.products.map((product) => product.slug) },
+    });
+
+    expect(reply.kind).toBe("pharmacies");
+    expect(reply.products[0].slug).toBe(first.products[0].slug);
+    expect(reply.message).toContain("仍由藥局或藥師確認");
+  });
+
+  it("loads the pharmacist handoff procedure only for a grounded follow-up", async () => {
+    expect(selectCommerceAgentSkill("補鈣")).toBeNull();
+    expect(selectCommerceAgentSkill("第一個成分是什麼", { productSlugs: ["hugu-gaishu-100"] }))
+      .toBeNull();
+    expect(selectCommerceAgentSkill("看第一個附近藥局", { productSlugs: ["hugu-gaishu-100"] }))
+      .toMatchObject({ name: "pharmacist-handoff" });
+
+    const caller = vi.fn<CommerceModelCaller>(async () => ({
+      content: [{
+        type: "tool_use",
+        id: "tool-visible",
+        name: "present_pharmacies",
+        input: { product_id: "v_1" },
+      }],
+    }));
+    const reply = await answerCommerceAgent({
+      ...input("看第一個附近藥局"),
+      screen: { productSlugs: ["hugu-gaishu-100"] },
+    }, caller);
+
+    expect(reply).toMatchObject({ kind: "pharmacies", mode: "claude" });
+    expect(JSON.stringify(caller.mock.calls[0][0].messages)).toContain("pharmacist-handoff");
+    expect(JSON.stringify(caller.mock.calls[0][0].messages)).toContain('"product_id":"v_1"');
+  });
+
+  it("accepts only bounded catalog-backed screen state", () => {
+    expect(parseCommerceAgentScreenState({ productSlugs: ["hugu-gaishu-100", "hugu-gaishu-100"] }))
+      .toEqual({ productSlugs: ["hugu-gaishu-100"] });
+    expect(parseCommerceAgentScreenState({ productSlugs: ["not-a-product"] })).toBeUndefined();
+    expect(parseCommerceAgentScreenState({ productSlugs: Array(6).fill("hugu-gaishu-100") })).toBeUndefined();
+  });
+
+  it("reports real bounded stages without exposing model reasoning", async () => {
+    const stages: string[] = [];
+    await answerCommerceAgent(input("補鈣"), null, (progress) => stages.push(progress.stage));
+    expect(stages).toEqual(["checking", "searching", "presenting"]);
   });
 });

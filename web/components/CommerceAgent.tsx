@@ -7,7 +7,9 @@ import { BrandMark } from "@/components/BrandMark";
 import { SearchResultLink } from "@/components/SearchResultLink";
 import type {
   CommerceAgentMessage,
+  CommerceAgentProgress,
   CommerceAgentReply,
+  CommerceAgentScreenState,
 } from "@/lib/commerce-agent";
 import { localizedPath, type Locale } from "@/lib/i18n";
 import {
@@ -23,6 +25,11 @@ type VisibleTurn = {
   reply: CommerceAgentReply;
 };
 
+type AgentStreamEvent =
+  | { type: "progress"; progress: CommerceAgentProgress }
+  | { type: "result"; reply: CommerceAgentReply }
+  | { type: "error"; error: string };
+
 export function CommerceAgent({
   initialQuery,
   area,
@@ -35,9 +42,11 @@ export function CommerceAgent({
   const [question, setQuestion] = useState("");
   const [turns, setTurns] = useState<VisibleTurn[]>([]);
   const [loading, setLoading] = useState(false);
+  const [progress, setProgress] = useState("");
   const [error, setError] = useState("");
   const started = useRef(false);
   const conversation = useRef<CommerceAgentMessage[]>([]);
+  const screen = useRef<CommerceAgentScreenState>({ productSlugs: [] });
   const english = locale === "en";
 
   function reuseSafetyAnswer(query: string): boolean {
@@ -79,18 +88,45 @@ export function CommerceAgent({
     try {
       const response = await fetch("/api/agent", {
         method: "POST",
-        headers: { "content-type": "application/json" },
+        headers: {
+          accept: "application/x-ndjson",
+          "content-type": "application/json",
+        },
         body: JSON.stringify({
           messages: nextConversation,
           area,
           locale,
+          screen: screen.current,
           safetyContextConfirmed: true,
         }),
       });
-      const body = await response.json().catch(() => null) as (CommerceAgentReply & { error?: string }) | null;
+      let body: (CommerceAgentReply & { error?: string }) | null = null;
+      if (response.ok && response.headers.get("content-type")?.includes("application/x-ndjson") && response.body) {
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let pending = "";
+        let done = false;
+        while (!done) {
+          const chunk = await reader.read();
+          done = chunk.done;
+          pending += decoder.decode(chunk.value ?? new Uint8Array(), { stream: !done });
+          const lines = pending.split("\n");
+          pending = lines.pop() ?? "";
+          for (const line of lines) {
+            if (!line) continue;
+            const event = JSON.parse(line) as AgentStreamEvent;
+            if (event.type === "progress") setProgress(event.progress.message);
+            if (event.type === "result") body = event.reply;
+            if (event.type === "error") throw new Error(event.error);
+          }
+        }
+      } else {
+        body = await response.json().catch(() => null) as (CommerceAgentReply & { error?: string }) | null;
+      }
       if (!response.ok || !body?.kind) {
         throw new Error(body?.error || (english ? "uYao Agent is unavailable." : "uYao Agent 目前無法回覆。"));
       }
+      screen.current = { productSlugs: body.products.map((product) => product.slug).slice(0, 5) };
       setTurns((current) => [...current, { query, reply: body }]);
       conversation.current = [
         ...nextConversation,
@@ -102,6 +138,7 @@ export function CommerceAgent({
         ? reason.message
         : english ? "uYao Agent is unavailable." : "uYao Agent 目前無法回覆。");
     } finally {
+      setProgress("");
       setLoading(false);
     }
   }
@@ -192,7 +229,7 @@ export function CommerceAgent({
             <span className="flex size-8 flex-none items-center justify-center rounded-[12px] border border-line bg-paper">
               <BrandMark size={20} />
             </span>
-            <span>{english ? "Checking catalog sources…" : "正在核對目錄來源…"}</span>
+            <span>{progress || (english ? "Checking catalog sources…" : "正在核對目錄來源…")}</span>
           </div>
         )}
 
