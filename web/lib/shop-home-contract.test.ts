@@ -70,6 +70,7 @@ describe("household medicine storefront homepage", () => {
     expect(catalogBrowse).not.toContain("Longevity");
     expect(appPage).not.toContain("真的可以變長壽嗎");
     expect(catalogBrowse).toContain("filterCatalogDrugs");
+    expect(catalogBrowse).toContain("Number(Boolean(b.image)) - Number(Boolean(a.image))");
     expect(catalogBrowse).toContain('localizedPath(`/drug/${item.slug}`, locale)');
     expect(catalogBrowse).not.toContain("product-showcase-stage");
     expect(catalogBrowse).not.toContain("加入購物車");

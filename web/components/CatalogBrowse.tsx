@@ -36,7 +36,10 @@ export function CatalogBrowse({
   const [group, setGroup] = useState<CatalogGroupSlug>("all");
 
   const results = useMemo(
-    () => filterCatalogDrugs(drugs, { query, group }),
+    () =>
+      filterCatalogDrugs(drugs, { query, group }).slice().sort(
+        (a, b) => Number(Boolean(b.image)) - Number(Boolean(a.image)),
+      ),
     [drugs, query, group],
   );
 
