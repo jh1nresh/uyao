@@ -53,16 +53,23 @@ const agentLanding = readFileSync(
 );
 
 describe("household medicine storefront homepage", () => {
-  it("moves search into the Agent workspace and keeps the full catalog reachable below", () => {
-    expect(appPage).toContain('localizedPath("/agent", locale)');
+  it("starts search in the cabinet and continues input in the Agent workspace", () => {
+    expect(appPage).toContain("<SearchInput");
+    expect(appPage).toContain('resultsPath="/agent"');
+    expect(appPage).toContain("redirectOnInput");
     expect(appPage).toContain("medicine-cabinet-hero");
     expect(appPage).toContain("medicine-cabinet-cell-copy");
     expect(appPage).toContain("medicine-cabinet-cell-ask");
     expect(appPage).toContain("家裡的藥箱，現在會找答案");
     expect(appPage).toContain("打開 uYao，先問再出門。");
     expect(appPage).toContain("你說家裡需要什麼，uYao 整理需求，再由藥師確認下一步。");
-    expect(appPage).toContain("詢問其他品項 →");
-    expect(appPage).not.toContain("medicine-cabinet-input");
+    expect(appPage).toContain("medicine-cabinet-input");
+    expect(searchInput).toContain("hasRedirectedInputRef");
+    expect(searchInput).toContain("INPUT_REDIRECT_DELAY_MS");
+    expect(searchInput).toContain("onCompositionEnd");
+    expect(searchInput).toContain('new URLSearchParams({ draft: value })');
+    expect(commerceAgentPage).toContain("initialDraft");
+    expect(commerceAgentPage).toContain("defaultValue={initialDraft}");
     expect(commerceAgentPage).toContain("uyao-agent-composer");
     expect(appPage).not.toContain("家裡現在需要什麼？");
     expect(appPage).not.toContain("問藥時，上排品項留在原位。");

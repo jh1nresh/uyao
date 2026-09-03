@@ -25,11 +25,12 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function AgentPage({
   searchParams,
 }: {
-  searchParams: Promise<{ q?: string; area?: string }>;
+  searchParams: Promise<{ q?: string; draft?: string; area?: string }>;
 }) {
-  const { q: rawQuery, area: rawArea } = await searchParams;
+  const { q: rawQuery, draft: rawDraft, area: rawArea } = await searchParams;
   const locale = await getRequestLocale();
   const initialQuery = (rawQuery ?? "").trim().slice(0, RESERVATION_INTAKE_QUERY_MAX);
+  const initialDraft = (rawDraft ?? "").slice(0, RESERVATION_INTAKE_QUERY_MAX);
   const area = toAreaSlug(rawArea);
   const english = locale === "en";
 
@@ -70,8 +71,10 @@ export default async function AgentPage({
 
             <div className="sticky bottom-0 pb-[calc(1rem+env(safe-area-inset-bottom))]">
               <SearchInput
+                defaultValue={initialDraft}
                 size="lg"
                 area={area}
+                autoFocus={Boolean(initialDraft)}
                 presentation="agent"
                 resultsPath="/agent"
                 submitLabel={english ? "Send" : "送出"}
