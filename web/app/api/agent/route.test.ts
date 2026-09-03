@@ -4,10 +4,14 @@ import { __resetForTests } from "@/lib/kv";
 
 import { POST } from "./route";
 
-function request(body: unknown, ip = "127.0.2.1") {
+function request(body: unknown, ip = "127.0.2.1", stream = false) {
   return new Request("http://localhost/api/agent", {
     method: "POST",
-    headers: { "content-type": "application/json", "x-forwarded-for": ip },
+    headers: {
+      "content-type": "application/json",
+      "x-forwarded-for": ip,
+      ...(stream ? { accept: "application/x-ndjson" } : {}),
+    },
     body: JSON.stringify(body),
   });
 }
@@ -52,6 +56,34 @@ describe("POST /api/agent", () => {
       locale: "zh",
       safetyContextConfirmed: true,
     }));
+
+    expect(response.status).toBe(422);
+  });
+
+  it("streams bounded progress before the grounded result", async () => {
+    const response = await POST(request({
+      messages: [{ role: "user", content: "補鈣" }],
+      area: "datong",
+      locale: "zh",
+      screen: { productSlugs: [] },
+      safetyContextConfirmed: true,
+    }, "127.0.2.8", true));
+    const events = (await response.text()).trim().split("\n").map((line) => JSON.parse(line)) as Array<Record<string, unknown>>;
+
+    expect(response.headers.get("content-type")).toContain("application/x-ndjson");
+    expect(events.map((event) => event.type)).toEqual(["progress", "progress", "progress", "result"]);
+    expect(events.at(-1)).toMatchObject({ type: "result", reply: { kind: "products" } });
+    expect(JSON.stringify(events)).not.toMatch(/priceTwd|inStock|daysSinceScan/);
+  });
+
+  it("rejects forged screen state instead of passing it to the model", async () => {
+    const response = await POST(request({
+      messages: [{ role: "user", content: "看第一個" }],
+      area: "datong",
+      locale: "zh",
+      screen: { productSlugs: ["forged-product"] },
+      safetyContextConfirmed: true,
+    }, "127.0.2.9"));
 
     expect(response.status).toBe(422);
   });
