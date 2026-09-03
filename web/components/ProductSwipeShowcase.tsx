@@ -45,7 +45,9 @@ export function ProductSwipeShowcase({
 }) {
   const locale = useLocale();
   const [active, setActive] = useState(0);
-  const [side, setSide] = useState(SIDE_DESKTOP);
+  // SSR 採手機優先，避免 hydration 前把桌機的五支商品擠進窄螢幕。
+  // 掛載後再依 viewport 擴成桌機五格。
+  const [side, setSide] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   const dragStart = useRef<number | null>(null);
   // 判斷要不要換品項時讀 ref 而不是 state：pointermove 與 pointerup 落在
@@ -201,7 +203,11 @@ export function ProductSwipeShowcase({
             // 位移用「舞台寬度的百分比」而不是商品自身的百分比 —— 用後者
             // 時側邊那幾支會疊在主角後面看不見，貨架就只剩一支商品。
             // 手機一側只放一支，間距要拉開，否則側邊品項會壓到主角包裝上。
-            const step = side === 1 ? 40 : 19;
+            // 商品中心對齊背景藥櫃的格位：桌機五格、手機裁成中央三格。
+            // 主角仍可略微跨出格框，保留輪播的視覺層級。
+            const position = side === 1
+              ? offset * 36
+              : offset * (Math.abs(offset) === 2 ? 24 : 20);
             return (
               <button
                 key={item.drug.slug}
@@ -211,15 +217,15 @@ export function ProductSwipeShowcase({
                 onClick={() => go(i)}
                 // 全部站在同一條地板線上（transform-origin: bottom），縮小的
                 // 側邊品項才不會浮在半空中。
-                className={`absolute bottom-0 left-1/2 block border-0 bg-transparent p-0 transition-[transform,opacity,filter] ease-out motion-reduce:transition-none ${
+                className={`product-showcase-product absolute bottom-0 left-1/2 block border-0 bg-transparent p-0 transition-[transform,opacity] ease-out motion-reduce:transition-none ${
                   isDragging ? "duration-0 will-change-transform" : "duration-500"
                 }`}
                 style={{
                   transformOrigin: "bottom center",
-                  transform: `translate3d(calc(-50% + ${offset * step}cqw + var(--showcase-drag-x)), 0, 0) scale(${
-                    isActive ? 1 : Math.abs(offset) === 1 ? 0.66 : 0.48
+                  transform: `translate3d(calc(-50% + ${position}cqw + var(--showcase-drag-x)), 0, 0) scale(${
+                    isActive ? 1 : Math.abs(offset) === 1 ? (side === 1 ? 0.58 : 0.66) : 0.48
                   })`,
-                  opacity: isActive ? 1 : Math.abs(offset) === 1 ? 0.9 : 0.62,
+                  opacity: isActive ? 1 : Math.abs(offset) === 1 ? 1 : 0.88,
                   zIndex: 10 - Math.abs(offset),
                 }}
               >
@@ -229,7 +235,7 @@ export function ProductSwipeShowcase({
                     alt={locale === "en" ? image.altEn : image.alt}
                     fill
                     sizes="(min-width: 768px) 230px, 180px"
-                    className="object-contain object-bottom drop-shadow-[0_7px_10px_rgba(77,53,29,0.22)]"
+                    className="product-showcase-packshot object-contain object-bottom"
                     priority={Math.abs(offset) <= 1}
                     draggable={false}
                   />
@@ -237,6 +243,7 @@ export function ProductSwipeShowcase({
               </button>
             );
           })}
+          <span aria-hidden className="product-showcase-scene-light" />
         </div>
 
         {/* 主角資訊。左右鈕改放在下面那排 —— 夾在文字兩側時，手機上的品名
