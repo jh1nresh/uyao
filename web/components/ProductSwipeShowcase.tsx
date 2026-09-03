@@ -1,24 +1,27 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { type CSSProperties, useCallback, useEffect, useRef, useState } from "react";
 
 import { useLocale } from "./LocaleProvider";
 import { drugCopy } from "@/lib/i18n";
-import { known } from "@/lib/pending";
 import type { ShowcaseItem } from "@/lib/product-showcase";
 
 /**
- * 品項橫向展示：整座藥櫃是一張完成的品牌場景，左右滑動只切換目錄焦點。
+ * 品項橫向展示：實拍木櫃是場景，包裝照坐進櫃格。中央那一格對準，
+ * 兩側只露出鄰格的一部分。這是圖 2 的貨架簽名，不是 CSS 木紋框。
  *
- * 商品、櫃格與光影不在瀏覽器裡逐張拼裝；這跟首頁 hero 使用同一種完整場景
- * 資產策略。消費端仍不顯示價格，這一排只用來瀏覽目錄，不是結帳漏斗。
+ * 站上不做交易，所以沒有價格與購物車。這一排是用來看清楚有哪些品項，
+ * 點「看這一項」才進品項頁。
  *
  * 互動一律三條路都通：觸控滑動（pointer drag）、左右鍵、下方箭頭鈕。
- * 只做觸控滑動的話，桌機與鍵盤使用者會沒有出口。
  */
 
 export type { ShowcaseItem } from "@/lib/product-showcase";
+
+const SHELF_OFFSETS = [-1, 0, 1] as const;
+type MotionDirection = "next" | "prev";
 
 export function ProductSwipeShowcase({
   items,
@@ -40,6 +43,8 @@ export function ProductSwipeShowcase({
 }) {
   const locale = useLocale();
   const [active, setActive] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  const [motionDirection, setMotionDirection] = useState<MotionDirection | null>(null);
   const dragStart = useRef<number | null>(null);
   // 判斷要不要換品項時讀 ref 而不是 state：pointermove 與 pointerup 落在
   // 同一個批次時，pointerup 的 closure 還看得到舊的 drag，滑動就會失效。
@@ -50,8 +55,13 @@ export function ProductSwipeShowcase({
 
   const count = items.length;
   const go = useCallback(
-    (next: number) => setActive(((next % count) + count) % count),
-    [count],
+    (next: number, direction?: MotionDirection) => {
+      const normalized = ((next % count) + count) % count;
+      if (normalized === active) return;
+      setMotionDirection(direction ?? (normalized > active ? "next" : "prev"));
+      setActive(normalized);
+    },
+    [active, count],
   );
 
   useEffect(() => {
@@ -71,23 +81,30 @@ export function ProductSwipeShowcase({
     if (!event.isPrimary || event.button !== 0) return;
     dragStart.current = event.clientX;
     dragDelta.current = 0;
+    setIsDragging(true);
     (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
   }
   function onPointerMove(event: React.PointerEvent<HTMLDivElement>) {
     if (dragStart.current === null) return;
     dragDelta.current = event.clientX - dragStart.current;
+    event.currentTarget.style.setProperty(
+      "--showcase-drag-x",
+      `${dragDelta.current * 0.18}px`,
+    );
   }
   function resetPointer(event: React.PointerEvent<HTMLDivElement>) {
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
+    event.currentTarget.style.setProperty("--showcase-drag-x", "0px");
     dragStart.current = null;
     dragDelta.current = 0;
+    setIsDragging(false);
   }
   function onPointerUp(event: React.PointerEvent<HTMLDivElement>) {
     if (dragStart.current === null) return;
-    if (dragDelta.current <= -60) go(active + 1);
-    else if (dragDelta.current >= 60) go(active - 1);
+    if (dragDelta.current <= -60) go(active + 1, "next");
+    else if (dragDelta.current >= 60) go(active - 1, "prev");
     resetPointer(event);
   }
   function onPointerCancel(event: React.PointerEvent<HTMLDivElement>) {
@@ -98,20 +115,20 @@ export function ProductSwipeShowcase({
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (event.key === "ArrowRight") {
       event.preventDefault();
-      go(active + 1);
+      go(active + 1, "next");
     } else if (event.key === "ArrowLeft") {
       event.preventDefault();
-      go(active - 1);
+      go(active - 1, "prev");
     }
   }
 
   if (count === 0) return null;
   const current = items[active];
   const copy = drugCopy(current.drug, locale);
-  // 規格與分類都還沒確認時整行不顯示。「規格待確認 · 待確認」並排出現在
-  // 品名正下方，看起來像頁面沒做完，而不是像誠實揭露。
-  const metaLine =
-    [known(copy.spec), known(copy.drugClass)].filter(Boolean).join(" · ") || null;
+
+  function itemAt(offset: number): ShowcaseItem {
+    return items[((active + offset) % count + count) % count];
+  }
 
   return (
     <div className="product-showcase-canvas relative">
@@ -124,8 +141,8 @@ export function ProductSwipeShowcase({
         )}
 
         {/* 品項膠囊：只切換主角，不濾清單 —— 這一排是導覽，不是篩選器。
-            手機不換行：換行會變成四排色塊蓋住背景三角，改成單排橫向捲動。 */}
-        <div ref={pillRailRef} className="-mx-5 mt-4 flex gap-1.5 overflow-x-auto px-5 pb-1 sm:mx-0 sm:mt-2 sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0">
+            手機不換行：換行會變成四排色塊蓋住貨架，改成單排橫向捲動。 */}
+        <div ref={pillRailRef} className="-mx-5 mt-4 flex gap-1.5 overflow-x-auto px-5 pb-1 sm:mx-0 sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0">
           {items.map((item, i) => (
             <button
               key={item.drug.slug}
@@ -133,51 +150,87 @@ export function ProductSwipeShowcase({
                 pillRefs.current[i] = node;
               }}
               type="button"
-              onClick={() => go(i)}
+              onClick={() => go(i, i > active ? "next" : "prev")}
               aria-current={i === active}
-              className="h-11 max-w-[164px] shrink-0 text-[13px] font-medium"
+              className={`h-8 max-w-[164px] shrink-0 truncate rounded-full border px-3.5 text-[13px] font-medium transition-colors motion-reduce:transition-none ${
+                i === active
+                  ? "border-[#17392c] bg-[#17392c] text-[#f8f4e9]"
+                  : "border-[#b8b1a4] bg-[#f8f4e9]/90 text-[#3e4b44] hover:border-[#17392c] hover:text-[#17392c]"
+              }`}
             >
-              <span
-                className={`flex h-8 max-w-full items-center truncate border px-3 transition-colors motion-reduce:transition-none ${
-                  i === active
-                    ? "border-[#17392c] bg-[#17392c] text-[#f8f4e9]"
-                    : "border-[#b8b1a4] bg-[#f8f4e9]/85 text-[#3e4b44] hover:border-[#17392c] hover:text-[#17392c]"
-                }`}
-              >
-                {drugCopy(item.drug, locale).name}
-              </span>
+              {drugCopy(item.drug, locale).name}
             </button>
           ))}
         </div>
 
-        {/* 舞台 */}
         <div
           ref={frameRef}
           role="group"
           aria-roledescription={locale === "en" ? "carousel" : "輪播"}
-          aria-label={locale === "en" ? "Featured product cabinet" : "精選品項藥櫃場景"}
+          aria-label={locale === "en" ? "Featured catalog items" : "精選目錄品項"}
           tabIndex={0}
           onKeyDown={onKeyDown}
           onPointerDown={onPointerDown}
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
           onPointerCancel={onPointerCancel}
-          className="product-showcase-stage relative mt-5 h-[250px] cursor-grab touch-pan-y select-none outline-offset-4 [container-type:inline-size] active:cursor-grabbing sm:mt-7 sm:h-80"
-        />
+          style={{ "--showcase-drag-x": "0px" } as CSSProperties}
+          className="product-showcase-stage relative mt-5 overflow-hidden cursor-grab touch-pan-y select-none outline-offset-4 active:cursor-grabbing"
+        >
+          <div className="product-shelf-unit">
+            <span className="product-shelf-plate" aria-hidden />
+            <div
+              key={active}
+              data-motion={motionDirection ?? undefined}
+              className={`product-shelf-bays${
+                motionDirection ? ` product-shelf-bays-enter-${motionDirection}` : ""
+              }`}
+            >
+              {SHELF_OFFSETS.map((offset) => {
+                const item = itemAt(offset);
+                const isActive = offset === 0;
+                const image = item.drug.image;
+                if (!image) return null;
+                return (
+                  <button
+                    key={`${item.drug.slug}-${offset}`}
+                    type="button"
+                    tabIndex={-1}
+                    aria-hidden={!isActive}
+                    aria-label={isActive ? undefined : drugCopy(item.drug, locale).name}
+                    onClick={() => {
+                      if (offset !== 0) go(active + offset, offset > 0 ? "next" : "prev");
+                    }}
+                    className={`product-shelf-bay ${isActive ? "product-shelf-bay-focus" : ""} ${
+                      isDragging ? "is-dragging" : ""
+                    }`}
+                    data-offset={offset}
+                  >
+                    <span className="product-shelf-pack">
+                      <Image
+                        src={image.src}
+                        alt={isActive ? (locale === "en" ? image.altEn : image.alt) : ""}
+                        fill
+                        sizes="(min-width: 768px) 28vw, 58vw"
+                        className="object-contain object-bottom"
+                        priority={Math.abs(offset) <= 1}
+                        draggable={false}
+                      />
+                    </span>
+                  </button>
+                );
+              })}
+            </div>
+            <span className="product-shelf-scene-light" aria-hidden />
+          </div>
+        </div>
 
-        {/* 主角資訊。左右鈕改放在下面那排 —— 夾在文字兩側時，手機上的品名
-            與描述只剩不到一半寬度，會被擠成三四行。 */}
-        <div className="mt-5 sm:mt-1" aria-live="polite">
+        <div className="mt-6" aria-live="polite">
           <div className="mx-auto min-w-0 max-w-[520px] text-center">
-            <p className="m-0 text-[19px] font-bold leading-[1.35] text-ink sm:text-[22px]">
+            <p className="editorial-display m-0 text-[20px] leading-[1.35] text-ink sm:text-[24px]">
               {copy.name}
             </p>
-            {metaLine && (
-              <p className="mx-auto mb-0 mt-1.5 max-w-[460px] text-[14px] leading-[1.6] text-muted">
-                {metaLine}
-              </p>
-            )}
-            <p className="mx-auto mb-0 mt-1 line-clamp-2 max-w-[460px] text-[13px] leading-[1.6] text-muted-2">
+            <p className="mx-auto mb-0 mt-2 line-clamp-2 max-w-[460px] text-[13.5px] leading-[1.65] text-[#3e4b44]">
               {locale === "en"
                 ? current.drug.nutritionFocusEn
                 : current.drug.nutritionFocus}
@@ -193,12 +246,11 @@ export function ProductSwipeShowcase({
           </div>
         </div>
 
-        {/* 控制列：左右鈕夾著進度條，滑到哪裡與怎麼換都在同一行 */}
-        <div className="mt-5 flex items-center justify-center gap-4 sm:mt-2">
+        <div className="mt-5 flex items-center justify-center gap-4">
           <ArrowButton
             dir="prev"
             label={locale === "en" ? "Previous product" : "上一項"}
-            onClick={() => go(active - 1)}
+            onClick={() => go(active - 1, "prev")}
           />
           <div className="flex gap-1.5">
             {items.map((item, i) => (
@@ -214,7 +266,7 @@ export function ProductSwipeShowcase({
           <ArrowButton
             dir="next"
             label={locale === "en" ? "Next product" : "下一項"}
-            onClick={() => go(active + 1)}
+            onClick={() => go(active + 1, "next")}
           />
         </div>
       </div>
