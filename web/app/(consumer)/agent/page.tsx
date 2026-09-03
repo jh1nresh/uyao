@@ -40,7 +40,10 @@ export default async function AgentPage({
         ) : (
           <section className="flex min-h-[calc(100dvh-4.25rem)] flex-1 flex-col py-5 sm:min-h-[calc(100dvh-4.5rem)] sm:py-7">
             <div className="mx-auto my-auto w-full max-w-[680px] px-1 pb-16 sm:pb-20">
-              <h1 className="text-balance text-[30px] font-semibold leading-[1.25] sm:text-[36px]">
+              <p className="mb-3 mt-0 font-mono text-[11px] font-semibold tracking-[0.08em] text-forest">
+                uYao Agent
+              </p>
+              <h1 className="font-serif text-balance text-[30px] font-semibold leading-[1.25] sm:text-[36px]">
                 {english ? "What are you looking for?" : "今天想找什麼？"}
               </h1>
               <p className="mb-0 mt-3 max-w-[48ch] text-pretty text-[15px] leading-[1.7] text-muted">
