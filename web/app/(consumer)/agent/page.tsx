@@ -1,13 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
-import { BrandMark } from "@/components/BrandMark";
 import { CommerceAgent } from "@/components/CommerceAgent";
-import { LanguageSwitch } from "@/components/LanguageSwitch";
 import { SearchInput } from "@/components/SearchInput";
-import { ThemeToggle } from "@/components/ThemeToggle";
+import { SiteHeader } from "@/components/SiteHeader";
 import { toAreaSlug } from "@/lib/data";
-import { localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
 import { RESERVATION_INTAKE_QUERY_MAX } from "@/lib/reservation-intake";
 
@@ -36,47 +32,13 @@ export default async function AgentPage({
 
   return (
     <div className="uyao-agent-shell min-h-[100dvh] text-ink">
-      <header className="sticky top-0 z-40 border-b border-line bg-paper/80 backdrop-blur-md">
-        <div className="mx-auto grid h-16 w-full max-w-[880px] grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 sm:gap-4 sm:px-6">
-          <Link
-            href={localizedPath("/", locale)}
-            aria-label={english ? "Back to uYao homepage" : "回到 uYao 首頁"}
-            className="flex min-h-11 items-center gap-2 text-[15px] font-bold text-ink no-underline"
-          >
-            <BrandMark size={30} />
-            <span className="hidden sm:inline">uYao</span>
-          </Link>
+      <SiteHeader showSearch={false} area={area} activeWorkspace="agent" />
 
-          <nav
-            aria-label={english ? "uYao destinations" : "uYao 主要導覽"}
-            className="flex h-full items-stretch justify-center"
-          >
-            <Link
-              href={localizedPath("/", locale)}
-              className="inline-flex min-h-11 items-center border-b-2 border-transparent px-3 text-[13px] font-semibold text-muted no-underline transition-colors hover:border-line-strong hover:text-ink sm:px-4"
-            >
-              Shop
-            </Link>
-            <span
-              aria-current="page"
-              className="inline-flex min-h-11 items-center border-b-2 border-forest px-3 text-[13px] font-bold text-forest sm:px-4"
-            >
-              Agent
-            </span>
-          </nav>
-
-          <div className="flex items-center justify-self-end gap-1 sm:gap-2">
-            <ThemeToggle locale={locale} />
-            <LanguageSwitch />
-          </div>
-        </div>
-      </header>
-
-      <main className="mx-auto flex min-h-[calc(100dvh-4rem)] w-full max-w-[880px] flex-col px-3 sm:px-6">
+      <main className="mx-auto flex min-h-[calc(100dvh-4.25rem)] w-full max-w-[880px] flex-col px-3 sm:min-h-[calc(100dvh-4.5rem)] sm:px-6">
         {initialQuery ? (
           <CommerceAgent initialQuery={initialQuery} area={area} locale={locale} />
         ) : (
-          <section className="flex min-h-[calc(100dvh-4rem)] flex-1 flex-col py-5 sm:py-7">
+          <section className="flex min-h-[calc(100dvh-4.25rem)] flex-1 flex-col py-5 sm:min-h-[calc(100dvh-4.5rem)] sm:py-7">
             <div className="mx-auto my-auto w-full max-w-[680px] px-1 pb-16 sm:pb-20">
               <h1 className="text-balance text-[30px] font-semibold leading-[1.25] sm:text-[36px]">
                 {english ? "What are you looking for?" : "今天想找什麼？"}
