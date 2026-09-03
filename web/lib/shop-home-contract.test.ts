@@ -11,6 +11,10 @@ const searchInput = readFileSync(
   join(import.meta.dirname, "..", "components", "SearchInput.tsx"),
   "utf8",
 );
+const searchPage = readFileSync(
+  join(import.meta.dirname, "..", "app", "(consumer)", "search", "page.tsx"),
+  "utf8",
+);
 const productSwipeShowcase = readFileSync(
   join(import.meta.dirname, "..", "components", "ProductSwipeShowcase.tsx"),
   "utf8",
@@ -108,6 +112,29 @@ describe("household medicine storefront homepage", () => {
     expect(searchInput).toContain("continueToResults");
     expect(searchInput).not.toContain("onSubmitQuery");
     expect(searchInput).not.toContain('presentation="pearl"');
+  });
+
+  it("continues the cabinet hero into a bounded search conversation", () => {
+    expect(appPage).toContain('presentation="cabinet"');
+    expect(searchInput).toContain('presentation?: "default" | "cabinet";');
+    expect(searchInput).toContain("medicine-cabinet-dialogue-layer");
+    expect(searchInput).toContain("continueConversation");
+    expect(searchInput).toContain("readLatestShopSearchIntakeDraft");
+    expect(searchPage).toContain('tone="cabinet"');
+    expect(searchPage).toContain("medicine-cabinet-conversation-page");
+    expect(searchPage).toContain("SearchConversationHistory");
+    expect(searchPage).toContain('submitLabel={locale === "en" ? "Ask another question" : "繼續問 uYao"}');
+    expect(searchPage).toContain("key={q}");
+  });
+
+  it("opens the cabinet before continuing into search results", () => {
+    expect(searchInput).toContain("CABINET_OPEN_DURATION_MS");
+    expect(searchInput).toContain("router.prefetch(openingTarget)");
+    expect(searchInput).toContain("medicine-cabinet-opening-layer");
+    expect(searchInput).toContain('window.matchMedia("(prefers-reduced-motion: reduce)").matches');
+    expect(globalCss).toContain("@keyframes medicine-cabinet-door-left-open");
+    expect(globalCss).toContain("@keyframes medicine-cabinet-door-right-open");
+    expect(globalCss).toContain(".medicine-cabinet-opening-layer");
   });
 
   it("builds the selected wall direction from one stocked cabinet image and transparent product links", () => {

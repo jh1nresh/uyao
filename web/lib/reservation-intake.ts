@@ -152,6 +152,16 @@ export function readShopSearchIntakeDraft(
   searchQuery: string,
   now = Date.now(),
 ): ShopSearchIntakeDraft | null {
+  const draft = readLatestShopSearchIntakeDraft(raw, now);
+  const expected = cleanText(searchQuery, "搜尋內容", RESERVATION_INTAKE_QUERY_MAX).value;
+  return draft && draft.searchQuery === expected ? draft : null;
+}
+
+/** 同一分頁的後續提問可沿用剛回答的過敏狀態，但仍受 30 分鐘時效限制。 */
+export function readLatestShopSearchIntakeDraft(
+  raw: string | null,
+  now = Date.now(),
+): ShopSearchIntakeDraft | null {
   if (!raw) return null;
   try {
     const value = JSON.parse(raw) as Partial<ShopSearchIntakeDraft>;
@@ -162,8 +172,7 @@ export function readShopSearchIntakeDraft(
       typeof value.allergens === "string" ? value.allergens : "",
       value.capturedAt,
     );
-    const expected = cleanText(searchQuery, "搜尋內容", RESERVATION_INTAKE_QUERY_MAX).value;
-    return draft && draft.searchQuery === expected ? draft : null;
+    return draft;
   } catch {
     return null;
   }
