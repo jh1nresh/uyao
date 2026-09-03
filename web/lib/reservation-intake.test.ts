@@ -5,6 +5,7 @@ import {
   createReservationIntakeDraft,
   createShopSearchIntakeDraft,
   parseReservationIntake,
+  readLatestShopSearchIntakeDraft,
   readReservationIntakeDraft,
   readShopSearchIntakeDraft,
 } from "./reservation-intake";
@@ -80,9 +81,11 @@ describe("shop search handoff", () => {
       capturedAt: now,
     });
     const raw = JSON.stringify(searchDraft);
+    expect(readLatestShopSearchIntakeDraft(raw, now + 1000)).toEqual(searchDraft);
     expect(readShopSearchIntakeDraft(raw, "補鈣", now + 1000)).toEqual(searchDraft);
     expect(readShopSearchIntakeDraft(raw, "睡不好", now + 1000)).toBeNull();
     expect(readShopSearchIntakeDraft(raw, "補鈣", now + RESERVATION_INTAKE_DRAFT_TTL_MS + 1)).toBeNull();
+    expect(readLatestShopSearchIntakeDraft(raw, now + RESERVATION_INTAKE_DRAFT_TTL_MS + 1)).toBeNull();
   });
 
   it("returns only a fresh draft for the selected item", () => {
@@ -103,5 +106,6 @@ describe("shop search handoff", () => {
   it("ignores corrupt storage instead of blocking reservation", () => {
     expect(readReservationIntakeDraft("not-json", "item-a")).toBeNull();
     expect(readShopSearchIntakeDraft("not-json", "睡不好")).toBeNull();
+    expect(readLatestShopSearchIntakeDraft("not-json")).toBeNull();
   });
 });
