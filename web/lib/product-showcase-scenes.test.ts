@@ -33,6 +33,7 @@ describe("homepage product showcase scenes", () => {
   it("uses one finished wide cabinet scene for every featured item", () => {
     const items = productShowcaseItems(allDrugs());
     expect(items).toHaveLength(8);
+    expect(new Set(items.map((item) => item.sceneSrc)).size).toBe(8);
 
     for (const item of items) {
       const file = path.join(PUBLIC_DIR, item.sceneSrc);
