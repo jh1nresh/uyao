@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
-import { BrandMark } from "@/components/BrandMark";
 import { SearchResultLink } from "@/components/SearchResultLink";
 import type {
   CommerceAgentMessage,
@@ -160,34 +159,33 @@ export function CommerceAgent({
     <section className="flex min-h-[calc(100dvh-4rem)] flex-col" aria-live="polite">
       <div className="flex-1 space-y-8 py-7 pb-36 sm:py-10 sm:pb-40">
         {turns.map((turn, turnIndex) => (
-          <article key={`${turnIndex}-${turn.query}`} className="space-y-5">
-            <div className="ml-auto max-w-[78%] rounded-[16px] bg-brand-surface px-4 py-3 text-on-dark sm:max-w-[70%]">
+          <article key={`${turnIndex}-${turn.query}`} className="space-y-6">
+            <div className="ml-auto max-w-[82%] bg-brand-surface px-4 py-3 text-on-dark sm:max-w-[70%]">
               <p className="m-0 text-pretty text-[15px] leading-[1.65]">{turn.query}</p>
             </div>
 
-            <div className="flex items-start gap-3">
-              <span className="mt-1 flex size-8 flex-none items-center justify-center rounded-[12px] border border-line bg-paper">
-                <BrandMark size={20} />
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="m-0 text-pretty text-[15px] leading-[1.75] text-ink-2">{turn.reply.message}</p>
-                {turn.reply.degraded && (
-                  <p className="mb-0 mt-2 text-pretty text-[12px] leading-[1.55] text-muted-2">
-                    {english
-                      ? "The model provider did not respond, so this answer used deterministic catalog matching."
-                      : "模型服務未回覆，這次改用固定目錄比對。"}
-                  </p>
-                )}
+            <div className="min-w-0 max-w-[680px]">
+              <p className="mb-2 mt-0 font-mono text-[11px] font-semibold tracking-[0.08em] text-forest">
+                uYao Agent
+              </p>
+              <p className="m-0 text-pretty text-[15px] leading-[1.75] text-ink-2">{turn.reply.message}</p>
+              {turn.reply.degraded && (
+                <p className="mb-0 mt-2 text-pretty text-[12px] leading-[1.55] text-muted-2">
+                  {english
+                    ? "The model provider did not respond, so this answer used deterministic catalog matching."
+                    : "模型服務未回覆，這次改用固定目錄比對。"}
+                </p>
+              )}
 
                 {turn.reply.products.length > 0 && (
-                  <div className="mt-4 grid max-w-[640px] gap-3">
+                  <div className="mt-5 max-w-[640px] border-y border-line-strong">
                     {turn.reply.products.map((product) => (
                       <SearchResultLink
                         key={product.slug}
                         href={product.href}
                         drugSlug={product.slug}
                         query={turn.query}
-                        className="group block rounded-[16px] border border-line bg-paper/85 px-4 py-4 no-underline transition-colors hover:border-forest hover:bg-paper"
+                        className="group block border-b border-line px-0 py-5 no-underline transition-colors last:border-b-0 hover:bg-paper"
                       >
                         <span className="block text-pretty text-[16px] font-bold leading-[1.5] text-ink">
                           {[product.name, product.spec].filter(Boolean).join(" ")}
@@ -205,39 +203,33 @@ export function CommerceAgent({
                 )}
 
                 {turn.reply.pharmacies.length > 0 && (
-                  <div className="mt-4 grid max-w-[640px] gap-3">
+                  <div className="mt-5 max-w-[640px] border-y border-line-strong">
                     {turn.reply.pharmacies.map((pharmacy) => (
-                      <div key={pharmacy.slug} className="rounded-[16px] border border-line bg-paper/85 px-4 py-4">
+                      <div key={pharmacy.slug} className="border-b border-line py-5 last:border-b-0">
                         <h2 className="m-0 text-balance text-[15px] font-bold text-ink">{pharmacy.name}</h2>
                         <p className="mb-0 mt-2 text-pretty text-[13px] leading-[1.6] text-muted">{pharmacy.address}</p>
-                        <div className="mt-3 flex flex-wrap gap-4 text-[13px] font-bold">
-                          {pharmacy.phone && <a href={`tel:${pharmacy.phone}`} className="text-forest">{english ? "Call" : "致電"}</a>}
-                          <a href={pharmacy.mapsUrl} target="_blank" rel="noreferrer" className="text-forest">{english ? "Map" : "地圖"}</a>
-                          <Link href={pharmacy.itemHref} className="text-forest">{english ? "Item details" : "品項資料"}</Link>
+                        <div className="mt-3 flex flex-wrap gap-x-5 text-[13px] font-bold">
+                          {pharmacy.phone && <a href={`tel:${pharmacy.phone}`} className="inline-flex min-h-11 min-w-11 items-center text-forest">{english ? "Call" : "致電"}</a>}
+                          <a href={pharmacy.mapsUrl} target="_blank" rel="noreferrer" className="inline-flex min-h-11 min-w-11 items-center text-forest">{english ? "Map" : "地圖"}</a>
+                          <Link href={pharmacy.itemHref} className="inline-flex min-h-11 min-w-11 items-center text-forest">{english ? "Item details" : "品項資料"}</Link>
                         </div>
                       </div>
                     ))}
                   </div>
                 )}
-              </div>
             </div>
           </article>
         ))}
 
         {loading && (
-          <div className="flex items-center gap-3 text-[14px] text-muted">
-            <span className="flex size-8 flex-none items-center justify-center rounded-[12px] border border-line bg-paper">
-              <BrandMark size={20} />
-            </span>
+          <div className="max-w-[680px] border-y border-line py-4 text-[14px] text-muted">
+            <span className="mr-3 font-mono text-[11px] font-semibold tracking-[0.08em] text-forest">uYao Agent</span>
             <span>{progress || (english ? "Checking catalog sources…" : "正在核對目錄來源…")}</span>
           </div>
         )}
 
         {error && (
-          <div className="flex items-start gap-3" role="alert">
-            <span className="flex size-8 flex-none items-center justify-center rounded-[12px] border border-line bg-paper">
-              <BrandMark size={20} />
-            </span>
+          <div className="max-w-[680px] border-y border-oxblood/30 py-4" role="alert">
             <p className="m-0 text-pretty text-[14px] leading-[1.7] text-oxblood">
               {error}{" "}
               <Link href={localizedPath("/agent", locale)} className="font-bold text-forest">
@@ -248,8 +240,8 @@ export function CommerceAgent({
         )}
       </div>
 
-      <div className="sticky bottom-0 pb-[calc(1rem+env(safe-area-inset-bottom))]">
-        <form onSubmit={submit} className="flex items-end gap-2 rounded-[18px] border border-line-strong bg-paper/90 p-2 shadow-sm backdrop-blur-md">
+      <div className="sticky bottom-0 bg-ivory pb-[calc(1rem+env(safe-area-inset-bottom))] pt-2">
+        <form onSubmit={submit} className="flex items-end gap-2 border-y border-line-strong bg-paper p-2 transition-colors focus-within:border-forest sm:border-x">
           <label htmlFor="uyao-agent-question" className="sr-only">
             {english ? "Ask uYao Agent" : "詢問 uYao Agent"}
           </label>
@@ -272,7 +264,7 @@ export function CommerceAgent({
           <button
             type="submit"
             disabled={loading || !question.trim()}
-            className="action-primary h-12 flex-none rounded-[12px] px-5 text-[14px] disabled:opacity-45"
+            className="action-primary h-12 flex-none rounded-none px-5 text-[14px] disabled:opacity-45"
           >
             {english ? "Send" : "送出"}
           </button>
