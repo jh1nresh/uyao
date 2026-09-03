@@ -2,14 +2,18 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
+import { createPortal } from "react-dom";
 import { useLocale } from "./LocaleProvider";
 import { localizedPath } from "@/lib/i18n";
 import {
   RESERVATION_INTAKE_ALLERGENS_MAX,
   SHOP_SEARCH_INTAKE_STORAGE_KEY,
   createShopSearchIntakeDraft,
+  readLatestShopSearchIntakeDraft,
   type AllergyStatus,
+  type ShopSearchIntakeDraft,
 } from "@/lib/reservation-intake";
+import { SHOP_SEARCH_CONVERSATION_STORAGE_KEY } from "@/lib/search-conversation";
 import type { AreaSlug } from "@/lib/types";
 
 const SEARCH_EXAMPLES_ZH = [
@@ -24,23 +28,30 @@ const SEARCH_EXAMPLES_EN = [
   "Search a need, e.g. respiratory wellness or calcium",
 ] as const;
 
+const CABINET_OPEN_DURATION_MS = 900;
+
 /**
  * 搜尋框。用原生 GET form — 沒有 JS 也能搜，SEO 入口頁不依賴 client bundle。
  */
 export function SearchInput({
   defaultValue = "",
   size = "sm",
+  presentation = "default",
   className = "",
   autoFocus = false,
   area,
   submitLabel,
+  continueConversation = false,
 }: {
   defaultValue?: string;
   size?: "sm" | "lg" | "xl";
+  presentation?: "default" | "cabinet";
   className?: string;
   autoFocus?: boolean;
   area?: AreaSlug;
   submitLabel?: string;
+  /** Reuse this tab's fresh safety answer and preserve its private search thread. */
+  continueConversation?: boolean;
 }) {
   const locale = useLocale();
   const router = useRouter();
@@ -53,6 +64,7 @@ export function SearchInput({
   const [reduceMotion, setReduceMotion] = useState(false);
   const [pendingQuery, setPendingQuery] = useState("");
   const [showAllergyPrompt, setShowAllergyPrompt] = useState(false);
+  const [openingTarget, setOpeningTarget] = useState("");
   const [allergyStatus, setAllergyStatus] = useState<"" | AllergyStatus>("");
   const [allergens, setAllergens] = useState("");
   const firstAllergyRef = useRef<HTMLInputElement>(null);
@@ -103,29 +115,72 @@ export function SearchInput({
     };
   }, [showAllergyPrompt]);
 
+  useEffect(() => {
+    if (!openingTarget) return;
+    router.prefetch(openingTarget);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    const timeout = window.setTimeout(() => router.push(openingTarget), CABINET_OPEN_DURATION_MS);
+
+    return () => {
+      window.clearTimeout(timeout);
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [openingTarget, router]);
+
   function askAllergies(event: FormEvent<HTMLFormElement>) {
     const query = String(new FormData(event.currentTarget).get("q") ?? "").trim();
     if (!query) return;
     event.preventDefault();
+    if (continueConversation) {
+      try {
+        const previousDraft = readLatestShopSearchIntakeDraft(
+          sessionStorage.getItem(SHOP_SEARCH_INTAKE_STORAGE_KEY),
+        );
+        if (previousDraft) {
+          const nextDraft = createShopSearchIntakeDraft(
+            query,
+            previousDraft.allergyStatus,
+            previousDraft.allergens,
+          );
+          if (nextDraft) {
+            openResults(nextDraft);
+            return;
+          }
+        }
+      } catch {
+        // Storage 不可用或答案已失效時，回到原本的安全提問。
+      }
+    }
     setPendingQuery(query);
     setAllergyStatus("");
     setAllergens("");
     setShowAllergyPrompt(true);
   }
 
-  function continueToResults() {
-    if (!allergyStatus) return;
-    const draft = createShopSearchIntakeDraft(pendingQuery, allergyStatus, allergens);
-    if (!draft) return;
+  function openResults(draft: ShopSearchIntakeDraft) {
     try {
       sessionStorage.setItem(SHOP_SEARCH_INTAKE_STORAGE_KEY, JSON.stringify(draft));
+      if (!continueConversation) sessionStorage.removeItem(SHOP_SEARCH_CONVERSATION_STORAGE_KEY);
     } catch {
       // 儲存不可用時仍可搜尋；若之後預留，表單會再次要求過敏回答。
     }
     const params = new URLSearchParams({ q: draft.searchQuery });
     if (area) params.set("area", area);
+    const target = `${localizedPath("/search", locale)}?${params.toString()}`;
     setShowAllergyPrompt(false);
-    router.push(`${localizedPath("/search", locale)}?${params.toString()}`);
+    const shouldReduceMotion = reduceMotion || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (presentation !== "cabinet" || shouldReduceMotion) {
+      router.push(target);
+      return;
+    }
+    setOpeningTarget(target);
+  }
+
+  function continueToResults() {
+    if (!allergyStatus) return;
+    const draft = createShopSearchIntakeDraft(pendingQuery, allergyStatus, allergens);
+    if (draft) openResults(draft);
   }
 
   const allergyIncomplete = allergyStatus === ""
@@ -198,7 +253,9 @@ export function SearchInput({
 
       {showAllergyPrompt && (
         <div
-          className="allergy-dialog-layer fixed inset-0 z-[70] flex items-end justify-center px-3 pb-3 sm:items-center sm:p-6"
+          className={`allergy-dialog-layer fixed inset-0 z-[70] flex items-end justify-center px-3 pb-3 sm:items-center sm:p-6 ${
+            presentation === "cabinet" ? "medicine-cabinet-dialogue-layer" : ""
+          }`}
           role="dialog"
           aria-modal="true"
           aria-labelledby="search-allergy-title"
@@ -207,9 +264,15 @@ export function SearchInput({
             type="button"
             aria-label={locale === "en" ? "Close allergy question" : "關閉過敏問題"}
             onClick={() => setShowAllergyPrompt(false)}
-            className="allergy-dialog-backdrop absolute inset-0"
+            className={`allergy-dialog-backdrop absolute inset-0 ${
+              presentation === "cabinet" ? "medicine-cabinet-dialogue-backdrop" : "bg-ink/45"
+            }`}
           />
-          <section className="allergy-dialog-panel sheet-in paper-elevation relative w-full max-w-[460px] border border-line-strong border-t-2 border-t-forest bg-paper px-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] pt-5 sm:px-8 sm:pb-8 sm:pt-7">
+          <section className={`allergy-dialog-panel sheet-in paper-elevation relative w-full border border-line-strong border-t-2 border-t-forest bg-paper px-5 pb-[calc(1.25rem+env(safe-area-inset-bottom))] pt-5 sm:px-8 sm:pb-8 sm:pt-7 ${
+            presentation === "cabinet"
+              ? "medicine-cabinet-dialogue-panel max-w-[720px] sm:px-10 sm:py-9"
+              : "max-w-[460px]"
+          }`}>
             <button
               type="button"
               aria-label={locale === "en" ? "Close allergy question" : "關閉過敏問題"}
@@ -221,7 +284,12 @@ export function SearchInput({
               </svg>
             </button>
 
-            <p className="shop-kicker m-0 pr-12">{locale === "en" ? "Before product results" : "顯示藥品前"}</p>
+            {presentation === "cabinet" && (
+              <p className="medicine-cabinet-dialogue-query m-0 pr-12 text-[13px] font-semibold text-muted">
+                {locale === "en" ? "You asked" : "你剛剛問"}：{pendingQuery}
+              </p>
+            )}
+            <p className={`shop-kicker m-0 pr-12 ${presentation === "cabinet" ? "mt-4" : ""}`}>{locale === "en" ? "Before product results" : "顯示藥品前"}</p>
             <h2 id="search-allergy-title" className="editorial-display mb-0 mt-2.5 pr-9 text-[27px] leading-[1.25] sm:text-[31px]">
               {locale === "en" ? "First, check known allergies" : "先確認已知過敏原"}
             </h2>
@@ -304,6 +372,25 @@ export function SearchInput({
             </button>
           </section>
         </div>
+      )}
+
+      {openingTarget && createPortal(
+        <div className="medicine-cabinet-opening-layer" role="status" aria-live="polite">
+          <span className="sr-only">
+            {locale === "en" ? "Opening the medicine cabinet" : "正在打開藥櫃"}
+          </span>
+          <div className="medicine-cabinet-opening-scene" aria-hidden="true">
+            <div className="medicine-cabinet-opening-interior" />
+            <div className="medicine-cabinet-opening-door medicine-cabinet-opening-door-left">
+              <div className="medicine-cabinet-opening-glass" />
+            </div>
+            <div className="medicine-cabinet-opening-door medicine-cabinet-opening-door-right">
+              <div className="medicine-cabinet-opening-glass" />
+            </div>
+            <div className="medicine-cabinet-opening-light" />
+          </div>
+        </div>,
+        document.body,
       )}
     </>
   );
