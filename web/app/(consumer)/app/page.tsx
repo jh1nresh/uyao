@@ -8,6 +8,7 @@ import { SearchInput } from "@/components/SearchInput";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { PartnerMarquee } from "@/components/landing/PartnerMarquee";
+import { CATALOG_GROUPS } from "@/lib/catalog-groups";
 import { allDrugs, toAreaSlug } from "@/lib/data";
 import { drugCopy, localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
@@ -185,7 +186,7 @@ export default async function HomePage({
         evidenceHref={`${SITE_URL}${locale === "en" ? "/en" : "/zh-tw"}/evidence#partners`}
       />
 
-      {/* 首頁用精選品項展示互動；完整目錄保留單一明確出口。 */}
+      {/* 首頁用精選品項展示互動；完整目錄與分類保留明確出口。 */}
       <section id="catalog" className="medicine-cabinet-showcase-section scroll-mt-20 overflow-hidden">
         <div className="shop-shell py-12 sm:py-16">
           <ProductSwipeShowcase
@@ -195,13 +196,31 @@ export default async function HomePage({
             hrefPrefix={localizedPath("/drug", locale)}
             hrefQuery={`?area=${area}`}
           />
-          <div className="mt-6 flex justify-end">
-            <Link
-              href={`${localizedPath("/category/partner-item", locale)}?area=${area}`}
-              className="inline-flex min-h-11 items-center border-b border-forest text-[14px] font-bold text-forest no-underline hover:border-green hover:text-green"
-            >
-              {locale === "en" ? `View all ${drugs.length} items →` : `查看全部 ${drugs.length} 項 →`}
-            </Link>
+          <div className="relative left-1/2 w-[calc(100vw-clamp(32px,6vw,92px))] -translate-x-1/2">
+            <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
+              <p className="m-0 max-w-[720px] border-l border-oxblood pl-4 text-pretty text-[13.5px] leading-[1.7] text-muted sm:text-[14px]">
+                {locale === "en"
+                  ? "Featured items are browsable catalog records, not live inventory or recommendations. A pharmacy still confirms supply and pickup."
+                  : "精選品項是可瀏覽的目錄資料，不代表即時庫存或推薦。是否供應與到店安排，仍由藥局確認。"}
+              </p>
+              <Link
+                href={`${localizedPath("/category/partner-item", locale)}?area=${area}`}
+                className="inline-flex min-h-11 shrink-0 items-center self-end border-b border-forest text-[14px] font-bold text-forest no-underline hover:border-green hover:text-green sm:self-auto"
+              >
+                {locale === "en" ? `View all ${drugs.length} items →` : `查看全部 ${drugs.length} 項 →`}
+              </Link>
+            </div>
+            <nav aria-label={locale === "en" ? "Catalog categories" : "品項分類"} className="mt-5 flex overflow-x-auto border-y border-line sm:mt-2.5">
+              {CATALOG_GROUPS.map((group) => (
+                <Link
+                  key={group.slug}
+                  href={`${localizedPath("/category/partner-item", locale)}?area=${area}&group=${group.slug}`}
+                  className="inline-flex min-h-12 shrink-0 items-center border-r border-line px-4 text-[13px] font-semibold text-forest no-underline transition-colors hover:bg-surface sm:px-5 sm:text-[14px]"
+                >
+                  {locale === "en" ? group.nameEn : group.name}
+                </Link>
+              ))}
+            </nav>
           </div>
         </div>
       </section>

@@ -796,7 +796,7 @@ html[data-theme="dark"] .theme-logo-dark {
   z-index: 0;
   pointer-events: none;
   border-inline: 1px solid rgb(49 65 51 / 0.22);
-  background-image: url("/brand/uyao-product-cabinet-reference-v3.webp");
+  background-image: url("/brand/uyao-product-cabinet-composite-v1.webp");
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
@@ -825,37 +825,6 @@ html[data-theme="dark"] .theme-logo-dark {
     inset 0 -1px rgb(94 61 30 / 0.2),
     0 5px 9px rgb(76 50 25 / 0.14);
   content: "";
-}
-
-.product-showcase-product::after {
-  position: absolute;
-  right: 20%;
-  bottom: 11px;
-  left: 20%;
-  z-index: -1;
-  height: 11px;
-  border-radius: 50%;
-  background: rgb(54 35 21 / 0.34);
-  filter: blur(5px);
-  transform: translateY(2px) skewX(-8deg);
-  content: "";
-}
-
-.product-showcase-packshot {
-  filter:
-    drop-shadow(0 3px 2px rgb(65 43 25 / 0.2))
-    drop-shadow(5px 7px 6px rgb(65 43 25 / 0.18));
-}
-
-.product-showcase-scene-light {
-  position: absolute;
-  inset: 0;
-  z-index: 15;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse 24% 80% at 52% 18%, rgb(255 247 225 / 0.24), transparent 72%),
-    linear-gradient(100deg, rgb(80 49 25 / 0.1), transparent 17%, transparent 78%, rgb(73 46 25 / 0.08));
-  mix-blend-mode: soft-light;
 }
 
 @media (max-width: 767px) {

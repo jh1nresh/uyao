@@ -84,7 +84,7 @@ export function PartnerMarquee({
       data-paused={!visible}
       aria-labelledby={`partner-marquee-heading-${locale}`}
     >
-      <div className="mx-auto max-w-[1320px] px-5 pb-3 pt-5 sm:px-8 sm:pb-4 sm:pt-6">
+      <div className="mx-auto max-w-[1320px] px-5 pb-3 pt-5 sm:px-8 sm:pb-2.5 sm:pt-5">
         <div className="grid grid-cols-[1fr_auto] items-center gap-x-5 lg:grid-cols-[auto_minmax(0,1fr)_auto]">
           <h2
             id={`partner-marquee-heading-${locale}`}
