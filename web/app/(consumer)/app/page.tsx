@@ -137,7 +137,14 @@ export default async function HomePage({
       ]} />
       <div className="medicine-cabinet-home">
         <div className="medicine-cabinet-stage relative">
-          <SiteHeader showSearch={false} area={area} preserveAreaPath locatable tone="cabinet" />
+          <SiteHeader
+            showSearch={false}
+            area={area}
+            preserveAreaPath
+            locatable
+            tone="cabinet"
+            activeWorkspace="shop"
+          />
 
         {/* 商品與櫃體共用同一張陳列影像；透明熱區提供品項連結，問藥文案與入口落在下層留白櫃格內。 */}
         <section className="medicine-cabinet-hero overflow-hidden border-b border-line">
