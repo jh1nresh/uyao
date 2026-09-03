@@ -784,18 +784,46 @@ html[data-theme="dark"] .theme-logo-dark {
   isolation: isolate;
 }
 
+.product-showcase-stage {
+  width: 100vw;
+  margin-inline: calc(50% - 50vw);
+  isolation: isolate;
+}
+
+.product-showcase-stage::before {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  border-inline: 1px solid rgb(49 65 51 / 0.22);
+  background-image: url("/brand/uyao-product-cabinet-composite-v1.webp");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  box-shadow:
+    inset 0 12px 22px rgb(72 48 25 / 0.12),
+    0 7px 16px rgb(76 50 25 / 0.1);
+  content: "";
+}
+
 .product-showcase-stage::after {
   position: absolute;
-  right: 1.5%;
-  bottom: -12px;
-  left: 1.5%;
-  z-index: 1;
-  height: 19px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 20;
+  pointer-events: none;
+  height: 16px;
   border-top: 1px solid rgb(255 246 224 / 0.8);
-  background: linear-gradient(180deg, #dec49c 0, #cba97a 58%, #b98e5e 100%);
+  background: linear-gradient(
+    180deg,
+    rgb(224 201 163 / 0.92) 0,
+    rgb(197 158 112 / 0.96) 100%
+  );
   box-shadow:
+    0 -4px 8px rgb(76 50 25 / 0.08),
     inset 0 -1px rgb(94 61 30 / 0.2),
-    0 9px 13px rgb(76 50 25 / 0.18);
+    0 5px 9px rgb(76 50 25 / 0.14);
   content: "";
 }
 
@@ -846,6 +874,10 @@ html[data-theme="dark"] .theme-logo-dark {
       radial-gradient(ellipse 72% 18% at 22% 5%, rgb(255 246 224 / 0.52), transparent 74%),
       linear-gradient(90deg, rgb(84 57 30 / 0.05), transparent 18%, transparent 82%, rgb(84 57 30 / 0.04)),
       linear-gradient(180deg, #dcc198 0, #ead8b8 13rem, #f8f4e9 39rem);
+  }
+
+  .product-showcase-stage::before {
+    background-size: auto 100%;
   }
 
   .medicine-cabinet-conversation-stage::before {
