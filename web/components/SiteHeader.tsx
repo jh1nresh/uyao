@@ -35,6 +35,12 @@ export async function SiteHeader({
   const locale = await getRequestLocale();
   const cabinetTone = tone === "cabinet";
   const showWorkspaceNavigation = Boolean(activeWorkspace) && !showSearch;
+  const workspaceActiveClass = cabinetTone
+    ? "border-paper font-bold text-paper"
+    : "border-forest font-bold text-forest";
+  const workspaceInactiveClass = cabinetTone
+    ? "border-transparent font-semibold text-paper/80 hover:border-paper/60 hover:text-paper"
+    : "border-transparent font-semibold text-muted hover:border-line-strong hover:text-ink";
   return (
     <header className={cabinetTone
       ? "cabinet-overlay-header absolute inset-x-0 top-0 z-40 bg-transparent"
@@ -92,9 +98,7 @@ export async function SiteHeader({
               href={localizedPath("/", locale)}
               aria-current={activeWorkspace === "shop" ? "page" : undefined}
               className={`inline-flex min-h-11 items-center border-b-2 px-3 text-[13px] no-underline transition-colors sm:px-4 ${
-                activeWorkspace === "shop"
-                  ? "border-forest font-bold text-forest"
-                  : "border-transparent font-semibold text-muted hover:border-line-strong hover:text-ink"
+                activeWorkspace === "shop" ? workspaceActiveClass : workspaceInactiveClass
               }`}
             >
               Shop
@@ -103,9 +107,7 @@ export async function SiteHeader({
               href={localizedPath("/agent", locale)}
               aria-current={activeWorkspace === "agent" ? "page" : undefined}
               className={`inline-flex min-h-11 items-center border-b-2 px-3 text-[13px] no-underline transition-colors sm:px-4 ${
-                activeWorkspace === "agent"
-                  ? "border-forest font-bold text-forest"
-                  : "border-transparent font-semibold text-muted hover:border-line-strong hover:text-ink"
+                activeWorkspace === "agent" ? workspaceActiveClass : workspaceInactiveClass
               }`}
             >
               Agent
