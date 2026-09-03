@@ -127,14 +127,16 @@ describe("household medicine storefront homepage", () => {
     expect(searchPage).toContain("key={q}");
   });
 
-  it("opens the cabinet before continuing into search results", () => {
-    expect(searchInput).toContain("CABINET_OPEN_DURATION_MS");
-    expect(searchInput).toContain("router.prefetch(openingTarget)");
-    expect(searchInput).toContain("medicine-cabinet-opening-layer");
+  it("uses a restrained entry transition before continuing into search results", () => {
+    expect(searchInput).toContain("CONVERSATION_ENTRY_DURATION_MS");
+    expect(searchInput).toContain("router.prefetch(entryTarget)");
+    expect(searchInput).toContain("search-conversation-entry-layer");
+    expect(searchInput).not.toContain("medicine-cabinet-opening-door");
+    expect(searchInput).not.toContain("正在打開藥櫃");
     expect(searchInput).toContain('window.matchMedia("(prefers-reduced-motion: reduce)").matches');
-    expect(globalCss).toContain("@keyframes medicine-cabinet-door-left-open");
-    expect(globalCss).toContain("@keyframes medicine-cabinet-door-right-open");
-    expect(globalCss).toContain(".medicine-cabinet-opening-layer");
+    expect(globalCss).toContain("@keyframes search-conversation-entry-focus");
+    expect(globalCss).toContain(".search-conversation-entry-layer");
+    expect(globalCss).not.toContain("medicine-cabinet-door-left-open");
   });
 
   it("builds the selected wall direction from one stocked cabinet image and transparent product links", () => {

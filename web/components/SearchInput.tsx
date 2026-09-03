@@ -28,7 +28,7 @@ const SEARCH_EXAMPLES_EN = [
   "Search a need, e.g. respiratory wellness or calcium",
 ] as const;
 
-const CABINET_OPEN_DURATION_MS = 900;
+const CONVERSATION_ENTRY_DURATION_MS = 720;
 
 /**
  * 搜尋框。用原生 GET form — 沒有 JS 也能搜，SEO 入口頁不依賴 client bundle。
@@ -64,7 +64,7 @@ export function SearchInput({
   const [reduceMotion, setReduceMotion] = useState(false);
   const [pendingQuery, setPendingQuery] = useState("");
   const [showAllergyPrompt, setShowAllergyPrompt] = useState(false);
-  const [openingTarget, setOpeningTarget] = useState("");
+  const [entryTarget, setEntryTarget] = useState("");
   const [allergyStatus, setAllergyStatus] = useState<"" | AllergyStatus>("");
   const [allergens, setAllergens] = useState("");
   const firstAllergyRef = useRef<HTMLInputElement>(null);
@@ -116,17 +116,17 @@ export function SearchInput({
   }, [showAllergyPrompt]);
 
   useEffect(() => {
-    if (!openingTarget) return;
-    router.prefetch(openingTarget);
+    if (!entryTarget) return;
+    router.prefetch(entryTarget);
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
-    const timeout = window.setTimeout(() => router.push(openingTarget), CABINET_OPEN_DURATION_MS);
+    const timeout = window.setTimeout(() => router.push(entryTarget), CONVERSATION_ENTRY_DURATION_MS);
 
     return () => {
       window.clearTimeout(timeout);
       document.body.style.overflow = previousOverflow;
     };
-  }, [openingTarget, router]);
+  }, [entryTarget, router]);
 
   function askAllergies(event: FormEvent<HTMLFormElement>) {
     const query = String(new FormData(event.currentTarget).get("q") ?? "").trim();
@@ -174,7 +174,7 @@ export function SearchInput({
       router.push(target);
       return;
     }
-    setOpeningTarget(target);
+    setEntryTarget(target);
   }
 
   function continueToResults() {
@@ -374,20 +374,14 @@ export function SearchInput({
         </div>
       )}
 
-      {openingTarget && createPortal(
-        <div className="medicine-cabinet-opening-layer" role="status" aria-live="polite">
+      {entryTarget && createPortal(
+        <div className="search-conversation-entry-layer" role="status" aria-live="polite">
           <span className="sr-only">
-            {locale === "en" ? "Opening the medicine cabinet" : "正在打開藥櫃"}
+            {locale === "en" ? "Entering the conversation" : "正在進入對話"}
           </span>
-          <div className="medicine-cabinet-opening-scene" aria-hidden="true">
-            <div className="medicine-cabinet-opening-interior" />
-            <div className="medicine-cabinet-opening-door medicine-cabinet-opening-door-left">
-              <div className="medicine-cabinet-opening-glass" />
-            </div>
-            <div className="medicine-cabinet-opening-door medicine-cabinet-opening-door-right">
-              <div className="medicine-cabinet-opening-glass" />
-            </div>
-            <div className="medicine-cabinet-opening-light" />
+          <div className="search-conversation-entry-scene" aria-hidden="true">
+            <div className="search-conversation-entry-image" />
+            <div className="search-conversation-entry-wash" />
           </div>
         </div>,
         document.body,
