@@ -87,9 +87,15 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).toContain("motion-reduce:transition-none");
     expect(appPage).toContain("medicine-cabinet-showcase-section");
     expect(productSwipeShowcase).toContain("product-showcase-stage");
+    expect(productSwipeShowcase).toContain("product-showcase-rail");
+    expect(productSwipeShowcase).toContain("overflow-x-auto");
+    expect(productSwipeShowcase).toContain("snap-mandatory");
+    expect(productSwipeShowcase).toContain("scrollLeft = drag.startScrollLeft - deltaX");
     expect(productSwipeShowcase).toContain('from "next/image"');
     expect(productSwipeShowcase).toContain("item.sceneSrc");
     expect(productSwipeShowcase).toContain("product-showcase-scene");
+    expect(productSwipeShowcase).not.toContain("transition-opacity");
+    expect(productSwipeShowcase).not.toContain("opacity-0");
     expect(productSwipeShowcase).not.toContain("product-shelf-unit");
     expect(productSwipeShowcase).not.toContain("product-shelf-bay");
     expect(productSwipeShowcase).toContain("useState(0)");
