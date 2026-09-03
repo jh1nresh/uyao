@@ -80,6 +80,7 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).not.toContain("--showcase-accent");
     expect(globalCss).toContain(".product-showcase-stage::after");
     expect(globalCss).toContain(".product-showcase-stage::before");
+    expect(globalCss).toContain("margin-inline: calc(50% - 50vw)");
     expect(globalCss).toContain("/brand/uyao-product-cabinet-bays-v1.webp");
     expect(partnerMarquee).toContain("cabinet-partner-marquee");
     expect(partnerMarquee).toContain("cabinet-marquee-edge-left");

@@ -25,6 +25,14 @@ export type { ShowcaseItem } from "@/lib/product-showcase";
 /** 可視範圍內主角左右各放幾支。手機縮成 1，桌機 2。 */
 const SIDE_DESKTOP = 2;
 
+/**
+ * 個別包裝照的留白與實物體積不同；配角若一律套同倍率，AOB 會比參考場景
+ * 大上一倍。主角仍永遠是 1，這裡只校準它退到側邊時的實物比例。
+ */
+const SIDE_SCENE_SCALE: Readonly<Record<string, number>> = {
+  "aob-vitality-beauty-45": 0.72,
+};
+
 export function ProductSwipeShowcase({
   items,
   eyebrow,
@@ -203,11 +211,20 @@ export function ProductSwipeShowcase({
             // 位移用「舞台寬度的百分比」而不是商品自身的百分比 —— 用後者
             // 時側邊那幾支會疊在主角後面看不見，貨架就只剩一支商品。
             // 手機一側只放一支，間距要拉開，否則側邊品項會壓到主角包裝上。
-            // 商品中心對齊背景藥櫃的格位：桌機五格、手機裁成中央三格。
-            // 主角仍可略微跨出格框，保留輪播的視覺層級。
+            // 桌機不是五個等權卡位：主角佔滿中央格，左右配角向外拉開，
+            // 最外側則由 viewport 裁切，讓藥櫃讀成一個延伸出畫面的場景。
             const position = side === 1
               ? offset * 36
-              : offset * (Math.abs(offset) === 2 ? 24 : 20);
+              : offset * (Math.abs(offset) === 2 ? 25 : 28);
+            const adjacentScale = side === 1 ? 0.58 : 0.66;
+            const roleScale = isActive
+              ? 1
+              : Math.abs(offset) === 1
+                ? adjacentScale
+                : 0.48;
+            const scale = isActive
+              ? roleScale
+              : roleScale * (SIDE_SCENE_SCALE[item.drug.slug] ?? 1);
             return (
               <button
                 key={item.drug.slug}
@@ -222,19 +239,17 @@ export function ProductSwipeShowcase({
                 }`}
                 style={{
                   transformOrigin: "bottom center",
-                  transform: `translate3d(calc(-50% + ${position}cqw + var(--showcase-drag-x)), 0, 0) scale(${
-                    isActive ? 1 : Math.abs(offset) === 1 ? (side === 1 ? 0.58 : 0.66) : 0.48
-                  })`,
+                  transform: `translate3d(calc(-50% + ${position}cqw + var(--showcase-drag-x)), 0, 0) scale(${scale})`,
                   opacity: isActive ? 1 : Math.abs(offset) === 1 ? 1 : 0.88,
                   zIndex: 10 - Math.abs(offset),
                 }}
               >
-                <span className="relative block h-[230px] w-[180px] sm:h-[290px] sm:w-[230px]">
+                <span className="relative block h-[230px] w-[180px] sm:h-[300px] sm:w-[300px]">
                   <Image
                     src={image.src}
                     alt={locale === "en" ? image.altEn : image.alt}
                     fill
-                    sizes="(min-width: 768px) 230px, 180px"
+                    sizes="(min-width: 768px) 300px, 180px"
                     className="product-showcase-packshot object-contain object-bottom"
                     priority={Math.abs(offset) <= 1}
                     draggable={false}
