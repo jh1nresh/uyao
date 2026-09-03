@@ -123,6 +123,7 @@ describe("household medicine storefront homepage", () => {
 
   it("uses the cabinet-toned compact header only on the storefront homepage", () => {
     expect(appPage).toContain('tone="cabinet"');
+    expect(appPage).toContain('activeWorkspace="shop"');
     expect(appPage).toContain('className="medicine-cabinet-stage relative"');
     expect(siteHeader).toContain('tone?: "default" | "cabinet";');
     expect(siteHeader).toContain('"cabinet-overlay-header absolute inset-x-0 top-0 z-40 bg-transparent"');
