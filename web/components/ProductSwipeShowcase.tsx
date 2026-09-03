@@ -19,6 +19,15 @@ import type { ShowcaseItem } from "@/lib/product-showcase";
 
 export type { ShowcaseItem } from "@/lib/product-showcase";
 
+const DRAG_THRESHOLD = 6;
+
+type DragState = {
+  pointerId: number;
+  startX: number;
+  startY: number;
+  startScrollLeft: number;
+};
+
 export function ProductSwipeShowcase({
   items,
   eyebrow,
@@ -39,19 +48,36 @@ export function ProductSwipeShowcase({
 }) {
   const locale = useLocale();
   const [active, setActive] = useState(0);
-  const dragStart = useRef<number | null>(null);
-  // 判斷要不要換品項時讀 ref 而不是 state：pointermove 與 pointerup 落在
-  // 同一個批次時，pointerup 的 closure 還看得到舊的 drag，滑動就會失效。
-  const dragDelta = useRef(0);
-  const frameRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const activeRef = useRef(0);
+  const dragRef = useRef<DragState | null>(null);
+  const didDragRef = useRef(false);
+  const scrollFrameRef = useRef<number | null>(null);
+  const sceneRailRef = useRef<HTMLDivElement>(null);
   const pillRailRef = useRef<HTMLDivElement>(null);
   const pillRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   const count = items.length;
-  const go = useCallback(
-    (next: number) => setActive(((next % count) + count) % count),
-    [count],
-  );
+  const syncActive = useCallback(() => {
+    const rail = sceneRailRef.current;
+    if (!rail || rail.clientWidth === 0) return;
+    const next = Math.min(count - 1, Math.max(0, Math.round(rail.scrollLeft / rail.clientWidth)));
+    if (next === activeRef.current) return;
+    activeRef.current = next;
+    setActive(next);
+  }, [count]);
+
+  const go = useCallback((next: number) => {
+    const rail = sceneRailRef.current;
+    if (!rail || count === 0) return;
+    const resolved = ((next % count) + count) % count;
+    rail.scrollTo({
+      left: resolved * rail.clientWidth,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "auto"
+        : "smooth",
+    });
+  }, [count]);
 
   useEffect(() => {
     const rail = pillRailRef.current;
@@ -65,32 +91,83 @@ export function ProductSwipeShowcase({
     });
   }, [active]);
 
-  // 指標拖曳：桌機滑鼠、手機手指同一條路。超過 60px 才換，避免點擊被誤判成滑動。
+  useEffect(() => {
+    const rail = sceneRailRef.current;
+    if (!rail) return;
+    const observer = new ResizeObserver(() => {
+      rail.scrollLeft = activeRef.current * rail.clientWidth;
+    });
+    observer.observe(rail);
+    return () => {
+      observer.disconnect();
+      if (scrollFrameRef.current !== null) cancelAnimationFrame(scrollFrameRef.current);
+    };
+  }, []);
+
+  function onScroll() {
+    if (scrollFrameRef.current !== null) return;
+    scrollFrameRef.current = requestAnimationFrame(() => {
+      scrollFrameRef.current = null;
+      syncActive();
+    });
+  }
+
+  // Touch uses the browser's native scrolling and momentum. Mouse dragging mirrors
+  // that rail instead of waiting until pointer-up and swapping an invisible image.
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
-    if (!event.isPrimary || event.button !== 0) return;
-    dragStart.current = event.clientX;
-    dragDelta.current = 0;
-    (event.currentTarget as HTMLElement).setPointerCapture(event.pointerId);
+    if (event.pointerType === "touch" || !event.isPrimary || event.button !== 0) return;
+    dragRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      startScrollLeft: event.currentTarget.scrollLeft,
+    };
+    didDragRef.current = false;
   }
+
   function onPointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    if (dragStart.current === null) return;
-    dragDelta.current = event.clientX - dragStart.current;
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const deltaX = event.clientX - drag.startX;
+    const deltaY = event.clientY - drag.startY;
+
+    if (!didDragRef.current) {
+      if (Math.abs(deltaX) < DRAG_THRESHOLD) return;
+      if (Math.abs(deltaX) <= Math.abs(deltaY)) {
+        dragRef.current = null;
+        return;
+      }
+      didDragRef.current = true;
+      setIsDragging(true);
+      event.currentTarget.setPointerCapture(event.pointerId);
+      event.currentTarget.style.scrollSnapType = "none";
+    }
+
+    event.preventDefault();
+    event.currentTarget.scrollLeft = drag.startScrollLeft - deltaX;
   }
+
   function resetPointer(event: React.PointerEvent<HTMLDivElement>) {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const rail = event.currentTarget;
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
-    dragStart.current = null;
-    dragDelta.current = 0;
+    dragRef.current = null;
+    didDragRef.current = false;
+    setIsDragging(false);
+    rail.style.scrollSnapType = "";
+
+    const next = Math.min(count - 1, Math.max(0, Math.round(rail.scrollLeft / rail.clientWidth)));
+    go(next);
   }
+
   function onPointerUp(event: React.PointerEvent<HTMLDivElement>) {
-    if (dragStart.current === null) return;
-    if (dragDelta.current <= -60) go(active + 1);
-    else if (dragDelta.current >= 60) go(active - 1);
     resetPointer(event);
   }
+
   function onPointerCancel(event: React.PointerEvent<HTMLDivElement>) {
-    if (dragStart.current === null) return;
     resetPointer(event);
   }
 
@@ -146,37 +223,45 @@ export function ProductSwipeShowcase({
         </div>
 
         <div
-          ref={frameRef}
-          role="group"
-          aria-roledescription={locale === "en" ? "carousel" : "輪播"}
-          aria-label={locale === "en" ? "Featured product cabinet" : "精選品項藥櫃場景"}
-          tabIndex={0}
-          onKeyDown={onKeyDown}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerCancel={onPointerCancel}
-          className="product-showcase-stage relative mt-5 overflow-hidden cursor-grab touch-pan-y select-none outline-offset-4 active:cursor-grabbing"
+          className="product-showcase-stage relative mt-5 overflow-hidden"
         >
-          {items.map((item, i) => (
-            <Image
-              key={item.drug.slug}
-              src={item.sceneSrc}
-              alt={i === active
-                ? locale === "en"
-                  ? `Wide uYao medicine cabinet with ${drugCopy(item.drug, locale).name} featured in the center`
-                  : `以${drugCopy(item.drug, locale).name}為中央主角的 uYao 橫幅商品藥櫃`
-                : ""}
-              aria-hidden={i !== active}
-              fill
-              sizes="100vw"
-              priority={i === 0}
-              draggable={false}
-              className={`product-showcase-scene transition-opacity duration-300 motion-reduce:transition-none ${
-                i === active ? "opacity-100" : "pointer-events-none opacity-0"
-              }`}
-            />
-          ))}
+          <div
+            ref={sceneRailRef}
+            role="group"
+            aria-roledescription={locale === "en" ? "carousel" : "輪播"}
+            aria-label={locale === "en" ? "Featured product cabinet" : "精選品項藥櫃場景"}
+            tabIndex={0}
+            onKeyDown={onKeyDown}
+            onScroll={onScroll}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={onPointerUp}
+            onPointerCancel={onPointerCancel}
+            data-dragging={isDragging}
+            className="product-showcase-rail flex h-full snap-x snap-mandatory overflow-x-auto touch-pan-x touch-pan-y select-none outline-offset-4"
+          >
+            {items.map((item, i) => (
+              <div
+                key={item.drug.slug}
+                role="group"
+                aria-roledescription={locale === "en" ? "slide" : "投影片"}
+                aria-label={`${i + 1} / ${count}: ${drugCopy(item.drug, locale).name}`}
+                className="relative h-full w-full shrink-0 snap-center"
+              >
+                <Image
+                  src={item.sceneSrc}
+                  alt={locale === "en"
+                    ? `Wide uYao medicine cabinet with ${drugCopy(item.drug, locale).name} featured in the center`
+                    : `以${drugCopy(item.drug, locale).name}為中央主角的 uYao 橫幅商品藥櫃`}
+                  fill
+                  sizes="100vw"
+                  priority={i === 0}
+                  draggable={false}
+                  className="product-showcase-scene"
+                />
+              </div>
+            ))}
+          </div>
         </div>
 
         <div className="mt-5 sm:mt-1" aria-live="polite">
