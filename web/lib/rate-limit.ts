@@ -96,6 +96,20 @@ export async function checkForm(request: Request, scope: string): Promise<RateLi
 }
 
 /**
+ * Model-backed consumer Agent quota. Unlike ordinary forms, a missing limiter must
+ * fail closed: otherwise a broken KV setting turns a public endpoint into unbounded
+ * paid model traffic. Local development and tests use the existing file/memory driver.
+ */
+export async function checkCommerceAgent(request: Request): Promise<SupportRateLimit> {
+  try {
+    const used = await kv.incr(`rl:commerce-agent:i:${clientIp(request)}`, 3600);
+    return used > 20 ? { ok: false, retryAfterSec: 3600 } : OK;
+  } catch {
+    return { ok: false, retryAfterSec: 60, unavailable: true };
+  }
+}
+
+/**
  * Read-only public GETs. Fail open when KV is missing so a catalog fetch
  * still works on a laptop; the headers still advertise the policy.
  */

@@ -42,22 +42,26 @@ export function SearchInput({
   area,
   submitLabel,
   continueConversation = false,
+  resultsPath = "/search",
 }: {
   defaultValue?: string;
   size?: "sm" | "lg" | "xl";
-  presentation?: "default" | "cabinet";
+  presentation?: "default" | "cabinet" | "agent";
   className?: string;
   autoFocus?: boolean;
   area?: AreaSlug;
   submitLabel?: string;
   /** Reuse this tab's fresh safety answer and preserve its private search thread. */
   continueConversation?: boolean;
+  /** Consumer result surface; the homepage can enter uYao Agent. */
+  resultsPath?: "/search" | "/agent";
 }) {
   const locale = useLocale();
   const router = useRouter();
   const examples = locale === "en" ? SEARCH_EXAMPLES_EN : SEARCH_EXAMPLES_ZH;
   const large = size !== "sm";
   const xl = size === "xl";
+  const agentPresentation = presentation === "agent";
   const [exampleIndex, setExampleIndex] = useState(0);
   const [isPlaceholderExiting, setIsPlaceholderExiting] = useState(false);
   const [hasValue, setHasValue] = useState(defaultValue.length > 0);
@@ -79,14 +83,14 @@ export function SearchInput({
   }, []);
 
   useEffect(() => {
-    if (!large || reduceMotion) return;
+    if (!large || agentPresentation || reduceMotion) return;
 
     const interval = window.setInterval(() => {
       setIsPlaceholderExiting(true);
     }, 3000);
 
     return () => window.clearInterval(interval);
-  }, [large, reduceMotion]);
+  }, [agentPresentation, large, reduceMotion]);
 
   useEffect(() => {
     if (!large || !isPlaceholderExiting || reduceMotion) return;
@@ -167,7 +171,7 @@ export function SearchInput({
     }
     const params = new URLSearchParams({ q: draft.searchQuery });
     if (area) params.set("area", area);
-    const target = `${localizedPath("/search", locale)}?${params.toString()}`;
+    const target = `${localizedPath(resultsPath, locale)}?${params.toString()}`;
     setShowAllergyPrompt(false);
     const shouldReduceMotion = reduceMotion || window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (presentation !== "cabinet" || shouldReduceMotion) {
@@ -189,11 +193,13 @@ export function SearchInput({
   return (
     <>
       <form
-        action={localizedPath("/search", locale)}
+        action={localizedPath(resultsPath, locale)}
         role="search"
         onSubmit={askAllergies}
         className={`flex items-center bg-paper transition-[border-color,box-shadow,transform] duration-200 ${
-          xl
+          agentPresentation
+            ? "h-16 gap-3 rounded-[18px] border border-line-strong bg-paper/90 px-2 shadow-sm sm:px-3"
+            : xl
             ? "h-16 gap-3 border border-line-strong px-2 sm:h-20 sm:px-3"
             : large
               ? "paper-elevation h-[60px] gap-2 border border-line px-5"
@@ -201,11 +207,15 @@ export function SearchInput({
         } ${className}`}
       >
         {area && <input type="hidden" name="area" value={area} />}
-        <span aria-hidden className={large ? "text-[18px] text-ink" : "text-sm text-muted-2"}>
-          ⌕
-        </span>
+        {!agentPresentation && (
+          <span aria-hidden className={large ? "text-[18px] text-ink" : "text-sm text-muted-2"}>
+            ⌕
+          </span>
+        )}
         <label className="sr-only" htmlFor={`q-${size}`}>
-          {locale === "en" ? "Search products or describe symptoms" : "搜尋品項或描述症狀"}
+          {agentPresentation
+            ? locale === "en" ? "Ask uYao Agent" : "詢問 uYao Agent"
+            : locale === "en" ? "Search products or describe symptoms" : "搜尋品項或描述症狀"}
         </label>
         <div className="group relative h-full w-0 min-w-0 flex-1">
           <input
@@ -214,14 +224,16 @@ export function SearchInput({
             type="search"
             autoFocus={autoFocus}
             defaultValue={defaultValue}
-            placeholder={large ? "" : locale === "en" ? "Search products or symptoms" : "搜尋品項或症狀"}
+            placeholder={agentPresentation
+              ? locale === "en" ? "Ask about a product, ingredient, or wellness need" : "輸入品名、成分或日常保養需求"
+              : large ? "" : locale === "en" ? "Search products or symptoms" : "搜尋品項或症狀"}
             onChange={(event) => setHasValue(event.currentTarget.value.length > 0)}
             // h-full：讓整個框都是點擊區，不是只有文字那 20px
             className={`h-full w-full min-w-0 bg-transparent text-ink outline-none placeholder:text-muted-2 focus:outline-none focus-visible:outline-none ${
               xl ? "text-[16px] sm:text-[18px]" : large ? "text-[16px]" : "text-[15px]"
             }`}
           />
-          {large && !hasValue && (
+          {large && !agentPresentation && !hasValue && (
             <div
               aria-hidden
               className={`pointer-events-none absolute inset-0 flex items-center overflow-hidden text-ellipsis whitespace-nowrap text-muted-2 transition-opacity duration-150 group-focus-within:opacity-0 ${
@@ -244,7 +256,11 @@ export function SearchInput({
         {large && (
           <button
             type="submit"
-            className={`action-primary flex-none ${xl ? "h-14 px-5 text-[16px] sm:px-9" : "h-12 px-6 text-[15px]"}`}
+            className={`action-primary flex-none ${
+              agentPresentation
+                ? "h-12 rounded-[12px] px-5 text-[14px]"
+                : xl ? "h-14 px-5 text-[16px] sm:px-9" : "h-12 px-6 text-[15px]"
+            }`}
           >
             {submitLabel ?? (locale === "en" ? "Search" : "搜尋")}
           </button>

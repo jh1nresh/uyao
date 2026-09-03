@@ -1,0 +1,251 @@
+"use client";
+
+import Link from "next/link";
+import { useEffect, useRef, useState, type FormEvent } from "react";
+
+import { BrandMark } from "@/components/BrandMark";
+import { SearchResultLink } from "@/components/SearchResultLink";
+import type {
+  CommerceAgentMessage,
+  CommerceAgentReply,
+} from "@/lib/commerce-agent";
+import { localizedPath, type Locale } from "@/lib/i18n";
+import {
+  SHOP_SEARCH_INTAKE_STORAGE_KEY,
+  createShopSearchIntakeDraft,
+  readLatestShopSearchIntakeDraft,
+  readShopSearchIntakeDraft,
+} from "@/lib/reservation-intake";
+import type { AreaSlug } from "@/lib/types";
+
+type VisibleTurn = {
+  query: string;
+  reply: CommerceAgentReply;
+};
+
+export function CommerceAgent({
+  initialQuery,
+  area,
+  locale,
+}: {
+  initialQuery: string;
+  area: AreaSlug;
+  locale: Locale;
+}) {
+  const [question, setQuestion] = useState("");
+  const [turns, setTurns] = useState<VisibleTurn[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const started = useRef(false);
+  const conversation = useRef<CommerceAgentMessage[]>([]);
+  const english = locale === "en";
+
+  function reuseSafetyAnswer(query: string): boolean {
+    try {
+      const raw = sessionStorage.getItem(SHOP_SEARCH_INTAKE_STORAGE_KEY);
+      const exact = readShopSearchIntakeDraft(raw, query);
+      if (exact) return true;
+      const previous = readLatestShopSearchIntakeDraft(raw);
+      if (!previous) return false;
+      const next = createShopSearchIntakeDraft(
+        query,
+        previous.allergyStatus,
+        previous.allergens,
+      );
+      if (!next) return false;
+      sessionStorage.setItem(SHOP_SEARCH_INTAKE_STORAGE_KEY, JSON.stringify(next));
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  async function ask(raw: string) {
+    const query = raw.trim();
+    if (!query || loading) return;
+    if (!reuseSafetyAnswer(query)) {
+      setError(english
+        ? "Answer the allergy check before using uYao Agent."
+        : "請先回答過敏確認，再使用 uYao Agent。");
+      return;
+    }
+
+    setLoading(true);
+    setError("");
+    const nextConversation = [
+      ...conversation.current,
+      { role: "user" as const, content: query },
+    ].slice(-8);
+    try {
+      const response = await fetch("/api/agent", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          messages: nextConversation,
+          area,
+          locale,
+          safetyContextConfirmed: true,
+        }),
+      });
+      const body = await response.json().catch(() => null) as (CommerceAgentReply & { error?: string }) | null;
+      if (!response.ok || !body?.kind) {
+        throw new Error(body?.error || (english ? "uYao Agent is unavailable." : "uYao Agent 目前無法回覆。"));
+      }
+      setTurns((current) => [...current, { query, reply: body }]);
+      conversation.current = [
+        ...nextConversation,
+        { role: "assistant" as const, content: body.message },
+      ].slice(-8);
+      setQuestion("");
+    } catch (reason) {
+      setError(reason instanceof Error
+        ? reason.message
+        : english ? "uYao Agent is unavailable." : "uYao Agent 目前無法回覆。");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    if (started.current || !initialQuery) return;
+    started.current = true;
+    void ask(initialQuery);
+    // The initial URL query is intentionally run once; later turns use the composer.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialQuery]);
+
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    void ask(question);
+  }
+
+  return (
+    <section className="flex min-h-[calc(100dvh-4rem)] flex-col" aria-live="polite">
+      <div className="flex-1 space-y-8 py-7 pb-36 sm:py-10 sm:pb-40">
+        {turns.map((turn, turnIndex) => (
+          <article key={`${turnIndex}-${turn.query}`} className="space-y-5">
+            <div className="ml-auto max-w-[78%] rounded-[16px] bg-brand-surface px-4 py-3 text-on-dark sm:max-w-[70%]">
+              <p className="m-0 text-pretty text-[15px] leading-[1.65]">{turn.query}</p>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <span className="mt-1 flex size-8 flex-none items-center justify-center rounded-[12px] border border-line bg-paper">
+                <BrandMark size={20} />
+              </span>
+              <div className="min-w-0 flex-1">
+                <p className="m-0 text-pretty text-[15px] leading-[1.75] text-ink-2">{turn.reply.message}</p>
+                {turn.reply.degraded && (
+                  <p className="mb-0 mt-2 text-pretty text-[12px] leading-[1.55] text-muted-2">
+                    {english
+                      ? "The model provider did not respond, so this answer used deterministic catalog matching."
+                      : "模型服務未回覆，這次改用固定目錄比對。"}
+                  </p>
+                )}
+
+                {turn.reply.products.length > 0 && (
+                  <div className="mt-4 grid max-w-[640px] gap-3">
+                    {turn.reply.products.map((product) => (
+                      <SearchResultLink
+                        key={product.slug}
+                        href={product.href}
+                        drugSlug={product.slug}
+                        query={turn.query}
+                        className="group block rounded-[16px] border border-line bg-paper/85 px-4 py-4 no-underline transition-colors hover:border-forest hover:bg-paper"
+                      >
+                        <span className="block text-pretty text-[16px] font-bold leading-[1.5] text-ink">
+                          {[product.name, product.spec].filter(Boolean).join(" ")}
+                        </span>
+                        <span className="mt-2 block text-pretty text-[13px] leading-[1.6] text-muted">{product.reason}</span>
+                        <span className="mt-3 block text-pretty text-[11px] leading-[1.55] text-muted-2">
+                          {product.source}
+                        </span>
+                        <span className="mt-3 inline-flex min-h-11 items-center text-[13px] font-bold text-forest">
+                          {english ? "View source and pharmacy options" : "查看來源與藥局選項"}
+                        </span>
+                      </SearchResultLink>
+                    ))}
+                  </div>
+                )}
+
+                {turn.reply.pharmacies.length > 0 && (
+                  <div className="mt-4 grid max-w-[640px] gap-3">
+                    {turn.reply.pharmacies.map((pharmacy) => (
+                      <div key={pharmacy.slug} className="rounded-[16px] border border-line bg-paper/85 px-4 py-4">
+                        <h2 className="m-0 text-balance text-[15px] font-bold text-ink">{pharmacy.name}</h2>
+                        <p className="mb-0 mt-2 text-pretty text-[13px] leading-[1.6] text-muted">{pharmacy.address}</p>
+                        <div className="mt-3 flex flex-wrap gap-4 text-[13px] font-bold">
+                          {pharmacy.phone && <a href={`tel:${pharmacy.phone}`} className="text-forest">{english ? "Call" : "致電"}</a>}
+                          <a href={pharmacy.mapsUrl} target="_blank" rel="noreferrer" className="text-forest">{english ? "Map" : "地圖"}</a>
+                          <Link href={pharmacy.itemHref} className="text-forest">{english ? "Item details" : "品項資料"}</Link>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </article>
+        ))}
+
+        {loading && (
+          <div className="flex items-center gap-3 text-[14px] text-muted">
+            <span className="flex size-8 flex-none items-center justify-center rounded-[12px] border border-line bg-paper">
+              <BrandMark size={20} />
+            </span>
+            <span>{english ? "Checking catalog sources…" : "正在核對目錄來源…"}</span>
+          </div>
+        )}
+
+        {error && (
+          <div className="flex items-start gap-3" role="alert">
+            <span className="flex size-8 flex-none items-center justify-center rounded-[12px] border border-line bg-paper">
+              <BrandMark size={20} />
+            </span>
+            <p className="m-0 text-pretty text-[14px] leading-[1.7] text-oxblood">
+              {error}{" "}
+              <Link href={localizedPath("/agent", locale)} className="font-bold text-forest">
+                {english ? "Start again" : "重新開始"}
+              </Link>
+            </p>
+          </div>
+        )}
+      </div>
+
+      <div className="sticky bottom-0 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+        <form onSubmit={submit} className="flex items-end gap-2 rounded-[18px] border border-line-strong bg-paper/90 p-2 shadow-sm backdrop-blur-md">
+          <label htmlFor="uyao-agent-question" className="sr-only">
+            {english ? "Ask uYao Agent" : "詢問 uYao Agent"}
+          </label>
+          <textarea
+            id="uyao-agent-question"
+            value={question}
+            onChange={(event) => setQuestion(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.nativeEvent.isComposing) return;
+              if (event.key === "Enter" && !event.shiftKey) {
+                event.preventDefault();
+                event.currentTarget.form?.requestSubmit();
+              }
+            }}
+            rows={1}
+            maxLength={600}
+            placeholder={english ? "Ask uYao Agent" : "詢問 uYao Agent"}
+            className="min-h-12 min-w-0 flex-1 resize-none bg-transparent px-3 py-[13px] text-[15px] leading-[1.5] text-ink outline-none placeholder:text-muted-2"
+          />
+          <button
+            type="submit"
+            disabled={loading || !question.trim()}
+            className="action-primary h-12 flex-none rounded-[12px] px-5 text-[14px] disabled:opacity-45"
+          >
+            {english ? "Send" : "送出"}
+          </button>
+        </form>
+        <p className="mb-0 mt-2 px-3 text-pretty text-[12px] leading-[1.55] text-muted-2">
+          {english
+            ? "Do not enter names, phone numbers, National Health Insurance data, or prescription details. Allergy answers stay in this tab."
+            : "請勿輸入姓名、電話、健保或處方資料。過敏回答只留在這個分頁。"}
+        </p>
+      </div>
+    </section>
+  );
+}

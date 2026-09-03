@@ -26,6 +26,7 @@ npm run build
 | `/drug/[slug]` | 藥品與附近藥局 |
 | `/store/[slug]` | 藥局店頁與可預留品項 |
 | `/search`、`/category/[slug]` | 搜尋結果與品類入口 |
+| `/agent` | uYao Agent；用單一對話查目錄並整理藥師接手，不執行交易 |
 | `https://store.uyaohealth.com/` | Store OS 店家登入、預留工作與通知設定 |
 | `/pharmacy` | 藥局合作與試點申請 |
 | `/about`、`/evidence`、`/guides` | 公司資訊、產品證據與知識內容 |
@@ -37,6 +38,7 @@ npm run build
 - `POST /api/reservations`：建立預留、寫入 Store OS，並最佳努力送出 Web Push。
 - `POST/DELETE /api/store/push-subscriptions`：登入店家的裝置通知訂閱與取消。
 - `POST /api/demand`：記錄目錄或庫存未命中的搜尋。
+- `POST /api/agent`：受限的 uYao Agent loop；只讀目錄與呈現 handoff，沒有預留、付款或下單工具。
 - `POST /api/pilot`：保存試點申請並寄送通知信。
 
 ## 資料迴路
@@ -57,6 +59,7 @@ box ingest → 庫存／效期狀態 → 消費端搜尋與 console
 | Web Push | `WEB_PUSH_PUBLIC_KEY`、`WEB_PUSH_PRIVATE_KEY`、`WEB_PUSH_SUBJECT` |
 | Email | `RESEND_API_KEY`、`PILOT_EMAIL_FROM`、`PILOT_EMAIL_TO` |
 | Record sinks | `RECORD_WEBHOOK_URL`、`PILOT_WEBHOOK_URL` |
+| uYao Agent（選填） | `UYAO_COMMERCE_AGENT_PROVIDER=anthropic`、`ANTHROPIC_API_KEY`、`ANTHROPIC_MODEL` |
 | 廣告量測（選填） | `NEXT_PUBLIC_GA4_ID`、`NEXT_PUBLIC_META_PIXEL_ID` |
 
 不要把實際值、Vercel sensitive pull 結果、Push subscription endpoint 或私鑰寫進 README。
@@ -114,6 +117,7 @@ sessionStorage，之後三個轉換 endpoint 都帶著它落進 `source` 欄位�
 - 庫存徽章表示掃描新鮮度，不宣稱精確數量或保證現貨。
 - 消費端只支援預留與店取，沒有購物車、金流或配送。
 - 處方藥不進消費端目錄；藥師完成所有關鍵交付與核准。
+- uYao Agent 的 model 只選擇 read/presentation tools；server 重新填入所有卡片資料，且只接受同一 turn 由 server 發出的 product ID。沒有 provider 時使用固定目錄比對。
 - 地區與距離品質取決於店家座標；缺座標時不可把跨區估算當成 GPS 距離。
 - Demo reservation 必須明確標示為示範資料，不能讓藥局誤認為真實訂單。
 
