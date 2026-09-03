@@ -2,17 +2,17 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { useLocale } from "./LocaleProvider";
 import { drugCopy } from "@/lib/i18n";
 import type { ShowcaseItem } from "@/lib/product-showcase";
 
 /**
- * 品項橫向展示：整座藥櫃是一張完成的品牌場景，左右滑動只切換目錄焦點。
+ * 品項橫向展示：每張完成的品牌場景只露出中央櫃格，連成同一座橫向藥櫃。
  *
- * 商品、櫃格與光影不在瀏覽器裡逐張拼裝；這跟首頁 hero 使用同一種完整場景
- * 資產策略。消費端仍不顯示價格，這一排只用來瀏覽目錄，不是結帳漏斗。
+ * 商品與光影仍由完成場景資產提供，瀏覽器只負責把櫃格接成一條連續軌道。
+ * 消費端仍不顯示價格，這一排只用來瀏覽目錄，不是結帳漏斗。
  *
  * 互動一律三條路都通：觸控滑動（pointer drag）、左右鍵、下方箭頭鈕。
  */
@@ -54,25 +54,66 @@ export function ProductSwipeShowcase({
   const didDragRef = useRef(false);
   const scrollFrameRef = useRef<number | null>(null);
   const sceneRailRef = useRef<HTMLDivElement>(null);
+  const bayRefs = useRef<Array<HTMLDivElement | null>>([]);
   const pillRailRef = useRef<HTMLDivElement>(null);
   const pillRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   const count = items.length;
+  const indexedItems = items.map((item, logicalIndex) => ({
+    item,
+    logicalIndex,
+    clone: false,
+    key: item.drug.slug,
+  }));
+  const visualItems = count > 2
+    ? [
+        ...indexedItems.slice(-2).map((entry) => ({
+          ...entry,
+          clone: true,
+          key: `leading-${entry.key}`,
+        })),
+        ...indexedItems,
+        ...indexedItems.slice(0, 2).map((entry) => ({
+          ...entry,
+          clone: true,
+          key: `trailing-${entry.key}`,
+        })),
+      ]
+    : indexedItems;
+
+  const nearestBayIndex = useCallback((rail: HTMLDivElement) => {
+    const railCenter = rail.scrollLeft + rail.clientWidth / 2;
+    let nearest = activeRef.current;
+    let nearestDistance = Number.POSITIVE_INFINITY;
+
+    rail.querySelectorAll<HTMLElement>("[data-showcase-index]").forEach((bay) => {
+      const distance = Math.abs(bay.offsetLeft + bay.clientWidth / 2 - railCenter);
+      if (distance < nearestDistance) {
+        nearest = Number(bay.dataset.showcaseIndex);
+        nearestDistance = distance;
+      }
+    });
+
+    return nearest;
+  }, []);
+
   const syncActive = useCallback(() => {
     const rail = sceneRailRef.current;
     if (!rail || rail.clientWidth === 0) return;
-    const next = Math.min(count - 1, Math.max(0, Math.round(rail.scrollLeft / rail.clientWidth)));
+    const next = nearestBayIndex(rail);
     if (next === activeRef.current) return;
     activeRef.current = next;
     setActive(next);
-  }, [count]);
+  }, [nearestBayIndex]);
 
   const go = useCallback((next: number) => {
     const rail = sceneRailRef.current;
     if (!rail || count === 0) return;
     const resolved = ((next % count) + count) % count;
+    const bay = bayRefs.current[resolved];
+    if (!bay) return;
     rail.scrollTo({
-      left: resolved * rail.clientWidth,
+      left: bay.offsetLeft - (rail.clientWidth - bay.clientWidth) / 2,
       behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
         ? "auto"
         : "smooth",
@@ -91,12 +132,18 @@ export function ProductSwipeShowcase({
     });
   }, [active]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const rail = sceneRailRef.current;
     if (!rail) return;
+    const centerActiveBay = () => {
+      const bay = bayRefs.current[activeRef.current];
+      if (!bay) return;
+      rail.scrollLeft = bay.offsetLeft - (rail.clientWidth - bay.clientWidth) / 2;
+    };
     const observer = new ResizeObserver(() => {
-      rail.scrollLeft = activeRef.current * rail.clientWidth;
+      centerActiveBay();
     });
+    centerActiveBay();
     observer.observe(rail);
     return () => {
       observer.disconnect();
@@ -159,7 +206,7 @@ export function ProductSwipeShowcase({
     setIsDragging(false);
     rail.style.scrollSnapType = "";
 
-    const next = Math.min(count - 1, Math.max(0, Math.round(rail.scrollLeft / rail.clientWidth)));
+    const next = nearestBayIndex(rail);
     go(next);
   }
 
@@ -238,24 +285,32 @@ export function ProductSwipeShowcase({
             onPointerUp={onPointerUp}
             onPointerCancel={onPointerCancel}
             data-dragging={isDragging}
-            className="product-showcase-rail flex h-full snap-x snap-mandatory overflow-x-auto touch-pan-x touch-pan-y select-none outline-offset-4"
+            className="product-showcase-rail relative flex h-full snap-x snap-mandatory overflow-x-auto touch-pan-x touch-pan-y select-none outline-offset-4"
           >
-            {items.map((item, i) => (
+            {visualItems.map(({ item, logicalIndex, clone, key }) => (
               <div
-                key={item.drug.slug}
-                role="group"
-                aria-roledescription={locale === "en" ? "slide" : "投影片"}
-                aria-label={`${i + 1} / ${count}: ${drugCopy(item.drug, locale).name}`}
-                className="relative h-full w-full shrink-0 snap-center"
+                key={key}
+                ref={(node) => {
+                  if (!clone) bayRefs.current[logicalIndex] = node;
+                }}
+                data-showcase-index={logicalIndex}
+                aria-hidden={clone || undefined}
+                role={clone ? undefined : "group"}
+                aria-roledescription={clone ? undefined : locale === "en" ? "slide" : "投影片"}
+                aria-label={clone ? undefined : `${logicalIndex + 1} / ${count}: ${drugCopy(item.drug, locale).name}`}
+                className="product-showcase-bay relative"
               >
+                {/* 來源是寬幅場景；sizes 描述裁切前的繪製寬度，避免中央櫃格失真。 */}
                 <Image
                   src={item.sceneSrc}
-                  alt={locale === "en"
-                    ? `Wide uYao medicine cabinet with ${drugCopy(item.drug, locale).name} featured in the center`
-                    : `以${drugCopy(item.drug, locale).name}為中央主角的 uYao 橫幅商品藥櫃`}
+                  alt={clone
+                    ? ""
+                    : locale === "en"
+                      ? `Wide uYao medicine cabinet with ${drugCopy(item.drug, locale).name} featured in the center`
+                      : `以${drugCopy(item.drug, locale).name}為中央主角的 uYao 橫幅商品藥櫃`}
                   fill
-                  sizes="100vw"
-                  priority={i === 0}
+                  sizes="(max-width: 767px) 360vw, 135vw"
+                  loading={!clone && logicalIndex === 0 ? "eager" : "lazy"}
                   draggable={false}
                   className="product-showcase-scene"
                 />
