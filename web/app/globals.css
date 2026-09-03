@@ -427,8 +427,9 @@ html[data-theme="dark"] .theme-logo-dark {
   left: 26.2%;
   display: grid;
   grid-template-columns: 337fr 238fr 290fr;
+  grid-template-rows: 34% 66%;
   align-items: center;
-  height: 28.4%;
+  height: 83.4%;
   gap: 3%;
   pointer-events: none;
 }
@@ -441,6 +442,10 @@ html[data-theme="dark"] .theme-logo-dark {
 }
 
 .medicine-cabinet-cell-ask {
+  grid-column: 1 / span 2;
+  grid-row: 2;
+  justify-self: center;
+  width: min(18rem, 100%);
   pointer-events: auto;
 }
 
