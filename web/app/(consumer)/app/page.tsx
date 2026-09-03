@@ -2,10 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { AreaSwitch } from "@/components/AreaSwitch";
-import { CatalogItemGrid } from "@/components/CatalogItemGrid";
 import { JsonLd } from "@/components/JsonLd";
 import { ProductSwipeShowcase } from "@/components/ProductSwipeShowcase";
-import { SearchInput } from "@/components/SearchInput";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { PartnerMarquee } from "@/components/landing/PartnerMarquee";
@@ -172,7 +170,12 @@ export default async function HomePage({
                 ? "Tell uYao what your household needs. We organize the request, then a pharmacist confirms the next step."
                 : "你說家裡需要什麼，uYao 整理需求，再由藥師確認下一步。"}
             </p>
-            <SearchInput size="xl" area={area} presentation="cabinet" submitLabel={locale === "en" ? "Ask uYao" : "問 uYao"} className="medicine-cabinet-input mt-5 w-full shadow-none" />
+            <Link
+              href={`${localizedPath("/agent", locale)}?area=${area}`}
+              className="action-primary mt-5 min-h-14 px-6 text-[15px] sm:px-8"
+            >
+              {locale === "en" ? "Open uYao Agent →" : "打開 uYao Agent →"}
+            </Link>
             <div className="mt-3 md:hidden">
               <AreaSwitch area={area} preservePath locatable compact />
             </div>
@@ -187,7 +190,7 @@ export default async function HomePage({
         evidenceHref={`${SITE_URL}${locale === "en" ? "/en" : "/zh-tw"}/evidence#partners`}
       />
 
-      {/* 首頁用精選木櫃格展示；完整目錄與分類仍保留明確出口。 */}
+      {/* 首頁用精選品項展示互動；完整目錄與分類保留明確出口。 */}
       <section id="catalog" className="medicine-cabinet-showcase-section scroll-mt-20 overflow-hidden">
         <div className="shop-shell py-12 sm:py-16">
           <ProductSwipeShowcase
@@ -197,37 +200,31 @@ export default async function HomePage({
             hrefPrefix={localizedPath("/drug", locale)}
             hrefQuery={`?area=${area}`}
           />
-          <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
-            <p className="m-0 max-w-[720px] border-l border-oxblood pl-4 text-[13.5px] leading-[1.7] text-muted sm:text-[14px]">
-              {locale === "en"
-                ? "Featured items are browsable catalog records, not live inventory or recommendations. A pharmacy still confirms supply and pickup."
-                : "精選品項是可瀏覽的目錄資料，不代表即時庫存或推薦。是否供應與到店安排，仍由藥局確認。"}
-            </p>
-            <Link
-              href={`${localizedPath("/category/partner-item", locale)}?area=${area}`}
-              className="inline-flex min-h-11 shrink-0 items-center self-end border-b border-forest text-[14px] font-bold text-forest no-underline hover:border-green hover:text-green sm:self-auto"
-            >
-              {locale === "en" ? `View all ${drugs.length} items →` : `查看全部 ${drugs.length} 項 →`}
-            </Link>
-          </div>
-          <nav aria-label={locale === "en" ? "Catalog categories" : "品項分類"} className="mt-8 flex flex-wrap gap-2 border-t border-[#ddd4c4] bg-[#efe9dc] px-3 py-3 sm:px-4">
-            {CATALOG_GROUPS.map((group) => (
+          <div className="relative left-1/2 w-[calc(100vw-clamp(32px,6vw,92px))] -translate-x-1/2">
+            <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-8">
+              <p className="m-0 max-w-[720px] border-l border-oxblood pl-4 text-pretty text-[13.5px] leading-[1.7] text-muted sm:text-[14px]">
+                {locale === "en"
+                  ? "Featured items are browsable catalog records, not live inventory or recommendations. A pharmacy still confirms supply and pickup."
+                  : "精選品項是可瀏覽的目錄資料，不代表即時庫存或推薦。是否供應與到店安排，仍由藥局確認。"}
+              </p>
               <Link
-                key={group.slug}
-                href={`${localizedPath("/category/partner-item", locale)}?area=${area}&group=${group.slug}`}
-                className="inline-flex min-h-11 shrink-0 items-center border border-[#cfc6b6] bg-[#f8f4e9] px-3.5 text-[13.5px] font-semibold text-ink no-underline transition-colors hover:border-forest hover:text-forest"
+                href={`${localizedPath("/category/partner-item", locale)}?area=${area}`}
+                className="inline-flex min-h-11 shrink-0 items-center self-end border-b border-forest text-[14px] font-bold text-forest no-underline hover:border-green hover:text-green sm:self-auto"
               >
-                {locale === "en" ? group.nameEn : group.name}
+                {locale === "en" ? `View all ${drugs.length} items →` : `查看全部 ${drugs.length} 項 →`}
               </Link>
-            ))}
-          </nav>
-          <div className="mt-8 md:hidden">
-            <CatalogItemGrid
-              drugs={showcaseItems.map((item) => item.drug)}
-              area={area}
-              locale={locale}
-              featured
-            />
+            </div>
+            <nav aria-label={locale === "en" ? "Catalog categories" : "品項分類"} className="mt-5 flex overflow-x-auto border-y border-line sm:mt-2.5">
+              {CATALOG_GROUPS.map((group) => (
+                <Link
+                  key={group.slug}
+                  href={`${localizedPath("/category/partner-item", locale)}?area=${area}&group=${group.slug}`}
+                  className="inline-flex min-h-12 shrink-0 items-center border-r border-line px-4 text-[13px] font-semibold text-forest no-underline transition-colors hover:bg-surface sm:px-5 sm:text-[14px]"
+                >
+                  {locale === "en" ? group.nameEn : group.name}
+                </Link>
+              ))}
+            </nav>
           </div>
         </div>
       </section>

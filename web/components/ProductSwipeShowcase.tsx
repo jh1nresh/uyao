@@ -21,6 +21,7 @@ import type { ShowcaseItem } from "@/lib/product-showcase";
 export type { ShowcaseItem } from "@/lib/product-showcase";
 
 const SHELF_OFFSETS = [-1, 0, 1] as const;
+type MotionDirection = "next" | "prev";
 
 export function ProductSwipeShowcase({
   items,
@@ -43,6 +44,7 @@ export function ProductSwipeShowcase({
   const locale = useLocale();
   const [active, setActive] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [motionDirection, setMotionDirection] = useState<MotionDirection | null>(null);
   const dragStart = useRef<number | null>(null);
   // 判斷要不要換品項時讀 ref 而不是 state：pointermove 與 pointerup 落在
   // 同一個批次時，pointerup 的 closure 還看得到舊的 drag，滑動就會失效。
@@ -53,8 +55,13 @@ export function ProductSwipeShowcase({
 
   const count = items.length;
   const go = useCallback(
-    (next: number) => setActive(((next % count) + count) % count),
-    [count],
+    (next: number, direction?: MotionDirection) => {
+      const normalized = ((next % count) + count) % count;
+      if (normalized === active) return;
+      setMotionDirection(direction ?? (normalized > active ? "next" : "prev"));
+      setActive(normalized);
+    },
+    [active, count],
   );
 
   useEffect(() => {
@@ -96,8 +103,8 @@ export function ProductSwipeShowcase({
   }
   function onPointerUp(event: React.PointerEvent<HTMLDivElement>) {
     if (dragStart.current === null) return;
-    if (dragDelta.current <= -60) go(active + 1);
-    else if (dragDelta.current >= 60) go(active - 1);
+    if (dragDelta.current <= -60) go(active + 1, "next");
+    else if (dragDelta.current >= 60) go(active - 1, "prev");
     resetPointer(event);
   }
   function onPointerCancel(event: React.PointerEvent<HTMLDivElement>) {
@@ -108,10 +115,10 @@ export function ProductSwipeShowcase({
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (event.key === "ArrowRight") {
       event.preventDefault();
-      go(active + 1);
+      go(active + 1, "next");
     } else if (event.key === "ArrowLeft") {
       event.preventDefault();
-      go(active - 1);
+      go(active - 1, "prev");
     }
   }
 
@@ -143,7 +150,7 @@ export function ProductSwipeShowcase({
                 pillRefs.current[i] = node;
               }}
               type="button"
-              onClick={() => go(i)}
+              onClick={() => go(i, i > active ? "next" : "prev")}
               aria-current={i === active}
               className={`h-8 max-w-[164px] shrink-0 truncate rounded-full border px-3.5 text-[13px] font-medium transition-colors motion-reduce:transition-none ${
                 i === active
@@ -172,7 +179,13 @@ export function ProductSwipeShowcase({
         >
           <div className="product-shelf-unit">
             <span className="product-shelf-plate" aria-hidden />
-            <div className="product-shelf-bays">
+            <div
+              key={active}
+              data-motion={motionDirection ?? undefined}
+              className={`product-shelf-bays${
+                motionDirection ? ` product-shelf-bays-enter-${motionDirection}` : ""
+              }`}
+            >
               {SHELF_OFFSETS.map((offset) => {
                 const item = itemAt(offset);
                 const isActive = offset === 0;
@@ -186,7 +199,7 @@ export function ProductSwipeShowcase({
                     aria-hidden={!isActive}
                     aria-label={isActive ? undefined : drugCopy(item.drug, locale).name}
                     onClick={() => {
-                      if (offset !== 0) go(active + offset);
+                      if (offset !== 0) go(active + offset, offset > 0 ? "next" : "prev");
                     }}
                     className={`product-shelf-bay ${isActive ? "product-shelf-bay-focus" : ""} ${
                       isDragging ? "is-dragging" : ""
@@ -237,7 +250,7 @@ export function ProductSwipeShowcase({
           <ArrowButton
             dir="prev"
             label={locale === "en" ? "Previous product" : "上一項"}
-            onClick={() => go(active - 1)}
+            onClick={() => go(active - 1, "prev")}
           />
           <div className="flex gap-1.5">
             {items.map((item, i) => (
@@ -253,7 +266,7 @@ export function ProductSwipeShowcase({
           <ArrowButton
             dir="next"
             label={locale === "en" ? "Next product" : "下一項"}
-            onClick={() => go(active + 1)}
+            onClick={() => go(active + 1, "next")}
           />
         </div>
       </div>
