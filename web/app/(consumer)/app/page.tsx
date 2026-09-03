@@ -138,7 +138,7 @@ export default async function HomePage({
         <div className="medicine-cabinet-stage relative">
           <SiteHeader showSearch={false} area={area} preserveAreaPath locatable tone="cabinet" />
 
-        {/* 商品與櫃體共用同一張陳列影像；透明熱區提供品項連結，問藥入口嵌在下層牆面。 */}
+        {/* 商品與櫃體共用同一張陳列影像；透明熱區提供品項連結，問藥文案落在上層櫃格內。 */}
         <section className="medicine-cabinet-hero overflow-hidden border-b border-line">
           <nav
             className="medicine-cabinet-products"
@@ -159,25 +159,29 @@ export default async function HomePage({
           </nav>
 
           <div className="medicine-cabinet-search min-w-0">
-            <p className="medicine-cabinet-kicker m-0 font-bold text-oxblood">
-              {locale === "en" ? "YOUR HOUSEHOLD MEDICINE CABINET, NOW WITH ANSWERS" : "家裡的藥箱，現在會找答案"}
-            </p>
-            <h1 className="editorial-display medicine-cabinet-heading mb-0 mt-2 leading-[1.06] text-ink">
-              {locale === "en" ? "Open uYao. Ask before you go." : "打開 uYao，先問再出門。"}
-            </h1>
-            <p className="medicine-cabinet-copy mb-0 mt-3 text-ink-2">
+            <div className="medicine-cabinet-cell-copy">
+              <p className="medicine-cabinet-kicker m-0 font-bold text-oxblood">
+                {locale === "en" ? "YOUR HOUSEHOLD MEDICINE CABINET, NOW WITH ANSWERS" : "家裡的藥箱，現在會找答案"}
+              </p>
+              <h1 className="editorial-display medicine-cabinet-heading mb-0 mt-2 leading-[1.06] text-ink">
+                {locale === "en" ? "Open uYao. Ask before you go." : "打開 uYao，先問再出門。"}
+              </h1>
+            </div>
+            <p className="medicine-cabinet-copy mb-0 text-ink-2">
               {locale === "en"
                 ? "Tell uYao what your household needs. We organize the request, then a pharmacist confirms the next step."
                 : "你說家裡需要什麼，uYao 整理需求，再由藥師確認下一步。"}
             </p>
-            <Link
-              href={`${localizedPath("/agent", locale)}?area=${area}`}
-              className="action-primary mt-5 min-h-14 px-6 text-[15px] sm:px-8"
-            >
-              {locale === "en" ? "Open uYao Agent →" : "打開 uYao Agent →"}
-            </Link>
-            <div className="mt-3 md:hidden">
-              <AreaSwitch area={area} preservePath locatable compact />
+            <div className="medicine-cabinet-cell-ask">
+              <Link
+                href={`${localizedPath("/agent", locale)}?area=${area}`}
+                className="action-primary min-h-12 px-4 text-[14px] sm:min-h-14 sm:px-6 sm:text-[15px]"
+              >
+                {locale === "en" ? "Open uYao Agent →" : "打開 uYao Agent →"}
+              </Link>
+              <div className="medicine-cabinet-cell-area mt-3 md:hidden">
+                <AreaSwitch area={area} preservePath locatable compact />
+              </div>
             </div>
           </div>
         </section>

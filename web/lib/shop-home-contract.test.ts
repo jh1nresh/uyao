@@ -56,9 +56,12 @@ describe("household medicine storefront homepage", () => {
   it("moves search into the Agent workspace and keeps the full catalog reachable below", () => {
     expect(appPage).toContain('localizedPath("/agent", locale)');
     expect(appPage).toContain("medicine-cabinet-hero");
+    expect(appPage).toContain("medicine-cabinet-cell-copy");
+    expect(appPage).toContain("medicine-cabinet-cell-ask");
     expect(appPage).toContain("家裡的藥箱，現在會找答案");
     expect(appPage).toContain("打開 uYao，先問再出門。");
     expect(appPage).toContain("你說家裡需要什麼，uYao 整理需求，再由藥師確認下一步。");
+    expect(appPage).toContain("打開 uYao Agent →");
     expect(appPage).not.toContain("medicine-cabinet-input");
     expect(commerceAgentPage).toContain("uyao-agent-composer");
     expect(appPage).not.toContain("家裡現在需要什麼？");
@@ -174,6 +177,10 @@ describe("household medicine storefront homepage", () => {
   it("builds the selected wall direction from one stocked cabinet image and transparent product links", () => {
     expect(globalCss).toContain("medicine-cabinet-products");
     expect(globalCss).toContain("grid-template-columns: 337fr 238fr 290fr;");
+    expect(globalCss).toContain(".medicine-cabinet-cell-copy");
+    expect(globalCss).toContain(".medicine-cabinet-cell-ask");
+    expect(globalCss).toContain("the ask-medicine copy sits inside the photographed upper bays");
+    expect(globalCss).not.toContain("top: 52%");
     expect(globalCss).toContain("background-position: 59% top;");
     expect(globalCss).toContain("height: clamp(34rem, 49vw, 50rem);");
     expect(appPage).not.toContain("<Image");
