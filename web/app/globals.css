@@ -528,10 +528,9 @@ html[data-theme="dark"] .theme-logo-dark {
   white-space: nowrap;
 }
 
-/* A question opens the same photographed cabinet before the conversation
-   continues. The doors are functional transition chrome; the stocked image
-   remains the visual source of truth underneath them. */
-.medicine-cabinet-opening-layer {
+/* A restrained camera move carries the stocked hero into the conversation.
+   It changes focus without turning the cabinet itself into an interface. */
+.search-conversation-entry-layer {
   position: fixed;
   inset: 0;
   z-index: 90;
@@ -540,110 +539,46 @@ html[data-theme="dark"] .theme-logo-dark {
   background: #dcc198;
 }
 
-.medicine-cabinet-opening-scene {
+.search-conversation-entry-scene {
   position: absolute;
   inset: 0;
   overflow: hidden;
-  perspective: 1600px;
-  perspective-origin: center;
 }
 
-.medicine-cabinet-opening-interior {
+.search-conversation-entry-image {
   position: absolute;
-  inset: 0;
+  inset: -3%;
   background: #dcc198 url("/brand/uyao-medicine-cabinet-stocked-v1.webp") center top / cover no-repeat;
-  animation: medicine-cabinet-interior-settle 860ms cubic-bezier(0.22, 0.72, 0.1, 1) both;
+  animation: search-conversation-entry-focus 720ms cubic-bezier(0.32, 0, 0.18, 1) both;
+  will-change: filter, opacity, transform;
 }
 
-.medicine-cabinet-opening-door {
-  position: absolute;
-  inset-block: 0;
-  width: calc(50% + 1px);
-  padding: clamp(12px, 1.7vw, 26px);
-  background:
-    linear-gradient(90deg, rgb(255 239 207 / 0.5), transparent 9%, transparent 91%, rgb(94 61 30 / 0.25)),
-    linear-gradient(180deg, #e8cda2 0, #c99f6c 48%, #b78655 100%);
-  box-shadow:
-    inset 0 0 0 1px rgb(255 246 224 / 0.62),
-    0 0 40px rgb(50 34 18 / 0.28);
-  backface-visibility: hidden;
-  will-change: transform;
-}
-
-.medicine-cabinet-opening-door-left {
-  left: 0;
-  border-right: clamp(8px, 0.8vw, 13px) solid #294d3b;
-  transform-origin: left center;
-  animation: medicine-cabinet-door-left-open 860ms cubic-bezier(0.4, 0, 0.2, 1) both;
-}
-
-.medicine-cabinet-opening-door-right {
-  right: 0;
-  border-left: clamp(8px, 0.8vw, 13px) solid #294d3b;
-  transform-origin: right center;
-  animation: medicine-cabinet-door-right-open 860ms cubic-bezier(0.4, 0, 0.2, 1) both;
-}
-
-.medicine-cabinet-opening-glass {
-  position: absolute;
-  inset: clamp(12px, 1.7vw, 26px);
-  border: clamp(7px, 0.72vw, 12px) solid #345743;
-  background:
-    linear-gradient(90deg, rgb(255 255 255 / 0.18), transparent 12%, transparent 88%, rgb(255 255 255 / 0.2)),
-    repeating-linear-gradient(90deg, rgb(255 248 231 / 0.33) 0 2px, rgb(96 83 58 / 0.12) 2px 5px),
-    rgb(226 211 181 / 0.72);
-  box-shadow:
-    inset 0 0 26px rgb(71 55 34 / 0.16),
-    0 1px 0 rgb(255 246 224 / 0.5);
-}
-
-.medicine-cabinet-opening-door::after {
-  position: absolute;
-  top: 50%;
-  width: clamp(5px, 0.45vw, 8px);
-  height: clamp(42px, 5vw, 72px);
-  border-radius: 999px;
-  background: linear-gradient(90deg, #b48b58, #f0d5a7 48%, #8e683f);
-  box-shadow: 0 3px 9px rgb(45 30 16 / 0.32);
-  content: "";
-  transform: translateY(-50%);
-}
-
-.medicine-cabinet-opening-door-left::after {
-  right: clamp(18px, 2.1vw, 34px);
-}
-
-.medicine-cabinet-opening-door-right::after {
-  left: clamp(18px, 2.1vw, 34px);
-}
-
-.medicine-cabinet-opening-light {
+.search-conversation-entry-wash {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse 42% 52% at 50% 45%, rgb(255 244 216 / 0.42), transparent 72%);
-  animation: medicine-cabinet-opening-light 860ms ease-out both;
+  background:
+    radial-gradient(ellipse 52% 48% at 50% 42%, rgb(255 248 230 / 0.18), transparent 72%),
+    linear-gradient(180deg, transparent 42%, rgb(243 232 209 / 0.52) 100%);
+  animation: search-conversation-entry-wash 720ms ease-out both;
   pointer-events: none;
 }
 
-@keyframes medicine-cabinet-door-left-open {
-  from { transform: rotateY(0); }
-  to { transform: rotateY(-106deg); }
+@keyframes search-conversation-entry-focus {
+  from {
+    filter: blur(0);
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    filter: blur(2px);
+    opacity: 0.82;
+    transform: scale(1.055);
+  }
 }
 
-@keyframes medicine-cabinet-door-right-open {
-  from { transform: rotateY(0); }
-  to { transform: rotateY(106deg); }
-}
-
-@keyframes medicine-cabinet-interior-settle {
-  from { transform: scale(1.045); }
-  to { transform: scale(1); }
-}
-
-@keyframes medicine-cabinet-opening-light {
+@keyframes search-conversation-entry-wash {
   from { opacity: 0; }
-  52% { opacity: 1; }
-  to { opacity: 0.28; }
+  to { opacity: 1; }
 }
 
 /* Liquid Glass stays a single functional overlay layer. The form controls use
@@ -928,7 +863,7 @@ html[data-theme="dark"] .theme-logo-dark {
     background-size: auto 100%;
   }
 
-  .medicine-cabinet-opening-interior {
+  .search-conversation-entry-image {
     background-color: #ead8b8;
     background-position: 59% top;
     background-size: auto 31rem;
@@ -1142,7 +1077,7 @@ html[data-theme="dark"] .theme-logo-dark {
     display: none;
   }
 
-  .medicine-cabinet-opening-layer {
+  .search-conversation-entry-layer {
     display: none;
   }
 }
