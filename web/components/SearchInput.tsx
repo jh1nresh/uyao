@@ -29,6 +29,7 @@ const SEARCH_EXAMPLES_EN = [
 ] as const;
 
 const CONVERSATION_ENTRY_DURATION_MS = 720;
+const INPUT_REDIRECT_DELAY_MS = 300;
 
 /**
  * 搜尋框。用原生 GET form — 沒有 JS 也能搜，SEO 入口頁不依賴 client bundle。
@@ -43,6 +44,7 @@ export function SearchInput({
   submitLabel,
   continueConversation = false,
   resultsPath = "/search",
+  redirectOnInput = false,
 }: {
   defaultValue?: string;
   size?: "sm" | "lg" | "xl";
@@ -55,6 +57,8 @@ export function SearchInput({
   continueConversation?: boolean;
   /** Consumer result surface; the homepage can enter uYao Agent. */
   resultsPath?: "/search" | "/agent";
+  /** Move the first completed input into the destination composer without submitting it. */
+  redirectOnInput?: boolean;
 }) {
   const locale = useLocale();
   const router = useRouter();
@@ -72,6 +76,9 @@ export function SearchInput({
   const [allergyStatus, setAllergyStatus] = useState<"" | AllergyStatus>("");
   const [allergens, setAllergens] = useState("");
   const firstAllergyRef = useRef<HTMLInputElement>(null);
+  const isComposingRef = useRef(false);
+  const hasRedirectedInputRef = useRef(false);
+  const inputRedirectTimerRef = useRef<number | null>(null);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -132,6 +139,12 @@ export function SearchInput({
     };
   }, [entryTarget, router]);
 
+  useEffect(() => () => {
+    if (inputRedirectTimerRef.current !== null) {
+      window.clearTimeout(inputRedirectTimerRef.current);
+    }
+  }, []);
+
   function askAllergies(event: FormEvent<HTMLFormElement>) {
     const query = String(new FormData(event.currentTarget).get("q") ?? "").trim();
     if (!query) return;
@@ -187,6 +200,20 @@ export function SearchInput({
     if (draft) openResults(draft);
   }
 
+  function scheduleInputRedirect(value: string) {
+    if (!redirectOnInput || hasRedirectedInputRef.current) return;
+    if (inputRedirectTimerRef.current !== null) {
+      window.clearTimeout(inputRedirectTimerRef.current);
+    }
+    if (!value.trim()) return;
+    inputRedirectTimerRef.current = window.setTimeout(() => {
+      hasRedirectedInputRef.current = true;
+      const params = new URLSearchParams({ draft: value });
+      if (area) params.set("area", area);
+      router.push(`${localizedPath(resultsPath, locale)}?${params.toString()}`);
+    }, INPUT_REDIRECT_DELAY_MS);
+  }
+
   const allergyIncomplete = allergyStatus === ""
     || (allergyStatus === "has_allergies" && !allergens.trim());
 
@@ -227,7 +254,18 @@ export function SearchInput({
             placeholder={agentPresentation
               ? locale === "en" ? "Ask about a product, ingredient, or wellness need" : "輸入品名、成分或日常保養需求"
               : large ? "" : locale === "en" ? "Search products or symptoms" : "搜尋品項或症狀"}
-            onChange={(event) => setHasValue(event.currentTarget.value.length > 0)}
+            onChange={(event) => {
+              const value = event.currentTarget.value;
+              setHasValue(value.length > 0);
+              if (!isComposingRef.current) scheduleInputRedirect(value);
+            }}
+            onCompositionStart={() => {
+              isComposingRef.current = true;
+            }}
+            onCompositionEnd={(event) => {
+              isComposingRef.current = false;
+              scheduleInputRedirect(event.currentTarget.value);
+            }}
             // h-full：讓整個框都是點擊區，不是只有文字那 20px
             className={`h-full w-full min-w-0 bg-transparent text-ink outline-none placeholder:text-muted-2 focus:outline-none focus-visible:outline-none ${
               xl ? "text-[16px] sm:text-[18px]" : large ? "text-[16px]" : "text-[15px]"

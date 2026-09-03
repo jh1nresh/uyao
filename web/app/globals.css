@@ -427,8 +427,9 @@ html[data-theme="dark"] .theme-logo-dark {
   left: 26.2%;
   display: grid;
   grid-template-columns: 337fr 238fr 290fr;
+  grid-template-rows: 34% 66%;
   align-items: center;
-  height: 28.4%;
+  height: 83.4%;
   gap: 3%;
   pointer-events: none;
 }
@@ -437,10 +438,20 @@ html[data-theme="dark"] .theme-logo-dark {
 .medicine-cabinet-copy,
 .medicine-cabinet-cell-ask {
   min-width: 0;
+}
+
+.medicine-cabinet-message {
+  grid-column: 1 / span 2;
+  grid-row: 2;
+  justify-self: center;
+  width: min(34rem, 100%);
   padding: 0.35rem 0.55rem 0.5rem;
+  text-align: center;
 }
 
 .medicine-cabinet-cell-ask {
+  width: min(32rem, 100%);
+  margin: 1rem auto 0;
   pointer-events: auto;
 }
 
@@ -459,6 +470,7 @@ html[data-theme="dark"] .theme-logo-dark {
 
 .medicine-cabinet-copy {
   max-width: none;
+  margin-top: 0.75rem;
   font-size: clamp(12.5px, 0.95vw, 14px);
   line-height: 1.55;
   text-shadow: 0 1px 10px rgb(255 246 224 / 0.5);
@@ -470,10 +482,6 @@ html[data-theme="dark"] .theme-logo-dark {
   box-shadow:
     inset 0 1px 0 rgb(255 244 221 / 0.28),
     inset 0 -1px 0 rgb(72 55 34 / 0.1) !important;
-}
-
-.medicine-cabinet-cell-ask .action-primary {
-  width: 100%;
 }
 
 /* Search remains inside the cabinet world after the first question. The
@@ -1000,9 +1008,9 @@ html[data-theme="dark"] .theme-logo-dark {
   }
 
   .medicine-cabinet-search {
-    top: 36%;
-    right: 27%;
-    left: 27%;
+    top: 40%;
+    right: 17%;
+    left: 17%;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -1012,10 +1020,13 @@ html[data-theme="dark"] .theme-logo-dark {
     padding: 0.35rem 0.4rem;
   }
 
-  .medicine-cabinet-cell-copy,
-  .medicine-cabinet-copy,
-  .medicine-cabinet-cell-ask {
+  .medicine-cabinet-message {
+    width: 100%;
     padding: 0;
+  }
+
+  .medicine-cabinet-cell-ask {
+    margin-top: 0.75rem;
   }
 
   .medicine-cabinet-heading {

@@ -20,6 +20,7 @@ export async function SiteHeader({
   preserveAreaPath = false,
   locatable = false,
   tone = "default",
+  activeWorkspace,
 }: {
   query?: string;
   showSearch?: boolean;
@@ -29,22 +30,30 @@ export async function SiteHeader({
   preserveAreaPath?: boolean;
   locatable?: boolean;
   tone?: "default" | "cabinet";
+  activeWorkspace?: "shop" | "agent";
 }) {
   const locale = await getRequestLocale();
   const cabinetTone = tone === "cabinet";
+  const showWorkspaceNavigation = Boolean(activeWorkspace) && !showSearch;
   return (
     <header className={cabinetTone
       ? "cabinet-overlay-header absolute inset-x-0 top-0 z-40 bg-transparent"
       : "sticky top-0 z-40 border-b border-line-strong bg-ivory/95 backdrop-blur-sm"
     }>
-      <div className={`shop-shell flex items-center gap-3 ${
+      <div className={`shop-shell items-center ${
+        showWorkspaceNavigation
+          ? "grid grid-cols-[1fr_auto_1fr] gap-2 sm:gap-4"
+          : "flex gap-3"
+      } ${
         cabinetTone ? "h-16 sm:h-[68px]" : "h-[68px] sm:h-[72px]"
       }`}>
         {/* 品牌 logo 回到統一的 consumer-first 首頁；地區狀態只留在找藥流程。 */}
         <Link
           href={`${SITE_URL}${localizedPath("/", locale)}`}
           aria-label={locale === "en" ? "Back to uYao homepage" : "回到 uYao 首頁"}
-          className="flex min-h-11 flex-none items-center gap-2 no-underline"
+          className={`flex min-h-11 flex-none items-center gap-2 no-underline ${
+            showWorkspaceNavigation ? "justify-self-start" : ""
+          }`}
         >
           {showSearch ? (
             <>
@@ -74,10 +83,44 @@ export async function SiteHeader({
           />
         )}
 
-        <div className={showSearch ? "hidden flex-1 sm:block" : "flex-1"} />
+        {showWorkspaceNavigation && (
+          <nav
+            aria-label={locale === "en" ? "uYao destinations" : "uYao 主要導覽"}
+            className="flex h-full items-stretch justify-center"
+          >
+            <Link
+              href={localizedPath("/", locale)}
+              aria-current={activeWorkspace === "shop" ? "page" : undefined}
+              className={`inline-flex min-h-11 items-center border-b-2 px-3 text-[13px] no-underline transition-colors sm:px-4 ${
+                activeWorkspace === "shop"
+                  ? "border-forest font-bold text-forest"
+                  : "border-transparent font-semibold text-muted hover:border-line-strong hover:text-ink"
+              }`}
+            >
+              Shop
+            </Link>
+            <Link
+              href={localizedPath("/agent", locale)}
+              aria-current={activeWorkspace === "agent" ? "page" : undefined}
+              className={`inline-flex min-h-11 items-center border-b-2 px-3 text-[13px] no-underline transition-colors sm:px-4 ${
+                activeWorkspace === "agent"
+                  ? "border-forest font-bold text-forest"
+                  : "border-transparent font-semibold text-muted hover:border-line-strong hover:text-ink"
+              }`}
+            >
+              Agent
+            </Link>
+          </nav>
+        )}
 
-        <div className={cabinetTone ? "cabinet-header-controls flex items-center" : "flex items-center gap-3"}>
-          <div className="hidden md:block">
+        {!showWorkspaceNavigation && (
+          <div className={showSearch ? "hidden flex-1 sm:block" : "flex-1"} />
+        )}
+
+        <div className={`${
+          cabinetTone ? "cabinet-header-controls flex items-center" : "flex items-center gap-3"
+        } ${showWorkspaceNavigation ? "justify-self-end" : ""}`}>
+          <div className={showWorkspaceNavigation ? "hidden xl:block" : "hidden md:block"}>
             <AreaSwitch area={area} preservePath={preserveAreaPath} locatable={locatable} compact />
           </div>
           <ThemeToggle locale={locale} />
@@ -87,7 +130,7 @@ export async function SiteHeader({
               沒有搜尋框的頁面則保留這顆 CTA。 */}
           <Link
             href={`${SITE_URL}${localizedPath("/pharmacy", locale)}`}
-            className={`${showSearch ? "hidden sm:inline-flex" : "inline-flex"} min-h-11 flex-none items-center border border-line-strong bg-paper px-3 text-xs font-bold text-forest no-underline transition-colors hover:border-forest hover:bg-surface`}
+            className={`${showSearch || showWorkspaceNavigation ? "hidden sm:inline-flex" : "inline-flex"} min-h-11 flex-none items-center border border-line-strong bg-paper px-3 text-xs font-bold text-forest no-underline transition-colors hover:border-forest hover:bg-surface`}
           >
             {locale === "en" ? "For pharmacies" : "我是藥局"}
           </Link>
