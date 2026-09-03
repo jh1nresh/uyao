@@ -9,8 +9,8 @@ import { drugCopy } from "@/lib/i18n";
 import type { ShowcaseItem } from "@/lib/product-showcase";
 
 /**
- * 品項橫向展示：左右滑動換品項，中央那一格是對準的木櫃格，兩側只露出
- * 鄰格的一部分。這是圖 2 的貨架簽名，不是一排浮在空中的包裝照。
+ * 品項橫向展示：實拍木櫃是場景，包裝照坐進櫃格。中央那一格對準，
+ * 兩側只露出鄰格的一部分。這是圖 2 的貨架簽名，不是 CSS 木紋框。
  *
  * 站上不做交易，所以沒有價格與購物車。這一排是用來看清楚有哪些品項，
  * 點「看這一項」才進品項頁。
@@ -145,10 +145,10 @@ export function ProductSwipeShowcase({
               type="button"
               onClick={() => go(i)}
               aria-current={i === active}
-              className={`h-8 max-w-[164px] shrink-0 truncate border px-3 text-[13px] font-medium transition-colors motion-reduce:transition-none ${
+              className={`h-8 max-w-[164px] shrink-0 truncate rounded-full border px-3.5 text-[13px] font-medium transition-colors motion-reduce:transition-none ${
                 i === active
                   ? "border-[#17392c] bg-[#17392c] text-[#f8f4e9]"
-                  : "border-[#b8b1a4] bg-[#f8f4e9]/85 text-[#3e4b44] hover:border-[#17392c] hover:text-[#17392c]"
+                  : "border-[#b8b1a4] bg-[#f8f4e9]/90 text-[#3e4b44] hover:border-[#17392c] hover:text-[#17392c]"
               }`}
             >
               {drugCopy(item.drug, locale).name}
@@ -168,10 +168,10 @@ export function ProductSwipeShowcase({
           onPointerUp={onPointerUp}
           onPointerCancel={onPointerCancel}
           style={{ "--showcase-drag-x": "0px" } as CSSProperties}
-          className="product-showcase-stage relative mt-5 cursor-grab touch-pan-y select-none outline-offset-4 active:cursor-grabbing"
+          className="product-showcase-stage relative mt-5 overflow-hidden cursor-grab touch-pan-y select-none outline-offset-4 active:cursor-grabbing"
         >
           <div className="product-shelf-unit">
-            <div className="product-shelf-crown" aria-hidden />
+            <span className="product-shelf-plate" aria-hidden />
             <div className="product-shelf-bays">
               {SHELF_OFFSETS.map((offset) => {
                 const item = itemAt(offset);
@@ -208,7 +208,7 @@ export function ProductSwipeShowcase({
                 );
               })}
             </div>
-            <div className="product-shelf-plinth" aria-hidden />
+            <span className="product-shelf-scene-light" aria-hidden />
           </div>
         </div>
 

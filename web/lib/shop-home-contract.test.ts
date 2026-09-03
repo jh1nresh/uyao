@@ -75,11 +75,15 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).toContain("product-showcase-stage");
     expect(productSwipeShowcase).toContain("product-shelf-unit");
     expect(productSwipeShowcase).toContain("product-shelf-bay");
+    expect(productSwipeShowcase).toContain("product-shelf-plate");
     expect(productSwipeShowcase).not.toContain('clipPath: "polygon');
     expect(productSwipeShowcase).not.toContain("--showcase-accent");
     expect(globalCss).toContain(".product-showcase-stage::after");
     expect(globalCss).toContain(".product-shelf-unit");
     expect(globalCss).toContain(".product-shelf-bay");
+    expect(globalCss).toContain("/brand/uyao-catalog-cabinet-plate-v1.webp");
+    expect(globalCss).not.toContain("--shelf-highlight");
+    expect(globalCss).not.toContain(".product-shelf-crown");
     expect(partnerMarquee).toContain("cabinet-partner-marquee");
     expect(partnerMarquee).toContain("cabinet-marquee-edge-left");
     expect(partnerMarquee).not.toContain("from-paper to-transparent");

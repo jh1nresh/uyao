@@ -210,12 +210,12 @@ export default async function HomePage({
               {locale === "en" ? `View all ${drugs.length} items →` : `查看全部 ${drugs.length} 項 →`}
             </Link>
           </div>
-          <nav aria-label={locale === "en" ? "Catalog categories" : "品項分類"} className="mt-7 flex flex-wrap gap-2">
+          <nav aria-label={locale === "en" ? "Catalog categories" : "品項分類"} className="mt-8 flex flex-wrap gap-2 border-t border-[#ddd4c4] bg-[#efe9dc] px-3 py-3 sm:px-4">
             {CATALOG_GROUPS.map((group) => (
               <Link
                 key={group.slug}
                 href={`${localizedPath("/category/partner-item", locale)}?area=${area}&group=${group.slug}`}
-                className="inline-flex min-h-11 shrink-0 items-center border border-line-strong bg-paper px-3.5 text-[13.5px] font-semibold text-ink no-underline transition-colors hover:border-forest hover:text-forest"
+                className="inline-flex min-h-11 shrink-0 items-center border border-[#cfc6b6] bg-[#f8f4e9] px-3.5 text-[13.5px] font-semibold text-ink no-underline transition-colors hover:border-forest hover:text-forest"
               >
                 {locale === "en" ? group.nameEn : group.name}
               </Link>
