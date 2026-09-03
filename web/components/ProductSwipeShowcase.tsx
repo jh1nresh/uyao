@@ -35,8 +35,8 @@ const SIDE_SCENE_SCALE: Readonly<Record<string, number>> = {
 
 /** 校正原始包裝照不對稱的透明留白，讓可見實物落在參考場景的位置。 */
 const SIDE_SCENE_X: Readonly<Record<string, number>> = {
-  "gaoyouzhi-vitamin-b-60": 5.5,
-  "aob-vitality-beauty-45": -8.5,
+  "gaoyouzhi-vitamin-b-60": 4.5,
+  "aob-vitality-beauty-45": -5,
 };
 
 export function ProductSwipeShowcase({
@@ -206,7 +206,7 @@ export function ProductSwipeShowcase({
           onPointerUp={onPointerUp}
           onPointerCancel={onPointerCancel}
           style={{ "--showcase-drag-x": "0px" } as CSSProperties}
-          className="product-showcase-stage relative mt-5 h-[250px] cursor-grab touch-pan-y select-none outline-offset-4 [container-type:inline-size] active:cursor-grabbing sm:h-[300px]"
+          className="product-showcase-stage relative mt-5 h-[250px] cursor-grab touch-pan-y select-none outline-offset-4 [container-type:inline-size] active:cursor-grabbing sm:h-80"
         >
           {items.map((item, i) => {
             const offset = offsetOf(i);
@@ -224,9 +224,9 @@ export function ProductSwipeShowcase({
               : offset * (Math.abs(offset) === 2 ? 25 : 28);
             const position =
               basePosition + (isActive ? 0 : (SIDE_SCENE_X[item.drug.slug] ?? 0));
-            const adjacentScale = side === 1 ? 0.58 : 0.66;
+            const adjacentScale = side === 1 ? 0.58 : 0.75;
             const roleScale = isActive
-              ? 1
+              ? 1.04
               : Math.abs(offset) === 1
                 ? adjacentScale
                 : 0.48;
