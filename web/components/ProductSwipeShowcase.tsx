@@ -30,7 +30,13 @@ const SIDE_DESKTOP = 2;
  * 大上一倍。主角仍永遠是 1，這裡只校準它退到側邊時的實物比例。
  */
 const SIDE_SCENE_SCALE: Readonly<Record<string, number>> = {
-  "aob-vitality-beauty-45": 0.72,
+  "aob-vitality-beauty-45": 0.9,
+};
+
+/** 校正原始包裝照不對稱的透明留白，讓可見實物落在參考場景的位置。 */
+const SIDE_SCENE_X: Readonly<Record<string, number>> = {
+  "gaoyouzhi-vitamin-b-60": 5.5,
+  "aob-vitality-beauty-45": -8.5,
 };
 
 export function ProductSwipeShowcase({
@@ -54,7 +60,7 @@ export function ProductSwipeShowcase({
   const locale = useLocale();
   const [active, setActive] = useState(0);
   // SSR 採手機優先，避免 hydration 前把桌機的五支商品擠進窄螢幕。
-  // 掛載後再依 viewport 擴成桌機五格。
+  // 掛載後再依 viewport 擴成桌機的主角與四支配角。
   const [side, setSide] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
   const dragStart = useRef<number | null>(null);
@@ -211,11 +217,13 @@ export function ProductSwipeShowcase({
             // 位移用「舞台寬度的百分比」而不是商品自身的百分比 —— 用後者
             // 時側邊那幾支會疊在主角後面看不見，貨架就只剩一支商品。
             // 手機一側只放一支，間距要拉開，否則側邊品項會壓到主角包裝上。
-            // 桌機不是五個等權卡位：主角佔滿中央格，左右配角向外拉開，
-            // 最外側則由 viewport 裁切，讓藥櫃讀成一個延伸出畫面的場景。
-            const position = side === 1
+            // 桌機不是一品一格：主角與配角跨越寬窄不一的櫃體區塊，
+            // 最外側再由 viewport 裁切，整排才會讀成同一組靜物陳列。
+            const basePosition = side === 1
               ? offset * 36
               : offset * (Math.abs(offset) === 2 ? 25 : 28);
+            const position =
+              basePosition + (isActive ? 0 : (SIDE_SCENE_X[item.drug.slug] ?? 0));
             const adjacentScale = side === 1 ? 0.58 : 0.66;
             const roleScale = isActive
               ? 1
