@@ -15,6 +15,10 @@ const searchPage = readFileSync(
   join(import.meta.dirname, "..", "app", "(consumer)", "search", "page.tsx"),
   "utf8",
 );
+const commerceAgentPage = readFileSync(
+  join(import.meta.dirname, "..", "app", "(consumer)", "agent", "page.tsx"),
+  "utf8",
+);
 const productSwipeShowcase = readFileSync(
   join(import.meta.dirname, "..", "components", "ProductSwipeShowcase.tsx"),
   "utf8",
@@ -49,13 +53,14 @@ const agentLanding = readFileSync(
 );
 
 describe("household medicine storefront homepage", () => {
-  it("integrates the search into a wall and keeps the full catalog reachable below", () => {
-    expect(appPage).toContain('<SearchInput size="xl" area={area}');
+  it("moves search into the Agent workspace and keeps the full catalog reachable below", () => {
+    expect(appPage).toContain('localizedPath("/agent", locale)');
     expect(appPage).toContain("medicine-cabinet-hero");
     expect(appPage).toContain("家裡的藥箱，現在會找答案");
     expect(appPage).toContain("打開 uYao，先問再出門。");
     expect(appPage).toContain("你說家裡需要什麼，uYao 整理需求，再由藥師確認下一步。");
-    expect(appPage).toContain("medicine-cabinet-input");
+    expect(appPage).not.toContain("medicine-cabinet-input");
+    expect(commerceAgentPage).toContain("uyao-agent-composer");
     expect(appPage).not.toContain("家裡現在需要什麼？");
     expect(appPage).not.toContain("問藥時，上排品項留在原位。");
     expect(appPage).toContain("先逛品項，再交給 uYao 去問。");
@@ -97,7 +102,7 @@ describe("household medicine storefront homepage", () => {
     expect(partnerMarquee).not.toContain("from-paper to-transparent");
     expect(globalCss).toContain(".cabinet-partner-marquee::before");
     expect(productSwipeShowcase).not.toContain("transition-[transform,opacity,filter,left]");
-    expect(appPage.indexOf('<SearchInput size="xl"')).toBeLessThan(
+    expect(appPage.indexOf('localizedPath("/agent", locale)')).toBeLessThan(
       appPage.indexOf("<ProductSwipeShowcase"),
     );
     expect(appPage).toContain("shelfDrugs.map");
@@ -123,7 +128,8 @@ describe("household medicine storefront homepage", () => {
   });
 
   it("asks for allergens before navigating to the dedicated results route", () => {
-    expect(searchInput).toContain('action={localizedPath("/search", locale)}');
+    expect(searchInput).toContain('resultsPath = "/search"');
+    expect(searchInput).toContain('action={localizedPath(resultsPath, locale)}');
     expect(searchInput).toContain("onSubmit={askAllergies}");
     expect(searchInput).toContain("先確認已知過敏原");
     expect(searchInput).toContain("continueToResults");
@@ -131,9 +137,18 @@ describe("household medicine storefront homepage", () => {
     expect(searchInput).not.toContain('presentation="pearl"');
   });
 
+  it("keeps uYao Agent as one conversation surface", () => {
+    expect(commerceAgentPage).toContain("uYao Agent");
+    expect(commerceAgentPage).toContain('presentation="agent"');
+    expect(commerceAgentPage).toContain("<CommerceAgent");
+    expect(commerceAgentPage).not.toContain("CatalogItemGrid");
+    expect(commerceAgentPage).not.toContain("ReservationAccess");
+    expect(commerceAgentPage).not.toContain("tabHref");
+    expect(globalCss).toContain(".uyao-agent-shell");
+  });
+
   it("continues the cabinet hero into a bounded search conversation", () => {
-    expect(appPage).toContain('presentation="cabinet"');
-    expect(searchInput).toContain('presentation?: "default" | "cabinet";');
+    expect(searchInput).toContain('presentation?: "default" | "cabinet" | "agent";');
     expect(searchInput).toContain("medicine-cabinet-dialogue-layer");
     expect(searchInput).toContain("continueConversation");
     expect(searchInput).toContain("readLatestShopSearchIntakeDraft");

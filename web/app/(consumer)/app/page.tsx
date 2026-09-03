@@ -4,7 +4,6 @@ import Link from "next/link";
 import { AreaSwitch } from "@/components/AreaSwitch";
 import { JsonLd } from "@/components/JsonLd";
 import { ProductSwipeShowcase } from "@/components/ProductSwipeShowcase";
-import { SearchInput } from "@/components/SearchInput";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { PartnerMarquee } from "@/components/landing/PartnerMarquee";
@@ -171,7 +170,12 @@ export default async function HomePage({
                 ? "Tell uYao what your household needs. We organize the request, then a pharmacist confirms the next step."
                 : "你說家裡需要什麼，uYao 整理需求，再由藥師確認下一步。"}
             </p>
-            <SearchInput size="xl" area={area} presentation="cabinet" submitLabel={locale === "en" ? "Ask uYao" : "問 uYao"} className="medicine-cabinet-input mt-5 w-full shadow-none" />
+            <Link
+              href={`${localizedPath("/agent", locale)}?area=${area}`}
+              className="action-primary mt-5 min-h-14 px-6 text-[15px] sm:px-8"
+            >
+              {locale === "en" ? "Open uYao Agent →" : "打開 uYao Agent →"}
+            </Link>
             <div className="mt-3 md:hidden">
               <AreaSwitch area={area} preservePath locatable compact />
             </div>
