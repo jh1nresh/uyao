@@ -864,6 +864,20 @@ html[data-theme="dark"] .theme-logo-dark {
   object-position: center;
 }
 
+.product-showcase-rail {
+  overscroll-behavior-inline: contain;
+  scrollbar-width: none;
+  cursor: grab;
+}
+
+.product-showcase-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.product-showcase-rail[data-dragging="true"] {
+  cursor: grabbing;
+}
+
 @media (max-width: 767px) {
   .product-showcase-stage {
     height: 14rem;
