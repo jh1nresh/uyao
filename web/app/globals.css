@@ -378,6 +378,10 @@ html[data-theme="dark"] .theme-logo-dark {
   background: rgb(var(--color-paper) / 0.1);
 }
 
+.cabinet-header-band :focus-visible {
+  outline-color: rgb(var(--color-paper));
+}
+
 .cabinet-header-language {
   color: rgb(var(--color-paper));
   text-shadow: 0 1px 8px rgb(28 39 34 / 0.28);
