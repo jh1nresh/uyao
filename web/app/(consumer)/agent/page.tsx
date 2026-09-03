@@ -37,16 +37,35 @@ export default async function AgentPage({
   return (
     <div className="uyao-agent-shell min-h-[100dvh] text-ink">
       <header className="sticky top-0 z-40 border-b border-line bg-paper/80 backdrop-blur-md">
-        <div className="mx-auto flex h-16 w-full max-w-[880px] items-center justify-between px-4 sm:px-6">
+        <div className="mx-auto grid h-16 w-full max-w-[880px] grid-cols-[1fr_auto_1fr] items-center gap-2 px-3 sm:gap-4 sm:px-6">
           <Link
             href={localizedPath("/", locale)}
             aria-label={english ? "Back to uYao homepage" : "回到 uYao 首頁"}
-            className="flex min-h-11 items-center gap-3 text-[15px] font-bold text-ink no-underline"
+            className="flex min-h-11 items-center gap-2 text-[15px] font-bold text-ink no-underline"
           >
             <BrandMark size={30} />
-            <span>uYao Agent</span>
+            <span className="hidden sm:inline">uYao</span>
           </Link>
-          <div className="flex items-center gap-2">
+
+          <nav
+            aria-label={english ? "uYao destinations" : "uYao 主要導覽"}
+            className="flex h-full items-stretch justify-center"
+          >
+            <Link
+              href={localizedPath("/", locale)}
+              className="inline-flex min-h-11 items-center border-b-2 border-transparent px-3 text-[13px] font-semibold text-muted no-underline transition-colors hover:border-line-strong hover:text-ink sm:px-4"
+            >
+              Shop
+            </Link>
+            <span
+              aria-current="page"
+              className="inline-flex min-h-11 items-center border-b-2 border-forest px-3 text-[13px] font-bold text-forest sm:px-4"
+            >
+              Agent
+            </span>
+          </nav>
+
+          <div className="flex items-center justify-self-end gap-1 sm:gap-2">
             <ThemeToggle locale={locale} />
             <LanguageSwitch />
           </div>

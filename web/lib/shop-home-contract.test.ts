@@ -149,6 +149,10 @@ describe("household medicine storefront homepage", () => {
 
   it("keeps uYao Agent as one conversation surface", () => {
     expect(commerceAgentPage).toContain("uYao Agent");
+    expect(commerceAgentPage).toContain("uYao 主要導覽");
+    expect(commerceAgentPage).toContain('href={localizedPath("/", locale)}');
+    expect(commerceAgentPage).toContain('aria-current="page"');
+    expect(commerceAgentPage).toContain("Shop");
     expect(commerceAgentPage).toContain('presentation="agent"');
     expect(commerceAgentPage).toContain("<CommerceAgent");
     expect(commerceAgentPage).not.toContain("CatalogItemGrid");
