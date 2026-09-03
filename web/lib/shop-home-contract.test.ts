@@ -127,9 +127,14 @@ describe("household medicine storefront homepage", () => {
     expect(appPage).toContain('activeWorkspace="shop"');
     expect(appPage).toContain('className="medicine-cabinet-stage relative"');
     expect(siteHeader).toContain('tone?: "default" | "cabinet";');
-    expect(siteHeader).toContain('"cabinet-overlay-header absolute inset-x-0 top-0 z-40 bg-transparent"');
+    expect(siteHeader).toContain('"cabinet-overlay-header cabinet-header-band absolute inset-x-0 top-0 z-40"');
+    expect(siteHeader).toContain("cabinet-workspace-nav");
+    expect(siteHeader).toContain("cabinet-workspace-tab");
     expect(siteHeader).toContain("cabinet-header-controls flex items-center");
     expect(siteHeader).toContain('cabinetTone ? "h-16 sm:h-[68px]"');
+    expect(globalCss).toContain(".cabinet-header-band");
+    expect(globalCss).toContain("background: rgb(var(--color-forest) / 0.88);");
+    expect(globalCss).toContain('.cabinet-workspace-tab[aria-current="page"]');
     expect(globalCss).toContain(".cabinet-header-controls > div > div");
     expect(globalCss).toContain("background: transparent;");
   });
