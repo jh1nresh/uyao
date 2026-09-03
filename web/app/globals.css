@@ -707,15 +707,14 @@ html[data-theme="dark"] .theme-logo-dark {
   }
 }
 
-/* The catalog follows the cabinet hero onto the same warm material plane.
-   Product colors behave like reflected light behind the active packshot,
-   instead of turning the section into a separate, hard-edged color card. */
+/* The catalog follows the cabinet hero onto the same warm paper plane.
+   Ivory/paper tokens stay scoped here — do not lift them onto :root. */
 .medicine-cabinet-showcase-section {
-  background-color: #ead8b8;
+  background-color: #f8f4e9;
   background-image:
-    radial-gradient(ellipse 48% 22% at 28% 8%, rgb(255 246 224 / 0.58), transparent 72%),
-    linear-gradient(90deg, rgb(84 57 30 / 0.06), transparent 12%, transparent 88%, rgb(84 57 30 / 0.05)),
-    linear-gradient(180deg, #dcc198 0, #ead8b8 16rem, #f8f4e9 48rem);
+    radial-gradient(ellipse 48% 22% at 28% 8%, rgb(255 246 224 / 0.46), transparent 72%),
+    linear-gradient(90deg, rgb(84 57 30 / 0.04), transparent 12%, transparent 88%, rgb(84 57 30 / 0.03)),
+    linear-gradient(180deg, #ead8b8 0, #f3ead4 8rem, #f8f4e9 22rem);
 }
 
 .medicine-cabinet-guide {
@@ -843,9 +842,9 @@ html[data-theme="dark"] .theme-logo-dark {
 
   .medicine-cabinet-showcase-section {
     background-image:
-      radial-gradient(ellipse 72% 18% at 22% 5%, rgb(255 246 224 / 0.52), transparent 74%),
-      linear-gradient(90deg, rgb(84 57 30 / 0.05), transparent 18%, transparent 82%, rgb(84 57 30 / 0.04)),
-      linear-gradient(180deg, #dcc198 0, #ead8b8 13rem, #f8f4e9 39rem);
+      radial-gradient(ellipse 72% 18% at 22% 5%, rgb(255 246 224 / 0.4), transparent 74%),
+      linear-gradient(90deg, rgb(84 57 30 / 0.04), transparent 18%, transparent 82%, rgb(84 57 30 / 0.03)),
+      linear-gradient(180deg, #ead8b8 0, #f3ead4 7rem, #f8f4e9 18rem);
   }
 
   .medicine-cabinet-conversation-stage::before {

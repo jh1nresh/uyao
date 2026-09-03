@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import { AreaSwitch } from "@/components/AreaSwitch";
 import { JsonLd } from "@/components/JsonLd";
-import { ProductSwipeShowcase } from "@/components/ProductSwipeShowcase";
+import { CatalogBrowse } from "@/components/CatalogBrowse";
 import { SearchInput } from "@/components/SearchInput";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -12,7 +12,6 @@ import { allDrugs, toAreaSlug } from "@/lib/data";
 import { drugCopy, localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
 import { PARTNER_STORE_ITEMS } from "@/lib/partner-stores";
-import { productShowcaseItems } from "@/lib/product-showcase";
 import {
   CONSUMER_DESCRIPTION,
   SITE_URL,
@@ -118,8 +117,7 @@ export default async function HomePage({
   const locale = await getRequestLocale();
   const area = toAreaSlug(rawArea);
   const drugs = allDrugs();
-  const showcaseItems = productShowcaseItems(drugs);
-  // 上層櫃格只放少量真實品項作為瀏覽入口；完整目錄仍由下方入口承接，
+  // 上層櫃格只放少量真實品項作為瀏覽入口；完整目錄由下方網格承接，
   // 避免把陳列品誤讀成搜尋結果或即時推薦。
   const shelfDrugs = HOME_CABINET_SLUGS.flatMap((slug) => {
     const drug = drugs.find((item) => item.slug === slug);
@@ -185,15 +183,15 @@ export default async function HomePage({
         evidenceHref={`${SITE_URL}${locale === "en" ? "/en" : "/zh-tw"}/evidence#partners`}
       />
 
-      {/* 首頁用精選品項展示互動；完整目錄保留單一明確出口。 */}
+      {/* 首頁用目錄網格瀏覽；完整分類頁仍是單一明確出口。 */}
       <section id="catalog" className="medicine-cabinet-showcase-section scroll-mt-20 overflow-hidden">
         <div className="shop-shell py-12 sm:py-16">
-          <ProductSwipeShowcase
-            items={showcaseItems}
-            eyebrow={locale === "en" ? `${showcaseItems.length} FEATURED ITEMS` : `精選 ${showcaseItems.length} 項`}
+          <CatalogBrowse
+            drugs={drugs}
+            area={area}
+            locale={locale}
+            eyebrow={locale === "en" ? `${drugs.length} CATALOG ITEMS` : `目錄 ${drugs.length} 項`}
             title={locale === "en" ? "Browse first. Let uYao ask next." : "先逛品項，再交給 uYao 去問。"}
-            hrefPrefix={localizedPath("/drug", locale)}
-            hrefQuery={`?area=${area}`}
           />
           <div className="mt-6 flex justify-end">
             <Link

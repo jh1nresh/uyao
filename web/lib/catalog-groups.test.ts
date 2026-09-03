@@ -35,6 +35,10 @@ describe("合作藥局品項瀏覽", () => {
       ]));
     expect(filterCatalogDrugs(allDrugs(), { query: "中美醫藥" }))
       .toEqual(expect.arrayContaining([expect.objectContaining({ slug: "cm-sheliwei-softgel" })]));
+    expect(filterCatalogDrugs(allDrugs(), { query: "Elgucare" }))
+      .toEqual(expect.arrayContaining([expect.objectContaining({ slug: "greenplus-elgucare" })]));
+    expect(filterCatalogDrugs(allDrugs(), { query: "Partner-provided product composition" }))
+      .toEqual(expect.arrayContaining([expect.objectContaining({ slug: "greenplus-elgucare" })]));
   });
 
   it("完整目錄每頁最多十二項，超出範圍時落在有效頁", () => {

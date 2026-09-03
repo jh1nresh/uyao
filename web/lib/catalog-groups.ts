@@ -118,9 +118,11 @@ export function filterCatalogDrugs(
 
     const searchable = [
       drug.name,
+      drug.nameEn ?? "",
       ...drug.aliases,
       ...drug.ingredients,
       drug.nutritionFocus,
+      drug.nutritionFocusEn,
       ...drug.searchTerms,
       drug.manufacturer ?? "",
       drug.origin ?? "",
