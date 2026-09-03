@@ -170,7 +170,7 @@ export default async function HomePage({
                 ? "Tell uYao what your household needs. We organize the request, then a pharmacist confirms the next step."
                 : "你說家裡需要什麼，uYao 整理需求，再由藥師確認下一步。"}
             </p>
-            <SearchInput size="xl" area={area} submitLabel={locale === "en" ? "Ask uYao" : "問 uYao"} className="medicine-cabinet-input mt-5 w-full shadow-none" />
+            <SearchInput size="xl" area={area} presentation="cabinet" submitLabel={locale === "en" ? "Ask uYao" : "問 uYao"} className="medicine-cabinet-input mt-5 w-full shadow-none" />
             <div className="mt-3 md:hidden">
               <AreaSwitch area={area} preservePath locatable compact />
             </div>
