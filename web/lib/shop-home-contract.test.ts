@@ -72,9 +72,15 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).toContain("motion-reduce:transition-none");
     expect(appPage).toContain("medicine-cabinet-showcase-section");
     expect(productSwipeShowcase).toContain("product-showcase-stage");
+    expect(productSwipeShowcase).toContain("product-showcase-product");
+    expect(productSwipeShowcase).toContain("product-showcase-packshot");
+    expect(productSwipeShowcase).toContain("product-showcase-scene-light");
+    expect(productSwipeShowcase).toContain("useState(1)");
     expect(productSwipeShowcase).not.toContain('clipPath: "polygon');
     expect(productSwipeShowcase).not.toContain("--showcase-accent");
     expect(globalCss).toContain(".product-showcase-stage::after");
+    expect(globalCss).toContain(".product-showcase-stage::before");
+    expect(globalCss).toContain("/brand/uyao-product-cabinet-bays-v1.webp");
     expect(partnerMarquee).toContain("cabinet-partner-marquee");
     expect(partnerMarquee).toContain("cabinet-marquee-edge-left");
     expect(partnerMarquee).not.toContain("from-paper to-transparent");
