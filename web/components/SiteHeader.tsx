@@ -43,7 +43,7 @@ export async function SiteHeader({
     : "border-transparent font-semibold text-muted hover:border-line-strong hover:text-ink";
   return (
     <header className={cabinetTone
-      ? "cabinet-overlay-header absolute inset-x-0 top-0 z-40 bg-transparent"
+      ? "cabinet-overlay-header cabinet-header-band absolute inset-x-0 top-0 z-40"
       : "sticky top-0 z-40 border-b border-line-strong bg-ivory/95 backdrop-blur-sm"
     }>
       <div className={`shop-shell items-center ${
@@ -92,12 +92,12 @@ export async function SiteHeader({
         {showWorkspaceNavigation && (
           <nav
             aria-label={locale === "en" ? "uYao destinations" : "uYao 主要導覽"}
-            className="flex h-full items-stretch justify-center"
+            className="cabinet-workspace-nav flex h-full items-stretch justify-center"
           >
             <Link
               href={localizedPath("/", locale)}
               aria-current={activeWorkspace === "shop" ? "page" : undefined}
-              className={`inline-flex min-h-11 items-center border-b-2 px-3 text-[13px] no-underline transition-colors sm:px-4 ${
+              className={`cabinet-workspace-tab inline-flex min-h-11 items-center border-b-2 px-3 text-[13px] no-underline transition-colors sm:px-4 ${
                 activeWorkspace === "shop" ? workspaceActiveClass : workspaceInactiveClass
               }`}
             >
@@ -106,7 +106,7 @@ export async function SiteHeader({
             <Link
               href={localizedPath("/agent", locale)}
               aria-current={activeWorkspace === "agent" ? "page" : undefined}
-              className={`inline-flex min-h-11 items-center border-b-2 px-3 text-[13px] no-underline transition-colors sm:px-4 ${
+              className={`cabinet-workspace-tab inline-flex min-h-11 items-center border-b-2 px-3 text-[13px] no-underline transition-colors sm:px-4 ${
                 activeWorkspace === "agent" ? workspaceActiveClass : workspaceInactiveClass
               }`}
             >
