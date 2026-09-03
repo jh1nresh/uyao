@@ -61,7 +61,7 @@ describe("household medicine storefront homepage", () => {
     expect(appPage).toContain("家裡的藥箱，現在會找答案");
     expect(appPage).toContain("打開 uYao，先問再出門。");
     expect(appPage).toContain("你說家裡需要什麼，uYao 整理需求，再由藥師確認下一步。");
-    expect(appPage).toContain("打開 uYao Agent →");
+    expect(appPage).toContain("詢問其他品項 →");
     expect(appPage).not.toContain("medicine-cabinet-input");
     expect(commerceAgentPage).toContain("uyao-agent-composer");
     expect(appPage).not.toContain("家裡現在需要什麼？");

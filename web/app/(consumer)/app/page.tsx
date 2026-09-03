@@ -178,7 +178,7 @@ export default async function HomePage({
                   href={`${localizedPath("/agent", locale)}?area=${area}`}
                   className="action-primary min-h-12 px-4 text-[14px] sm:min-h-14 sm:px-6 sm:text-[15px]"
                 >
-                  {locale === "en" ? "Open uYao Agent →" : "打開 uYao Agent →"}
+                  {locale === "en" ? "Ask about another item →" : "詢問其他品項 →"}
                 </Link>
                 <div className="medicine-cabinet-cell-area mt-3 md:hidden">
                   <AreaSwitch area={area} preservePath locatable compact />
