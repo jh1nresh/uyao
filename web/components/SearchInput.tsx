@@ -225,7 +225,7 @@ export function SearchInput({
         onSubmit={askAllergies}
         className={`flex items-center bg-paper transition-[border-color,box-shadow,transform] duration-200 ${
           agentPresentation
-            ? "h-16 gap-3 rounded-[18px] border border-line-strong bg-paper/90 px-2 shadow-sm sm:px-3"
+            ? "h-16 gap-3 border-y border-line-strong bg-paper px-2 transition-colors focus-within:border-forest sm:border-x sm:px-3"
             : xl
             ? "h-16 gap-3 border border-line-strong px-2 sm:h-20 sm:px-3"
             : large
@@ -296,7 +296,7 @@ export function SearchInput({
             type="submit"
             className={`action-primary flex-none ${
               agentPresentation
-                ? "h-12 rounded-[12px] px-5 text-[14px]"
+                ? "h-12 rounded-none px-5 text-[14px]"
                 : xl ? "h-14 px-5 text-[16px] sm:px-9" : "h-12 px-6 text-[15px]"
             }`}
           >

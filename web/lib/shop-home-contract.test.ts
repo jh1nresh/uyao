@@ -19,6 +19,10 @@ const commerceAgentPage = readFileSync(
   join(import.meta.dirname, "..", "app", "(consumer)", "agent", "page.tsx"),
   "utf8",
 );
+const commerceAgent = readFileSync(
+  join(import.meta.dirname, "..", "components", "CommerceAgent.tsx"),
+  "utf8",
+);
 const productSwipeShowcase = readFileSync(
   join(import.meta.dirname, "..", "components", "ProductSwipeShowcase.tsx"),
   "utf8",
@@ -159,6 +163,16 @@ describe("household medicine storefront homepage", () => {
     expect(commerceAgentPage).not.toContain("ReservationAccess");
     expect(commerceAgentPage).not.toContain("tabHref");
     expect(globalCss).toContain(".uyao-agent-shell");
+  });
+
+  it("renders the Agent as a flat paper workspace", () => {
+    expect(commerceAgent).toContain("border-y border-line-strong");
+    expect(commerceAgent).toContain("uYao Agent");
+    expect(commerceAgent).not.toContain("BrandMark");
+    expect(commerceAgent).not.toContain("backdrop-blur");
+    expect(searchInput).toContain("focus-within:border-forest");
+    expect(globalCss).toContain(".uyao-agent-shell {\n  background: rgb(var(--color-ivory));\n}");
+    expect(globalCss).toContain(".uyao-agent-composer {\n  background: rgb(var(--color-paper));\n}");
   });
 
   it("continues the cabinet hero into a bounded search conversation", () => {
