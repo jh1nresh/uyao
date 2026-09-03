@@ -62,9 +62,10 @@ describe("household medicine storefront homepage", () => {
     expect(appPage).toContain("<ProductSwipeShowcase");
     expect(appPage).toContain("productShowcaseItems(drugs)");
     expect(appPage).toContain("查看全部 ${drugs.length} 項 →");
-    expect(appPage).not.toContain("精選品項是可瀏覽的目錄資料");
-    expect(appPage).not.toContain("Catalog categories");
-    expect(appPage).not.toContain("CATALOG_GROUPS");
+    expect(appPage).toContain("精選品項是可瀏覽的目錄資料");
+    expect(appPage).toContain("Catalog categories");
+    expect(appPage).toContain("CATALOG_GROUPS");
+    expect(appPage).toContain("<CatalogItemGrid");
     expect(productShowcase).toContain('drug.image?.kind === "packshot"');
     expect(productSwipeShowcase).toContain("看這一項 →");
     expect(productSwipeShowcase).toContain("rail.scrollTo");
@@ -72,9 +73,13 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).toContain("motion-reduce:transition-none");
     expect(appPage).toContain("medicine-cabinet-showcase-section");
     expect(productSwipeShowcase).toContain("product-showcase-stage");
+    expect(productSwipeShowcase).toContain("product-shelf-unit");
+    expect(productSwipeShowcase).toContain("product-shelf-bay");
     expect(productSwipeShowcase).not.toContain('clipPath: "polygon');
     expect(productSwipeShowcase).not.toContain("--showcase-accent");
     expect(globalCss).toContain(".product-showcase-stage::after");
+    expect(globalCss).toContain(".product-shelf-unit");
+    expect(globalCss).toContain(".product-shelf-bay");
     expect(partnerMarquee).toContain("cabinet-partner-marquee");
     expect(partnerMarquee).toContain("cabinet-marquee-edge-left");
     expect(partnerMarquee).not.toContain("from-paper to-transparent");
