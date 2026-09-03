@@ -361,6 +361,23 @@ html[data-theme="dark"] .theme-logo-dark {
   display: block;
 }
 
+.cabinet-header-band {
+  border-bottom: 1px solid rgb(var(--color-paper) / 0.28);
+  background: rgb(var(--color-forest) / 0.88);
+  box-shadow:
+    inset 0 -1px 0 rgb(28 39 34 / 0.2),
+    0 8px 24px rgb(28 39 34 / 0.08);
+}
+
+.cabinet-workspace-nav {
+  border-right: 1px solid rgb(var(--color-paper) / 0.2);
+  border-left: 1px solid rgb(var(--color-paper) / 0.2);
+}
+
+.cabinet-workspace-tab[aria-current="page"] {
+  background: rgb(var(--color-paper) / 0.1);
+}
+
 .cabinet-header-language {
   color: rgb(var(--color-paper));
   text-shadow: 0 1px 8px rgb(28 39 34 / 0.28);
