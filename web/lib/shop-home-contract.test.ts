@@ -176,6 +176,10 @@ describe("household medicine storefront homepage", () => {
     expect(mobileMenu).toContain("md:hidden");
     expect(mobileMenu).toContain('href={localizedPath("/", locale)}');
     expect(mobileMenu).toContain('href={localizedPath("/agent", locale)}');
+    expect(mobileMenu).toContain('{locale === "en" ? "Shop" : "找藥"}');
+    expect(mobileMenu).toContain('{locale === "en" ? "Agent" : "問藥"}');
+    expect(siteHeader).toContain('{locale === "en" ? "Shop" : "找藥"}');
+    expect(siteHeader).toContain('{locale === "en" ? "Agent" : "問藥"}');
     expect(mobileMenu).toContain("AreaSwitch");
     expect(mobileMenu).toContain("我是藥局");
     expect(globalCss).toContain(".cabinet-header-controls > div > .site-header-mobile-panel");
@@ -210,6 +214,29 @@ describe("household medicine storefront homepage", () => {
     expect(commerceAgentPage).not.toContain("ReservationAccess");
     expect(commerceAgentPage).not.toContain("tabHref");
     expect(globalCss).toContain(".uyao-agent-shell");
+  });
+
+  it("keeps the allergy prompt on the flat paper system", () => {
+    expect(globalCss).toContain("/* Allergy prompt uses the flat paper system");
+    expect(globalCss).toContain(".allergy-dialog-panel {\n  overflow: hidden;\n  border-color: rgb(var(--color-line-strong)) !important;\n  border-radius: 0;\n  background: rgb(var(--color-paper));");
+    expect(globalCss).not.toContain("backdrop-filter: blur(30px)");
+    expect(globalCss).not.toContain("border-radius: 30px");
+    expect(globalCss).not.toContain("border-radius: 17px");
+    expect(globalCss).not.toContain("border-radius: 999px");
+  });
+
+  it("makes the pickup receipt the primary reservation success action", () => {
+    const reserveSheet = readFileSync(
+      join(import.meta.dirname, "..", "components", "ReserveSheet.tsx"),
+      "utf8",
+    );
+    const receiptIdx = reserveSheet.indexOf('className="action-primary h-[46px] px-3.5 text-center text-[14px] font-medium"');
+    const directionsIdx = reserveSheet.indexOf('className="action-secondary h-[46px] flex-1 px-3 text-sm font-medium"');
+    expect(receiptIdx).toBeGreaterThan(-1);
+    expect(directionsIdx).toBeGreaterThan(-1);
+    expect(receiptIdx).toBeLessThan(directionsIdx);
+    expect(reserveSheet).toContain('locale === "en" ? "Open pickup receipt →"');
+    expect(reserveSheet).toContain('locale === "en" ? "Open directions"');
   });
 
   it("renders the Agent as a flat paper workspace", () => {

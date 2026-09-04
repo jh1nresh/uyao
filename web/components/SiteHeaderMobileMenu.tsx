@@ -106,7 +106,7 @@ export function SiteHeaderMobileMenu({
               }`}
               onClick={() => setOpen(false)}
             >
-              Shop
+              {locale === "en" ? "Shop" : "找藥"}
             </Link>
             <Link
               href={localizedPath("/agent", locale)}
@@ -118,7 +118,7 @@ export function SiteHeaderMobileMenu({
               }`}
               onClick={() => setOpen(false)}
             >
-              Agent
+              {locale === "en" ? "Agent" : "問藥"}
             </Link>
           </nav>
         )}
