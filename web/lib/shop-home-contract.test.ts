@@ -157,11 +157,26 @@ describe("household medicine storefront homepage", () => {
     expect(siteHeader).toContain("cabinet-workspace-tab");
     expect(siteHeader).toContain("cabinet-header-controls flex items-center");
     expect(siteHeader).toContain('cabinetTone ? "h-16 sm:h-[68px]"');
+    expect(siteHeader).toContain("SiteHeaderMobileMenu");
+    expect(siteHeader).toContain("hidden h-full items-stretch justify-center md:flex");
     expect(globalCss).toContain(".cabinet-header-band");
     expect(globalCss).toContain("background: rgb(var(--color-forest) / 0.88);");
     expect(globalCss).toContain('.cabinet-workspace-tab[aria-current="page"]');
     expect(globalCss).toContain(".cabinet-header-controls > div > div");
     expect(globalCss).toContain("background: transparent;");
+  });
+
+  it("keeps Shop and Agent reachable from a mobile hamburger disclosure", () => {
+    const mobileMenu = readFileSync(
+      join(import.meta.dirname, "..", "components", "SiteHeaderMobileMenu.tsx"),
+      "utf8",
+    );
+    expect(mobileMenu).toContain('aria-expanded={open}');
+    expect(mobileMenu).toContain("md:hidden");
+    expect(mobileMenu).toContain('href={localizedPath("/", locale)}');
+    expect(mobileMenu).toContain('href={localizedPath("/agent", locale)}');
+    expect(mobileMenu).toContain("AreaSwitch");
+    expect(mobileMenu).toContain("我是藥局");
   });
 
   it("does not render the early-access banner above consumer routes", () => {
