@@ -66,7 +66,8 @@ describe("household medicine storefront homepage", () => {
     expect(appPage).toContain("medicine-cabinet-cell-ask");
     expect(appPage).toContain("家裡的藥箱，現在會找答案");
     expect(appPage).toContain("打開 uYao，先問再出門。");
-    expect(appPage).toContain("你說家裡需要什麼，uYao 整理需求，再由藥師確認下一步。");
+    expect(appPage).toContain("在框裡問 uYao 會進入 Agent；已知品項可直接逛下方藥櫃。");
+    expect(appPage).toContain("Ask uYao in the box — that opens Agent. Browse the cabinet below when you already know the item.");
     expect(appPage).toContain("medicine-cabinet-input");
     expect(searchInput).toContain("hasRedirectedInputRef");
     expect(searchInput).toContain("INPUT_REDIRECT_DELAY_MS");

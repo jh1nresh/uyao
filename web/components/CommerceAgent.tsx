@@ -240,6 +240,18 @@ export function CommerceAgent({
         )}
       </div>
 
+      {turns.length === 0 && !loading && !error && (
+        <p className="mb-3 max-w-[680px] text-pretty text-[13px] leading-[1.6] text-muted">
+          {english
+            ? "Ask in Agent for a grounded next step. To browse the photographed cabinet instead, go back to Shop."
+            : "在 Agent 提問，取得有依據的下一步。若要逛拍攝藥櫃目錄，請回到找藥。"}
+          {" "}
+          <Link href={localizedPath("/", locale)} className="font-bold text-forest no-underline hover:underline">
+            {english ? "Back to Shop" : "回到找藥"}
+          </Link>
+        </p>
+      )}
+
       <div className="sticky bottom-0 bg-ivory pb-[calc(1rem+env(safe-area-inset-bottom))] pt-2">
         <form onSubmit={submit} className="flex items-end gap-2 border-y border-line-strong bg-paper p-2 transition-colors focus-within:border-forest sm:border-x">
           <label htmlFor="uyao-agent-question" className="sr-only">
