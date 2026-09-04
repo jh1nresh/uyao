@@ -8,7 +8,6 @@ import { SearchInput } from "@/components/SearchInput";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { PartnerMarquee } from "@/components/landing/PartnerMarquee";
-import { CATALOG_GROUPS } from "@/lib/catalog-groups";
 import { allDrugs, toAreaSlug } from "@/lib/data";
 import { drugCopy, localizedPath } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
@@ -207,7 +206,7 @@ export default async function HomePage({
         evidenceHref={`${SITE_URL}${locale === "en" ? "/en" : "/zh-tw"}/evidence#partners`}
       />
 
-      {/* 首頁用精選品項展示互動；完整目錄與分類保留明確出口。 */}
+      {/* 首頁用精選品項展示互動；完整目錄以「查看全部」為出口，分類篩選留在目錄頁。 */}
       <section id="catalog" className="medicine-cabinet-showcase-section scroll-mt-20 overflow-hidden">
         <div className="shop-shell py-12 sm:py-16">
           <ProductSwipeShowcase
@@ -231,17 +230,6 @@ export default async function HomePage({
                 {locale === "en" ? `View all ${drugs.length} items →` : `查看全部 ${drugs.length} 項 →`}
               </Link>
             </div>
-            <nav aria-label={locale === "en" ? "Catalog categories" : "品項分類"} className="mt-5 flex overflow-x-auto border-y border-line sm:mt-2.5">
-              {CATALOG_GROUPS.map((group) => (
-                <Link
-                  key={group.slug}
-                  href={`${localizedPath("/category/partner-item", locale)}?area=${area}&group=${group.slug}`}
-                  className="inline-flex min-h-12 shrink-0 items-center border-r border-line px-4 text-[13px] font-semibold text-forest no-underline transition-colors hover:bg-surface sm:px-5 sm:text-[14px]"
-                >
-                  {locale === "en" ? group.nameEn : group.name}
-                </Link>
-              ))}
-            </nav>
           </div>
         </div>
       </section>
