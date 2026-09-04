@@ -2,30 +2,29 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useLocale } from "./LocaleProvider";
 import { drugCopy } from "@/lib/i18n";
 import type { ShowcaseItem } from "@/lib/product-showcase";
 
 /**
- * 品項橫向展示：每一張完成的實拍藥櫃整幅入鏡，櫃格、進深與鄰格包裝
- * 都在照片裡，瀏覽器只負責左右換主角。不要裁成單格再用 CSS 木條拼接。
+ * 品項展示：每一張完成的實拍藥櫃整幅入鏡，櫃格與鄰格包裝都在照片裡。
+ * 換主角用淡入淡出，不要把兩張整幅櫃景橫向對切滑過 —— 那會露出木紋接縫，
+ * 滑起來不順。互動：觸控／滑鼠滑動、鍵盤方向鍵、舞台左右箭頭鈕。
  *
- * 消費端仍不顯示價格，這一排只用來瀏覽目錄，不是結帳漏斗。
- *
- * 互動一律三條路都通：觸控滑動（pointer drag）、左右鍵、下方箭頭鈕。
+ * 品名導覽仍靠上方 pill rail；箭頭只掛在櫃景兩側，方便一眼換項。
  */
 
 export type { ShowcaseItem } from "@/lib/product-showcase";
 
+const SWIPE_THRESHOLD = 48;
 const DRAG_THRESHOLD = 6;
 
 type DragState = {
   pointerId: number;
   startX: number;
   startY: number;
-  startScrollLeft: number;
 };
 
 export function ProductSwipeShowcase({
@@ -52,56 +51,16 @@ export function ProductSwipeShowcase({
   const activeRef = useRef(0);
   const dragRef = useRef<DragState | null>(null);
   const didDragRef = useRef(false);
-  const scrollFrameRef = useRef<number | null>(null);
-  const sceneRailRef = useRef<HTMLDivElement>(null);
-  const bayRefs = useRef<Array<HTMLDivElement | null>>([]);
   const pillRailRef = useRef<HTMLDivElement>(null);
   const pillRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   const count = items.length;
-  const visualItems = items.map((item, logicalIndex) => ({
-    item,
-    logicalIndex,
-    key: item.drug.slug,
-  }));
-
-  const nearestBayIndex = useCallback((rail: HTMLDivElement) => {
-    const railCenter = rail.scrollLeft + rail.clientWidth / 2;
-    let nearest = activeRef.current;
-    let nearestDistance = Number.POSITIVE_INFINITY;
-
-    rail.querySelectorAll<HTMLElement>("[data-showcase-index]").forEach((bay) => {
-      const distance = Math.abs(bay.offsetLeft + bay.clientWidth / 2 - railCenter);
-      if (distance < nearestDistance) {
-        nearest = Number(bay.dataset.showcaseIndex);
-        nearestDistance = distance;
-      }
-    });
-
-    return nearest;
-  }, []);
-
-  const syncActive = useCallback(() => {
-    const rail = sceneRailRef.current;
-    if (!rail || rail.clientWidth === 0) return;
-    const next = nearestBayIndex(rail);
-    if (next === activeRef.current) return;
-    activeRef.current = next;
-    setActive(next);
-  }, [nearestBayIndex]);
 
   const go = useCallback((next: number) => {
-    const rail = sceneRailRef.current;
-    if (!rail || count === 0) return;
+    if (count === 0) return;
     const resolved = ((next % count) + count) % count;
-    const bay = bayRefs.current[resolved];
-    if (!bay) return;
-    rail.scrollTo({
-      left: bay.offsetLeft - (rail.clientWidth - bay.clientWidth) / 2,
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? "auto"
-        : "smooth",
-    });
+    activeRef.current = resolved;
+    setActive(resolved);
   }, [count]);
 
   useEffect(() => {
@@ -116,42 +75,12 @@ export function ProductSwipeShowcase({
     });
   }, [active]);
 
-  useLayoutEffect(() => {
-    const rail = sceneRailRef.current;
-    if (!rail) return;
-    const centerActiveBay = () => {
-      const bay = bayRefs.current[activeRef.current];
-      if (!bay) return;
-      rail.scrollLeft = bay.offsetLeft - (rail.clientWidth - bay.clientWidth) / 2;
-    };
-    const observer = new ResizeObserver(() => {
-      centerActiveBay();
-    });
-    centerActiveBay();
-    observer.observe(rail);
-    return () => {
-      observer.disconnect();
-      if (scrollFrameRef.current !== null) cancelAnimationFrame(scrollFrameRef.current);
-    };
-  }, []);
-
-  function onScroll() {
-    if (scrollFrameRef.current !== null) return;
-    scrollFrameRef.current = requestAnimationFrame(() => {
-      scrollFrameRef.current = null;
-      syncActive();
-    });
-  }
-
-  // Touch uses the browser's native scrolling and momentum. Mouse dragging mirrors
-  // that rail instead of waiting until pointer-up and swapping an invisible image.
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
-    if (event.pointerType === "touch" || !event.isPrimary || event.button !== 0) return;
+    if (!event.isPrimary || event.button !== 0) return;
     dragRef.current = {
       pointerId: event.pointerId,
       startX: event.clientX,
       startY: event.clientY,
-      startScrollLeft: event.currentTarget.scrollLeft,
     };
     didDragRef.current = false;
   }
@@ -171,35 +100,25 @@ export function ProductSwipeShowcase({
       didDragRef.current = true;
       setIsDragging(true);
       event.currentTarget.setPointerCapture(event.pointerId);
-      event.currentTarget.style.scrollSnapType = "none";
     }
 
     event.preventDefault();
-    event.currentTarget.scrollLeft = drag.startScrollLeft - deltaX;
   }
 
-  function resetPointer(event: React.PointerEvent<HTMLDivElement>) {
+  function finishPointer(event: React.PointerEvent<HTMLDivElement>) {
     const drag = dragRef.current;
     if (!drag || drag.pointerId !== event.pointerId) return;
-    const rail = event.currentTarget;
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
+    const deltaX = event.clientX - drag.startX;
     dragRef.current = null;
+    const swiped = didDragRef.current;
     didDragRef.current = false;
     setIsDragging(false);
-    rail.style.scrollSnapType = "";
 
-    const next = nearestBayIndex(rail);
-    go(next);
-  }
-
-  function onPointerUp(event: React.PointerEvent<HTMLDivElement>) {
-    resetPointer(event);
-  }
-
-  function onPointerCancel(event: React.PointerEvent<HTMLDivElement>) {
-    resetPointer(event);
+    if (!swiped || Math.abs(deltaX) < SWIPE_THRESHOLD) return;
+    go(activeRef.current + (deltaX < 0 ? 1 : -1));
   }
 
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
@@ -253,50 +172,64 @@ export function ProductSwipeShowcase({
           ))}
         </div>
 
-        <div
-          className="product-showcase-stage relative mt-5 overflow-hidden"
-        >
+        <div className="product-showcase-stage relative mt-5 overflow-hidden">
           <div
-            ref={sceneRailRef}
             role="group"
             aria-roledescription={locale === "en" ? "carousel" : "輪播"}
             aria-label={locale === "en" ? "Featured product cabinet" : "精選品項藥櫃場景"}
             tabIndex={0}
             onKeyDown={onKeyDown}
-            onScroll={onScroll}
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
-            onPointerUp={onPointerUp}
-            onPointerCancel={onPointerCancel}
+            onPointerUp={finishPointer}
+            onPointerCancel={finishPointer}
             data-dragging={isDragging}
-            className="product-showcase-rail relative flex h-full snap-x snap-mandatory overflow-x-auto touch-pan-x touch-pan-y select-none outline-offset-4"
+            className="product-showcase-rail relative h-full touch-pan-y select-none outline-offset-4"
           >
-            {visualItems.map(({ item, logicalIndex, key }) => (
-              <div
-                key={key}
-                ref={(node) => {
-                  bayRefs.current[logicalIndex] = node;
-                }}
-                data-showcase-index={logicalIndex}
-                role="group"
-                aria-roledescription={locale === "en" ? "slide" : "投影片"}
-                aria-label={`${logicalIndex + 1} / ${count}: ${drugCopy(item.drug, locale).name}`}
-                className="product-showcase-bay relative"
-              >
-                <Image
-                  src={item.sceneSrc}
-                  alt={locale === "en"
-                    ? `Wide uYao medicine cabinet with ${drugCopy(item.drug, locale).name} featured in the center`
-                    : `以${drugCopy(item.drug, locale).name}為中央主角的 uYao 橫幅商品藥櫃`}
-                  fill
-                  sizes="(max-width: 767px) 100vw, min(100vw, 1600px)"
-                  loading={logicalIndex === 0 ? "eager" : "lazy"}
-                  draggable={false}
-                  className="product-showcase-scene"
-                />
-              </div>
-            ))}
+            {items.map((item, logicalIndex) => {
+              const nearActive = Math.abs(logicalIndex - active) <= 1
+                || (active === 0 && logicalIndex === count - 1)
+                || (active === count - 1 && logicalIndex === 0);
+              return (
+                <div
+                  key={item.drug.slug}
+                  data-showcase-index={logicalIndex}
+                  data-active={logicalIndex === active}
+                  role="group"
+                  aria-roledescription={locale === "en" ? "slide" : "投影片"}
+                  aria-label={`${logicalIndex + 1} / ${count}: ${drugCopy(item.drug, locale).name}`}
+                  aria-hidden={logicalIndex !== active}
+                  className="product-showcase-bay"
+                >
+                  <Image
+                    src={item.sceneSrc}
+                    alt={locale === "en"
+                      ? `Wide uYao medicine cabinet with ${drugCopy(item.drug, locale).name} featured in the center`
+                      : `以${drugCopy(item.drug, locale).name}為中央主角的 uYao 橫幅商品藥櫃`}
+                    fill
+                    sizes="(max-width: 767px) 100vw, min(100vw, 1600px)"
+                    priority={logicalIndex === 0}
+                    loading={nearActive ? "eager" : "lazy"}
+                    draggable={false}
+                    className="product-showcase-scene"
+                  />
+                </div>
+              );
+            })}
           </div>
+
+          <ArrowButton
+            dir="prev"
+            label={locale === "en" ? "Previous product" : "上一項"}
+            onClick={() => go(active - 1)}
+            className="product-showcase-arrow product-showcase-arrow-prev"
+          />
+          <ArrowButton
+            dir="next"
+            label={locale === "en" ? "Next product" : "下一項"}
+            onClick={() => go(active + 1)}
+            className="product-showcase-arrow product-showcase-arrow-next"
+          />
         </div>
 
         <div className="mt-5 sm:mt-1" aria-live="polite">
@@ -320,7 +253,6 @@ export function ProductSwipeShowcase({
           </div>
         </div>
 
-                {/* Nav is the pill rail above; keep one progress cue without arrow chrome. */}
         <div className="mt-5 flex items-center justify-center gap-1.5 sm:mt-2" aria-hidden>
           {items.map((item, i) => (
             <span
@@ -336,3 +268,25 @@ export function ProductSwipeShowcase({
   );
 }
 
+function ArrowButton({
+  dir,
+  label,
+  onClick,
+  className,
+}: {
+  dir: "prev" | "next";
+  label: string;
+  onClick: () => void;
+  className: string;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={label}
+      className={className}
+    >
+      <span aria-hidden>{dir === "prev" ? "‹" : "›"}</span>
+    </button>
+  );
+}

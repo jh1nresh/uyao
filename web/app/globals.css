@@ -818,7 +818,7 @@ html[data-theme="dark"] .theme-logo-dark {
   --product-showcase-bay-width: 100%;
 
   width: 100%;
-  aspect-ratio: 1774 / 373;
+  aspect-ratio: 2172 / 457;
   isolation: isolate;
   background: rgb(var(--color-ivory));
 }
@@ -829,26 +829,70 @@ html[data-theme="dark"] .theme-logo-dark {
 }
 
 .product-showcase-bay {
-  height: 100%;
+  position: absolute;
+  inset: 0;
   width: var(--product-showcase-bay-width);
-  flex: 0 0 auto;
   overflow: hidden;
-  scroll-snap-align: center;
-  scroll-snap-stop: always;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 420ms var(--ease-brand);
+}
+
+.product-showcase-bay[data-active="true"] {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 1;
 }
 
 .product-showcase-rail {
-  overscroll-behavior-inline: contain;
-  scrollbar-width: none;
+  position: relative;
+  height: 100%;
   cursor: grab;
-}
-
-.product-showcase-rail::-webkit-scrollbar {
-  display: none;
+  touch-action: pan-y;
 }
 
 .product-showcase-rail[data-dragging="true"] {
   cursor: grabbing;
+}
+
+.product-showcase-arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: flex;
+  height: 2.75rem;
+  width: 2.75rem;
+  translate: 0 -50%;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgb(var(--color-line-strong));
+  background: rgb(var(--color-paper) / 0.92);
+  color: rgb(var(--color-ink-2));
+  font-size: 1.25rem;
+  line-height: 1;
+  transition:
+    border-color 200ms var(--ease-brand),
+    color 200ms var(--ease-brand),
+    background-color 200ms var(--ease-brand);
+}
+
+.product-showcase-arrow:hover {
+  border-color: rgb(var(--color-forest));
+  color: rgb(var(--color-forest));
+}
+
+.product-showcase-arrow-prev {
+  left: 0.5rem;
+}
+
+.product-showcase-arrow-next {
+  right: 0.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-showcase-bay {
+    transition: none;
+  }
 }
 
 @media (max-width: 767px) {
@@ -857,6 +901,19 @@ html[data-theme="dark"] .theme-logo-dark {
 
     height: 15.5rem;
     aspect-ratio: auto;
+  }
+
+  .product-showcase-arrow {
+    height: 2.5rem;
+    width: 2.5rem;
+  }
+
+  .product-showcase-arrow-prev {
+    left: 0.35rem;
+  }
+
+  .product-showcase-arrow-next {
+    right: 0.35rem;
   }
 
   .medicine-cabinet-hero {

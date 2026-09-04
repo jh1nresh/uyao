@@ -87,30 +87,33 @@ describe("household medicine storefront homepage", () => {
     expect(appPage).toContain("CATALOG_GROUPS");
     expect(productShowcase).toContain('drug?.image?.kind === "packshot"');
     expect(productSwipeShowcase).toContain("看這一項 →");
-    expect(productSwipeShowcase).toContain("rail.scrollTo");
     expect(productSwipeShowcase).not.toContain("scrollIntoView");
+    expect(productSwipeShowcase).not.toContain("bay.offsetLeft - (rail.clientWidth - bay.clientWidth) / 2");
     expect(productSwipeShowcase).toContain("motion-reduce:transition-none");
     expect(appPage).toContain("medicine-cabinet-showcase-section");
     expect(productSwipeShowcase).toContain("product-showcase-stage");
     expect(productSwipeShowcase).toContain("product-showcase-rail");
     expect(productSwipeShowcase).toContain("product-showcase-bay");
-    expect(productSwipeShowcase).toContain("overflow-x-auto");
-    expect(productSwipeShowcase).toContain("snap-mandatory");
-    expect(productSwipeShowcase).toContain("scrollLeft = drag.startScrollLeft - deltaX");
-    expect(productSwipeShowcase).toContain("bay.offsetLeft + bay.clientWidth / 2 - railCenter");
-    expect(productSwipeShowcase).toContain("bay.offsetLeft - (rail.clientWidth - bay.clientWidth) / 2");
+    expect(productSwipeShowcase).toContain("product-showcase-arrow");
+    expect(productSwipeShowcase).toContain("product-showcase-arrow-prev");
+    expect(productSwipeShowcase).toContain("product-showcase-arrow-next");
+    expect(productSwipeShowcase).not.toContain("snap-mandatory");
+    expect(productSwipeShowcase).not.toContain("scrollLeft = drag.startScrollLeft - deltaX");
+    expect(productSwipeShowcase).not.toContain("snap-x");
+    expect(productSwipeShowcase).toContain("SWIPE_THRESHOLD");
+    expect(productSwipeShowcase).toContain("go(activeRef.current + (deltaX < 0 ? 1 : -1))");
     expect(productSwipeShowcase).not.toContain("indexedItems.slice(-2).map");
     expect(productSwipeShowcase).not.toContain("key: `leading-");
     expect(productSwipeShowcase).toContain("data-showcase-index={logicalIndex}");
-    expect(productSwipeShowcase).toContain("loading={logicalIndex === 0 ? \"eager\" : \"lazy\"}");
+    expect(productSwipeShowcase).toContain('data-active={logicalIndex === active}');
+    expect(productSwipeShowcase).toContain("loading={nearActive ? \"eager\" : \"lazy\"}");
+    expect(productSwipeShowcase).toContain("priority={logicalIndex === 0}");
     expect(productSwipeShowcase).not.toContain('className="relative h-full w-full shrink-0 snap-center"');
     expect(productSwipeShowcase).toContain('from "next/image"');
     expect(productSwipeShowcase).toContain("item.sceneSrc");
     expect(productSwipeShowcase).toContain("product-showcase-scene");
     expect(productSwipeShowcase).toContain('sizes="(max-width: 767px) 100vw, min(100vw, 1600px)"');
     expect(productSwipeShowcase).not.toContain("unoptimized");
-    expect(productSwipeShowcase).not.toContain("transition-opacity");
-    expect(productSwipeShowcase).not.toContain("opacity-0");
     expect(productSwipeShowcase).not.toContain("product-shelf-unit");
     expect(productSwipeShowcase).not.toContain("product-shelf-bay");
     expect(productSwipeShowcase).toContain("useState(0)");
@@ -119,9 +122,12 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).not.toContain('clipPath: "polygon');
     expect(productSwipeShowcase).not.toContain("--showcase-accent");
     expect(globalCss).toContain(".product-showcase-stage");
-    expect(globalCss).toContain("aspect-ratio: 1774 / 373");
+    expect(globalCss).toContain("aspect-ratio: 2172 / 457");
     expect(globalCss).toContain(".product-showcase-scene");
     expect(globalCss).toContain(".product-showcase-bay");
+    expect(globalCss).toContain(".product-showcase-bay[data-active=\"true\"]");
+    expect(globalCss).toContain("transition: opacity 420ms var(--ease-brand)");
+    expect(globalCss).toContain(".product-showcase-arrow");
     expect(globalCss).toContain("--product-showcase-bay-width: 100%");
     expect(globalCss).not.toContain("--product-showcase-bay-width: 28.525vw");
     expect(globalCss).not.toContain("--product-showcase-bay-width: 18.993rem");
@@ -240,12 +246,13 @@ describe("household medicine storefront homepage", () => {
     expect(reserveSheet).toContain('locale === "en" ? "Open directions"');
   });
 
-  it("collapses showcase chrome to pill rail + progress cue with brand tokens", () => {
-    expect(productSwipeShowcase).not.toContain("ArrowButton");
+  it("keeps showcase pills and side arrows on brand tokens with a progress cue", () => {
+    expect(productSwipeShowcase).toContain("ArrowButton");
+    expect(productSwipeShowcase).toContain("product-showcase-arrow");
     expect(productSwipeShowcase).not.toContain("rounded-full");
     expect(productSwipeShowcase).not.toMatch(/#[0-9a-fA-F]{6}/);
     expect(productSwipeShowcase).toContain("border-forest bg-forest text-paper");
-    expect(productSwipeShowcase).toContain('aria-hidden');
+    expect(productSwipeShowcase).toContain("aria-hidden");
   });
 
   it("keeps a short mobile hero lead and defers the partner marquee", () => {
