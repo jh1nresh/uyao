@@ -92,25 +92,17 @@ export function SiteHeaderMobileMenu({
       <div
         id={panelId}
         hidden={!open}
-        className={`absolute right-0 top-[calc(100%+0.5rem)] z-50 w-[min(18.5rem,calc(100vw-1.5rem))] border ${
-          cabinetTone
-            ? "border-paper/30 bg-forest text-paper shadow-[0_16px_40px_rgba(28,39,34,0.35)]"
-            : "border-line-strong bg-paper text-ink shadow-[0_16px_40px_rgba(28,39,34,0.12)]"
-        }`}
+        className="site-header-mobile-panel absolute right-0 top-[calc(100%+0.5rem)] z-50 w-[min(18.5rem,calc(100vw-1.5rem))] border border-line-strong bg-paper text-ink shadow-[0_16px_40px_rgba(28,39,34,0.16)]"
       >
         {showWorkspace && (
-          <nav aria-label={destinationsLabel} className="flex flex-col border-b border-inherit">
+          <nav aria-label={destinationsLabel} className="flex flex-col border-b border-line-strong">
             <Link
               href={localizedPath("/", locale)}
               aria-current={activeWorkspace === "shop" ? "page" : undefined}
               className={`inline-flex min-h-11 items-center px-4 text-[14px] no-underline ${
                 activeWorkspace === "shop"
-                  ? cabinetTone
-                    ? "bg-paper/12 font-bold text-paper"
-                    : "bg-surface font-bold text-forest"
-                  : cabinetTone
-                    ? "font-semibold text-paper/85 hover:bg-paper/10 hover:text-white"
-                    : "font-semibold text-muted hover:bg-surface hover:text-ink"
+                  ? "bg-surface font-bold text-forest"
+                  : "font-semibold text-muted hover:bg-surface hover:text-ink"
               }`}
               onClick={() => setOpen(false)}
             >
@@ -121,12 +113,8 @@ export function SiteHeaderMobileMenu({
               aria-current={activeWorkspace === "agent" ? "page" : undefined}
               className={`inline-flex min-h-11 items-center px-4 text-[14px] no-underline ${
                 activeWorkspace === "agent"
-                  ? cabinetTone
-                    ? "bg-paper/12 font-bold text-paper"
-                    : "bg-surface font-bold text-forest"
-                  : cabinetTone
-                    ? "font-semibold text-paper/85 hover:bg-paper/10 hover:text-white"
-                    : "font-semibold text-muted hover:bg-surface hover:text-ink"
+                  ? "bg-surface font-bold text-forest"
+                  : "font-semibold text-muted hover:bg-surface hover:text-ink"
               }`}
               onClick={() => setOpen(false)}
             >
@@ -135,7 +123,7 @@ export function SiteHeaderMobileMenu({
           </nav>
         )}
 
-        <div className="border-b border-inherit px-4 py-3">
+        <div className="border-b border-line-strong px-4 py-3">
           <AreaSwitch area={area} preservePath={preserveAreaPath} locatable={locatable} compact />
         </div>
 
@@ -143,11 +131,7 @@ export function SiteHeaderMobileMenu({
           <div className="p-3">
             <Link
               href={`${SITE_URL}${localizedPath("/pharmacy", locale)}`}
-              className={`inline-flex min-h-11 w-full items-center justify-center border px-3 text-xs font-bold no-underline transition-colors ${
-                cabinetTone
-                  ? "border-paper/50 bg-transparent text-paper hover:bg-paper/12 hover:text-white"
-                  : "border-line-strong bg-paper text-forest hover:border-forest hover:bg-surface"
-              }`}
+              className="inline-flex min-h-11 w-full items-center justify-center border border-line-strong bg-paper px-3 text-xs font-bold text-forest no-underline transition-colors hover:border-forest hover:bg-surface"
               onClick={() => setOpen(false)}
             >
               {locale === "en" ? "For pharmacies" : "我是藥局"}

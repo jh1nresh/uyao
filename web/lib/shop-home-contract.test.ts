@@ -171,12 +171,14 @@ describe("household medicine storefront homepage", () => {
       join(import.meta.dirname, "..", "components", "SiteHeaderMobileMenu.tsx"),
       "utf8",
     );
+    expect(mobileMenu).toContain("site-header-mobile-panel");
     expect(mobileMenu).toContain('aria-expanded={open}');
     expect(mobileMenu).toContain("md:hidden");
     expect(mobileMenu).toContain('href={localizedPath("/", locale)}');
     expect(mobileMenu).toContain('href={localizedPath("/agent", locale)}');
     expect(mobileMenu).toContain("AreaSwitch");
     expect(mobileMenu).toContain("我是藥局");
+    expect(globalCss).toContain(".cabinet-header-controls > div > .site-header-mobile-panel");
   });
 
   it("does not render the early-access banner above consumer routes", () => {
