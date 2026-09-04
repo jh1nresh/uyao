@@ -103,7 +103,7 @@ export async function SiteHeader({
                 activeWorkspace === "shop" ? workspaceActiveClass : workspaceInactiveClass
               }`}
             >
-              Shop
+              {locale === "en" ? "Shop" : "找藥"}
             </Link>
             <Link
               href={localizedPath("/agent", locale)}
@@ -112,7 +112,7 @@ export async function SiteHeader({
                 activeWorkspace === "agent" ? workspaceActiveClass : workspaceInactiveClass
               }`}
             >
-              Agent
+              {locale === "en" ? "Agent" : "問藥"}
             </Link>
           </nav>
         )}

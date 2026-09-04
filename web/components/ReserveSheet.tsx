@@ -474,11 +474,10 @@ function SuccessBody({
       </div>
 
       {success.token && (
-        // 這張 sheet 關掉就沒了 —— 給一個可截圖、可加書籤的永久網址，
-        // 藥局確認後回來看狀態就會變。
+        // 憑證頁是唯一狀態通道（沒有簡訊／推播），必須當主 CTA。
         <a
           href={localizedPath(`/r/${success.token}`, locale)}
-          className="action-secondary px-3.5 text-center text-[14px] font-medium"
+          className="action-primary h-[46px] px-3.5 text-center text-[14px] font-medium"
         >
           {locale === "en" ? "Open pickup receipt →" : "開啟取貨憑證（可截圖保存）→"}
         </a>
@@ -490,7 +489,7 @@ function SuccessBody({
             href={target.store.mapsUrl}
             target="_blank"
             rel="noreferrer noopener"
-            className="action-primary h-[46px] flex-1 px-3 text-sm"
+            className="action-secondary h-[46px] flex-1 px-3 text-sm font-medium"
           >
             {locale === "en" ? "Open directions" : "開啟導航"}
           </a>
