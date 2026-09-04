@@ -221,17 +221,14 @@ function ReservationInbox({
         <h1>{heading}</h1>
         <div>
           <span>{english ? `${waiting.length} awaiting confirmation` : `${waiting.length} 筆等待確認`}</span>
-          <span>{english ? `${visibleReservations.length} shown` : `${visibleReservations.length} 筆目前顯示`}</span>
           <span>{english ? `${withIntake} with customer context` : `${withIntake} 筆附需求脈絡`}</span>
-          <span>{english ? "Newest first" : "最新單號在上"}</span>
-          <span>{english ? "Full phone numbers hidden" : "完整電話未顯示"}</span>
         </div>
       </div>
 
       <section className={styles.agentMessage} aria-live="polite">
         <AgentOrb id="manager" active animated={animate} />
         <div>
-          <p className={styles.sender}>{english ? "Manager Agent" : "店長 Agent"} <time>{english ? "Now" : "現在"}</time></p>
+          <p className={styles.sender}>{english ? "Advanced command · Manager Agent" : "進階指令 · 店長 Agent"} <time>{english ? "Now" : "現在"}</time></p>
           {busyCode ? (
             <div className={styles.thinkingSlot}>
               <Thinking

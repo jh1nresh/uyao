@@ -239,6 +239,29 @@ describe("household medicine storefront homepage", () => {
     expect(reserveSheet).toContain('locale === "en" ? "Open directions"');
   });
 
+  it("collapses showcase chrome to pill rail + progress cue with brand tokens", () => {
+    expect(productSwipeShowcase).not.toContain("ArrowButton");
+    expect(productSwipeShowcase).not.toContain("rounded-full");
+    expect(productSwipeShowcase).not.toMatch(/#[0-9a-fA-F]{6}/);
+    expect(productSwipeShowcase).toContain("border-forest bg-forest text-paper");
+    expect(productSwipeShowcase).toContain('aria-hidden');
+  });
+
+  it("keeps a short mobile hero lead and defers the partner marquee", () => {
+    expect(globalCss).toContain("Keep one short lead so the first viewport still carries brand meaning");
+    expect(globalCss).toContain("-webkit-line-clamp: 2");
+    expect(globalCss).toContain(".cabinet-partner-marquee");
+    expect(globalCss).toContain("margin-top: min(42vh, 18rem)");
+    expect(partnerMarquee).toContain("cabinet-partner-marquee");
+  });
+
+  it("flattens search conversation panels to solid paper", () => {
+    expect(globalCss).toContain(".medicine-cabinet-user-message");
+    expect(globalCss).toContain(".medicine-cabinet-answer-panel");
+    expect(globalCss).not.toContain("backdrop-filter: blur(18px)");
+    expect(globalCss).not.toContain("backdrop-filter: blur(14px)");
+  });
+
   it("renders the Agent as a flat paper workspace", () => {
     expect(commerceAgent).toContain("border-y border-line-strong");
     expect(commerceAgent).toContain("uYao Agent");
