@@ -13,18 +13,16 @@ import {
   type PointerEvent as ReactPointerEvent,
 } from "react";
 
-import { BrandLogo } from "@/components/BrandLogo";
-import { ThemeToggle } from "@/components/ThemeToggle";
 import { Flame } from "@/components/avatar-lab/Flame";
 import { Pepper } from "@/components/avatar-lab/Pepper";
 import { Sapling } from "@/components/avatar-lab/Sapling";
 import { Sprout } from "@/components/avatar-lab/Sprout";
 import { StaticAvatar } from "@/components/avatar-lab/StaticAvatar";
 import { CompanyFooter } from "@/components/landing/CompanyFooter";
+import { LandingNav } from "@/components/landing/LandingNav";
 import {
   FOOTER_MANAGER_TRANSFORM,
 } from "@/components/landing/footerSproutData";
-import { SHOP_URL } from "@/lib/shop";
 
 const FOOTER_EYE_CENTRE_FRACTION = (-38 + 150) / 300;
 
@@ -721,32 +719,12 @@ function FooterManager({ copy, locale, reducedMotion }: { copy: LandingCopy; loc
 export function AgentLandingExperience({ locale }: { locale: Locale }) {
   const copy = COPY[locale];
   const reducedMotion = useReducedMotion();
-  const shopUrl = `${SHOP_URL.replace(/\/$/, "")}${locale === "en" ? "/en" : "/zh-tw"}`;
   const pilotHref = locale === "en" ? "/en/pharmacy" : "/zh-tw/pharmacy";
-  const localeHref = locale === "en" ? "/zh-tw" : "/en";
-  const localeLabel = locale === "en" ? "ZH" : "EN";
   const manager = useMemo(() => copy.agents[0], [copy]);
 
   return (
     <div className="min-w-[320px] bg-ivory text-ink">
-      <nav className="sticky top-0 z-50 border-b border-line bg-ivory/95 backdrop-blur-sm">
-        <div className="mx-auto flex h-[68px] max-w-[1240px] items-center justify-between gap-4 px-5 sm:h-[78px] sm:px-8">
-          <Link href={locale === "en" ? "/en" : "/zh-tw"} className="flex min-h-11 items-center no-underline">
-            <BrandLogo height={34} />
-          </Link>
-          <div className="hidden items-center gap-7 text-[13px] lg:flex">
-            <a href="#message" className="min-h-11 content-center no-underline hover:text-green">{copy.nav[0]}</a>
-            <a href="#many" className="min-h-11 content-center no-underline hover:text-green">{copy.nav[1]}</a>
-            <a href="#jobs" className="min-h-11 content-center no-underline hover:text-green">{copy.nav[2]}</a>
-          </div>
-          <div className="flex items-center gap-2 sm:gap-3">
-            <ThemeToggle locale={locale} />
-            <Link href={localeHref} className="num inline-flex min-h-11 items-center px-2 text-[11px] text-muted no-underline hover:text-green">{localeLabel}</Link>
-            <a href={shopUrl} className="inline-flex min-h-11 items-center border border-forest px-3 text-[12px] font-bold text-forest no-underline sm:px-4 sm:text-[13px]">{copy.shop}</a>
-            <Link href={pilotHref} className="action-primary hidden text-[13px] sm:inline-flex">{copy.pilot}</Link>
-          </div>
-        </div>
-      </nav>
+      <LandingNav locale={locale} nav={copy.nav} shop={copy.shop} pilot={copy.pilot} />
 
       <main>
         <header className="mx-auto flex min-h-[500px] max-w-[1120px] flex-col items-center justify-center px-5 py-16 text-center sm:min-h-[560px] sm:px-8 sm:py-20">

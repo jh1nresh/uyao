@@ -61,10 +61,18 @@ describe("homepage SSR copy", () => {
 
   it("keeps one visual hero H1 and serves the long agent copy outside the homepage", () => {
     const landing = readFileSync(new URL("../components/landing/AgentLandingExperience.tsx", import.meta.url), "utf8");
+    const nav = readFileSync(new URL("../components/landing/LandingNav.tsx", import.meta.url), "utf8");
     const zh = readFileSync(new URL("../app/page.tsx", import.meta.url), "utf8");
     const en = readFileSync(new URL("../app/en/page.tsx", import.meta.url), "utf8");
 
     expect(landing).toContain("<h1");
+    expect(landing).toContain("<LandingNav");
+    expect(nav).toContain('aria-expanded={open}');
+    expect(nav).toContain('lg:hidden');
+    expect(nav).toContain('{ href: "#message"');
+    expect(nav).toContain('{ href: "#many"');
+    expect(nav).toContain('{ href: "#jobs"');
+    expect(nav).toContain("開啟選單");
     expect(zh).not.toContain("CompanyHomeHonesty");
     expect(en).not.toContain("CompanyHomeHonesty");
     expect(TRUST_PAGES["/docs"].body).toContain(HOMEPAGE_PROSE);
