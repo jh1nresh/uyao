@@ -219,9 +219,9 @@ export function ProductSwipeShowcase({
   return (
     <div className="product-showcase-canvas relative">
       <div className="relative px-5 pb-7 pt-8 sm:px-8 sm:pb-9 sm:pt-10">
-        {eyebrow && <p className="shop-kicker mb-2 text-center !text-[#74352f]">{eyebrow}</p>}
+        {eyebrow && <p className="shop-kicker mb-2 text-center text-oxblood">{eyebrow}</p>}
         {title && (
-          <h2 className="editorial-display m-0 text-center text-[28px] leading-[1.2] text-[#1c2722] sm:text-[38px]">
+          <h2 className="editorial-display m-0 text-center text-[28px] leading-[1.2] text-ink sm:text-[38px]">
             {title}
           </h2>
         )}
@@ -241,10 +241,10 @@ export function ProductSwipeShowcase({
               className="h-11 max-w-[164px] shrink-0 text-[13px] font-medium"
             >
               <span
-                className={`flex h-8 max-w-full items-center truncate rounded-full border px-3.5 transition-colors motion-reduce:transition-none ${
+                className={`flex h-8 max-w-full items-center truncate border px-3.5 transition-colors motion-reduce:transition-none ${
                   i === active
-                    ? "border-[#17392c] bg-[#17392c] text-[#f8f4e9]"
-                    : "border-[#b8b1a4] bg-[#f8f4e9] text-[#3e4b44] hover:border-[#17392c] hover:text-[#17392c]"
+                    ? "border-forest bg-forest text-paper"
+                    : "border-line-strong bg-paper text-ink-2 hover:border-forest hover:text-forest"
                 }`}
               >
                 {drugCopy(item.drug, locale).name}
@@ -320,51 +320,19 @@ export function ProductSwipeShowcase({
           </div>
         </div>
 
-        <div className="mt-5 flex items-center justify-center gap-4 sm:mt-2">
-          <ArrowButton
-            dir="prev"
-            label={locale === "en" ? "Previous product" : "上一項"}
-            onClick={() => go(active - 1)}
-          />
-          <div className="flex gap-1.5">
-            {items.map((item, i) => (
-              <span
-                key={item.drug.slug}
-                aria-hidden
-                className={`transition-colors motion-reduce:transition-none ${
-                  i === active ? "h-[3px] w-7 bg-ink sm:w-8" : "h-px w-5 bg-[#c4bdb0] sm:w-6"
-                }`}
-              />
-            ))}
-          </div>
-          <ArrowButton
-            dir="next"
-            label={locale === "en" ? "Next product" : "下一項"}
-            onClick={() => go(active + 1)}
-          />
+                {/* Nav is the pill rail above; keep one progress cue without arrow chrome. */}
+        <div className="mt-5 flex items-center justify-center gap-1.5 sm:mt-2" aria-hidden>
+          {items.map((item, i) => (
+            <span
+              key={item.drug.slug}
+              className={`transition-colors motion-reduce:transition-none ${
+                i === active ? "h-[3px] w-7 bg-ink sm:w-8" : "h-px w-5 bg-line-strong sm:w-6"
+              }`}
+            />
+          ))}
         </div>
       </div>
     </div>
   );
 }
 
-function ArrowButton({
-  dir,
-  label,
-  onClick,
-}: {
-  dir: "prev" | "next";
-  label: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      aria-label={label}
-      className="flex h-11 w-11 shrink-0 items-center justify-center border border-line-strong bg-paper text-[16px] text-ink-2 transition-colors hover:border-forest hover:text-forest"
-    >
-      {dir === "prev" ? "‹" : "›"}
-    </button>
-  );
-}

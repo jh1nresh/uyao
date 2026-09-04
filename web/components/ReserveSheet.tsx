@@ -311,18 +311,25 @@ export function ReserveSheet({
                 </div>
               )}
 
-              <label htmlFor="reservation-intake-note" className="mt-2.5 block text-[12px] font-bold text-ink">
-                {locale === "en" ? "Symptoms or help requested (optional)" : "症狀或希望藥師協助的事情（選填）"}
-              </label>
-              <textarea
-                id="reservation-intake-note"
-                value={requestNote}
-                onChange={(event) => setRequestNote(event.target.value)}
-                maxLength={RESERVATION_INTAKE_NOTE_MAX}
-                rows={3}
-                placeholder={locale === "en" ? "For example: started three days ago; please advise in store" : "例如：最近三天開始不舒服，希望到店請藥師協助判斷"}
-                className="mt-1.5 w-full resize-none border border-line-strong bg-ivory px-3 py-2 text-[13px] leading-[1.55] text-ink outline-none placeholder:text-muted-2 focus:border-forest"
-              />
+              <details className="mt-2.5 border border-line bg-ivory open:border-line-strong">
+                <summary className="cursor-pointer list-none px-3.5 py-3 text-[12px] font-bold text-ink [&::-webkit-details-marker]:hidden">
+                  {locale === "en" ? "Add more context for the pharmacist (optional)" : "補充給藥師（選填）"}
+                </summary>
+                <div className="border-t border-line px-3.5 pb-3.5 pt-2">
+                  <label htmlFor="reservation-intake-note" className="block text-[12px] font-bold text-ink">
+                    {locale === "en" ? "Symptoms or help requested" : "症狀或希望藥師協助的事情"}
+                  </label>
+                  <textarea
+                    id="reservation-intake-note"
+                    value={requestNote}
+                    onChange={(event) => setRequestNote(event.target.value)}
+                    maxLength={RESERVATION_INTAKE_NOTE_MAX}
+                    rows={3}
+                    placeholder={locale === "en" ? "For example: started three days ago; please advise in store" : "例如：最近三天開始不舒服，希望到店請藥師協助判斷"}
+                    className="mt-1.5 w-full resize-none border border-line-strong bg-ivory px-3 py-2 text-[13px] leading-[1.55] text-ink outline-none placeholder:text-muted-2 focus:border-forest"
+                  />
+                </div>
+              </details>
 
               <label className="mt-2.5 flex cursor-pointer items-start gap-2 text-[12.5px] leading-[1.55] text-ink-2">
                 <input
@@ -344,7 +351,7 @@ export function ReserveSheet({
               </p>
             </section>
 
-            <form onSubmit={submit} className="flex flex-col gap-1.5">
+            <form onSubmit={submit} className="sticky bottom-0 z-10 -mx-5 mt-auto flex flex-col gap-1.5 border-t border-line bg-paper px-5 pb-[max(0.75rem,env(safe-area-inset-bottom))] pt-3 sm:-mx-8 sm:px-8">
               <label htmlFor="reserve-contact" className="text-xs font-bold">
                 {locale === "en" ? "Mobile number" : "手機號碼"}{" "}
                 <span className="font-normal text-muted-2">{locale === "en" ? "Used for pharmacy confirmation and pickup verification" : "藥局確認後聯絡你，到店對尾號"}</span>
