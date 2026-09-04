@@ -107,8 +107,11 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).not.toContain("item.sceneSrc");
     expect(productSwipeShowcase).not.toContain("product-showcase-scene");
     expect(productSwipeShowcase).toContain('from "next/image"');
-    expect(productSwipeShowcase).toContain("item.drug.image");
+    expect(productSwipeShowcase).toContain("const { cutout } = item");
+    expect(productSwipeShowcase).toContain("cutout.src");
     expect(productSwipeShowcase).toContain('sizes="(min-width: 768px) 230px, 180px"');
+    expect(productShowcase).toContain("/products/showcase-cutouts/");
+    expect(productShowcase).toContain("SHOWCASE_CUTOUT_SIZE");
     expect(productSwipeShowcase).not.toContain("unoptimized");
     expect(productSwipeShowcase).toContain("useState(0)");
     expect(productSwipeShowcase).toContain("ArrowButton");
