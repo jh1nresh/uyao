@@ -815,37 +815,24 @@ html[data-theme="dark"] .theme-logo-dark {
 }
 
 .product-showcase-stage {
-  --product-showcase-bay-width: 100%;
+  --product-showcase-slot: 22%;
 
   width: 100%;
-  aspect-ratio: 2172 / 457;
+  aspect-ratio: 1774 / 350;
   isolation: isolate;
   background: rgb(var(--color-ivory));
 }
 
-.product-showcase-scene {
+.product-showcase-plate {
   object-fit: cover;
   object-position: center;
-}
-
-.product-showcase-bay {
-  position: absolute;
-  inset: 0;
-  width: var(--product-showcase-bay-width);
-  overflow: hidden;
-  opacity: 0;
   pointer-events: none;
-  transition: opacity 420ms var(--ease-brand);
-}
-
-.product-showcase-bay[data-active="true"] {
-  opacity: 1;
-  pointer-events: auto;
-  z-index: 1;
+  user-select: none;
 }
 
 .product-showcase-rail {
   position: relative;
+  z-index: 1;
   height: 100%;
   cursor: grab;
   touch-action: pan-y;
@@ -853,6 +840,70 @@ html[data-theme="dark"] .theme-logo-dark {
 
 .product-showcase-rail[data-dragging="true"] {
   cursor: grabbing;
+}
+
+/* 包裝照落在固定空櫃裡；位移只動商品，木櫃永遠不動。 */
+.product-showcase-bay {
+  position: absolute;
+  bottom: 11%;
+  left: 50%;
+  z-index: 1;
+  display: flex;
+  width: var(--product-showcase-slot);
+  height: 72%;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 2%;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%) scale(0.72);
+  transition:
+    transform 420ms var(--ease-brand),
+    opacity 420ms var(--ease-brand),
+    filter 420ms var(--ease-brand);
+  filter: brightness(0.92);
+}
+
+.product-showcase-bay[data-offset="-2"] {
+  opacity: 0.35;
+  transform: translateX(calc(-50% - 2 * var(--product-showcase-slot))) scale(0.68);
+}
+
+.product-showcase-bay[data-offset="-1"] {
+  opacity: 0.72;
+  transform: translateX(calc(-50% - var(--product-showcase-slot))) scale(0.82);
+}
+
+.product-showcase-bay[data-offset="0"],
+.product-showcase-bay[data-active="true"] {
+  z-index: 2;
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) scale(1);
+  filter: none;
+}
+
+.product-showcase-bay[data-offset="1"] {
+  opacity: 0.72;
+  transform: translateX(calc(-50% + var(--product-showcase-slot))) scale(0.82);
+}
+
+.product-showcase-bay[data-offset="2"] {
+  opacity: 0.35;
+  transform: translateX(calc(-50% + 2 * var(--product-showcase-slot))) scale(0.68);
+}
+
+.product-showcase-packshot {
+  width: auto;
+  max-width: 88%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  filter:
+    drop-shadow(0 3px 2px rgb(65 43 25 / 0.18))
+    drop-shadow(4px 8px 10px rgb(65 43 25 / 0.16));
+  user-select: none;
 }
 
 .product-showcase-arrow {
@@ -899,7 +950,7 @@ html[data-theme="dark"] .theme-logo-dark {
 
 @media (max-width: 767px) {
   .product-showcase-stage {
-    --product-showcase-bay-width: 100%;
+    --product-showcase-slot: 30%;
 
     height: 15.5rem;
     aspect-ratio: auto;

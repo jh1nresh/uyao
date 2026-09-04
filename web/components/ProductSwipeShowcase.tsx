@@ -6,26 +6,33 @@ import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useLocale } from "./LocaleProvider";
 import { drugCopy } from "@/lib/i18n";
-import type { ShowcaseItem } from "@/lib/product-showcase";
+import { PRODUCT_SHOWCASE_PLATE, type ShowcaseItem } from "@/lib/product-showcase";
 
 /**
- * 品項展示：每一張完成的實拍藥櫃整幅入鏡，櫃格與鄰格包裝都在照片裡。
- * 換主角用淡入淡出，不要把兩張整幅櫃景橫向對切滑過 —— 那會露出木紋接縫，
- * 滑起來不順。互動：觸控／滑鼠滑動、鍵盤方向鍵、舞台左右箭頭鈕。
- *
- * 品名導覽仍靠上方 pill rail；箭頭只掛在櫃景兩側，方便一眼換項。
+ * 品項展示：固定一張空櫃底板，去背包裝照站在櫃格裡換主角。
+ * 不要再整幅櫃景互切 —— 那會變成一張圖接一張圖，木紋與鄰格一起跳，看起來詭異。
+ * 互動：觸控／滑鼠滑動、鍵盤方向鍵、舞台左右箭頭、上方品名 pill。
  */
 
 export type { ShowcaseItem } from "@/lib/product-showcase";
 
 const SWIPE_THRESHOLD = 48;
 const DRAG_THRESHOLD = 6;
+/** 主角左右各露出幾格；超過的不渲染，避免長軌位移。 */
+const VISIBLE_OFFSET = 2;
 
 type DragState = {
   pointerId: number;
   startX: number;
   startY: number;
 };
+
+function shelfOffset(index: number, active: number, count: number) {
+  let offset = index - active;
+  if (offset > Math.floor(count / 2)) offset -= count;
+  if (offset < -Math.floor((count - 1) / 2)) offset += count;
+  return offset;
+}
 
 export function ProductSwipeShowcase({
   items,
@@ -173,10 +180,20 @@ export function ProductSwipeShowcase({
         </div>
 
         <div className="product-showcase-stage relative mt-5 overflow-hidden">
+          <Image
+            src={PRODUCT_SHOWCASE_PLATE}
+            alt=""
+            fill
+            sizes="(max-width: 767px) 100vw, min(100vw, 1600px)"
+            priority
+            draggable={false}
+            className="product-showcase-plate"
+          />
+
           <div
             role="group"
             aria-roledescription={locale === "en" ? "carousel" : "輪播"}
-            aria-label={locale === "en" ? "Featured product cabinet" : "精選品項藥櫃場景"}
+            aria-label={locale === "en" ? "Featured product cabinet" : "精選品項藥櫃"}
             tabIndex={0}
             onKeyDown={onKeyDown}
             onPointerDown={onPointerDown}
@@ -187,14 +204,17 @@ export function ProductSwipeShowcase({
             className="product-showcase-rail relative h-full touch-pan-y select-none outline-offset-4"
           >
             {items.map((item, logicalIndex) => {
-              const nearActive = Math.abs(logicalIndex - active) <= 1
-                || (active === 0 && logicalIndex === count - 1)
-                || (active === count - 1 && logicalIndex === 0);
+              const offset = shelfOffset(logicalIndex, active, count);
+              if (Math.abs(offset) > VISIBLE_OFFSET) return null;
+              const image = item.drug.image;
+              if (!image) return null;
+              const nearActive = Math.abs(offset) <= 1;
               return (
                 <div
                   key={item.drug.slug}
                   data-showcase-index={logicalIndex}
                   data-active={logicalIndex === active}
+                  data-offset={String(offset)}
                   role="group"
                   aria-roledescription={locale === "en" ? "slide" : "投影片"}
                   aria-label={`${logicalIndex + 1} / ${count}: ${drugCopy(item.drug, locale).name}`}
@@ -202,17 +222,16 @@ export function ProductSwipeShowcase({
                   className="product-showcase-bay"
                 >
                   <Image
-                    src={item.sceneSrc}
-                    alt={locale === "en"
-                      ? `Wide uYao medicine cabinet with ${drugCopy(item.drug, locale).name} featured in the center`
-                      : `以${drugCopy(item.drug, locale).name}為中央主角的 uYao 橫幅商品藥櫃`}
-                    fill
-                    sizes="(max-width: 767px) 100vw, min(100vw, 1600px)"
+                    src={image.src}
+                    alt={locale === "en" ? image.altEn : image.alt}
+                    width={image.width}
+                    height={image.height}
+                    sizes="(max-width: 767px) 42vw, 220px"
                     {...(logicalIndex === 0
                       ? { priority: true as const }
                       : { loading: (nearActive ? "eager" : "lazy") as "eager" | "lazy" })}
                     draggable={false}
-                    className="product-showcase-scene"
+                    className="product-showcase-packshot"
                   />
                 </div>
               );
@@ -239,9 +258,7 @@ export function ProductSwipeShowcase({
               {copy.name}
             </p>
             <p className="mx-auto mb-0 mt-1 line-clamp-2 max-w-[460px] text-[13px] leading-[1.6] text-muted-2">
-              {locale === "en"
-                ? current.drug.nutritionFocusEn
-                : current.drug.nutritionFocus}
+              {copy.nutritionFocus}
             </p>
             {hrefPrefix && (
               <Link

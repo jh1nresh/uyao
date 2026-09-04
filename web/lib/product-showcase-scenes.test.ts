@@ -4,7 +4,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { allDrugs } from "./data";
-import { productShowcaseItems } from "./product-showcase";
+import { PRODUCT_SHOWCASE_PLATE, productShowcaseItems } from "./product-showcase";
 
 const PUBLIC_DIR = path.resolve(import.meta.dirname, "..", "public");
 
@@ -29,18 +29,22 @@ function webpDimensions(file: string) {
   throw new Error(`${file} 使用未支援的 WebP 區塊 ${chunk}`);
 }
 
-describe("homepage product showcase scenes", () => {
-  it("uses one finished wide source scene for every featured cabinet bay", () => {
+describe("homepage product showcase shelf", () => {
+  it("keeps one fixed empty cabinet plate and packshots for every featured item", () => {
     const items = productShowcaseItems(allDrugs());
     expect(items).toHaveLength(8);
     expect(items[0]?.drug.slug).toBe("greenplus-elgucare");
-    expect(new Set(items.map((item) => item.sceneSrc)).size).toBe(8);
+
+    const plate = path.join(PUBLIC_DIR, PRODUCT_SHOWCASE_PLATE);
+    expect(existsSync(plate), "缺少空櫃底板").toBe(true);
+    const plateSize = webpDimensions(plate);
+    expect(plateSize.width / plateSize.height, "空櫃底板必須是寬幅").toBeGreaterThan(4);
 
     for (const item of items) {
-      const file = path.join(PUBLIC_DIR, item.sceneSrc);
-      expect(existsSync(file), `${item.drug.slug} 缺少完整商品櫃景`).toBe(true);
-      const { width, height } = webpDimensions(file);
-      expect(width / height, `${item.drug.slug} 必須是寬幅櫃景`).toBeGreaterThan(4);
+      const image = item.drug.image;
+      expect(image?.kind, `${item.drug.slug} 必須是去背包裝照`).toBe("packshot");
+      const file = path.join(PUBLIC_DIR, image!.src);
+      expect(existsSync(file), `${item.drug.slug} 缺少包裝照`).toBe(true);
     }
   });
 });
