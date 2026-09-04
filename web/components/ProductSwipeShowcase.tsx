@@ -59,27 +59,11 @@ export function ProductSwipeShowcase({
   const pillRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   const count = items.length;
-  const indexedItems = items.map((item, logicalIndex) => ({
+  const visualItems = items.map((item, logicalIndex) => ({
     item,
     logicalIndex,
-    clone: false,
     key: item.drug.slug,
   }));
-  const visualItems = count > 2
-    ? [
-        ...indexedItems.slice(-2).map((entry) => ({
-          ...entry,
-          clone: true,
-          key: `leading-${entry.key}`,
-        })),
-        ...indexedItems,
-        ...indexedItems.slice(0, 2).map((entry) => ({
-          ...entry,
-          clone: true,
-          key: `trailing-${entry.key}`,
-        })),
-      ]
-    : indexedItems;
 
   const nearestBayIndex = useCallback((rail: HTMLDivElement) => {
     const railCenter = rail.scrollLeft + rail.clientWidth / 2;
@@ -287,30 +271,26 @@ export function ProductSwipeShowcase({
             data-dragging={isDragging}
             className="product-showcase-rail relative flex h-full snap-x snap-mandatory overflow-x-auto touch-pan-x touch-pan-y select-none outline-offset-4"
           >
-            {visualItems.map(({ item, logicalIndex, clone, key }) => (
+            {visualItems.map(({ item, logicalIndex, key }) => (
               <div
                 key={key}
                 ref={(node) => {
-                  if (!clone) bayRefs.current[logicalIndex] = node;
+                  bayRefs.current[logicalIndex] = node;
                 }}
                 data-showcase-index={logicalIndex}
-                aria-hidden={clone || undefined}
-                role={clone ? undefined : "group"}
-                aria-roledescription={clone ? undefined : locale === "en" ? "slide" : "投影片"}
-                aria-label={clone ? undefined : `${logicalIndex + 1} / ${count}: ${drugCopy(item.drug, locale).name}`}
+                role="group"
+                aria-roledescription={locale === "en" ? "slide" : "投影片"}
+                aria-label={`${logicalIndex + 1} / ${count}: ${drugCopy(item.drug, locale).name}`}
                 className="product-showcase-bay relative"
               >
-                {/* 來源是寬幅場景；sizes 描述裁切前的繪製寬度，避免中央櫃格失真。 */}
                 <Image
                   src={item.sceneSrc}
-                  alt={clone
-                    ? ""
-                    : locale === "en"
-                      ? `Wide uYao medicine cabinet with ${drugCopy(item.drug, locale).name} featured in the center`
-                      : `以${drugCopy(item.drug, locale).name}為中央主角的 uYao 橫幅商品藥櫃`}
+                  alt={locale === "en"
+                    ? `Wide uYao medicine cabinet with ${drugCopy(item.drug, locale).name} featured in the center`
+                    : `以${drugCopy(item.drug, locale).name}為中央主角的 uYao 橫幅商品藥櫃`}
                   fill
                   sizes="(max-width: 767px) 100vw, min(100vw, 1600px)"
-                  loading={!clone && logicalIndex === 0 ? "eager" : "lazy"}
+                  loading={logicalIndex === 0 ? "eager" : "lazy"}
                   draggable={false}
                   className="product-showcase-scene"
                 />
