@@ -91,14 +91,14 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).toContain("motion-reduce:transition-none");
     expect(appPage).toContain("medicine-cabinet-showcase-section");
     expect(productSwipeShowcase).toContain("product-showcase-stage");
-    expect(productSwipeShowcase).toContain("product-showcase-row");
     expect(productSwipeShowcase).toContain("product-showcase-item");
     expect(productSwipeShowcase).toContain("product-showcase-packshot");
     expect(productSwipeShowcase).toContain("product-showcase-arrow");
-    expect(productSwipeShowcase).not.toContain("--showcase-drag-x");
-    expect(productSwipeShowcase).not.toContain("cqw");
-    expect(productSwipeShowcase).not.toContain("scale(");
-    expect(productSwipeShowcase).not.toContain("SIDE_DESKTOP");
+    expect(productSwipeShowcase).toContain("--showcase-drag-x");
+    expect(productSwipeShowcase).toContain("cqw");
+    expect(productSwipeShowcase).toContain("scale(");
+    expect(productSwipeShowcase).toContain("SIDE_DESKTOP");
+    expect(productSwipeShowcase).not.toContain("product-showcase-row");
     expect(productSwipeShowcase).not.toContain("snap-mandatory");
     expect(productSwipeShowcase).not.toContain("scrollLeft = drag.startScrollLeft - deltaX");
     expect(productSwipeShowcase).not.toContain("PRODUCT_SHOWCASE_PLATE");
@@ -108,24 +108,24 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).not.toContain("item.sceneSrc");
     expect(productSwipeShowcase).not.toContain("product-showcase-scene");
     expect(productSwipeShowcase).toContain('from "next/image"');
-    expect(productSwipeShowcase).toContain("item.drug.image");
-    expect(productSwipeShowcase).toContain('sizes="(min-width: 768px) 160px, 42vw"');
-    expect(productShowcase).not.toContain("/products/showcase-cutouts/");
-    expect(productShowcase).not.toContain("SHOWCASE_CUTOUT_SIZE");
-    expect(productShowcase).not.toContain("cutout");
+    expect(productSwipeShowcase).toContain("const { cutout } = item");
+    expect(productSwipeShowcase).toContain("cutout.src");
+    expect(productSwipeShowcase).toContain('sizes="(min-width: 768px) 230px, 180px"');
+    expect(productShowcase).toContain("/products/showcase-cutouts/");
+    expect(productShowcase).toContain("SHOWCASE_CUTOUT_SIZE");
     expect(productSwipeShowcase).not.toContain("unoptimized");
     expect(productSwipeShowcase).toContain("useState(0)");
     expect(productSwipeShowcase).toContain("ArrowButton");
     expect(productSwipeShowcase).not.toContain("rounded-full");
     expect(productSwipeShowcase).not.toMatch(/#[0-9a-fA-F]{6}/);
-    expect(globalCss).toContain(".product-showcase-stage.product-showcase-row");
-    expect(globalCss).toContain("grid-template-columns: repeat(4, minmax(0, 1fr))");
+    expect(globalCss).toContain(".product-showcase-stage");
+    expect(globalCss).toContain("container-type: inline-size");
     expect(globalCss).toContain(".product-showcase-packshot");
     expect(globalCss).toContain(".product-showcase-item");
     expect(globalCss).not.toContain(".product-showcase-plate");
     expect(globalCss).not.toContain(".product-showcase-bay");
     expect(globalCss).not.toContain("--product-showcase-slot:");
-    expect(globalCss).not.toContain("container-type: inline-size");
+    expect(globalCss).not.toContain("grid-template-columns: repeat(4, minmax(0, 1fr))");
     expect(globalCss).not.toContain("background: #d4ad78");
     expect(globalCss).toContain(".medicine-cabinet-showcase-section {\n  /* Cream field so the photographed cabinet is the wood, not the page. */\n  background-color: rgb(var(--color-ivory));");
     expect(productShowcase).toContain("PRODUCT_SHOWCASE_SLUGS");
@@ -238,14 +238,13 @@ describe("household medicine storefront homepage", () => {
     expect(reserveSheet).toContain('locale === "en" ? "Open directions"');
   });
 
-  it("keeps showcase selection and side arrows on brand tokens with a progress cue", () => {
+  it("keeps showcase pills and side arrows on brand tokens with a progress cue", () => {
     expect(productSwipeShowcase).toContain("ArrowButton");
     expect(productSwipeShowcase).toContain("product-showcase-arrow");
     expect(productSwipeShowcase).not.toContain("rounded-full");
     expect(productSwipeShowcase).not.toMatch(/#[0-9a-fA-F]{6}/);
-    expect(productSwipeShowcase).toContain("bg-forest");
+    expect(productSwipeShowcase).toContain("border-forest bg-forest text-paper");
     expect(productSwipeShowcase).toContain("aria-hidden");
-    expect(productSwipeShowcase).toContain("product-showcase-row");
   });
 
   it("keeps a short mobile hero lead and defers the partner marquee", () => {
