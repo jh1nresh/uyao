@@ -814,49 +814,82 @@ html[data-theme="dark"] .theme-logo-dark {
   isolation: isolate;
 }
 
+/* 無木板貨架：去背包裝照橫向滑動，中央放大、側邊縮小。 */
 .product-showcase-stage {
-  --product-showcase-bay-width: 100%;
+  --showcase-drag-x: 0px;
 
   width: 100%;
-  aspect-ratio: 1774 / 373;
-  isolation: isolate;
-  background: rgb(var(--color-ivory));
-}
-
-.product-showcase-scene {
-  object-fit: cover;
-  object-position: center;
-}
-
-.product-showcase-bay {
-  height: 100%;
-  width: var(--product-showcase-bay-width);
-  flex: 0 0 auto;
+  height: 250px;
   overflow: hidden;
-  scroll-snap-align: center;
-  scroll-snap-stop: always;
+  isolation: isolate;
+  container-type: inline-size;
+  background:
+    radial-gradient(ellipse 42% 28% at 50% 100%, rgb(65 43 25 / 0.08), transparent 72%),
+    rgb(var(--color-ivory));
 }
 
-.product-showcase-rail {
-  overscroll-behavior-inline: contain;
-  scrollbar-width: none;
-  cursor: grab;
-}
-
-.product-showcase-rail::-webkit-scrollbar {
-  display: none;
-}
-
-.product-showcase-rail[data-dragging="true"] {
+.product-showcase-stage[data-dragging="true"] {
   cursor: grabbing;
+}
+
+.product-showcase-item {
+  touch-action: none;
+}
+
+.product-showcase-packshot-frame {
+  width: 180px;
+  height: 230px;
+}
+
+.product-showcase-packshot {
+  width: auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 100%;
+  object-fit: contain;
+  object-position: bottom center;
+  filter:
+    drop-shadow(0 3px 2px rgb(65 43 25 / 0.2))
+    drop-shadow(4px 10px 12px rgb(65 43 25 / 0.18));
+  user-select: none;
+  pointer-events: none;
+}
+
+.product-showcase-arrow {
+  border: 1px solid rgb(var(--color-line-strong));
+  background: rgb(var(--color-paper));
+  color: rgb(var(--color-ink-2));
+  transition:
+    border-color 200ms var(--ease-brand),
+    color 200ms var(--ease-brand),
+    background-color 200ms var(--ease-brand);
+}
+
+.product-showcase-arrow:hover {
+  border-color: rgb(var(--color-forest));
+  color: rgb(var(--color-forest));
+}
+
+@media (min-width: 768px) {
+  .product-showcase-stage {
+    height: 300px;
+  }
+
+  .product-showcase-packshot-frame {
+    width: 230px;
+    height: 290px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .product-showcase-item {
+    transition: none !important;
+  }
 }
 
 @media (max-width: 767px) {
   .product-showcase-stage {
-    --product-showcase-bay-width: 100%;
-
     height: 15.5rem;
-    aspect-ratio: auto;
   }
 
   .medicine-cabinet-hero {
