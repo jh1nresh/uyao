@@ -203,7 +203,7 @@ export function ProductSwipeShowcase({
             const offset = offsetOf(i);
             if (offset === null) return null;
             const isActive = offset === 0;
-            const cutout = item.cutout;
+            const { cutout } = item;
             if (!cutout) return null;
             const altImage = item.drug.image;
             // 位移用舞台寬度百分比，側邊才不會疊在主角後面看不見。
