@@ -132,7 +132,7 @@ export function ProductGallery({
                   }}
                 >
                   <div
-                    className="absolute inset-0"
+                    className="absolute inset-[7%]"
                     style={
                       zoomed
                         ? {

@@ -113,8 +113,8 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).not.toContain("* 0.42");
     expect(productShowcaseMotion).toContain("cqw");
     expect(productShowcaseMotion).toContain("scale(");
-    expect(productShowcaseMotion).toContain("SHOWCASE_STEP_MOBILE = 28");
-    expect(productShowcaseMotion).toContain("SHOWCASE_STEP_DESKTOP = 26");
+    expect(productShowcaseMotion).toContain("SHOWCASE_STEP_MOBILE = 22");
+    expect(productShowcaseMotion).toContain("SHOWCASE_STEP_DESKTOP = 18");
     expect(productShowcaseMotion).toContain("SHOWCASE_SIDE_DESKTOP = 1");
     expect(productSwipeShowcase).toContain("showcaseItemStyle");
     expect(productSwipeShowcase).toContain("SIDE_DESKTOP");
