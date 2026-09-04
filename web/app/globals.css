@@ -402,6 +402,26 @@ html[data-theme="dark"] .theme-logo-dark {
   color: rgb(var(--color-ink));
 }
 
+/* Mobile disclosure sits under .cabinet-header-controls, which forces nested
+   surfaces transparent for the compact header row. Restore a readable paper
+   panel so Shop / Agent / area controls stay legible over the cabinet. */
+.cabinet-header-controls > div > .site-header-mobile-panel {
+  border-color: rgb(var(--color-line-strong));
+  background: rgb(var(--color-paper));
+  box-shadow: 0 16px 40px rgb(28 39 34 / 0.16);
+  color: rgb(var(--color-ink));
+  text-shadow: none;
+}
+
+.cabinet-header-controls .site-header-mobile-panel :is(a, button, select) {
+  color: inherit;
+  text-shadow: none;
+}
+
+.cabinet-header-controls .site-header-mobile-panel a[aria-current="page"] {
+  color: rgb(var(--color-forest));
+}
+
 .medicine-cabinet-hero {
   position: relative;
   isolation: isolate;
