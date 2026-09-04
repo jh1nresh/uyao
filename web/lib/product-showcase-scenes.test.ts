@@ -33,6 +33,7 @@ describe("homepage product showcase scenes", () => {
   it("uses one finished wide source scene for every featured cabinet bay", () => {
     const items = productShowcaseItems(allDrugs());
     expect(items).toHaveLength(8);
+    expect(items[0]?.drug.slug).toBe("greenplus-elgucare");
     expect(new Set(items.map((item) => item.sceneSrc)).size).toBe(8);
 
     for (const item of items) {
