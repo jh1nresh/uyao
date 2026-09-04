@@ -10,9 +10,8 @@ import { known } from "@/lib/pending";
 import type { ShowcaseItem } from "@/lib/product-showcase";
 
 /**
- * 品項橫向展示：用去背包裝照，不要整幅櫃景。
+ * 品項橫向展示：用從原本櫃景獨立抠出的去背商品圖，不要整幅櫃景、也不貼回木板。
  * 左右滑動換主角，中央那一支放大，側邊縮小 —— 回到先前的貨架滑動放大特效。
- * 木板拿掉：舞台不再鋪櫃底板，只留商品與地面陰影。
  *
  * 互動三條路都通：觸控／滑鼠拖曳、鍵盤方向鍵、下方左右箭頭。
  */
@@ -201,8 +200,8 @@ export function ProductSwipeShowcase({
             const offset = offsetOf(i);
             if (offset === null) return null;
             const isActive = offset === 0;
-            const image = item.drug.image;
-            if (!image) return null;
+            const { cutout } = item;
+            const altImage = item.drug.image;
             // 位移用舞台寬度百分比，側邊才不會疊在主角後面看不見。
             const step = side === 1 ? 40 : 19;
             const scale = isActive ? 1 : Math.abs(offset) === 1 ? 0.66 : 0.48;
@@ -229,10 +228,14 @@ export function ProductSwipeShowcase({
               >
                 <span className="product-showcase-packshot-frame relative block">
                   <Image
-                    src={image.src}
-                    alt={locale === "en" ? image.altEn : image.alt}
-                    width={image.width}
-                    height={image.height}
+                    src={cutout.src}
+                    alt={
+                      locale === "en"
+                        ? (altImage?.altEn ?? item.drug.nameEn ?? item.drug.name)
+                        : (altImage?.alt ?? item.drug.name)
+                    }
+                    width={cutout.width}
+                    height={cutout.height}
                     sizes="(min-width: 768px) 230px, 180px"
                     {...(Math.abs(offset) <= 1
                       ? i === active
