@@ -170,18 +170,25 @@ function StoreLine({
       )}
 
       {onReserve && (
-        <button
-          type="button"
-          onClick={onReserve}
-          aria-label={
-            locale === "en"
-              ? `Ask ${store.name} to hold one`
-              : `請${store.name}留一份`
-          }
-          className="mt-2 min-h-11 w-full border border-forest bg-brand-surface px-3 text-[14px] font-bold text-on-dark transition-[background-color,transform] hover:bg-brand-surface-strong active:translate-y-px"
-        >
-          {locale === "en" ? "Ask this pharmacy to hold one" : "請這家藥局留一份"}
-        </button>
+        <>
+          <button
+            type="button"
+            onClick={onReserve}
+            aria-label={
+              locale === "en"
+                ? `Ask ${store.name} to hold one`
+                : `請${store.name}留一份`
+            }
+            className="mt-2 min-h-11 w-full border border-forest bg-brand-surface px-3 text-[14px] font-bold text-on-dark transition-[background-color,transform] hover:bg-brand-surface-strong active:translate-y-px"
+          >
+            {locale === "en" ? "Ask this pharmacy to hold one" : "請這家藥局留一份"}
+          </button>
+          <p className="mb-0 mt-1.5 text-[11.5px] leading-[1.5] text-muted">
+            {locale === "en"
+              ? "The pharmacy confirms in Store OS. Calling is still available if you need to talk to staff now."
+              : "藥局會在 Store OS 確認這筆預留；若要立刻問人，仍可打電話。"}
+          </p>
+        </>
       )}
     </div>
   );
