@@ -849,6 +849,8 @@ html[data-theme="dark"] .theme-logo-dark {
 }
 
 .product-showcase-stage {
+  --product-showcase-bay-width: 28.525vw;
+
   width: 100vw;
   margin-inline: calc(50% - 50vw);
   aspect-ratio: 1774 / 373;
@@ -859,9 +861,46 @@ html[data-theme="dark"] .theme-logo-dark {
     0 7px 16px rgb(76 50 25 / 0.1);
 }
 
+.product-showcase-stage::before {
+  position: absolute;
+  z-index: 3;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: clamp(10px, 1vw, 15px);
+  background:
+    linear-gradient(180deg, rgb(246 220 180 / 0.9), rgb(170 118 65 / 0.94)),
+    url("/brand/uyao-product-cabinet-composite-v1.webp") center top / 100% auto;
+  box-shadow: 0 2px 5px rgb(79 48 22 / 0.28);
+  content: "";
+  pointer-events: none;
+}
+
 .product-showcase-scene {
   object-fit: cover;
   object-position: center;
+}
+
+.product-showcase-bay {
+  height: 100%;
+  width: var(--product-showcase-bay-width);
+  flex: 0 0 auto;
+  overflow: hidden;
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+}
+
+.product-showcase-bay::after {
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: clamp(8px, 0.8vw, 12px);
+  background: linear-gradient(90deg, #9c6a38, #e6bd83 42%, #aa7440 100%);
+  box-shadow: -2px 0 5px rgb(78 49 24 / 0.2), 2px 0 4px rgb(255 234 198 / 0.22);
+  content: "";
+  pointer-events: none;
 }
 
 .product-showcase-rail {
@@ -880,6 +919,8 @@ html[data-theme="dark"] .theme-logo-dark {
 
 @media (max-width: 767px) {
   .product-showcase-stage {
+    --product-showcase-bay-width: 18.993rem;
+
     height: 14rem;
     aspect-ratio: auto;
   }
