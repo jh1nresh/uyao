@@ -5,8 +5,7 @@ export interface ShowcaseItem {
 }
 
 /**
- * 首頁精選八項。舞台用固定空櫃底板 + 去背包裝照，不要再換整張櫃景 ——
- * 整幅櫃景互切會變成「一張圖接一張圖」，木紋與鄰格都會跳。
+ * 首頁精選八項。只用去背包裝照做滑動放大貨架，不再鋪整幅櫃景或木板底板。
  */
 const PRODUCT_SHOWCASE_SLUGS = [
   "greenplus-elgucare",
@@ -18,9 +17,6 @@ const PRODUCT_SHOWCASE_SLUGS = [
   "yuanding-puregps-defense-450",
   "aob-vitality-beauty-45",
 ] as const;
-
-/** 空櫃底板：木紋與櫃格永遠不動，只有包裝照在架上換位。 */
-export const PRODUCT_SHOWCASE_PLATE = "/brand/uyao-product-cabinet-reference-v3.webp";
 
 export function productShowcaseItems(drugs: readonly Drug[]): ShowcaseItem[] {
   const bySlug = new Map(drugs.map((drug) => [drug.slug, drug]));

@@ -2,37 +2,25 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { type CSSProperties, useCallback, useEffect, useRef, useState } from "react";
 
 import { useLocale } from "./LocaleProvider";
 import { drugCopy } from "@/lib/i18n";
-import { PRODUCT_SHOWCASE_PLATE, type ShowcaseItem } from "@/lib/product-showcase";
+import { known } from "@/lib/pending";
+import type { ShowcaseItem } from "@/lib/product-showcase";
 
 /**
- * 品項展示：固定一張空櫃底板，去背包裝照站在櫃格裡換主角。
- * 不要再整幅櫃景互切 —— 那會變成一張圖接一張圖，木紋與鄰格一起跳，看起來詭異。
- * 互動：觸控／滑鼠滑動、鍵盤方向鍵、舞台左右箭頭、上方品名 pill。
+ * 品項橫向展示：用去背包裝照，不要整幅櫃景。
+ * 左右滑動換主角，中央那一支放大，側邊縮小 —— 回到先前的貨架滑動放大特效。
+ * 木板拿掉：舞台不再鋪櫃底板，只留商品與地面陰影。
+ *
+ * 互動三條路都通：觸控／滑鼠拖曳、鍵盤方向鍵、下方左右箭頭。
  */
 
 export type { ShowcaseItem } from "@/lib/product-showcase";
 
-const SWIPE_THRESHOLD = 48;
-const DRAG_THRESHOLD = 6;
-/** 主角左右各露出幾格；超過的不渲染，避免長軌位移。 */
-const VISIBLE_OFFSET = 2;
-
-type DragState = {
-  pointerId: number;
-  startX: number;
-  startY: number;
-};
-
-function shelfOffset(index: number, active: number, count: number) {
-  let offset = index - active;
-  if (offset > Math.floor(count / 2)) offset -= count;
-  if (offset < -Math.floor((count - 1) / 2)) offset += count;
-  return offset;
-}
+/** 可視範圍內主角左右各放幾支。手機縮成 1，桌機 2。 */
+const SIDE_DESKTOP = 2;
 
 export function ProductSwipeShowcase({
   items,
@@ -54,21 +42,32 @@ export function ProductSwipeShowcase({
 }) {
   const locale = useLocale();
   const [active, setActive] = useState(0);
+  // SSR 採手機優先，避免 hydration 前把桌機五支擠進窄螢幕。
+  const [side, setSide] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
-  const activeRef = useRef(0);
-  const dragRef = useRef<DragState | null>(null);
-  const didDragRef = useRef(false);
+  const dragStart = useRef<number | null>(null);
+  // 換項判斷讀 ref：pointermove 與 pointerup 同批時，closure 還看得到舊 delta。
+  const dragDelta = useRef(0);
+  const stageRef = useRef<HTMLDivElement>(null);
   const pillRailRef = useRef<HTMLDivElement>(null);
   const pillRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   const count = items.length;
+  const go = useCallback(
+    (next: number) => {
+      if (count === 0) return;
+      setActive(((next % count) + count) % count);
+    },
+    [count],
+  );
 
-  const go = useCallback((next: number) => {
-    if (count === 0) return;
-    const resolved = ((next % count) + count) % count;
-    activeRef.current = resolved;
-    setActive(resolved);
-  }, [count]);
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 768px)");
+    const sync = () => setSide(mq.matches ? SIDE_DESKTOP : 1);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
 
   useEffect(() => {
     const rail = pillRailRef.current;
@@ -84,48 +83,42 @@ export function ProductSwipeShowcase({
 
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
     if (!event.isPrimary || event.button !== 0) return;
-    dragRef.current = {
-      pointerId: event.pointerId,
-      startX: event.clientX,
-      startY: event.clientY,
-    };
-    didDragRef.current = false;
+    dragStart.current = event.clientX;
+    dragDelta.current = 0;
+    setIsDragging(true);
+    event.currentTarget.setPointerCapture(event.pointerId);
   }
 
   function onPointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    const drag = dragRef.current;
-    if (!drag || drag.pointerId !== event.pointerId) return;
-    const deltaX = event.clientX - drag.startX;
-    const deltaY = event.clientY - drag.startY;
-
-    if (!didDragRef.current) {
-      if (Math.abs(deltaX) < DRAG_THRESHOLD) return;
-      if (Math.abs(deltaX) <= Math.abs(deltaY)) {
-        dragRef.current = null;
-        return;
-      }
-      didDragRef.current = true;
-      setIsDragging(true);
-      event.currentTarget.setPointerCapture(event.pointerId);
-    }
-
-    event.preventDefault();
+    if (dragStart.current === null) return;
+    dragDelta.current = event.clientX - dragStart.current;
+    // 連續 pointermove 直接改 compositor transform，不讓 React 每格重畫整排。
+    event.currentTarget.style.setProperty(
+      "--showcase-drag-x",
+      `${dragDelta.current * 0.42}px`,
+    );
   }
 
-  function finishPointer(event: React.PointerEvent<HTMLDivElement>) {
-    const drag = dragRef.current;
-    if (!drag || drag.pointerId !== event.pointerId) return;
+  function resetPointer(event: React.PointerEvent<HTMLDivElement>) {
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
-    const deltaX = event.clientX - drag.startX;
-    dragRef.current = null;
-    const swiped = didDragRef.current;
-    didDragRef.current = false;
+    event.currentTarget.style.setProperty("--showcase-drag-x", "0px");
+    dragStart.current = null;
+    dragDelta.current = 0;
     setIsDragging(false);
+  }
 
-    if (!swiped || Math.abs(deltaX) < SWIPE_THRESHOLD) return;
-    go(activeRef.current + (deltaX < 0 ? 1 : -1));
+  function onPointerUp(event: React.PointerEvent<HTMLDivElement>) {
+    if (dragStart.current === null) return;
+    if (dragDelta.current <= -60) go(active + 1);
+    else if (dragDelta.current >= 60) go(active - 1);
+    resetPointer(event);
+  }
+
+  function onPointerCancel(event: React.PointerEvent<HTMLDivElement>) {
+    if (dragStart.current === null) return;
+    resetPointer(event);
   }
 
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
@@ -141,6 +134,17 @@ export function ProductSwipeShowcase({
   if (count === 0) return null;
   const current = items[active];
   const copy = drugCopy(current.drug, locale);
+  // 規格與分類都還沒確認時整行不顯示，避免「規格待確認 · 待確認」像頁面沒做完。
+  const metaLine =
+    [known(copy.spec), known(copy.drugClass)].filter(Boolean).join(" · ") || null;
+
+  /** 環狀位移：-side…+side 之外的品項不畫。 */
+  function offsetOf(index: number): number | null {
+    let d = index - active;
+    if (d > count / 2) d -= count;
+    if (d < -count / 2) d += count;
+    return Math.abs(d) <= side ? d : null;
+  }
 
   return (
     <div className="product-showcase-canvas relative">
@@ -152,8 +156,7 @@ export function ProductSwipeShowcase({
           </h2>
         )}
 
-        {/* 品項膠囊：只切換主角，不濾清單 —— 這一排是導覽，不是篩選器。
-            手機不換行：換行會變成四排色塊蓋住貨架，改成單排橫向捲動。 */}
+        {/* 品項膠囊：只切換主角，不濾清單。手機單排橫向捲動。 */}
         <div ref={pillRailRef} className="-mx-5 mt-4 flex gap-1.5 overflow-x-auto px-5 pb-1 sm:mx-0 sm:mt-2 sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0">
           {items.map((item, i) => (
             <button
@@ -179,77 +182,70 @@ export function ProductSwipeShowcase({
           ))}
         </div>
 
-        <div className="product-showcase-stage relative mt-5 overflow-hidden">
-          <Image
-            src={PRODUCT_SHOWCASE_PLATE}
-            alt=""
-            fill
-            sizes="(max-width: 767px) 100vw, min(100vw, 1600px)"
-            priority
-            draggable={false}
-            className="product-showcase-plate"
-          />
-
-          <div
-            role="group"
-            aria-roledescription={locale === "en" ? "carousel" : "輪播"}
-            aria-label={locale === "en" ? "Featured product cabinet" : "精選品項藥櫃"}
-            tabIndex={0}
-            onKeyDown={onKeyDown}
-            onPointerDown={onPointerDown}
-            onPointerMove={onPointerMove}
-            onPointerUp={finishPointer}
-            onPointerCancel={finishPointer}
-            data-dragging={isDragging}
-            className="product-showcase-rail relative h-full touch-pan-y select-none outline-offset-4"
-          >
-            {items.map((item, logicalIndex) => {
-              const offset = shelfOffset(logicalIndex, active, count);
-              if (Math.abs(offset) > VISIBLE_OFFSET) return null;
-              const image = item.drug.image;
-              if (!image) return null;
-              const nearActive = Math.abs(offset) <= 1;
-              return (
-                <div
-                  key={item.drug.slug}
-                  data-showcase-index={logicalIndex}
-                  data-active={logicalIndex === active}
-                  data-offset={String(offset)}
-                  role="group"
-                  aria-roledescription={locale === "en" ? "slide" : "投影片"}
-                  aria-label={`${logicalIndex + 1} / ${count}: ${drugCopy(item.drug, locale).name}`}
-                  aria-hidden={logicalIndex !== active}
-                  className="product-showcase-bay"
-                >
+        <div
+          ref={stageRef}
+          role="group"
+          aria-roledescription={locale === "en" ? "carousel" : "輪播"}
+          aria-label={locale === "en" ? "Featured products" : "精選品項"}
+          tabIndex={0}
+          onKeyDown={onKeyDown}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerCancel}
+          data-dragging={isDragging}
+          style={{ "--showcase-drag-x": "0px" } as CSSProperties}
+          className="product-showcase-stage relative mt-5 cursor-grab touch-pan-y select-none outline-offset-4 active:cursor-grabbing"
+        >
+          {items.map((item, i) => {
+            const offset = offsetOf(i);
+            if (offset === null) return null;
+            const isActive = offset === 0;
+            const image = item.drug.image;
+            if (!image) return null;
+            // 位移用舞台寬度百分比，側邊才不會疊在主角後面看不見。
+            const step = side === 1 ? 40 : 19;
+            const scale = isActive ? 1 : Math.abs(offset) === 1 ? 0.66 : 0.48;
+            return (
+              <button
+                key={item.drug.slug}
+                type="button"
+                tabIndex={-1}
+                aria-hidden={!isActive}
+                data-showcase-index={i}
+                data-active={isActive}
+                data-offset={String(offset)}
+                onClick={() => go(i)}
+                className={`product-showcase-item absolute bottom-0 left-1/2 block border-0 bg-transparent p-0 transition-[transform,opacity,filter] ease-out motion-reduce:transition-none ${
+                  isDragging ? "duration-0 will-change-transform" : "duration-500"
+                }`}
+                style={{
+                  transformOrigin: "bottom center",
+                  transform: `translate3d(calc(-50% + ${offset * step}cqw + var(--showcase-drag-x)), 0, 0) scale(${scale})`,
+                  opacity: isActive ? 1 : Math.abs(offset) === 1 ? 0.9 : 0.62,
+                  zIndex: 10 - Math.abs(offset),
+                  filter: isActive ? "none" : "brightness(0.96)",
+                }}
+              >
+                <span className="product-showcase-packshot-frame relative block">
                   <Image
                     src={image.src}
                     alt={locale === "en" ? image.altEn : image.alt}
                     width={image.width}
                     height={image.height}
-                    sizes="(max-width: 767px) 42vw, 220px"
-                    {...(logicalIndex === 0
-                      ? { priority: true as const }
-                      : { loading: (nearActive ? "eager" : "lazy") as "eager" | "lazy" })}
+                    sizes="(min-width: 768px) 230px, 180px"
+                    {...(Math.abs(offset) <= 1
+                      ? i === active
+                        ? { priority: true as const }
+                        : { loading: "eager" as const }
+                      : { loading: "lazy" as const })}
                     draggable={false}
                     className="product-showcase-packshot"
                   />
-                </div>
-              );
-            })}
-          </div>
-
-          <ArrowButton
-            dir="prev"
-            label={locale === "en" ? "Previous product" : "上一項"}
-            onClick={() => go(active - 1)}
-            className="product-showcase-arrow product-showcase-arrow-prev"
-          />
-          <ArrowButton
-            dir="next"
-            label={locale === "en" ? "Next product" : "下一項"}
-            onClick={() => go(active + 1)}
-            className="product-showcase-arrow product-showcase-arrow-next"
-          />
+                </span>
+              </button>
+            );
+          })}
         </div>
 
         <div className="mt-5 sm:mt-1" aria-live="polite">
@@ -257,6 +253,11 @@ export function ProductSwipeShowcase({
             <p className="m-0 text-[19px] font-bold leading-[1.35] text-ink sm:text-[22px]">
               {copy.name}
             </p>
+            {metaLine && (
+              <p className="mx-auto mb-0 mt-1.5 max-w-[460px] text-[14px] leading-[1.6] text-muted">
+                {metaLine}
+              </p>
+            )}
             <p className="mx-auto mb-0 mt-1 line-clamp-2 max-w-[460px] text-[13px] leading-[1.6] text-muted-2">
               {copy.nutritionFocus}
             </p>
@@ -271,15 +272,27 @@ export function ProductSwipeShowcase({
           </div>
         </div>
 
-        <div className="mt-5 flex items-center justify-center gap-1.5 sm:mt-2" aria-hidden>
-          {items.map((item, i) => (
-            <span
-              key={item.drug.slug}
-              className={`transition-colors motion-reduce:transition-none ${
-                i === active ? "h-[3px] w-7 bg-ink sm:w-8" : "h-px w-5 bg-line-strong sm:w-6"
-              }`}
-            />
-          ))}
+        <div className="mt-5 flex items-center justify-center gap-4">
+          <ArrowButton
+            dir="prev"
+            label={locale === "en" ? "Previous product" : "上一項"}
+            onClick={() => go(active - 1)}
+          />
+          <div className="flex gap-1.5" aria-hidden>
+            {items.map((item, i) => (
+              <span
+                key={item.drug.slug}
+                className={`transition-colors motion-reduce:transition-none ${
+                  i === active ? "h-[3px] w-7 bg-ink sm:w-8" : "h-px w-5 bg-line-strong sm:w-6"
+                }`}
+              />
+            ))}
+          </div>
+          <ArrowButton
+            dir="next"
+            label={locale === "en" ? "Next product" : "下一項"}
+            onClick={() => go(active + 1)}
+          />
         </div>
       </div>
     </div>
@@ -290,25 +303,17 @@ function ArrowButton({
   dir,
   label,
   onClick,
-  className,
 }: {
   dir: "prev" | "next";
   label: string;
   onClick: () => void;
-  className: string;
 }) {
   return (
     <button
       type="button"
-      onClick={(event) => {
-        event.stopPropagation();
-        onClick();
-      }}
-      onPointerDown={(event) => {
-        event.stopPropagation();
-      }}
+      onClick={onClick}
       aria-label={label}
-      className={className}
+      className="product-showcase-arrow flex h-11 w-11 shrink-0 items-center justify-center border border-line-strong bg-paper text-[16px] text-ink-2 transition-colors hover:border-forest hover:text-forest"
     >
       <span aria-hidden>{dir === "prev" ? "‹" : "›"}</span>
     </button>

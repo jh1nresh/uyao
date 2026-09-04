@@ -814,115 +814,51 @@ html[data-theme="dark"] .theme-logo-dark {
   isolation: isolate;
 }
 
+/* 無木板貨架：去背包裝照橫向滑動，中央放大、側邊縮小。 */
 .product-showcase-stage {
-  --product-showcase-slot: 22%;
+  --showcase-drag-x: 0px;
 
   width: 100%;
-  aspect-ratio: 1774 / 350;
+  height: 250px;
+  overflow: hidden;
   isolation: isolate;
-  background: rgb(var(--color-ivory));
+  container-type: inline-size;
+  background:
+    radial-gradient(ellipse 42% 28% at 50% 100%, rgb(65 43 25 / 0.08), transparent 72%),
+    rgb(var(--color-ivory));
 }
 
-.product-showcase-plate {
-  object-fit: cover;
-  object-position: center;
-  pointer-events: none;
-  user-select: none;
-}
-
-.product-showcase-rail {
-  position: relative;
-  z-index: 1;
-  height: 100%;
-  cursor: grab;
-  touch-action: pan-y;
-}
-
-.product-showcase-rail[data-dragging="true"] {
+.product-showcase-stage[data-dragging="true"] {
   cursor: grabbing;
 }
 
-/* 包裝照落在固定空櫃裡；位移只動商品，木櫃永遠不動。 */
-.product-showcase-bay {
-  position: absolute;
-  bottom: 11%;
-  left: 50%;
-  z-index: 1;
-  display: flex;
-  width: var(--product-showcase-slot);
-  height: 72%;
-  align-items: flex-end;
-  justify-content: center;
-  padding-bottom: 2%;
-  opacity: 0;
-  pointer-events: none;
-  transform: translateX(-50%) scale(0.72);
-  transition:
-    transform 420ms var(--ease-brand),
-    opacity 420ms var(--ease-brand),
-    filter 420ms var(--ease-brand);
-  filter: brightness(0.92);
+.product-showcase-item {
+  touch-action: none;
 }
 
-.product-showcase-bay[data-offset="-2"] {
-  opacity: 0.35;
-  transform: translateX(calc(-50% - 2 * var(--product-showcase-slot))) scale(0.68);
-}
-
-.product-showcase-bay[data-offset="-1"] {
-  opacity: 0.72;
-  transform: translateX(calc(-50% - var(--product-showcase-slot))) scale(0.82);
-}
-
-.product-showcase-bay[data-offset="0"],
-.product-showcase-bay[data-active="true"] {
-  z-index: 2;
-  opacity: 1;
-  pointer-events: auto;
-  transform: translateX(-50%) scale(1);
-  filter: none;
-}
-
-.product-showcase-bay[data-offset="1"] {
-  opacity: 0.72;
-  transform: translateX(calc(-50% + var(--product-showcase-slot))) scale(0.82);
-}
-
-.product-showcase-bay[data-offset="2"] {
-  opacity: 0.35;
-  transform: translateX(calc(-50% + 2 * var(--product-showcase-slot))) scale(0.68);
+.product-showcase-packshot-frame {
+  width: 180px;
+  height: 230px;
 }
 
 .product-showcase-packshot {
   width: auto;
-  max-width: 88%;
+  max-width: 100%;
   height: auto;
   max-height: 100%;
   object-fit: contain;
   object-position: bottom center;
   filter:
-    drop-shadow(0 3px 2px rgb(65 43 25 / 0.18))
-    drop-shadow(4px 8px 10px rgb(65 43 25 / 0.16));
+    drop-shadow(0 3px 2px rgb(65 43 25 / 0.2))
+    drop-shadow(4px 10px 12px rgb(65 43 25 / 0.18));
   user-select: none;
+  pointer-events: none;
 }
 
 .product-showcase-arrow {
-  position: absolute;
-  top: 50%;
-  z-index: 3;
-  display: flex;
-  height: 2.75rem;
-  width: 2.75rem;
-  translate: 0 -50%;
-  align-items: center;
-  justify-content: center;
   border: 1px solid rgb(var(--color-line-strong));
   background: rgb(var(--color-paper));
-  box-shadow: 0 1px 0 rgb(var(--color-ink) / 0.06);
-  color: rgb(var(--color-ink));
-  font-size: 1.35rem;
-  line-height: 1;
-  pointer-events: auto;
+  color: rgb(var(--color-ink-2));
   transition:
     border-color 200ms var(--ease-brand),
     color 200ms var(--ease-brand),
@@ -934,39 +870,26 @@ html[data-theme="dark"] .theme-logo-dark {
   color: rgb(var(--color-forest));
 }
 
-.product-showcase-arrow-prev {
-  left: 0.5rem;
-}
+@media (min-width: 768px) {
+  .product-showcase-stage {
+    height: 300px;
+  }
 
-.product-showcase-arrow-next {
-  right: 0.5rem;
+  .product-showcase-packshot-frame {
+    width: 230px;
+    height: 290px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .product-showcase-bay {
-    transition: none;
+  .product-showcase-item {
+    transition: none !important;
   }
 }
 
 @media (max-width: 767px) {
   .product-showcase-stage {
-    --product-showcase-slot: 30%;
-
     height: 15.5rem;
-    aspect-ratio: auto;
-  }
-
-  .product-showcase-arrow {
-    height: 2.5rem;
-    width: 2.5rem;
-  }
-
-  .product-showcase-arrow-prev {
-    left: 0.35rem;
-  }
-
-  .product-showcase-arrow-next {
-    right: 0.35rem;
   }
 
   .medicine-cabinet-hero {
