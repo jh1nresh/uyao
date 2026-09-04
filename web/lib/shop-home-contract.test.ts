@@ -31,6 +31,10 @@ const productShowcase = readFileSync(
   join(import.meta.dirname, "product-showcase.ts"),
   "utf8",
 );
+const productShowcaseMotion = readFileSync(
+  join(import.meta.dirname, "product-showcase-motion.ts"),
+  "utf8",
+);
 const partnerMarquee = readFileSync(
   join(import.meta.dirname, "..", "components", "landing", "PartnerMarquee.tsx"),
   "utf8",
@@ -45,6 +49,14 @@ const siteHeader = readFileSync(
 );
 const consumerLayout = readFileSync(
   join(import.meta.dirname, "..", "app", "(consumer)", "layout.tsx"),
+  "utf8",
+);
+const productGallery = readFileSync(
+  join(import.meta.dirname, "..", "components", "ProductGallery.tsx"),
+  "utf8",
+);
+const drugPage = readFileSync(
+  join(import.meta.dirname, "..", "app", "(consumer)", "drug", "[slug]", "page.tsx"),
   "utf8",
 );
 const pharmacyPage = readFileSync(
@@ -94,9 +106,14 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).toContain("product-showcase-item");
     expect(productSwipeShowcase).toContain("product-showcase-packshot");
     expect(productSwipeShowcase).toContain("product-showcase-arrow");
-    expect(productSwipeShowcase).toContain("--showcase-drag-x");
-    expect(productSwipeShowcase).toContain("cqw");
-    expect(productSwipeShowcase).toContain("scale(");
+    expect(productSwipeShowcase).toContain("requestAnimationFrame");
+    expect(productSwipeShowcase).toContain("shortestSignedDistance");
+    expect(productSwipeShowcase).toContain("easeBrand");
+    expect(productSwipeShowcase).not.toContain("--showcase-drag-x");
+    expect(productSwipeShowcase).not.toContain("* 0.42");
+    expect(productShowcaseMotion).toContain("cqw");
+    expect(productShowcaseMotion).toContain("scale(");
+    expect(productSwipeShowcase).toContain("showcaseItemStyle");
     expect(productSwipeShowcase).toContain("SIDE_DESKTOP");
     expect(productSwipeShowcase).not.toContain("product-showcase-row");
     expect(productSwipeShowcase).not.toContain("snap-mandatory");
@@ -122,6 +139,7 @@ describe("household medicine storefront homepage", () => {
     expect(globalCss).toContain("container-type: inline-size");
     expect(globalCss).toContain(".product-showcase-packshot");
     expect(globalCss).toContain(".product-showcase-item");
+    expect(globalCss).not.toContain("--showcase-drag-x");
     expect(globalCss).not.toContain(".product-showcase-plate");
     expect(globalCss).not.toContain(".product-showcase-bay");
     expect(globalCss).not.toContain("--product-showcase-slot:");
@@ -245,6 +263,16 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).not.toMatch(/#[0-9a-fA-F]{6}/);
     expect(productSwipeShowcase).toContain("border-forest bg-forest text-paper");
     expect(productSwipeShowcase).toContain("aria-hidden");
+  });
+
+  it("keeps packshots on the product page and adds a swipeable cabinet display", () => {
+    expect(drugPage).toContain("cabinetDisplayCutout");
+    expect(drugPage).toContain("藥櫃陳列");
+    expect(drugPage).toContain("包裝照");
+    expect(productGallery).toContain("snap-x snap-mandatory");
+    expect(productGallery).toContain("product-gallery-rail");
+    expect(productGallery).not.toContain("key={current.src}");
+    expect(globalCss).toContain(".product-gallery-rail");
   });
 
   it("keeps a short mobile hero lead and defers the partner marquee", () => {

@@ -81,3 +81,12 @@ export function productShowcaseItems(drugs: readonly Drug[]): ShowcaseItem[] {
     return drug?.image?.kind === "packshot" ? [{ drug, cutout }] : [];
   });
 }
+
+/**
+ * 品項頁圖廊用的藥櫃陳列圖。跟包裝實拍分開：實拍負責「這盒長什麼樣」，
+ * 這張從拍攝藥櫃獨立抠出，負責對照貨架。沒有精選抠圖的品項就不給。
+ */
+export function cabinetDisplayCutout(slug: string): ShowcaseCutout | undefined {
+  if (!Object.hasOwn(SHOWCASE_CUTOUT_SIZE, slug)) return undefined;
+  return SHOWCASE_CUTOUT_SIZE[slug as keyof typeof SHOWCASE_CUTOUT_SIZE];
+}

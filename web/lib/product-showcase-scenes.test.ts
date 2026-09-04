@@ -4,7 +4,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 
 import { allDrugs } from "./data";
-import { productShowcaseItems } from "./product-showcase";
+import { cabinetDisplayCutout, productShowcaseItems } from "./product-showcase";
 
 const PUBLIC_DIR = path.resolve(import.meta.dirname, "..", "public");
 
@@ -25,5 +25,17 @@ describe("homepage product showcase hero cutouts", () => {
       expect(item.cutout.width).toBeGreaterThan(0);
       expect(item.cutout.height).toBe(1000);
     }
+  });
+
+  it("lets the product page reuse those cutouts as a cabinet display slide", () => {
+    const items = productShowcaseItems(allDrugs());
+    for (const item of items) {
+      expect(cabinetDisplayCutout(item.drug.slug)?.src).toBe(item.cutout.src);
+      expect(
+        item.cutout.src !== item.drug.image?.src,
+        `${item.drug.slug} 陳列圖不得只是複製包裝照路徑`,
+      ).toBe(true);
+    }
+    expect(cabinetDisplayCutout("not-a-product")).toBeUndefined();
   });
 });

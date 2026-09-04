@@ -2,24 +2,44 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { type CSSProperties, useCallback, useEffect, useRef, useState } from "react";
+import {
+  type PointerEvent as ReactPointerEvent,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 
 import { useLocale } from "./LocaleProvider";
 import { drugCopy } from "@/lib/i18n";
 import { known } from "@/lib/pending";
 import type { ShowcaseItem } from "@/lib/product-showcase";
+import {
+  SHOWCASE_DURATION_MS,
+  SHOWCASE_SIDE_DESKTOP,
+  SHOWCASE_STEP_DESKTOP,
+  SHOWCASE_STEP_MOBILE,
+  easeBrand,
+  shortestSignedDistance,
+  shortestTarget,
+  showcaseItemStyle,
+  snapFromDrag,
+  wrapIndex,
+} from "@/lib/product-showcase-motion";
 
 /**
  * 品項橫向展示：用接近 hero 藥櫃光影的去背商品圖，不要整幅櫃景、也不貼回木板。
- * 左右滑動換主角，中央那一支放大，側邊縮小 —— 原本的貨架滑動放大動畫。
+ * 左右滑動換主角，中央那一支放大，側邊縮小 —— 回到連續的貨架滑動，而不是
+ * 「像素拖一段、放開再跳一格」。
  *
  * 互動三條路都通：觸控／滑鼠拖曳、鍵盤方向鍵、下方左右箭頭。
  */
 
 export type { ShowcaseItem } from "@/lib/product-showcase";
 
-/** 可視範圍內主角左右各放幾支。手機縮成 1，桌機 2。 */
-const SIDE_DESKTOP = 2;
+const SIDE_DESKTOP = SHOWCASE_SIDE_DESKTOP;
+const DRAG_CLICK_PX = 8;
 
 export function ProductSwipeShowcase({
   items,
@@ -44,20 +64,103 @@ export function ProductSwipeShowcase({
   // SSR 採手機優先，避免 hydration 前把桌機五支擠進窄螢幕。
   const [side, setSide] = useState(1);
   const [isDragging, setIsDragging] = useState(false);
-  const dragStart = useRef<number | null>(null);
-  // 換項判斷讀 ref：pointermove 與 pointerup 同批時，closure 還看得到舊 delta。
-  const dragDelta = useRef(0);
+  const positionRef = useRef(0);
+  const dragStartX = useRef<number | null>(null);
+  const dragOrigin = useRef(0);
+  const velocityRef = useRef(0);
+  const lastMove = useRef({ x: 0, t: 0 });
+  const didDragRef = useRef(false);
+  const animRef = useRef<number | null>(null);
   const stageRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const sideRef = useRef(side);
   const pillRailRef = useRef<HTMLDivElement>(null);
   const pillRefs = useRef<Array<HTMLButtonElement | null>>([]);
 
   const count = items.length;
+  const step = side === 1 ? SHOWCASE_STEP_MOBILE : SHOWCASE_STEP_DESKTOP;
+  sideRef.current = side;
+
+  const applyLayout = useCallback(
+    (position: number) => {
+      const currentStep = sideRef.current === 1 ? SHOWCASE_STEP_MOBILE : SHOWCASE_STEP_DESKTOP;
+      const currentSide = sideRef.current;
+      for (let i = 0; i < count; i += 1) {
+        const el = itemRefs.current[i];
+        if (!el) continue;
+        const distance = shortestSignedDistance(i, position, count);
+        const style = showcaseItemStyle(distance, currentStep);
+        el.style.transformOrigin = style.transformOrigin;
+        el.style.transform = style.transform;
+        el.style.opacity = String(style.opacity);
+        el.style.zIndex = String(style.zIndex);
+        el.style.filter = style.filter;
+        const isHero = Math.abs(distance) < 0.5;
+        el.dataset.active = isActiveAttr(isHero);
+        el.setAttribute("aria-hidden", isHero ? "false" : "true");
+        el.style.pointerEvents = Math.abs(distance) <= currentSide + 0.2 ? "auto" : "none";
+        el.style.visibility = Math.abs(distance) > currentSide + 0.9 ? "hidden" : "visible";
+      }
+    },
+    [count],
+  );
+
+  const stopAnimation = useCallback(() => {
+    if (animRef.current !== null) {
+      cancelAnimationFrame(animRef.current);
+      animRef.current = null;
+    }
+  }, []);
+
+  const settleActive = useCallback(
+    (position: number) => {
+      const next = wrapIndex(Math.round(position), count);
+      positionRef.current = next;
+      applyLayout(next);
+      setActive((prev) => (prev === next ? prev : next));
+    },
+    [applyLayout, count],
+  );
+
+  const animateTo = useCallback(
+    (target: number) => {
+      stopAnimation();
+      const start = positionRef.current;
+      if (Math.abs(target - start) < 0.001) {
+        settleActive(target);
+        return;
+      }
+      const reduced =
+        typeof window !== "undefined" &&
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduced) {
+        settleActive(target);
+        return;
+      }
+      const started = performance.now();
+      const tick = (now: number) => {
+        const t = Math.min(1, (now - started) / SHOWCASE_DURATION_MS);
+        const next = start + (target - start) * easeBrand(t);
+        positionRef.current = next;
+        applyLayout(next);
+        if (t < 1) {
+          animRef.current = requestAnimationFrame(tick);
+          return;
+        }
+        animRef.current = null;
+        settleActive(target);
+      };
+      animRef.current = requestAnimationFrame(tick);
+    },
+    [applyLayout, settleActive, stopAnimation],
+  );
+
   const go = useCallback(
     (next: number) => {
       if (count === 0) return;
-      setActive(((next % count) + count) % count);
+      animateTo(shortestTarget(positionRef.current, next, count));
     },
-    [count],
+    [animateTo, count],
   );
 
   useEffect(() => {
@@ -67,6 +170,12 @@ export function ProductSwipeShowcase({
     mq.addEventListener("change", sync);
     return () => mq.removeEventListener("change", sync);
   }, []);
+
+  useLayoutEffect(() => {
+    applyLayout(positionRef.current);
+  });
+
+  useEffect(() => () => stopAnimation(), [stopAnimation]);
 
   useEffect(() => {
     const rail = pillRailRef.current;
@@ -80,44 +189,68 @@ export function ProductSwipeShowcase({
     });
   }, [active]);
 
-  function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
+  function slotWidthPx(stage: HTMLDivElement): number {
+    return Math.max(1, stage.clientWidth * (step / 100));
+  }
+
+  function onPointerDown(event: ReactPointerEvent<HTMLDivElement>) {
     if (!event.isPrimary || event.button !== 0) return;
-    dragStart.current = event.clientX;
-    dragDelta.current = 0;
+    stopAnimation();
+    dragStartX.current = event.clientX;
+    dragOrigin.current = positionRef.current;
+    velocityRef.current = 0;
+    lastMove.current = { x: event.clientX, t: event.timeStamp };
+    didDragRef.current = false;
     setIsDragging(true);
     event.currentTarget.setPointerCapture(event.pointerId);
   }
 
-  function onPointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    if (dragStart.current === null) return;
-    dragDelta.current = event.clientX - dragStart.current;
-    // 連續 pointermove 直接改 compositor transform，不讓 React 每格重畫整排。
-    event.currentTarget.style.setProperty(
-      "--showcase-drag-x",
-      `${dragDelta.current * 0.42}px`,
-    );
+  function onPointerMove(event: ReactPointerEvent<HTMLDivElement>) {
+    if (dragStartX.current === null) return;
+    const deltaX = event.clientX - dragStartX.current;
+    if (!didDragRef.current && Math.abs(deltaX) >= DRAG_CLICK_PX) {
+      didDragRef.current = true;
+    }
+    const dt = event.timeStamp - lastMove.current.t;
+    const slot = slotWidthPx(event.currentTarget);
+    if (dt > 0) {
+      velocityRef.current = (lastMove.current.x - event.clientX) / dt / slot;
+    }
+    lastMove.current = { x: event.clientX, t: event.timeStamp };
+    positionRef.current = dragOrigin.current - deltaX / slot;
+    applyLayout(positionRef.current);
   }
 
-  function resetPointer(event: React.PointerEvent<HTMLDivElement>) {
+  function resetPointer(event: ReactPointerEvent<HTMLDivElement>) {
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId);
     }
-    event.currentTarget.style.setProperty("--showcase-drag-x", "0px");
-    dragStart.current = null;
-    dragDelta.current = 0;
+    dragStartX.current = null;
     setIsDragging(false);
   }
 
-  function onPointerUp(event: React.PointerEvent<HTMLDivElement>) {
-    if (dragStart.current === null) return;
-    if (dragDelta.current <= -60) go(active + 1);
-    else if (dragDelta.current >= 60) go(active - 1);
+  function onPointerUp(event: ReactPointerEvent<HTMLDivElement>) {
+    if (dragStartX.current === null) return;
+    const target = snapFromDrag(
+      dragOrigin.current,
+      positionRef.current,
+      velocityRef.current,
+    );
     resetPointer(event);
+    animateTo(target);
   }
 
-  function onPointerCancel(event: React.PointerEvent<HTMLDivElement>) {
-    if (dragStart.current === null) return;
+  function onPointerCancel(event: ReactPointerEvent<HTMLDivElement>) {
+    if (dragStartX.current === null) return;
     resetPointer(event);
+    animateTo(Math.round(positionRef.current));
+  }
+
+  function suppressDraggedClick(event: React.MouseEvent<HTMLDivElement>) {
+    if (!didDragRef.current) return;
+    event.preventDefault();
+    event.stopPropagation();
+    didDragRef.current = false;
   }
 
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
@@ -136,14 +269,6 @@ export function ProductSwipeShowcase({
   // 規格與分類都還沒確認時整行不顯示，避免「規格待確認 · 待確認」像頁面沒做完。
   const metaLine =
     [known(copy.spec), known(copy.drugClass)].filter(Boolean).join(" · ") || null;
-
-  /** 環狀位移：-side…+side 之外的品項不畫。 */
-  function offsetOf(index: number): number | null {
-    let d = index - active;
-    if (d > count / 2) d -= count;
-    if (d < -count / 2) d += count;
-    return Math.abs(d) <= side ? d : null;
-  }
 
   return (
     <div className="product-showcase-canvas relative">
@@ -195,40 +320,31 @@ export function ProductSwipeShowcase({
           onPointerMove={onPointerMove}
           onPointerUp={onPointerUp}
           onPointerCancel={onPointerCancel}
+          onClickCapture={suppressDraggedClick}
+          onDragStart={(event) => event.preventDefault()}
           data-dragging={isDragging}
-          style={{ "--showcase-drag-x": "0px" } as CSSProperties}
           className="product-showcase-stage relative mt-5 cursor-grab touch-pan-y select-none outline-offset-4 active:cursor-grabbing"
         >
           {items.map((item, i) => {
-            const offset = offsetOf(i);
-            if (offset === null) return null;
-            const isActive = offset === 0;
+            const distance = shortestSignedDistance(i, active, count);
+            const isActive = i === active;
             const { cutout } = item;
             if (!cutout) return null;
             const altImage = item.drug.image;
-            // 位移用舞台寬度百分比，側邊才不會疊在主角後面看不見。
-            const step = side === 1 ? 40 : 19;
-            const scale = isActive ? 1 : Math.abs(offset) === 1 ? 0.66 : 0.48;
             return (
               <button
                 key={item.drug.slug}
+                ref={(node) => {
+                  itemRefs.current[i] = node;
+                }}
                 type="button"
                 tabIndex={-1}
                 aria-hidden={!isActive}
                 data-showcase-index={i}
                 data-active={isActive}
-                data-offset={String(offset)}
                 onClick={() => go(i)}
-                className={`product-showcase-item absolute bottom-0 left-1/2 block border-0 bg-transparent p-0 transition-[transform,opacity,filter] ease-out motion-reduce:transition-none ${
-                  isDragging ? "duration-0 will-change-transform" : "duration-500"
-                }`}
-                style={{
-                  transformOrigin: "bottom center",
-                  transform: `translate3d(calc(-50% + ${offset * step}cqw + var(--showcase-drag-x)), 0, 0) scale(${scale})`,
-                  opacity: isActive ? 1 : Math.abs(offset) === 1 ? 0.9 : 0.62,
-                  zIndex: 10 - Math.abs(offset),
-                  filter: isActive ? "none" : "brightness(0.96)",
-                }}
+                className="product-showcase-item absolute bottom-0 left-1/2 block border-0 bg-transparent p-0"
+                style={showcaseItemStyle(distance, step)}
               >
                 <span className="product-showcase-packshot-frame relative block">
                   <Image
@@ -241,7 +357,7 @@ export function ProductSwipeShowcase({
                     width={cutout.width}
                     height={cutout.height}
                     sizes="(min-width: 768px) 230px, 180px"
-                    {...(Math.abs(offset) <= 1
+                    {...(Math.abs(distance) <= 1
                       ? i === active
                         ? { priority: true as const }
                         : { loading: "eager" as const }
@@ -304,6 +420,10 @@ export function ProductSwipeShowcase({
       </div>
     </div>
   );
+}
+
+function isActiveAttr(isHero: boolean): "true" | "false" {
+  return isHero ? "true" : "false";
 }
 
 function ArrowButton({
