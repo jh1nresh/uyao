@@ -106,7 +106,7 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).toContain('from "next/image"');
     expect(productSwipeShowcase).toContain("item.sceneSrc");
     expect(productSwipeShowcase).toContain("product-showcase-scene");
-    expect(productSwipeShowcase).toContain('sizes="(max-width: 767px) 360vw, 135vw"');
+    expect(productSwipeShowcase).toContain('sizes="(max-width: 767px) 100vw, min(100vw, 1600px)"');
     expect(productSwipeShowcase).toContain('loading={!clone && logicalIndex === 0 ? "eager" : "lazy"}');
     expect(productSwipeShowcase).not.toContain("unoptimized");
     expect(productSwipeShowcase).not.toContain("transition-opacity");
@@ -122,8 +122,13 @@ describe("household medicine storefront homepage", () => {
     expect(globalCss).toContain("aspect-ratio: 1774 / 373");
     expect(globalCss).toContain(".product-showcase-scene");
     expect(globalCss).toContain(".product-showcase-bay");
-    expect(globalCss).toContain("--product-showcase-bay-width: 28.525vw");
-    expect(globalCss).toContain("--product-showcase-bay-width: 18.993rem");
+    expect(globalCss).toContain("--product-showcase-bay-width: 100%");
+    expect(globalCss).not.toContain("--product-showcase-bay-width: 28.525vw");
+    expect(globalCss).not.toContain("--product-showcase-bay-width: 18.993rem");
+    expect(globalCss).not.toContain(".product-showcase-bay::after");
+    expect(globalCss).not.toContain(".product-showcase-stage::before");
+    expect(globalCss).not.toContain("background: #d4ad78");
+    expect(globalCss).toContain(".medicine-cabinet-showcase-section {\n  /* Cream field so the photographed cabinet is the wood, not the page. */\n  background-color: rgb(var(--color-ivory));");
     expect(productShowcase).toContain("PRODUCT_SHOWCASE_SCENES");
     expect(productShowcase).toContain("/brand/uyao-product-cabinet-composite-v1.webp");
     expect(partnerMarquee).toContain("cabinet-partner-marquee");

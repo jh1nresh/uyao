@@ -9,9 +9,9 @@ import { drugCopy } from "@/lib/i18n";
 import type { ShowcaseItem } from "@/lib/product-showcase";
 
 /**
- * 品項橫向展示：每張完成的品牌場景只露出中央櫃格，連成同一座橫向藥櫃。
+ * 品項橫向展示：每一張完成的實拍藥櫃整幅入鏡，櫃格、進深與鄰格包裝
+ * 都在照片裡，瀏覽器只負責左右換主角。不要裁成單格再用 CSS 木條拼接。
  *
- * 商品與光影仍由完成場景資產提供，瀏覽器只負責把櫃格接成一條連續軌道。
  * 消費端仍不顯示價格，這一排只用來瀏覽目錄，不是結帳漏斗。
  *
  * 互動一律三條路都通：觸控滑動（pointer drag）、左右鍵、下方箭頭鈕。
@@ -257,10 +257,10 @@ export function ProductSwipeShowcase({
               className="h-11 max-w-[164px] shrink-0 text-[13px] font-medium"
             >
               <span
-                className={`flex h-8 max-w-full items-center truncate border px-3 transition-colors motion-reduce:transition-none ${
+                className={`flex h-8 max-w-full items-center truncate rounded-full border px-3.5 transition-colors motion-reduce:transition-none ${
                   i === active
                     ? "border-[#17392c] bg-[#17392c] text-[#f8f4e9]"
-                    : "border-[#b8b1a4] bg-[#f8f4e9]/85 text-[#3e4b44] hover:border-[#17392c] hover:text-[#17392c]"
+                    : "border-[#b8b1a4] bg-[#f8f4e9] text-[#3e4b44] hover:border-[#17392c] hover:text-[#17392c]"
                 }`}
               >
                 {drugCopy(item.drug, locale).name}
@@ -309,7 +309,7 @@ export function ProductSwipeShowcase({
                       ? `Wide uYao medicine cabinet with ${drugCopy(item.drug, locale).name} featured in the center`
                       : `以${drugCopy(item.drug, locale).name}為中央主角的 uYao 橫幅商品藥櫃`}
                   fill
-                  sizes="(max-width: 767px) 360vw, 135vw"
+                  sizes="(max-width: 767px) 100vw, min(100vw, 1600px)"
                   loading={!clone && logicalIndex === 0 ? "eager" : "lazy"}
                   draggable={false}
                   className="product-showcase-scene"
@@ -351,8 +351,8 @@ export function ProductSwipeShowcase({
               <span
                 key={item.drug.slug}
                 aria-hidden
-                className={`h-[3px] w-5 transition-colors motion-reduce:transition-none sm:w-6 ${
-                  i === active ? "bg-forest" : "bg-line-strong"
+                className={`transition-colors motion-reduce:transition-none ${
+                  i === active ? "h-[3px] w-7 bg-ink sm:w-8" : "h-px w-5 bg-[#c4bdb0] sm:w-6"
                 }`}
               />
             ))}
@@ -384,7 +384,7 @@ function ArrowButton({
       aria-label={label}
       className="flex h-11 w-11 shrink-0 items-center justify-center border border-line-strong bg-paper text-[16px] text-ink-2 transition-colors hover:border-forest hover:text-forest"
     >
-      {dir === "prev" ? "←" : "→"}
+      {dir === "prev" ? "‹" : "›"}
     </button>
   );
 }
