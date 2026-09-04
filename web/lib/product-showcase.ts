@@ -18,8 +18,9 @@ const PRODUCT_SHOWCASE_SCENES = new Map([
 ]);
 
 export function productShowcaseItems(drugs: readonly Drug[]): ShowcaseItem[] {
-  return drugs.flatMap((drug) => {
-    const sceneSrc = PRODUCT_SHOWCASE_SCENES.get(drug.slug);
-    return drug.image?.kind === "packshot" && sceneSrc ? [{ drug, sceneSrc }] : [];
+  const bySlug = new Map(drugs.map((drug) => [drug.slug, drug]));
+  return [...PRODUCT_SHOWCASE_SCENES].flatMap(([slug, sceneSrc]) => {
+    const drug = bySlug.get(slug);
+    return drug?.image?.kind === "packshot" ? [{ drug, sceneSrc }] : [];
   });
 }
