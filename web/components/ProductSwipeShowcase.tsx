@@ -208,8 +208,9 @@ export function ProductSwipeShowcase({
                       : `以${drugCopy(item.drug, locale).name}為中央主角的 uYao 橫幅商品藥櫃`}
                     fill
                     sizes="(max-width: 767px) 100vw, min(100vw, 1600px)"
-                    priority={logicalIndex === 0}
-                    loading={nearActive ? "eager" : "lazy"}
+                    {...(logicalIndex === 0
+                      ? { priority: true as const }
+                      : { loading: (nearActive ? "eager" : "lazy") as "eager" | "lazy" })}
                     draggable={false}
                     className="product-showcase-scene"
                   />
@@ -282,7 +283,13 @@ function ArrowButton({
   return (
     <button
       type="button"
-      onClick={onClick}
+      onClick={(event) => {
+        event.stopPropagation();
+        onClick();
+      }}
+      onPointerDown={(event) => {
+        event.stopPropagation();
+      }}
       aria-label={label}
       className={className}
     >

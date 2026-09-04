@@ -106,8 +106,8 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).not.toContain("key: `leading-");
     expect(productSwipeShowcase).toContain("data-showcase-index={logicalIndex}");
     expect(productSwipeShowcase).toContain('data-active={logicalIndex === active}');
-    expect(productSwipeShowcase).toContain("loading={nearActive ? \"eager\" : \"lazy\"}");
-    expect(productSwipeShowcase).toContain("priority={logicalIndex === 0}");
+    expect(productSwipeShowcase).toContain('priority: true as const');
+    expect(productSwipeShowcase).toContain('loading: (nearActive ? "eager" : "lazy")');
     expect(productSwipeShowcase).not.toContain('className="relative h-full w-full shrink-0 snap-center"');
     expect(productSwipeShowcase).toContain('from "next/image"');
     expect(productSwipeShowcase).toContain("item.sceneSrc");

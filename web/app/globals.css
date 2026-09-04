@@ -858,7 +858,7 @@ html[data-theme="dark"] .theme-logo-dark {
 .product-showcase-arrow {
   position: absolute;
   top: 50%;
-  z-index: 2;
+  z-index: 3;
   display: flex;
   height: 2.75rem;
   width: 2.75rem;
@@ -870,6 +870,7 @@ html[data-theme="dark"] .theme-logo-dark {
   color: rgb(var(--color-ink-2));
   font-size: 1.25rem;
   line-height: 1;
+  pointer-events: auto;
   transition:
     border-color 200ms var(--ease-brand),
     color 200ms var(--ease-brand),
