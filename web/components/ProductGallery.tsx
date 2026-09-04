@@ -6,7 +6,7 @@ import { useRef, useState } from "react";
 export interface GalleryImage {
   src: string;
   alt: string;
-  /** 縮圖下方的短標，例如「包裝照」「藥櫃陳列」「產品特色」；電商圖不只一張時才分得出來 */
+  /** 縮圖下方的短標，例如「包裝照」「產品特色」；電商圖不只一張時才分得出來 */
   label: string;
 }
 
@@ -19,7 +19,7 @@ export interface GalleryImage {
  * 站上不做交易，所以這裡刻意沒有價格、購物車與「立即購買」—— 圖廊是用來
  * 看清楚商品，不是結帳漏斗。
  *
- * 主圖用 object-contain：包裝實拍是 4:5、藥櫃抠圖與電商說明圖比例不同，
+ * 主圖用 object-contain：包裝實拍是 4:5、電商說明圖比例不同，
  * 塞進同一個方框若用 cover 會把說明圖的文字裁掉。
  */
 export function ProductGallery({

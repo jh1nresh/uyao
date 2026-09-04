@@ -814,8 +814,9 @@ html[data-theme="dark"] .theme-logo-dark {
   isolation: isolate;
 }
 
-/* Hero 風格去背商品：橫向滑動，中央放大、側邊縮小；不加木板。
-   位移由 JS 用同一套 cqw 格子連續改 transform，不要再疊 CSS transition。 */
+/* 完整包裝實拍：橫向滑動，中央放大、側邊縮小；不加木板。
+   位移由 JS 用同一套 cqw 格子連續改 transform，不要再疊 CSS transition。
+   overflow 仍 hidden，所以步距必須讓左右那支整盒留在舞台裡。 */
 .product-showcase-stage {
   width: 100%;
   height: 250px;
@@ -851,8 +852,14 @@ html[data-theme="dark"] .theme-logo-dark {
 }
 
 .product-showcase-packshot-frame {
+  display: flex;
   width: 180px;
   height: 230px;
+  align-items: flex-end;
+  justify-content: center;
+  box-sizing: border-box;
+  /* 有幾張實拍本身貼邊，框內留白才不會看起來像又被切一刀。 */
+  padding: 10px 12px 4px;
 }
 
 .product-showcase-packshot {

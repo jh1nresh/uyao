@@ -9,9 +9,11 @@
 /** 與 globals.css `--ease-brand` 相同。 */
 export const SHOWCASE_EASE = [0.23, 1, 0.32, 1] as const;
 export const SHOWCASE_DURATION_MS = 480;
-export const SHOWCASE_STEP_MOBILE = 40;
-export const SHOWCASE_STEP_DESKTOP = 19;
-export const SHOWCASE_SIDE_DESKTOP = 2;
+/** 手機一步約 28% 容器寬，側邊那支才不會被 stage 的 overflow 切掉。 */
+export const SHOWCASE_STEP_MOBILE = 28;
+export const SHOWCASE_STEP_DESKTOP = 26;
+/** 桌機只露左右各一支，五支並排會把最外側切成半盒。 */
+export const SHOWCASE_SIDE_DESKTOP = 1;
 
 const FLICK_SLOTS_PER_MS = 0.0022;
 const COMMIT_DISTANCE = 0.18;

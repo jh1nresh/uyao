@@ -28,7 +28,6 @@ import { partnersForProduct } from "@/lib/partners";
 import { consumerBreadcrumbJsonLd, consumerProductJsonLd } from "@/lib/seo";
 import { consumerIndexablePageRobots } from "@/lib/seo-server";
 import { SHOP_URL } from "@/lib/shop";
-import { cabinetDisplayCutout } from "@/lib/product-showcase";
 import { isIndexableCatalogItemSlug } from "@/lib/shop-index";
 
 export function generateStaticParams() {
@@ -118,25 +117,14 @@ export default async function DrugPage({
     .map((partner) => getStore(partner.storeSlug))
     .filter((store): store is NonNullable<typeof store> => store !== undefined);
 
-  // 圖廊 = 包裝實拍 + 藥櫃陳列抠圖 +（電商）商品說明圖。
-  // 實拍排第一，那才是「這盒長什麼樣」；陳列圖只給有拍攝藥櫃抠圖的精選項。
-  const cabinetCutout = cabinetDisplayCutout(drug.slug);
+  // 圖廊 = 包裝實拍 +（電商）商品說明圖。
+  // 實拍排第一，那才是「這盒長什麼樣」。藥櫃抠圖盒子不完整，不放進來。
   const galleryImages: GalleryImage[] = [
     ...(drug.image
       ? [{
           src: drug.image.src,
           alt: locale === "en" ? drug.image.altEn : drug.image.alt,
           label: locale === "en" ? "Packaging photo" : "包裝照",
-        }]
-      : []),
-    ...(cabinetCutout && cabinetCutout.src !== drug.image?.src
-      ? [{
-          src: cabinetCutout.src,
-          alt:
-            locale === "en"
-              ? `${displayDrug.name} cut from the photographed medicine cabinet`
-              : `${displayDrug.name}，從拍攝藥櫃獨立抠出的陳列圖`,
-          label: locale === "en" ? "Cabinet display" : "藥櫃陳列",
         }]
       : []),
     ...(drug.detailImages ?? []).map((item, i) => ({
@@ -238,16 +226,11 @@ export default async function DrugPage({
               <p className="m-0 text-xs leading-[1.7] text-muted-2">
                 {drug.image.kind === "packshot"
                   ? locale === "en"
-                    ? "The first image is packaging supplied by the partner pharmacy, cut out on a transparent background."
-                    : "第一張是合作藥局提供的包裝照片，已去背為透明背景。"
+                    ? "Packaging supplied by the partner pharmacy, cut out on a transparent background."
+                    : "合作藥局提供的包裝照片，已去背為透明背景。"
                   : locale === "en"
                     ? "Illustration only — not the actual packaging."
                     : "示意圖，非實際包裝。"}
-                {cabinetCutout && cabinetCutout.src !== drug.image.src
-                  ? locale === "en"
-                    ? " The next image is cut from the photographed cabinet so the item can be recognised on the shelf — it is not a packaging close-up."
-                    : " 下一張是從拍攝藥櫃獨立抠出的陳列圖，方便對照貨架，不是包裝特寫。"
-                  : ""}
               </p>
             )}
             {/*

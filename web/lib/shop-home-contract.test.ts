@@ -97,7 +97,7 @@ describe("household medicine storefront homepage", () => {
     expect(appPage).toContain("精選品項是可瀏覽的目錄資料");
     expect(appPage).not.toContain("Catalog categories");
     expect(appPage).not.toContain("CATALOG_GROUPS");
-    expect(productShowcase).toContain('drug?.image?.kind === "packshot"');
+    expect(productShowcase).toContain('image?.kind !== "packshot"');
     expect(productSwipeShowcase).toContain("看這一項 →");
     expect(productSwipeShowcase).not.toContain("scrollIntoView");
     expect(productSwipeShowcase).toContain("motion-reduce:transition-none");
@@ -113,6 +113,9 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).not.toContain("* 0.42");
     expect(productShowcaseMotion).toContain("cqw");
     expect(productShowcaseMotion).toContain("scale(");
+    expect(productShowcaseMotion).toContain("SHOWCASE_STEP_MOBILE = 28");
+    expect(productShowcaseMotion).toContain("SHOWCASE_STEP_DESKTOP = 26");
+    expect(productShowcaseMotion).toContain("SHOWCASE_SIDE_DESKTOP = 1");
     expect(productSwipeShowcase).toContain("showcaseItemStyle");
     expect(productSwipeShowcase).toContain("SIDE_DESKTOP");
     expect(productSwipeShowcase).not.toContain("product-showcase-row");
@@ -128,8 +131,9 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).toContain("const { cutout } = item");
     expect(productSwipeShowcase).toContain("cutout.src");
     expect(productSwipeShowcase).toContain('sizes="(min-width: 768px) 230px, 180px"');
-    expect(productShowcase).toContain("/products/showcase-cutouts/");
-    expect(productShowcase).toContain("SHOWCASE_CUTOUT_SIZE");
+    expect(productShowcase).not.toContain("/products/showcase-cutouts/");
+    expect(productShowcase).not.toContain("SHOWCASE_CUTOUT_SIZE");
+    expect(productShowcase).not.toContain("cabinetDisplayCutout");
     expect(productSwipeShowcase).not.toContain("unoptimized");
     expect(productSwipeShowcase).toContain("useState(0)");
     expect(productSwipeShowcase).toContain("ArrowButton");
@@ -265,9 +269,9 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).toContain("aria-hidden");
   });
 
-  it("keeps packshots on the product page and adds a swipeable cabinet display", () => {
-    expect(drugPage).toContain("cabinetDisplayCutout");
-    expect(drugPage).toContain("藥櫃陳列");
+  it("keeps packshots on the product page and does not add incomplete cabinet crops", () => {
+    expect(drugPage).not.toContain("cabinetDisplayCutout");
+    expect(drugPage).not.toContain("藥櫃陳列");
     expect(drugPage).toContain("包裝照");
     expect(productGallery).toContain("snap-x snap-mandatory");
     expect(productGallery).toContain("product-gallery-rail");
