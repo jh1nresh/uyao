@@ -8,20 +8,22 @@ import { productShowcaseItems } from "./product-showcase";
 
 const PUBLIC_DIR = path.resolve(import.meta.dirname, "..", "public");
 
-describe("homepage product showcase row", () => {
-  it("uses catalog packshots in a calm row — no scene cutouts, cabinet scenes, or wood plate", () => {
+describe("homepage product showcase hero cutouts", () => {
+  it("uses hero-style cutouts with slide-enlarge — no full scenes or wood plate", () => {
     const items = productShowcaseItems(allDrugs());
     expect(items).toHaveLength(8);
     expect(items[0]?.drug.slug).toBe("greenplus-elgucare");
 
     for (const item of items) {
-      const image = item.drug.image;
-      expect(image?.kind, `${item.drug.slug} 必須是去背包裝照`).toBe("packshot");
-      expect(image!.src.startsWith("/products/"), `${item.drug.slug} 要用目錄包裝照`).toBe(true);
-      expect(image!.src.includes("/cabinet/"), "不要再用整幅櫃景").toBe(false);
-      expect(image!.src.includes("/showcase-cutouts/"), "不要再用櫃景抠圖").toBe(false);
-      const file = path.join(PUBLIC_DIR, image!.src);
-      expect(existsSync(file), `${item.drug.slug} 缺少包裝照 ${image!.src}`).toBe(true);
+      expect(item.drug.image?.kind, `${item.drug.slug} 目錄仍需去背包裝照`).toBe("packshot");
+      expect(item.cutout.src.startsWith("/products/showcase-cutouts/"), "要用 hero 風格去背圖").toBe(
+        true,
+      );
+      expect(item.cutout.src.includes("/cabinet/"), "不要再用整幅櫃景").toBe(false);
+      const file = path.join(PUBLIC_DIR, item.cutout.src);
+      expect(existsSync(file), `${item.drug.slug} 缺少去背圖 ${item.cutout.src}`).toBe(true);
+      expect(item.cutout.width).toBeGreaterThan(0);
+      expect(item.cutout.height).toBe(1000);
     }
   });
 });
