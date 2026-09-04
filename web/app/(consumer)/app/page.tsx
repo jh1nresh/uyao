@@ -178,8 +178,8 @@ export default async function HomePage({
               </div>
               <p className="medicine-cabinet-copy mb-0 text-ink-2">
                 {locale === "en"
-                  ? "Tell uYao what your household needs. We organize the request, then a pharmacist confirms the next step."
-                  : "你說家裡需要什麼，uYao 整理需求，再由藥師確認下一步。"}
+                  ? "Ask uYao in the box — that opens Agent. Browse the cabinet below when you already know the item."
+                  : "在框裡問 uYao 會進入 Agent；已知品項可直接逛下方藥櫃。"}
               </p>
               <div className="medicine-cabinet-cell-ask">
                 <SearchInput
