@@ -19,7 +19,7 @@ import { indexablePageRobots } from "@/lib/seo-server";
 
 const PATH = "/zh-tw/guides";
 const EN_PATH = "/en/guides";
-const UPDATED = "2026-08-18";
+const UPDATED = "2026-09-05";
 
 type Section = {
   heading: Record<Locale, string>;

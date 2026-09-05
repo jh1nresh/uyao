@@ -15,6 +15,7 @@ import { PARTNER_STORE_ITEMS } from "@/lib/partner-stores";
 import { productShowcaseItems } from "@/lib/product-showcase";
 import {
   CONSUMER_DESCRIPTION,
+  CONSUMER_TITLE,
   SITE_URL,
   STORE_URL,
   consumerWebPageJsonLd,
@@ -25,7 +26,7 @@ import {
 import { consumerIndexablePageRobots } from "@/lib/seo-server";
 import { SHOP_URL } from "@/lib/shop";
 
-const UPDATED_AT = "2026-08-12";
+const UPDATED_AT = "2026-09-05";
 const HOME_CABINET_SLUGS = [
   "greenplus-elgucare",
   "chungchi-yiyuansu-gastrodia-100",
@@ -38,9 +39,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const locale = await getRequestLocale();
   const robots = await consumerIndexablePageRobots();
   const canonical = `${SHOP_URL}${locale === "en" ? "/en" : "/zh-tw"}`;
-  const title = locale === "en"
-    ? "Find medicine nearby and leave a request | uYao Medicine Finder"
-    : "附近藥局找藥與到貨通知｜uYao 找藥";
+  const title = CONSUMER_TITLE[locale];
   const images = socialPreviewImages("shop", locale);
   return locale === "en"
     ? {
