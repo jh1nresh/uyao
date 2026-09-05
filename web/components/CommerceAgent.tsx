@@ -6,6 +6,7 @@ import styles from "./CommerceAgent.module.css";
 import { productShowcaseScene } from "@/lib/product-showcase";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
+import { SearchInput } from "@/components/SearchInput";
 import { SearchResultLink } from "@/components/SearchResultLink";
 import type {
   CommerceAgentMessage,
@@ -34,10 +35,12 @@ type AgentStreamEvent =
 
 export function CommerceAgent({
   initialQuery,
+  initialDraft = "",
   area,
   locale,
 }: {
   initialQuery: string;
+  initialDraft?: string;
   area: AreaSlug;
   locale: Locale;
 }) {
@@ -47,6 +50,7 @@ export function CommerceAgent({
   const [progress, setProgress] = useState("");
   const [error, setError] = useState("");
   const started = useRef(false);
+  const latestTurn = useRef<HTMLDivElement>(null);
   const conversation = useRef<CommerceAgentMessage[]>([]);
   const screen = useRef<CommerceAgentScreenState>({ productSlugs: [] });
   const english = locale === "en";
@@ -153,14 +157,29 @@ export function CommerceAgent({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialQuery]);
 
+  useEffect(() => {
+    latestTurn.current?.scrollIntoView({ block: "end" });
+  }, [turns.length, loading]);
+
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     void ask(question);
   }
 
   return (
-    <section className="flex min-h-[calc(100dvh-9rem)] flex-col" aria-live="polite">
-      <div className="flex-1 space-y-8 py-7 pb-12 sm:py-10 sm:pb-16">
+    <section className={styles.chat} aria-label={english ? "Ask uYao" : "問藥對話"}>
+      <div className={styles.toolbar}>
+        <span className="shop-kicker">{english ? "ASK UYAO" : "問藥"}</span>
+        <Link href={`${localizedPath("/agent", locale)}?area=${area}`} className={styles.newChat}>{english ? "New chat +" : "開啟新對話 +"}</Link>
+      </div>
+      <div className={styles.messages} data-lenis-prevent role="log" aria-live="polite">
+        {!initialQuery && turns.length === 0 && !loading && (
+          <div className={styles.welcome}>
+            <p className="shop-kicker">uYao</p>
+            <h1 className={styles.heading}>{english ? "What would you like to ask?" : "今天想問什麼？"}</h1>
+            <p className={styles.intro}>{english ? "Start with a product, ingredient or question. A pharmacist confirms suitability." : "品名、成分或想了解的問題，都可以直接問。適用性再由藥師確認。"}</p>
+          </div>
+        )}
         {turns.map((turn, turnIndex) => (
           <article key={`${turnIndex}-${turn.query}`} className="space-y-6">
             <div className="ml-auto max-w-[82%] bg-brand-surface px-4 py-3 text-on-dark sm:max-w-[70%]">
@@ -247,21 +266,13 @@ export function CommerceAgent({
             </p>
           </div>
         )}
+        <div ref={latestTurn} />
       </div>
 
-      {turns.length === 0 && !loading && !error && (
-        <p className="mb-3 max-w-[680px] text-pretty text-[13px] leading-[1.6] text-muted">
-          {english
-            ? "Ask in Agent for a grounded next step. To browse the photographed cabinet instead, go back to Shop."
-            : "在 Agent 提問，取得有依據的下一步。若要逛拍攝藥櫃目錄，請回到找藥。"}
-          {" "}
-          <Link href={localizedPath("/", locale)} className="font-bold text-forest no-underline hover:underline">
-            {english ? "Back to Shop" : "回到找藥"}
-          </Link>
-        </p>
-      )}
-
-      <div className="sticky bottom-0 bg-ivory pb-[calc(1rem+env(safe-area-inset-bottom))] pt-2">
+      <div className={styles.composer}>
+        {!initialQuery && turns.length === 0 ? (
+          <SearchInput defaultValue={initialDraft} size="lg" area={area} autoFocus={Boolean(initialDraft)} presentation="agent" resultsPath="/agent" submitLabel={english ? "Send" : "送出"} className="uyao-agent-composer w-full" />
+        ) : (
         <form onSubmit={submit} className="flex items-end gap-2 border-y border-line-strong bg-paper p-2 transition-colors focus-within:border-forest sm:border-x">
           <label htmlFor="uyao-agent-question" className="sr-only">
             {english ? "Ask uYao Agent" : "詢問 uYao Agent"}
@@ -290,6 +301,7 @@ export function CommerceAgent({
             {english ? "Send" : "送出"}
           </button>
         </form>
+        )}
         <p className="mb-0 mt-2 px-3 text-pretty text-[12px] leading-[1.55] text-muted-2">
           {english
             ? "Do not enter names, phone numbers, National Health Insurance data, or prescription details. Allergy answers stay in this tab."

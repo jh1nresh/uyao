@@ -74,8 +74,9 @@ describe("household medicine storefront homepage", () => {
     expect(searchInput).toContain("onCompositionEnd");
     expect(searchInput).toContain('new URLSearchParams({ draft: value })');
     expect(commerceAgentPage).toContain("initialDraft");
-    expect(commerceAgentPage).toContain("defaultValue={initialDraft}");
-    expect(commerceAgentPage).toContain("uyao-agent-composer");
+    expect(commerceAgentPage).toContain("initialDraft={initialDraft}");
+    expect(commerceAgent).toContain("defaultValue={initialDraft}");
+    expect(commerceAgent).toContain("uyao-agent-composer");
     expect(appPage).not.toContain("家裡現在需要什麼？");
     expect(appPage).not.toContain("問藥時，上排品項留在原位。");
     expect(appPage).toContain("先逛品項，再交給 uYao 去問。");
@@ -186,7 +187,7 @@ describe("household medicine storefront homepage", () => {
     expect(siteHeader).toContain("uYao 主要導覽");
     expect(siteHeader).toContain('aria-current={activeWorkspace === "agent" ? "page" : undefined}');
     expect(siteHeader).toContain('href={localizedPath("/agent", locale)}');
-    expect(commerceAgentPage).toContain('presentation="agent"');
+    expect(commerceAgent).toContain('presentation="agent"');
     expect(commerceAgentPage).toContain("<CommerceAgent");
     expect(commerceAgentPage).not.toContain("CatalogItemGrid");
     expect(commerceAgentPage).not.toContain("ReservationAccess");
@@ -227,7 +228,7 @@ describe("household medicine storefront homepage", () => {
   });
 
   it("keeps a short mobile hero lead without an empty viewport spacer", () => {
-    expect(globalCss).toContain("Keep one short lead so the first viewport still carries brand meaning");
+    expect(globalCss).toContain("Keep both brand lines inside the lower cabinet bay on mobile");
     expect(globalCss).toContain("-webkit-line-clamp: 2");
     expect(globalCss).toContain(".cabinet-partner-marquee");
     expect(globalCss).not.toContain("margin-top: min(42vh, 18rem)");

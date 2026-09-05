@@ -37,16 +37,16 @@ describe("P2 brand presence, Store OS accents, dual-path copy", () => {
     expect(storeOsCss.toLowerCase()).not.toContain("#0285ff");
   });
 
-  it("clarifies ask-vs-browse on shop home and Agent empty state", () => {
+  it("keeps catalog search on home and a direct question in the Agent empty state", () => {
     expect(home).toContain(
       "Search a name, ingredient, or wellness need. Check the details before asking a pharmacist.",
     );
     expect(home).toContain("輸入品名、成分或保養需求，先查資料，再向藥師確認。");
     expect(agent).toContain(
-      "Ask in Agent for a grounded next step. To browse the photographed cabinet instead, go back to Shop.",
+      "Start with a product, ingredient or question. A pharmacist confirms suitability.",
     );
-    expect(agent).toContain("在 Agent 提問，取得有依據的下一步。若要逛拍攝藥櫃目錄，請回到找藥。");
-    expect(agent).toContain('localizedPath("/", locale)');
+    expect(agent).toContain("品名、成分或想了解的問題，都可以直接問。適用性再由藥師確認。");
+    expect(agent).toContain("今天想問什麼？");
   });
 
   it("explains Store OS confirmation when reserve is available", () => {
