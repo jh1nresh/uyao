@@ -339,21 +339,34 @@ html[data-theme="dark"] .theme-logo-dark {
    open wood field below the top rail. */
 
 .cabinet-header-band .theme-logo-light.theme-logo-light {
-  display: block;
-}
-
-.cabinet-header-band .theme-logo-dark.theme-logo-dark {
   display: none;
 }
 
+.cabinet-header-band .theme-logo-dark.theme-logo-dark {
+  display: block;
+}
+
 .cabinet-header-band {
+  color-scheme: dark;
+  --color-ink: var(--color-on-dark);
+  --color-forest: var(--color-on-dark);
+  --color-muted: 210 205 193;
+  --color-muted-2: 210 205 193;
+  --color-green: var(--color-on-dark);
+  --color-line-strong: 89 102 95;
+  --color-paper: var(--color-brand-surface);
+  --color-surface: var(--color-brand-surface-strong);
   border-bottom: 1px solid rgb(var(--color-line-strong));
   background: rgb(var(--color-paper));
   color: rgb(var(--color-forest));
 }
 
-.cabinet-workspace-tab[aria-current="page"] {
-  background: rgb(var(--color-forest) / 0.04);
+.cabinet-header-band .cabinet-workspace-tab[aria-current="page"] {
+  background: transparent;
+}
+
+.cabinet-header-band .cabinet-workspace-tab:hover {
+  background: rgb(var(--color-on-dark) / 0.08);
 }
 
 .cabinet-header-band :focus-visible {
