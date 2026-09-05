@@ -59,6 +59,10 @@ const EXPECTED_CATALOG = [
   { slug: "tianxia-chan-c-80", label: "強喜錠 Chan-C 80錠" },
   { slug: "huamao-progifted-lp28", label: "Progifted LP-28 益生菌 30包" },
   { slug: "gaoyouzhi-vitamin-b-60", label: "高優質維他命B群 60粒" },
+  { slug: "deligan", label: "得力干" },
+  { slug: "jinxin-sutongning", label: "進鑫速通寧" },
+  { slug: "hulishun", label: "護理順" },
+  { slug: "xielining", label: "泄力寧" },
 ] as const;
 
 const OLD_SAMPLE_SLUGS = [
@@ -90,7 +94,7 @@ function catalogLabel(drug: ReturnType<typeof allDrugs>[number]): string {
 }
 
 describe("合作藥局常見品項目錄", () => {
-  it("公開目錄剛好只有店家確認的四十三個品項", () => {
+  it("公開目錄剛好只有店家確認的品項", () => {
     expect(allDrugs().map((drug) => ({ slug: drug.slug, label: catalogLabel(drug) }))).toEqual(
       EXPECTED_CATALOG,
     );
@@ -104,6 +108,18 @@ describe("合作藥局常見品項目錄", () => {
     expect([...partnerProducts].sort()).toEqual(
       EXPECTED_CATALOG.map((item) => item.label).sort(),
     );
+  });
+
+  it("Notion 僅列品名的新增品項不推定成分、規格或庫存", () => {
+    for (const slug of ["deligan", "jinxin-sutongning", "hulishun", "xielining"]) {
+      const drug = getDrug(slug)!;
+      expect(drug).toMatchObject({ spec: "規格待確認", form: "劑型待確認", drugClass: "待確認", ingredients: [], indications: [], aliases: [] });
+      expect(drug.source).toBeUndefined();
+      expect(drug.image).toBeUndefined();
+      expect(drug.nameEn).toBeUndefined();
+      expect(storesForDrug(slug)).toEqual([]);
+      expect(searchDrugs(drug.name).map((hit) => hit.slug)).toContain(slug);
+    }
   });
 
   it("已驗證的一般食品保留非藥品邊界，並附可核對的營養補充資料", () => {
