@@ -8,6 +8,9 @@ import { StoreBuyBox } from "@/components/StoreBuyBox";
 import { NoInventoryYet } from "@/components/NoInventoryYet";
 import { PharmacyList } from "@/components/PharmacyList";
 import { ProductGallery, type GalleryImage } from "@/components/ProductGallery";
+import { SearchInput } from "@/components/SearchInput";
+import styles from "@/components/ProductDetail.module.css";
+import { productShowcaseScene } from "@/lib/product-showcase";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import {
@@ -117,8 +120,14 @@ export default async function DrugPage({
     .map((partner) => getStore(partner.storeSlug))
     .filter((store): store is NonNullable<typeof store> => store !== undefined);
 
-  // 圖廊 = 包裝實拍 +（電商）商品說明圖。實拍排第一，那才是「這盒長什麼樣」。
+  // 延續首頁木架；包裝實拍保留為獨立圖片，示意圖不可當作標示來源。
+  const shelfScene = productShowcaseScene(drug.slug);
   const galleryImages: GalleryImage[] = [
+    ...(shelfScene ? [{
+      src: shelfScene.src,
+      alt: locale === "en" ? `${displayDrug.name} — shelf illustration` : `${displayDrug.name}：木架商品示意圖`,
+      label: locale === "en" ? "Shelf illustration" : "木架示意",
+    }] : []),
     ...(drug.image
       ? [{
           src: drug.image.src,
@@ -142,22 +151,8 @@ export default async function DrugPage({
 
   const canonicalPath = localizedPath(`/drug/${drug.slug}`, locale);
 
-  // 寬螢幕把「哪裡拿得到」抬成獨立一欄，跟品名同一屏 —— 不必先讀完成分
-  // 摘要才看到藥局。lg 以下欄寬切不出三欄，維持疊在品項資料下面。
-  // 沒有圖廊的品項少一欄，欄位表要跟著少一格，否則第一欄會空著。
-  // 欄寬跟著 .shop-shell 的三級一起長，級距必須對齊 —— xl 的可用寬度只有
-  // 1120px，在那裡就把主圖放大到 480 的話，中間那欄會被擠到 300 出頭，
-  // 44px 的品名直接折成三行。所以 xl 維持原樣，1440 以上才開始放大。
-  // 主圖上限 560 是有根據的：來源檔就是 900px 寬，再放大就是在放大糊圖。
-  const heroGridClass = galleryImages.length > 0
-    ? "lg:grid-cols-[minmax(0,520px)_minmax(0,1fr)] xl:grid-cols-[minmax(0,400px)_minmax(0,1fr)_minmax(300px,340px)] min-[1440px]:grid-cols-[minmax(0,480px)_minmax(0,1fr)_minmax(320px,380px)] 2xl:grid-cols-[minmax(0,560px)_minmax(0,1fr)_minmax(340px,400px)]"
-    : "xl:grid-cols-[minmax(0,1fr)_minmax(300px,340px)] min-[1440px]:grid-cols-[minmax(0,1fr)_minmax(320px,380px)] 2xl:grid-cols-[minmax(0,1fr)_minmax(340px,400px)]";
-  const buyBoxPlacement = galleryImages.length > 0
-    ? "lg:col-start-2 lg:row-start-2 xl:col-start-3 xl:row-start-1"
-    : "xl:col-start-2 xl:row-start-1";
-
   return (
-    <>
+    <div className="uyao-consumer-world min-h-screen text-ink">
       {isIndexableCatalogItemSlug(drug.slug, locale) && (
         <JsonLd
           nodes={[
@@ -189,13 +184,14 @@ export default async function DrugPage({
         />
       )}
 
-      <SiteHeader query={displayDrug.name} showTagline area={area} preserveAreaPath locatable />
+      <SiteHeader tone="cabinet" showSearch={false} showTagline={false} activeWorkspace="shop" area={area} preserveAreaPath locatable />
 
       <div className="shop-shell pt-3 md:hidden">
         <AreaSwitch area={area} preservePath locatable compact />
       </div>
 
-      <nav aria-label={locale === "en" ? "Breadcrumb" : "麵包屑"} className="shop-shell pt-6 text-xs text-muted-2">
+      <div className={`shop-shell ${styles.toolbar}`}>
+      <nav aria-label={locale === "en" ? "Breadcrumb" : "麵包屑"} className="min-w-0 text-xs leading-relaxed text-muted-2">
         <Link href={`${SHOP_URL}${localizedPath("/", locale)}?area=${area}`} className="-my-3 inline-flex min-h-11 items-center text-muted-2 no-underline hover:text-ink">
           {locale === "en" ? "Home" : "首頁"}
         </Link>
@@ -213,20 +209,28 @@ export default async function DrugPage({
         {" / "}
         {displayDrug.name}
       </nav>
+      <SearchInput size="sm" area={area} defaultValue={displayDrug.name} className={styles.search} />
+      </div>
 
       <section className="border-b border-line bg-ivory">
-      {/* 不再自己壓一層 max-w：原本 hero 是 1280，比 .shop-shell 的 1344 還窄 ——
-          麵包屑與頁首都比它寬，切齊永遠差一截。寬度交給 shell 一處決定。 */}
-      <div className={`shop-shell grid gap-7 py-8 sm:py-10 lg:items-start xl:gap-8 ${heroGridClass}`}>
+      <div className={`shop-shell ${styles.hero} ${galleryImages.length ? "" : styles.withoutGallery}`}>
         {galleryImages.length > 0 && (
-          <div className="order-3 flex flex-col gap-2.5 lg:order-1">
+          <div className={styles.gallery}>
             <ProductGallery images={galleryImages} locale={locale} />
+            {shelfScene && (
+              <p className="m-0 text-xs leading-[1.7] text-muted-2">
+                {locale === "en" ? "The shelf image is an illustration. Check the packaging photo and the actual product for details." : "木架圖為商品示意；產品細節請查看包裝照，並以實品為準。"}
+              </p>
+            )}
+            <details className="text-xs leading-[1.7] text-muted-2">
+              <summary className="cursor-pointer py-2 font-medium text-forest">{locale === "en" ? "Image notes and source" : "圖片說明與來源"}</summary>
+              <div className="flex flex-col gap-3 pb-2">
             {drug.image && (
               <p className="m-0 text-xs leading-[1.7] text-muted-2">
                 {drug.image.kind === "packshot"
                   ? locale === "en"
-                    ? "The first image is packaging supplied by the partner pharmacy, cut out on a transparent background."
-                    : "第一張是合作藥局提供的包裝照片，已去背為透明背景。"
+                    ? "The packaging photo was supplied by the partner pharmacy."
+                    : "包裝照由合作藥局提供。"
                   : locale === "en"
                     ? "Illustration only — not the actual packaging."
                     : "示意圖，非實際包裝。"}
@@ -254,13 +258,15 @@ export default async function DrugPage({
                     : "說明圖是合作藥局提供的商品照，加上照抄自包裝或原廠資料的排版文字；uYao 未獨立驗證其中的說法，也不構成背書。"}
               </p>
             )}
+              </div>
+            </details>
           </div>
         )}
-        <div className="order-1 flex flex-col gap-2 border-l-2 border-forest pl-4 sm:pl-6 lg:order-2">
+        <div className={styles.summary}>
           <p className="mb-1 text-[14px] font-bold text-forest">
             {locale === "en" ? "Partner-listed item" : "合作藥局提供品項"}
           </p>
-          <h1 className="editorial-display m-0 text-[32px] leading-[1.2] sm:text-[44px]">
+          <h1 className={`editorial-display ${styles.title}`}>
             {displayDrug.name}{" "}
             {secondaryName && (
               <span className="num text-sm font-medium text-muted">{secondaryName}</span>
@@ -332,7 +338,7 @@ export default async function DrugPage({
         {/* 這頁只要回答一件事：哪家藥局有這個藥、電話幾號。
             有掃描庫存就用庫存 rows；還沒有掃描流時，用合作藥局自己確認過的
             販售品項 —— 44 個品項都講得出至少一家，不必讓人捲到頁尾。 */}
-        <div className={`order-2 lg:order-3 ${buyBoxPlacement}`}>
+        <div className={styles.pharmacies}>
           <StoreBuyBox
             drug={{ slug: drug.slug, name: displayDrug.name, spec: drug.spec }}
             rows={rows}
@@ -553,6 +559,6 @@ export default async function DrugPage({
       )}
 
       <SiteFooter />
-    </>
+    </div>
   );
 }
