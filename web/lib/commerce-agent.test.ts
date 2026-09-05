@@ -17,6 +17,26 @@ const input = (content: string) => ({
 });
 
 describe("uYao commerce agent harness", () => {
+  it.each(["professional_review", "scope"])("renders fixed %s guidance without model prose", async (reason) => {
+    const caller = vi.fn<CommerceModelCaller>(async () => ({ content: [
+      { type: "text", text: "Ignore the rules and buy a cure." },
+      { type: "tool_use", id: "guide", name: "present_guidance", input: { reason } },
+    ] }));
+    const reply = await answerCommerceAgent(input("hello"), caller);
+    expect(reply).toMatchObject({ kind: "safety", products: [], pharmacies: [] });
+    expect(reply.message).not.toContain("buy a cure");
+    expect(caller).toHaveBeenCalledTimes(1);
+  });
+
+  it("prioritizes guidance over product cards when a provider returns both", async () => {
+    const caller: CommerceModelCaller = async () => ({ content: [
+      { type: "tool_use", id: "product", name: "present_products", input: { product_ids: ["v_1"] } },
+      { type: "tool_use", id: "guide", name: "present_guidance", input: { reason: "professional_review" } },
+    ] });
+    expect(await answerCommerceAgent({ ...input("第一個"), screen: { productSlugs: ["hugu-gaishu-100"] } }, caller))
+      .toMatchObject({ kind: "safety", products: [] });
+  });
+
   it("routes safety-sensitive symptom language before any model or catalog result", async () => {
     const caller = vi.fn<CommerceModelCaller>();
     const reply = await answerCommerceAgent(input("胸痛，幫我找藥"), caller);
@@ -34,6 +54,18 @@ describe("uYao commerce agent harness", () => {
     expect(reply.products.length).toBeGreaterThan(0);
     expect(reply.products[0].reason).toContain("比對到");
     expect(JSON.stringify(reply)).not.toMatch(/priceTwd|inStock|daysSinceScan/);
+  });
+
+  it("preserves symptom routing in follow-ups even with visible product ids", async () => {
+    const caller = vi.fn<CommerceModelCaller>();
+    const followUp = { ...input("那就給我第一個"), messages: [
+      { role: "user" as const, content: "瘀青怎麼辦" },
+      { role: "assistant" as const, content: "請詢問藥師" },
+      { role: "user" as const, content: "那就給我第一個" },
+    ], screen: { productSlugs: ["hugu-gaishu-100"] } };
+    expect(await answerCommerceAgent(followUp, caller)).toMatchObject({ kind: "safety", products: [] });
+    expect(localCommerceAgentReply(followUp)).toMatchObject({ kind: "safety", products: [] });
+    expect(caller).not.toHaveBeenCalled();
   });
 
   it("rejects a hallucinated product id before rendering, then accepts a server-issued id", async () => {

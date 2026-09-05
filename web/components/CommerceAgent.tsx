@@ -6,7 +6,7 @@ import styles from "./CommerceAgent.module.css";
 import { productShowcaseScene } from "@/lib/product-showcase";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
-import { SearchInput } from "@/components/SearchInput";
+import { AgentAllergyStep, type AgentAllergyAnswer } from "@/components/AgentAllergyStep";
 import { SearchResultLink } from "@/components/SearchResultLink";
 import type {
   CommerceAgentMessage,
@@ -17,10 +17,10 @@ import type {
 import { localizedPath, type Locale } from "@/lib/i18n";
 import {
   SHOP_SEARCH_INTAKE_STORAGE_KEY,
+  RESERVATION_INTAKE_DRAFT_TTL_MS,
   createShopSearchIntakeDraft,
-  readLatestShopSearchIntakeDraft,
-  readShopSearchIntakeDraft,
 } from "@/lib/reservation-intake";
+import { commerceAgentSafetyMessage } from "@/lib/commerce-agent-policy";
 import type { AreaSlug } from "@/lib/types";
 
 type VisibleTurn = {
@@ -44,46 +44,38 @@ export function CommerceAgent({
   area: AreaSlug;
   locale: Locale;
 }) {
-  const [question, setQuestion] = useState("");
+  const [question, setQuestion] = useState(initialDraft);
+  const [pendingQuery, setPendingQuery] = useState(initialQuery);
+  const [allergyAnswer, setAllergyAnswer] = useState<AgentAllergyAnswer | null>(null);
   const [turns, setTurns] = useState<VisibleTurn[]>([]);
   const [loading, setLoading] = useState(false);
   const [progress, setProgress] = useState("");
   const [error, setError] = useState("");
-  const started = useRef(false);
   const latestTurn = useRef<HTMLDivElement>(null);
+  const messagesPanel = useRef<HTMLDivElement>(null);
   const conversation = useRef<CommerceAgentMessage[]>([]);
   const screen = useRef<CommerceAgentScreenState>({ productSlugs: [] });
   const english = locale === "en";
 
-  function reuseSafetyAnswer(query: string): boolean {
+  function rememberSafetyAnswer(query: string, answer: AgentAllergyAnswer) {
     try {
-      const raw = sessionStorage.getItem(SHOP_SEARCH_INTAKE_STORAGE_KEY);
-      const exact = readShopSearchIntakeDraft(raw, query);
-      if (exact) return true;
-      const previous = readLatestShopSearchIntakeDraft(raw);
-      if (!previous) return false;
-      const next = createShopSearchIntakeDraft(
-        query,
-        previous.allergyStatus,
-        previous.allergens,
-      );
-      if (!next) return false;
-      sessionStorage.setItem(SHOP_SEARCH_INTAKE_STORAGE_KEY, JSON.stringify(next));
-      return true;
+      const draft = createShopSearchIntakeDraft(query.slice(0, 160), answer.allergyStatus, answer.allergens, answer.capturedAt);
+      if (draft) sessionStorage.setItem(SHOP_SEARCH_INTAKE_STORAGE_KEY, JSON.stringify(draft));
     } catch {
-      return false;
+      // Keep this conversation usable without storage; the pharmacy form asks again.
     }
   }
 
-  async function ask(raw: string) {
+  async function ask(raw: string, answer = allergyAnswer) {
     const query = raw.trim();
     if (!query || loading) return;
-    if (!reuseSafetyAnswer(query)) {
-      setError(english
-        ? "Answer the allergy check before using uYao Agent."
-        : "請先回答過敏確認，再使用 uYao Agent。");
+    if (!answer || Date.now() - answer.capturedAt > RESERVATION_INTAKE_DRAFT_TTL_MS) {
+      setPendingQuery(query);
+      setAllergyAnswer(null);
       return;
     }
+    rememberSafetyAnswer(query, answer);
+    setPendingQuery("");
 
     setLoading(true);
     setError("");
@@ -150,34 +142,59 @@ export function CommerceAgent({
   }
 
   useEffect(() => {
-    if (started.current || !initialQuery) return;
-    started.current = true;
-    void ask(initialQuery);
-    // The initial URL query is intentionally run once; later turns use the composer.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialQuery]);
+    if (turns.length > 0 || loading) latestTurn.current?.scrollIntoView({ block: "end" });
+  }, [turns.length, loading]);
 
   useEffect(() => {
-    latestTurn.current?.scrollIntoView({ block: "end" });
-  }, [turns.length, loading]);
+    if (!allergyAnswer) {
+      messagesPanel.current?.scrollTo({ top: 0 });
+      try { sessionStorage.removeItem(SHOP_SEARCH_INTAKE_STORAGE_KEY); } catch { /* Storage is optional. */ }
+    }
+  }, [allergyAnswer]);
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     void ask(question);
   }
 
+  function confirmAllergy(answer: AgentAllergyAnswer) {
+    setAllergyAnswer(answer);
+    setError("");
+    const latestQuery = turns.at(-1)?.query;
+    if (latestQuery) rememberSafetyAnswer(latestQuery, answer);
+    if (pendingQuery) void ask(pendingQuery, answer);
+  }
+
+  function resetConversation() {
+    setQuestion("");
+    setPendingQuery("");
+    setAllergyAnswer(null);
+    setTurns([]);
+    setError("");
+    conversation.current = [];
+    screen.current = { productSlugs: [] };
+  }
+
+  const pendingSafetyMessage = commerceAgentSafetyMessage(
+    [{ role: "user", content: pendingQuery || question }], locale,
+  );
+
   return (
     <section className={styles.chat} aria-label={english ? "Ask uYao" : "問藥對話"}>
       <div className={styles.toolbar}>
         <span className="shop-kicker">{english ? "ASK UYAO" : "問藥"}</span>
-        <Link href={`${localizedPath("/agent", locale)}?area=${area}`} className={styles.newChat}>{english ? "New chat +" : "開啟新對話 +"}</Link>
+        <Link href={`${localizedPath("/agent", locale)}?area=${area}`} aria-disabled={loading}
+          onClick={(event) => { if (loading) event.preventDefault(); else resetConversation(); }}
+          className={styles.newChat}>{english ? "New chat +" : "開啟新對話 +"}</Link>
       </div>
-      <div className={styles.messages} data-lenis-prevent role="log" aria-live="polite">
-        {!initialQuery && turns.length === 0 && !loading && (
-          <div className={styles.welcome}>
-            <p className="shop-kicker">uYao</p>
-            <h1 className={styles.heading}>{english ? "What would you like to ask?" : "今天想問什麼？"}</h1>
-            <p className={styles.intro}>{english ? "Start with a product, ingredient or question. A pharmacist confirms suitability." : "品名、成分或想了解的問題，都可以直接問。適用性再由藥師確認。"}</p>
+      <div ref={messagesPanel} className={styles.messages} data-lenis-prevent role="log" aria-live="polite">
+        {turns.length === 0 && !loading && <p className="mb-5 mt-0 text-[14px] leading-[1.7] text-muted">{english ? "Ask about a product or describe your concern. I help find information; a pharmacist or clinician makes medicine decisions." : "可以輸入藥品名稱或描述不舒服。我協助查找資訊，用藥判斷由藥師或醫師負責。"}</p>}
+        {pendingQuery && <p className="mb-5 ml-auto max-w-[82%] bg-brand-surface px-4 py-3 text-[15px] text-on-dark">{pendingQuery}</p>}
+        {!allergyAnswer && pendingSafetyMessage && <p role="status" className="mb-4 text-[14px] leading-[1.7] text-oxblood">{pendingSafetyMessage}</p>}
+        {!allergyAnswer ? <AgentAllergyStep locale={locale} onConfirm={confirmAllergy} /> : (
+          <div className="mb-6 flex flex-wrap items-center gap-x-4 border-b border-line pb-3 text-[12px] text-muted">
+            <span>{english ? "Allergy answer confirmed for this conversation." : "已確認這次對話的過敏回答。"}</span>
+            <button type="button" disabled={loading} onClick={() => setAllergyAnswer(null)} className="min-h-11 font-semibold text-forest disabled:opacity-45">{english ? "Update answer" : "更正回答"}</button>
           </div>
         )}
         {turns.map((turn, turnIndex) => (
@@ -208,7 +225,7 @@ export function CommerceAgent({
                         key={product.slug}
                         href={product.href}
                         drugSlug={product.slug}
-                        query={turn.query}
+                        query={turn.query.slice(0, 160)}
                         className={`${styles.product} group border-b border-line py-5 no-underline transition-colors last:border-b-0 hover:bg-paper`}
                       >
                         {scene ? <span><Image src={scene.src} alt="" width={scene.width} height={scene.height} sizes="144px" className={styles.productImage} /><span className="mt-1 block text-[11px] text-muted-2">{english ? "Illustration" : "商品示意"}</span></span> : <span className={styles.productIndex} aria-hidden>{String(productIndex + 1).padStart(2, "0")}</span>}
@@ -269,10 +286,7 @@ export function CommerceAgent({
         <div ref={latestTurn} />
       </div>
 
-      <div className={styles.composer}>
-        {!initialQuery && turns.length === 0 ? (
-          <SearchInput defaultValue={initialDraft} size="lg" area={area} autoFocus={Boolean(initialDraft)} presentation="agent" resultsPath="/agent" submitLabel={english ? "Send" : "送出"} className="uyao-agent-composer w-full" />
-        ) : (
+      <div className={`${styles.composer} uyao-agent-composer`}>
         <form onSubmit={submit} className="flex items-end gap-2 border-y border-line-strong bg-paper p-2 transition-colors focus-within:border-forest sm:border-x">
           <label htmlFor="uyao-agent-question" className="sr-only">
             {english ? "Ask uYao Agent" : "詢問 uYao Agent"}
@@ -290,23 +304,24 @@ export function CommerceAgent({
             }}
             rows={1}
             maxLength={600}
-            placeholder={english ? "Ask uYao Agent" : "詢問 uYao Agent"}
+            placeholder={english ? "Enter a medicine name or describe your concern" : "輸入藥品名稱，或描述你的不舒服"}
             className="min-h-12 min-w-0 flex-1 resize-none bg-transparent px-3 py-[13px] text-[15px] leading-[1.5] text-ink outline-none placeholder:text-muted-2"
           />
           <button
             type="submit"
-            disabled={loading || !question.trim()}
+            disabled={loading || !allergyAnswer || !question.trim()}
             className="action-primary h-12 flex-none rounded-none px-5 text-[14px] disabled:opacity-45"
           >
             {english ? "Send" : "送出"}
           </button>
         </form>
-        )}
         <p className="mb-0 mt-2 px-3 text-pretty text-[12px] leading-[1.55] text-muted-2">
           {english
-            ? "Do not enter names, phone numbers, National Health Insurance data, or prescription details. Allergy answers stay in this tab."
-            : "請勿輸入姓名、電話、健保或處方資料。過敏回答只留在這個分頁。"}
+            ? "AI-assisted catalog search. Conversation text is processed by our AI provider; do not enter names, contact information or medical records. The allergy form is kept separately in this tab."
+            : "AI 輔助目錄查詢。對話文字會交由 AI 供應商處理，請勿填入姓名、聯絡方式或病歷；過敏表單另存於此分頁。"}
+          {" "}<Link href={localizedPath("/privacy", locale)} className="underline">{english ? "Privacy" : "隱私說明"}</Link>
         </p>
+        <p className="mb-0 mt-1 px-3 text-[11px] leading-[1.55] text-muted-2">{english ? "For emergencies, call 119 in Taiwan. Do not wait for this chat." : "緊急狀況請撥 119，不要等待這段對話。"}</p>
       </div>
     </section>
   );
