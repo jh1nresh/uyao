@@ -39,9 +39,9 @@ describe("P2 brand presence, Store OS accents, dual-path copy", () => {
 
   it("clarifies ask-vs-browse on shop home and Agent empty state", () => {
     expect(home).toContain(
-      "Ask uYao in the box — that opens Agent. Browse the cabinet below when you already know the item.",
+      "Search a name, ingredient, or wellness need. Check the details before asking a pharmacist.",
     );
-    expect(home).toContain("在框裡問 uYao 會進入 Agent；已知品項可直接逛下方藥櫃。");
+    expect(home).toContain("輸入品名、成分或保養需求，先查資料，再向藥師確認。");
     expect(agent).toContain(
       "Ask in Agent for a grounded next step. To browse the photographed cabinet instead, go back to Shop.",
     );

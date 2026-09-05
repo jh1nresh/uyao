@@ -66,8 +66,8 @@ describe("household medicine storefront homepage", () => {
     expect(appPage).toContain("medicine-cabinet-cell-ask");
     expect(appPage).toContain("家裡的藥箱，現在會找答案");
     expect(appPage).toContain("打開 uYao，先問再出門。");
-    expect(appPage).toContain("在框裡問 uYao 會進入 Agent；已知品項可直接逛下方藥櫃。");
-    expect(appPage).toContain("Ask uYao in the box — that opens Agent. Browse the cabinet below when you already know the item.");
+    expect(appPage).toContain("輸入品名、成分或保養需求，先查資料，再向藥師確認。");
+    expect(appPage).toContain("Search a name, ingredient, or wellness need. Check the details before asking a pharmacist.");
     expect(appPage).toContain("medicine-cabinet-input");
     expect(searchInput).toContain("hasRedirectedInputRef");
     expect(searchInput).toContain("INPUT_REDIRECT_DELAY_MS");
@@ -130,7 +130,7 @@ describe("household medicine storefront homepage", () => {
     expect(appPage).toContain('activeWorkspace="shop"');
     expect(appPage).toContain('className="medicine-cabinet-stage relative"');
     expect(siteHeader).toContain('tone?: "default" | "cabinet";');
-    expect(siteHeader).toContain('"cabinet-overlay-header cabinet-header-band absolute inset-x-0 top-0 z-40"');
+    expect(siteHeader).toContain('"cabinet-overlay-header cabinet-header-band relative z-40"');
     expect(siteHeader).toContain("cabinet-workspace-nav");
     expect(siteHeader).toContain("cabinet-workspace-tab");
     expect(siteHeader).toContain("cabinet-header-controls flex items-center");
@@ -138,7 +138,7 @@ describe("household medicine storefront homepage", () => {
     expect(siteHeader).toContain("SiteHeaderMobileMenu");
     expect(siteHeader).toContain("hidden h-full items-stretch justify-center md:flex");
     expect(globalCss).toContain(".cabinet-header-band");
-    expect(globalCss).toContain("background: rgb(var(--color-forest) / 0.88);");
+    expect(globalCss).toContain("background: rgb(var(--color-paper));");
     expect(globalCss).toContain('.cabinet-workspace-tab[aria-current="page"]');
     expect(globalCss).toContain(".cabinet-header-controls > div > div");
     expect(globalCss).toContain("background: transparent;");
@@ -311,7 +311,7 @@ describe("household medicine storefront homepage", () => {
     expect(globalCss).toContain("--color-brand-surface: 23 57 44;");
     expect(globalCss).toContain("--color-ink: 28 39 34;");
     expect(appPage).toContain('className="medicine-cabinet-home"');
-    expect(globalCss).toContain(".medicine-cabinet-home {");
+    expect(globalCss).toContain(".medicine-cabinet-home,\n.uyao-consumer-world {");
     expect(globalCss).toContain(".medicine-cabinet-home > footer {");
     expect(globalCss).toContain(".medicine-cabinet-guide::before");
     expect(appPage).not.toContain("mono-halftone-field");
