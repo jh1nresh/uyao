@@ -23,7 +23,7 @@ import {
 } from "@/lib/data";
 import { JsonLd } from "@/components/JsonLd";
 import { categoryName, drugCopy, localizedPath, secondaryProductName } from "@/lib/i18n";
-import { ProductInfoImage } from "@/components/ProductInfoImage";
+import { ProductDetails } from "@/components/ProductDetails";
 import infoImages from "@/lib/product-info-images.generated.json";
 import type { ProductInfoPanel } from "@/lib/product-info-content";
 import { getRequestLocale } from "@/lib/locale-server";
@@ -126,7 +126,6 @@ export default async function DrugPage({
   const images = (infoImages as Record<string, { src: string; width: number; height: number; content: ProductInfoPanel }[]>)[`${drug.slug}:${locale}`];
   const featureImage = images.find((image) => image.content.kind === "features");
   const factsImage = images.find((image) => image.content.kind === "facts")!;
-  const hasFeatures = Boolean(featureImage);
   const rows = storesForDrug(drug.slug, area);
   const alternatives = alternativesFor(drug.slug, area);
   const category = getCategory(drug.category);
@@ -199,51 +198,20 @@ export default async function DrugPage({
             {known(displayDrug.nutritionFocus) && <p className={styles.focus}>{displayDrug.nutritionFocus}</p>}
             <p className={styles.confirmation}>{english ? "A partner-listed catalog item. Ask a pharmacist to confirm supply, price and suitability." : "合作藥局提供的目錄品項。供應、價格與適用性，仍須向藥師確認。"}</p>
             <a href="#contact-pharmacy" className={styles.primaryAction}>{english ? "Ask a pharmacy" : "向藥局詢問"}<span aria-hidden>↗</span></a>
-            <a href="#ingredients" className={styles.textAction}>{english ? "Read ingredients and specifications ↓" : "查看成分與規格 ↓"}</a>
-          </div>
-        </section>
-
-        <nav className={`shop-shell ${styles.sectionNav}`} aria-label={english ? "Product sections" : "品項內容導覽"}>
-          {hasFeatures && <a href="#product-features">{english ? "01 / Product features" : "01 / 產品特色"}</a>}
-          <a href="#ingredients">{english ? "02 / Ingredients & specifications" : "02 / 成分規格"}</a>
-          <a href="#contact-pharmacy">{english ? "03 / Pharmacy contacts" : "03 / 詢問藥局"}</a>
-        </nav>
-
-        {hasFeatures && (
-          <section id="product-features" className={`shop-shell ${styles.editorialSection}`} aria-labelledby="features-heading">
-            <header className={styles.sectionHeading}>
-              <p className="shop-kicker">01 / {english ? "PRODUCT NOTES" : "認識這個品項"}</p>
-              <h2 id="features-heading">{english ? "Product features" : "產品特色"}</h2>
-              <p>{english ? "As stated on the package or by the manufacturer. These are not uYao's evaluations." : "依包裝或原廠資料整理，非 uYao 評價。"}</p>
-            </header>
-            <div className={styles.sectionContent}>
-              {featureImage && <ProductInfoImage image={featureImage} english={english} />}
-            </div>
-          </section>
-        )}
-
-        <section id="ingredients" className={styles.factsSection} aria-labelledby="nutrition-focus-heading">
-          <div className={`shop-shell ${styles.editorialSection}`}>
-            <header className={styles.sectionHeading}>
-              <p className="shop-kicker">02 / {english ? "THE DETAILS" : "把內容看清楚"}</p>
-              <h2 id="nutrition-focus-heading">{english ? "Ingredients & specifications" : "成分與規格"}</h2>
-              <p>{partnerProvidedDetails ? (english ? "Details provided by a partner pharmacy." : "合作藥局提供的產品資料。") : (english ? "Recorded product details and their sources." : "已收錄的產品資料與來源。")}</p>
-            </header>
-            <div className={styles.sectionContent}>
-              <ProductInfoImage image={factsImage} english={english} />
+            <ProductDetails features={featureImage?.content} facts={factsImage.content} english={english}>
               <div className={styles.provenance}>
                 <h3 className={styles.smallHeading}>{english ? "Product source" : "產品資料來源"}</h3>
                 {drug.source ? (drug.source.url ? <a href={drug.source.url} target="_blank" rel="noreferrer">{drug.source.label} ↗</a> : <p>{drug.source.label}</p>) : <p>{english ? "No public product source has been verified for this package size." : "此規格尚未驗證公開產品資料來源。"}</p>}
                 <p>{partnerProvidedDetails ? (english ? "Names, ingredients, origin and supply information are partner-provided and have not been independently verified against a public source. They do not establish approved medicine classification or treatment efficacy." : "品名、成分、產地與供應資訊由合作藥局提供，尚未以公開來源獨立驗證；不代表核准藥品分類或療效。") : drug.source ? (english ? "The public product source describes a food or nutrition supplement, not an approved medicine. Its wellness positioning is not a treatment indication." : "公開商品資料將此品項列為食品類營養補充品，而非核准藥品；保養定位不是治療用途或藥品適應症。") : (english ? "Do not infer ingredients, classification or suitability without a verified source." : "缺少可核對的來源時，請勿推定成分、分類與適用性。")}</p>
                 <p>{english ? "Check the actual package and ask a pharmacist. If you have symptoms, take medicines, are pregnant or have a chronic condition, consult a pharmacist or physician before choosing a product." : "請以實際包裝並向藥師確認。若已有症狀、正在用藥、懷孕或有慢性病，選購前請先問藥師或醫師。"} <a href="https://www.fda.gov.tw/tc/siteContent.aspx?sid=1776" target="_blank" rel="noreferrer">{english ? "TFDA guidance ↗" : "TFDA 說明 ↗"}</a></p>
               </div>
-            </div>
+            </ProductDetails>
           </div>
         </section>
 
         <section id="contact-pharmacy" className={`shop-shell ${styles.editorialSection}`} aria-labelledby="contact-heading">
           <header className={styles.sectionHeading}>
-            <p className="shop-kicker">03 / {english ? "ASK BEFORE YOU GO" : "出門前，先問一聲"}</p>
+            <p className="shop-kicker">{english ? "ASK BEFORE YOU GO" : "出門前，先問一聲"}</p>
             <h2 id="contact-heading">{english ? "Talk to a pharmacy" : "交給藥師確認"}</h2>
             <p>{english ? "A listed item does not mean it is currently in stock. Contact the pharmacy to confirm." : "收錄品項不代表即時有貨。先聯絡藥局，確認後再前往。"}</p>
           </header>
@@ -287,6 +255,12 @@ export default async function DrugPage({
       )}
 
       </main>
+      <div className={styles.contactBar}>
+        <div className="shop-shell">
+          <span>{displayDrug.name}</span>
+          <a href="#contact-pharmacy" className={styles.primaryAction}>{english ? "Ask a pharmacist" : "交給藥師確認"}<span aria-hidden>↗</span></a>
+        </div>
+      </div>
       <SiteFooter />
     </div>
   );
