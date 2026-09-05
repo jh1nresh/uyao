@@ -85,7 +85,7 @@ describe("household medicine storefront homepage", () => {
     expect(appPage).toContain("精選品項是可瀏覽的目錄資料");
     expect(appPage).not.toContain("Catalog categories");
     expect(appPage).not.toContain("CATALOG_GROUPS");
-    expect(productShowcase).toContain('drug?.image?.kind === "packshot"');
+    expect(productShowcase).toContain('drug?.image?.kind !== "packshot"');
     expect(productSwipeShowcase).toContain("看這一項 →");
     expect(productSwipeShowcase).not.toContain("scrollIntoView");
     expect(productSwipeShowcase).toContain("motion-reduce:transition-none");
@@ -94,43 +94,22 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).toContain("product-showcase-item");
     expect(productSwipeShowcase).toContain("product-showcase-packshot");
     expect(productSwipeShowcase).toContain("product-showcase-arrow");
-    expect(productSwipeShowcase).toContain("--showcase-drag-x");
-    expect(productSwipeShowcase).toContain("cqw");
-    expect(productSwipeShowcase).toContain("scale(");
-    expect(productSwipeShowcase).toContain("SIDE_DESKTOP");
-    expect(productSwipeShowcase).not.toContain("product-showcase-row");
-    expect(productSwipeShowcase).not.toContain("snap-mandatory");
-    expect(productSwipeShowcase).not.toContain("scrollLeft = drag.startScrollLeft - deltaX");
-    expect(productSwipeShowcase).not.toContain("PRODUCT_SHOWCASE_PLATE");
-    expect(productSwipeShowcase).not.toContain("product-showcase-plate");
-    expect(productSwipeShowcase).not.toContain("product-showcase-bay");
-    expect(productSwipeShowcase).not.toContain("product-showcase-rail");
-    expect(productSwipeShowcase).not.toContain("item.sceneSrc");
-    expect(productSwipeShowcase).not.toContain("product-showcase-scene");
+    expect(productSwipeShowcase).toContain("product-showcase-rail");
+    expect(productSwipeShowcase).toContain("product-showcase-bay");
+    expect(productSwipeShowcase).toContain("data-lenis-prevent");
+    expect(productSwipeShowcase).toContain('event.pointerType === "touch"');
     expect(productSwipeShowcase).toContain('from "next/image"');
-    expect(productSwipeShowcase).toContain("const { cutout } = item");
-    expect(productSwipeShowcase).toContain("cutout.src");
-    expect(productSwipeShowcase).toContain('sizes="(min-width: 768px) 230px, 180px"');
-    expect(productShowcase).toContain("/products/showcase-cutouts/");
-    expect(productShowcase).toContain("SHOWCASE_CUTOUT_SIZE");
+    expect(productSwipeShowcase).not.toContain("item.sceneSrc");
+    expect(productSwipeShowcase).not.toContain("--showcase-drag-x");
     expect(productSwipeShowcase).not.toContain("unoptimized");
-    expect(productSwipeShowcase).toContain("useState(0)");
     expect(productSwipeShowcase).toContain("ArrowButton");
     expect(productSwipeShowcase).not.toContain("rounded-full");
     expect(productSwipeShowcase).not.toMatch(/#[0-9a-fA-F]{6}/);
-    expect(globalCss).toContain(".product-showcase-stage");
-    expect(globalCss).toContain("container-type: inline-size");
-    expect(globalCss).toContain(".product-showcase-packshot");
-    expect(globalCss).toContain(".product-showcase-item");
-    expect(globalCss).not.toContain(".product-showcase-plate");
-    expect(globalCss).not.toContain(".product-showcase-bay");
-    expect(globalCss).not.toContain("--product-showcase-slot:");
-    expect(globalCss).not.toContain("grid-template-columns: repeat(4, minmax(0, 1fr))");
-    expect(globalCss).not.toContain("background: #d4ad78");
-    expect(globalCss).toContain(".medicine-cabinet-showcase-section {\n  /* Cream field so the photographed cabinet is the wood, not the page. */\n  background-color: rgb(var(--color-ivory));");
+    expect(globalCss).toContain("scroll-snap-type: x mandatory");
+    expect(globalCss).toContain("touch-action: pan-x pan-y");
+    expect(globalCss).toContain("/brand/uyao-product-cabinet-reference-v3.webp");
+    expect(globalCss).toContain(".product-showcase-stage::after");
     expect(productShowcase).toContain("PRODUCT_SHOWCASE_SLUGS");
-    expect(productShowcase).not.toContain("PRODUCT_SHOWCASE_PLATE");
-    expect(productShowcase).not.toContain("PRODUCT_SHOWCASE_SCENES");
     expect(partnerMarquee).toContain("cabinet-partner-marquee");
     expect(partnerMarquee).toContain("sm:pb-2.5 sm:pt-5");
     expect(appPage).toContain("w-[calc(100vw-clamp(32px,6vw,92px))]");
@@ -247,11 +226,11 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).toContain("aria-hidden");
   });
 
-  it("keeps a short mobile hero lead and defers the partner marquee", () => {
+  it("keeps a short mobile hero lead without an empty viewport spacer", () => {
     expect(globalCss).toContain("Keep one short lead so the first viewport still carries brand meaning");
     expect(globalCss).toContain("-webkit-line-clamp: 2");
     expect(globalCss).toContain(".cabinet-partner-marquee");
-    expect(globalCss).toContain("margin-top: min(42vh, 18rem)");
+    expect(globalCss).not.toContain("margin-top: min(42vh, 18rem)");
     expect(partnerMarquee).toContain("cabinet-partner-marquee");
   });
 
