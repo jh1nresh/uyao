@@ -2,24 +2,23 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { type CSSProperties, useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { useLocale } from "./LocaleProvider";
 import { drugCopy } from "@/lib/i18n";
 import { known } from "@/lib/pending";
 import type { ShowcaseItem } from "@/lib/product-showcase";
 
-/**
- * 品項橫向展示：用接近 hero 藥櫃光影的去背商品圖，不要整幅櫃景、也不貼回木板。
- * 左右滑動換主角，中央那一支放大，側邊縮小 —— 原本的貨架滑動放大動畫。
- *
- * 互動三條路都通：觸控／滑鼠拖曳、鍵盤方向鍵、下方左右箭頭。
- */
-
+/** 商品與櫃格共用同一條原生捲動軌道；觸控保留瀏覽器慣性。 */
 export type { ShowcaseItem } from "@/lib/product-showcase";
 
-/** 可視範圍內主角左右各放幾支。手機縮成 1，桌機 2。 */
-const SIDE_DESKTOP = 2;
+type DragState = {
+  pointerId: number;
+  x: number;
+  y: number;
+  scrollLeft: number;
+  moved: boolean;
+};
 
 export function ProductSwipeShowcase({
   items,
@@ -41,32 +40,80 @@ export function ProductSwipeShowcase({
 }) {
   const locale = useLocale();
   const [active, setActive] = useState(0);
-  // SSR 採手機優先，避免 hydration 前把桌機五支擠進窄螢幕。
-  const [side, setSide] = useState(1);
-  const [isDragging, setIsDragging] = useState(false);
-  const dragStart = useRef<number | null>(null);
-  // 換項判斷讀 ref：pointermove 與 pointerup 同批時，closure 還看得到舊 delta。
-  const dragDelta = useRef(0);
+  const activeRef = useRef(0);
   const stageRef = useRef<HTMLDivElement>(null);
+  const dragRef = useRef<DragState | null>(null);
+  const suppressClick = useRef(false);
+  const scrollFrame = useRef<number | null>(null);
+  const settleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pillRailRef = useRef<HTMLDivElement>(null);
   const pillRefs = useRef<Array<HTMLButtonElement | null>>([]);
-
   const count = items.length;
-  const go = useCallback(
-    (next: number) => {
-      if (count === 0) return;
-      setActive(((next % count) + count) % count);
-    },
-    [count],
-  );
+  // Copies preserve neighbouring bays at the seam. Only the middle set is exposed
+  // to assistive technology; after settling, recenter on its identical original.
+  const cycles = count > 1 ? [0, 1, 2] : [1];
 
-  useEffect(() => {
-    const mq = window.matchMedia("(min-width: 768px)");
-    const sync = () => setSide(mq.matches ? SIDE_DESKTOP : 1);
-    sync();
-    mq.addEventListener("change", sync);
-    return () => mq.removeEventListener("change", sync);
+  const nearestBay = useCallback(() => {
+    const rail = stageRef.current;
+    if (!rail) return null;
+    const center = rail.scrollLeft + rail.clientWidth / 2;
+    return Array.from(rail.querySelectorAll<HTMLElement>("[data-showcase-index]"))
+      .reduce<HTMLElement | null>((nearest, bay) => {
+        const distance = (node: HTMLElement) => Math.abs(node.offsetLeft + node.clientWidth / 2 - center);
+        return !nearest || distance(bay) < distance(nearest) ? bay : nearest;
+      }, null);
   }, []);
+
+  const centerBay = useCallback((bay: HTMLElement, smooth: boolean) => {
+    const rail = stageRef.current;
+    if (!rail) return;
+    rail.scrollTo({
+      left: bay.offsetLeft - (rail.clientWidth - bay.clientWidth) / 2,
+      behavior: smooth && !window.matchMedia("(prefers-reduced-motion: reduce)").matches
+        ? "smooth" : "instant",
+    });
+  }, []);
+
+  const settle = useCallback(() => {
+    if (dragRef.current) return;
+    const bay = nearestBay();
+    if (!bay || bay.dataset.cycle === "1") return;
+    const original = stageRef.current?.querySelector<HTMLElement>(
+      `[data-cycle="1"][data-showcase-index="${bay.dataset.showcaseIndex}"]`,
+    );
+    if (original) centerBay(original, false);
+  }, [centerBay, nearestBay]);
+
+  const go = useCallback((next: number) => {
+    const rail = stageRef.current;
+    if (!rail || !count) return;
+    const resolved = ((next % count) + count) % count;
+    const center = rail.scrollLeft + rail.clientWidth / 2;
+    const bays = Array.from(rail.querySelectorAll<HTMLElement>(`[data-showcase-index="${resolved}"]`));
+    const bay = bays.sort((a, b) =>
+      Math.abs(a.offsetLeft + a.clientWidth / 2 - center) - Math.abs(b.offsetLeft + b.clientWidth / 2 - center),
+    )[0];
+    if (bay) centerBay(bay, true);
+  }, [centerBay, count]);
+
+  useLayoutEffect(() => {
+    const rail = stageRef.current;
+    if (!rail) return;
+    const resize = () => {
+      const bay = rail.querySelector<HTMLElement>(`[data-cycle="1"][data-showcase-index="${activeRef.current}"]`);
+      if (bay) centerBay(bay, false);
+    };
+    resize();
+    const observer = new ResizeObserver(resize);
+    observer.observe(rail);
+    rail.addEventListener("scrollend", settle);
+    return () => {
+      observer.disconnect();
+      rail.removeEventListener("scrollend", settle);
+      if (scrollFrame.current !== null) cancelAnimationFrame(scrollFrame.current);
+      if (settleTimer.current !== null) clearTimeout(settleTimer.current);
+    };
+  }, [centerBay, count, settle]);
 
   useEffect(() => {
     const rail = pillRailRef.current;
@@ -74,76 +121,73 @@ export function ProductSwipeShowcase({
     if (!rail || !pill) return;
     rail.scrollTo({
       left: pill.offsetLeft - (rail.clientWidth - pill.clientWidth) / 2,
-      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? "auto"
-        : "smooth",
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
     });
   }, [active]);
 
+  function onScroll() {
+    if (scrollFrame.current === null) {
+      scrollFrame.current = requestAnimationFrame(() => {
+        scrollFrame.current = null;
+        const bay = nearestBay();
+        if (!bay) return;
+        const next = Number(bay.dataset.showcaseIndex);
+        activeRef.current = next;
+        setActive(next);
+      });
+    }
+    // Fallback for browsers without scrollend; scrolling momentum resets this timer.
+    if (settleTimer.current !== null) clearTimeout(settleTimer.current);
+    settleTimer.current = setTimeout(settle, 180);
+  }
+
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
-    if (!event.isPrimary || event.button !== 0) return;
-    dragStart.current = event.clientX;
-    dragDelta.current = 0;
-    setIsDragging(true);
-    event.currentTarget.setPointerCapture(event.pointerId);
+    suppressClick.current = false;
+    if (event.pointerType === "touch" || !event.isPrimary || event.button !== 0) return;
+    const rail = event.currentTarget;
+    rail.scrollTo({ left: rail.scrollLeft, behavior: "instant" });
+    dragRef.current = { pointerId: event.pointerId, x: event.clientX, y: event.clientY, scrollLeft: rail.scrollLeft, moved: false };
   }
 
   function onPointerMove(event: React.PointerEvent<HTMLDivElement>) {
-    if (dragStart.current === null) return;
-    dragDelta.current = event.clientX - dragStart.current;
-    // 連續 pointermove 直接改 compositor transform，不讓 React 每格重畫整排。
-    event.currentTarget.style.setProperty(
-      "--showcase-drag-x",
-      `${dragDelta.current * 0.42}px`,
-    );
-  }
-
-  function resetPointer(event: React.PointerEvent<HTMLDivElement>) {
-    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
-      event.currentTarget.releasePointerCapture(event.pointerId);
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const deltaX = event.clientX - drag.x;
+    if (!drag.moved) {
+      if (Math.max(Math.abs(deltaX), Math.abs(event.clientY - drag.y)) < 6) return;
+      if (Math.abs(deltaX) <= Math.abs(event.clientY - drag.y)) {
+        dragRef.current = null;
+        return;
+      }
+      drag.moved = true;
+      suppressClick.current = true;
+      event.currentTarget.setPointerCapture(event.pointerId);
+      event.currentTarget.dataset.dragging = "true";
     }
-    event.currentTarget.style.setProperty("--showcase-drag-x", "0px");
-    dragStart.current = null;
-    dragDelta.current = 0;
-    setIsDragging(false);
+    event.preventDefault();
+    event.currentTarget.scrollLeft = drag.scrollLeft - deltaX;
   }
 
-  function onPointerUp(event: React.PointerEvent<HTMLDivElement>) {
-    if (dragStart.current === null) return;
-    if (dragDelta.current <= -60) go(active + 1);
-    else if (dragDelta.current >= 60) go(active - 1);
-    resetPointer(event);
-  }
-
-  function onPointerCancel(event: React.PointerEvent<HTMLDivElement>) {
-    if (dragStart.current === null) return;
-    resetPointer(event);
+  function endDrag(event: React.PointerEvent<HTMLDivElement>) {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+    const bay = nearestBay();
+    dragRef.current = null;
+    event.currentTarget.dataset.dragging = "false";
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+    if (drag.moved && bay) centerBay(bay, true);
   }
 
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
-    if (event.key === "ArrowRight") {
-      event.preventDefault();
-      go(active + 1);
-    } else if (event.key === "ArrowLeft") {
-      event.preventDefault();
-      go(active - 1);
-    }
+    if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
+    event.preventDefault();
+    go(activeRef.current + (event.key === "ArrowRight" ? 1 : -1));
   }
 
   if (count === 0) return null;
-  const current = items[active];
+  const current = items[active] ?? items[0];
   const copy = drugCopy(current.drug, locale);
-  // 規格與分類都還沒確認時整行不顯示，避免「規格待確認 · 待確認」像頁面沒做完。
-  const metaLine =
-    [known(copy.spec), known(copy.drugClass)].filter(Boolean).join(" · ") || null;
-
-  /** 環狀位移：-side…+side 之外的品項不畫。 */
-  function offsetOf(index: number): number | null {
-    let d = index - active;
-    if (d > count / 2) d -= count;
-    if (d < -count / 2) d += count;
-    return Math.abs(d) <= side ? d : null;
-  }
+  const metaLine = [known(copy.spec), known(copy.drugClass)].filter(Boolean).join(" · ") || null;
 
   return (
     <div className="product-showcase-canvas relative">
@@ -158,7 +202,7 @@ export function ProductSwipeShowcase({
         {/* 品項膠囊：只切換主角，不濾清單。手機單排橫向捲動。 */}
         <div
           ref={pillRailRef}
-          className="-mx-5 mt-4 flex gap-1.5 overflow-x-auto px-5 pb-1 sm:mx-0 sm:mt-2 sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0"
+          className="product-showcase-pills relative -mx-5 mt-4 flex gap-1.5 overflow-x-auto px-5 pb-1 sm:mx-0 sm:mt-2 sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-0"
         >
           {items.map((item, i) => (
             <button
@@ -184,75 +228,69 @@ export function ProductSwipeShowcase({
           ))}
         </div>
 
-        <div
-          ref={stageRef}
-          role="group"
-          aria-roledescription={locale === "en" ? "carousel" : "輪播"}
-          aria-label={locale === "en" ? "Featured products" : "精選品項"}
-          tabIndex={0}
-          onKeyDown={onKeyDown}
-          onPointerDown={onPointerDown}
-          onPointerMove={onPointerMove}
-          onPointerUp={onPointerUp}
-          onPointerCancel={onPointerCancel}
-          data-dragging={isDragging}
-          style={{ "--showcase-drag-x": "0px" } as CSSProperties}
-          className="product-showcase-stage relative mt-5 cursor-grab touch-pan-y select-none outline-offset-4 active:cursor-grabbing"
-        >
-          {items.map((item, i) => {
-            const offset = offsetOf(i);
-            if (offset === null) return null;
-            const isActive = offset === 0;
-            const { cutout } = item;
-            if (!cutout) return null;
-            const altImage = item.drug.image;
-            // 位移用舞台寬度百分比，側邊才不會疊在主角後面看不見。
-            const step = side === 1 ? 40 : 19;
-            const scale = isActive ? 1 : Math.abs(offset) === 1 ? 0.66 : 0.48;
-            return (
-              <button
-                key={item.drug.slug}
-                type="button"
-                tabIndex={-1}
-                aria-hidden={!isActive}
-                data-showcase-index={i}
-                data-active={isActive}
-                data-offset={String(offset)}
-                onClick={() => go(i)}
-                className={`product-showcase-item absolute bottom-0 left-1/2 block border-0 bg-transparent p-0 transition-[transform,opacity,filter] ease-out motion-reduce:transition-none ${
-                  isDragging ? "duration-0 will-change-transform" : "duration-500"
-                }`}
-                style={{
-                  transformOrigin: "bottom center",
-                  transform: `translate3d(calc(-50% + ${offset * step}cqw + var(--showcase-drag-x)), 0, 0) scale(${scale})`,
-                  opacity: isActive ? 1 : Math.abs(offset) === 1 ? 0.9 : 0.62,
-                  zIndex: 10 - Math.abs(offset),
-                  filter: isActive ? "none" : "brightness(0.96)",
-                }}
-              >
-                <span className="product-showcase-packshot-frame relative block">
-                  <Image
-                    src={cutout.src}
-                    alt={
-                      locale === "en"
-                        ? (altImage?.altEn ?? item.drug.nameEn ?? item.drug.name)
-                        : (altImage?.alt ?? item.drug.name)
-                    }
-                    width={cutout.width}
-                    height={cutout.height}
-                    sizes="(min-width: 768px) 230px, 180px"
-                    {...(Math.abs(offset) <= 1
-                      ? i === active
-                        ? { priority: true as const }
-                        : { loading: "eager" as const }
-                      : { loading: "lazy" as const })}
-                    draggable={false}
-                    className="product-showcase-packshot"
-                  />
-                </span>
-              </button>
-            );
-          })}
+        <div className="product-showcase-stage relative mt-5">
+          <div
+            ref={stageRef}
+            role="group"
+            aria-roledescription={locale === "en" ? "carousel" : "輪播"}
+            aria-label={locale === "en" ? "Featured products" : "精選品項"}
+            tabIndex={0}
+            onKeyDown={onKeyDown}
+            onScroll={onScroll}
+            onPointerDown={onPointerDown}
+            onPointerMove={onPointerMove}
+            onPointerUp={endDrag}
+            onPointerCancel={endDrag}
+            onLostPointerCapture={endDrag}
+            onPointerLeave={(event) => { if (!dragRef.current?.moved) endDrag(event); }}
+            data-lenis-prevent
+            className="product-showcase-rail"
+          >
+            {cycles.flatMap((cycle) => items.map((item, i) => {
+              const name = drugCopy(item.drug, locale).name;
+              const scene = (
+                <Image
+                  src={item.scene.src}
+                  alt={cycle === 1 ? `${name}${locale === "en" ? " on the shelf — product illustration" : "陳列於木架上的商品示意圖"}` : ""}
+                  width={item.scene.width}
+                  height={item.scene.height}
+                  sizes="(min-width: 768px) 600px, 90vw"
+                  loading={cycle === 1 && i < 2 ? "eager" : "lazy"}
+                  draggable={false}
+                  className="product-showcase-scene"
+                />
+              );
+              return (
+                <div
+                  key={`${cycle}-${item.drug.slug}`}
+                  data-showcase-index={i}
+                  data-cycle={cycle}
+                  data-active={i === active}
+                  aria-hidden={cycle !== 1}
+                  role="group"
+                  aria-label={`${i + 1} / ${count}: ${name}`}
+                  className="product-showcase-bay"
+                >
+                  {hrefPrefix ? (
+                    <Link
+                      href={`${hrefPrefix}/${item.drug.slug}${hrefQuery}`}
+                      tabIndex={cycle === 1 ? 0 : -1}
+                      draggable={false}
+                      onClick={(event) => { if (suppressClick.current && event.detail !== 0) event.preventDefault(); }}
+                      aria-label={locale === "en" ? `View ${name}` : `查看 ${name}`}
+                      className="product-showcase-item"
+                    >
+                      {scene}
+                    </Link>
+                  ) : (
+                    <button type="button" tabIndex={-1} onClick={() => { if (!suppressClick.current) go(i); }} className="product-showcase-item">
+                      {scene}
+                    </button>
+                  )}
+                </div>
+              );
+            }))}
+          </div>
         </div>
 
         <div className="mt-5 sm:mt-1" aria-live="polite">
@@ -279,11 +317,15 @@ export function ProductSwipeShowcase({
           </div>
         </div>
 
+        <p className="mb-0 mt-3 text-center text-xs text-muted-2">
+          {locale === "en" ? "Product illustrations; refer to actual packaging." : "商品示意，包裝以實品為準。"}
+        </p>
+
         <div className="mt-5 flex items-center justify-center gap-4">
           <ArrowButton
             dir="prev"
             label={locale === "en" ? "Previous product" : "上一項"}
-            onClick={() => go(active - 1)}
+            onClick={() => go(activeRef.current - 1)}
           />
           <div className="flex gap-1.5" aria-hidden>
             {items.map((item, i) => (
@@ -298,7 +340,7 @@ export function ProductSwipeShowcase({
           <ArrowButton
             dir="next"
             label={locale === "en" ? "Next product" : "下一項"}
-            onClick={() => go(active + 1)}
+            onClick={() => go(activeRef.current + 1)}
           />
         </div>
       </div>
