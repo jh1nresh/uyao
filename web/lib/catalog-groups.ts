@@ -6,7 +6,8 @@ export type CatalogGroupSlug =
   | "fish-vision"
   | "vitamins-minerals"
   | "probiotics-digestion"
-  | "botanical-blends";
+  | "botanical-blends"
+  | "other";
 
 export interface CatalogGroup {
   slug: CatalogGroupSlug;
@@ -21,11 +22,17 @@ export const CATALOG_GROUPS: CatalogGroup[] = [
   { slug: "vitamins-minerals", name: "維生素與礦物質", nameEn: "Vitamins & minerals" },
   { slug: "probiotics-digestion", name: "益生菌與消化", nameEn: "Probiotics & digestion" },
   { slug: "botanical-blends", name: "植物與複方", nameEn: "Botanical blends" },
+  { slug: "other", name: "其他品項", nameEn: "Other items" },
 ];
 
 export const CATALOG_PAGE_SIZE = 12;
 
 const GROUP_BY_DRUG_SLUG: Record<string, Exclude<CatalogGroupSlug, "all">> = {
+  // Notion 僅有品名，不能從名稱推定成分或保養用途。
+  "deligan": "other",
+  "jinxin-sutongning": "other",
+  "hulishun": "other",
+  "xielining": "other",
   "hugu-gaishu-100": "joint",
   "guanlihu-60": "joint",
   "cm-jinguguanjian-sr": "joint",
