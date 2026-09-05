@@ -57,6 +57,9 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json({ error: "格式錯誤" }, { status: 400 });
   }
+  if (!body || typeof body !== "object" || Array.isArray(body)) {
+    return NextResponse.json({ error: "請提供有效的問題、地區與語言。" }, { status: 422 });
+  }
 
   const messages = parseCommerceAgentMessages(body.messages);
   const screen = parseCommerceAgentScreenState(body.screen);
