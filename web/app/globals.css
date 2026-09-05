@@ -425,14 +425,14 @@ html[data-theme="dark"] .theme-logo-dark {
 .medicine-cabinet-search {
   position: absolute;
   z-index: 2;
-  top: 8.6%;
-  right: 18.8%;
-  left: 26.2%;
+  top: 48%;
+  right: 32%;
+  left: 29%;
   display: grid;
-  grid-template-columns: 337fr 238fr 290fr;
-  grid-template-rows: 34% 66%;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: 1fr;
   align-items: center;
-  height: 83.4%;
+  height: 29%;
   gap: 3%;
   pointer-events: none;
 }
@@ -444,8 +444,8 @@ html[data-theme="dark"] .theme-logo-dark {
 }
 
 .medicine-cabinet-message {
-  grid-column: 1 / span 2;
-  grid-row: 2;
+  grid-column: 1;
+  grid-row: 1;
   justify-self: center;
   width: min(34rem, 100%);
   padding: 0.35rem 0.55rem 0.5rem;
@@ -923,7 +923,7 @@ html[data-theme="dark"] .theme-logo-dark {
   }
 
   .medicine-cabinet-search {
-    top: 44%;
+    top: 49%;
     right: 9%;
     left: 9%;
     display: block;
@@ -947,9 +947,11 @@ html[data-theme="dark"] .theme-logo-dark {
     text-align: center;
   }
 
-  /* Keep one short lead so the first viewport still carries brand meaning. */
+  /* Keep both brand lines inside the lower cabinet bay on mobile. */
   .medicine-cabinet-kicker {
-    display: none;
+    display: block;
+    font-size: 11px;
+    margin-bottom: 8px;
   }
 
   .medicine-cabinet-copy {
