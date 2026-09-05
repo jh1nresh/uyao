@@ -53,7 +53,7 @@ const LOCALE_PREFIX: Record<Locale, string> = { zh: "/zh-tw", en: "/en" };
  * 消費端首頁自己的文案更新日。品項改動會經由下面的 `latest()` 帶進來，
  * 這個常數只負責首頁上不是目錄的那些字。改文案才動它。
  */
-const SHOP_HOME_COPY_UPDATED: IsoDate = "2026-08-18";
+const SHOP_HOME_COPY_UPDATED: IsoDate = "2026-09-05";
 
 /**
  * 藥局頁的內容更新日。

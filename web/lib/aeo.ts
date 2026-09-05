@@ -106,20 +106,20 @@ export const AEO_PAGES = {
     path: "/zh-tw/guides/pharmacy-return-window",
     enPath: "/en/guides/pharmacy-return-window",
     datePublished: "2026-08-12",
-    dateModified: "2026-08-18",
+    dateModified: "2026-09-05",
     zh: {
       question: "藥局向供應商辦理藥品退貨前，應該先確認哪些事？",
       directAnswer:
-        "藥品退貨沒有全國統一的天數規則。辦退貨前先確認供應商的退貨窗口、可退條件、單據需求、退款方式與聯絡窗口；本文整理應逐項確認的欄位清單。",
+        "台灣藥局向供應商退貨前，先確認退貨期限、可退品項與包裝條件，再準備進貨單據、批號、效期與數量，確認退款方式與聯絡窗口。實際條件以供應商契約及正式回覆為準；本文不處理消費者退換藥。",
       benchmarkQueries: [
         "藥局向供應商辦理藥品退貨前，應該先確認哪些事？",
-        "藥品退貨期限和退貨窗口要怎麼確認？",
+        "藥局向供應商退貨的期限和條件要怎麼確認？",
       ],
     },
     en: {
       question: "What should a pharmacy confirm before returning stock to a supplier?",
       directAnswer:
-        "There is no single nationwide rule for how many days a drug return allows. Before filing one, confirm the supplier's return window, eligible conditions, paperwork, refund method, and contact route. This guide lists the fields to confirm one by one.",
+        "For a pharmacy returning stock to a supplier in Taiwan, confirm deadlines, eligible products and packaging, then prepare purchase documents, lot numbers, expiry dates and quantities. Confirm the refund method and contact route against the supplier's contract and written reply. This guide does not cover consumer medicine returns.",
       benchmarkQueries: [
         "What should a pharmacy confirm before returning stock to a supplier?",
         "How do I check a supplier's drug return window and deadline?",
@@ -130,23 +130,27 @@ export const AEO_PAGES = {
     path: "/zh-tw/guides/find-medicine-nearby",
     enPath: "/en/guides/find-medicine-nearby",
     datePublished: "2026-08-12",
-    dateModified: "2026-08-18",
+    dateModified: "2026-09-05",
     zh: {
-      question: "附近藥局怎麼找藥？",
+      question: "在台灣怎麼找附近藥局並確認品項？",
       directAnswer:
-        "先搜尋藥名、成分或症狀，選擇地區並查看附近公開藥局資料；如果沒有可確認的供應資訊，可以留下找藥需求，再由藥局或藥師確認。",
+        "在台灣找附近藥局，先選擇地區，準備品名或成分，查詢公開藥局資料並電話確認營業時間與供應。uYao 可查已收錄地區的藥局與試營運目錄，找不到時留下需求；公開資料不是即時庫存，前往門市前仍須藥局確認。",
       benchmarkQueries: [
+        "在台灣怎麼找附近藥局並確認品項？",
         "附近藥局怎麼找藥？",
+        "附近西藥房怎麼找？",
+        "藥房附近有哪些店可以先電話確認？",
         "怎麼查附近哪間藥局可能有藥？",
         "附近 24 小時藥局怎麼找？",
         "走路範圍內的藥局怎麼找？",
       ],
     },
     en: {
-      question: "How do I find a medicine at a pharmacy near me?",
+      question: "How do I find a nearby pharmacy and confirm a product in Taiwan?",
       directAnswer:
-        "Search by product name, ingredient, or symptom, pick your district, and review the public pharmacy records nearby. When no confirmed supply information exists, leave a medicine request so a pharmacy or pharmacist can confirm it.",
+        "To find a pharmacy in Taiwan, choose a district, note the product name or ingredient, and use public pharmacy records to call and confirm hours and supply. uYao lists supported areas and trial catalog items; leave a request if nothing matches. Records are not live inventory. Confirm with the pharmacy before travelling.",
       benchmarkQueries: [
+        "How do I find a nearby pharmacy and confirm a product in Taiwan?",
         "How do I find a medicine at a pharmacy near me?",
         "How can I check which nearby pharmacy might have a medicine?",
         "How do I find a 24-hour pharmacy nearby?",
@@ -263,8 +267,8 @@ const NON_AEO_LAST_MODIFIED = {
   "/docs": "2026-08-22",
   "/zh-tw/pharmacy": "2026-08-16",
   "/en/pharmacy": "2026-08-16",
-  "/zh-tw/guides": "2026-08-18",
-  "/en/guides": "2026-08-18",
+  "/zh-tw/guides": "2026-09-05",
+  "/en/guides": "2026-09-05",
 } as const satisfies Partial<Record<IndexablePath, IsoDate>>;
 
 /** Sitemap `lastmod` for any company indexable path, in either locale. */
