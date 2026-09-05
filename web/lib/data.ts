@@ -158,9 +158,9 @@ const DRUGS: Drug[] = [
   },
   {
     slug: "shengkangning-150",
-    updatedOn: "2026-08-18",
+    updatedOn: "2026-09-05",
     name: "勝康寧",
-    aliases: ["GENTALIN", "勝康寧膠囊"],
+    aliases: ["GENTALIN", "勝康寧膠囊", "勝康靈"],
     form: "膠囊",
     spec: "150粒",
     licenseNo: "",
