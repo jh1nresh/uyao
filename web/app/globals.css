@@ -496,8 +496,9 @@ html[data-theme="dark"] .theme-logo-dark {
 }
 
 .medicine-cabinet-hero .medicine-cabinet-input {
-  border-color: rgb(var(--color-line-strong)) !important;
-  background: rgb(var(--color-paper) / 0.94) !important;
+  --color-muted-2: var(--color-ink-2);
+  border-color: rgb(96 77 51 / 0.3) !important;
+  background: rgb(226 204 169 / 0.78) !important;
 }
 
 /* Search remains inside the cabinet world after the first question. The
