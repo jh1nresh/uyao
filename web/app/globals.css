@@ -814,44 +814,71 @@ html[data-theme="dark"] .theme-logo-dark {
   isolation: isolate;
 }
 
-/* Hero 風格去背商品：橫向滑動，中央放大、側邊縮小；不加木板。 */
+/* Each bay is one integrated product-on-shelf scene; no separate floating cutout. */
 .product-showcase-stage {
-  --showcase-drag-x: 0px;
-
-  width: 100%;
-  height: 250px;
-  overflow: hidden;
+  --shelf-height: clamp(17rem, 21vw, 25rem);
+  width: 100vw;
+  height: var(--shelf-height);
+  margin-inline: calc(50% - 50vw);
+  position: relative;
   isolation: isolate;
-  container-type: inline-size;
-  background:
-    radial-gradient(ellipse 42% 28% at 50% 100%, rgb(65 43 25 / 0.08), transparent 72%),
-    rgb(var(--color-ivory));
+  background: #d4ad78;
+  box-shadow: 0 6px 12px rgb(76 50 25 / 0.16);
 }
 
-.product-showcase-stage[data-dragging="true"] {
+.product-showcase-rail {
+  position: relative;
+  display: flex;
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  touch-action: pan-x pan-y pinch-zoom;
+  overscroll-behavior-x: contain;
+  cursor: grab;
+  user-select: none;
+  outline-offset: -4px;
+}
+
+.product-showcase-rail::-webkit-scrollbar,
+.product-showcase-pills::-webkit-scrollbar {
+  display: none;
+}
+
+.product-showcase-pills {
+  scrollbar-width: none;
+}
+
+.product-showcase-rail[data-dragging="true"] {
+  scroll-snap-type: none;
   cursor: grabbing;
 }
 
+.product-showcase-bay {
+  position: relative;
+  flex: 0 0 calc(var(--shelf-height) * 1.5);
+  height: 100%;
+  scroll-snap-align: center;
+}
+
 .product-showcase-item {
-  touch-action: none;
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  cursor: inherit;
+  outline-offset: -4px;
 }
 
-.product-showcase-packshot-frame {
-  width: 180px;
-  height: 230px;
-}
-
-.product-showcase-packshot {
-  width: auto;
-  max-width: 100%;
-  height: auto;
-  max-height: 100%;
-  object-fit: contain;
-  object-position: bottom center;
-  filter:
-    drop-shadow(0 3px 2px rgb(65 43 25 / 0.2))
-    drop-shadow(4px 10px 12px rgb(65 43 25 / 0.18));
-  user-select: none;
+.product-showcase-scene {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   pointer-events: none;
 }
 
@@ -859,10 +886,7 @@ html[data-theme="dark"] .theme-logo-dark {
   border: 1px solid rgb(var(--color-line-strong));
   background: rgb(var(--color-paper));
   color: rgb(var(--color-ink-2));
-  transition:
-    border-color 200ms var(--ease-brand),
-    color 200ms var(--ease-brand),
-    background-color 200ms var(--ease-brand);
+  transition: border-color 200ms var(--ease-brand), color 200ms var(--ease-brand);
 }
 
 .product-showcase-arrow:hover {
@@ -870,36 +894,19 @@ html[data-theme="dark"] .theme-logo-dark {
   color: rgb(var(--color-forest));
 }
 
-@media (min-width: 768px) {
-  .product-showcase-stage {
-    height: 300px;
-  }
-
-  .product-showcase-packshot-frame {
-    width: 230px;
-    height: 290px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .product-showcase-item {
-    transition: none !important;
-  }
-}
-
 @media (max-width: 767px) {
   .product-showcase-stage {
-    height: 15.5rem;
+    --shelf-height: clamp(12rem, 57vw, 22rem);
   }
 }
 
 @media (max-width: 767px) {
   .medicine-cabinet-hero {
-    height: 26.5rem;
-    min-height: 26.5rem;
+    height: 36rem;
+    min-height: 36rem;
     padding: 0;
     background-position: 59% top;
-    background-size: auto 26.5rem;
+    background-size: auto 36rem;
   }
 
   .medicine-cabinet-hero::after {
@@ -915,16 +922,13 @@ html[data-theme="dark"] .theme-logo-dark {
   }
 
   .medicine-cabinet-search {
-    top: 40%;
-    right: 17%;
-    left: 17%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 0.75rem;
+    top: 44%;
+    right: 9%;
+    left: 9%;
+    display: block;
     width: auto;
-    height: 28%;
-    padding: 0.35rem 0.4rem;
+    height: auto;
+    padding: 0;
   }
 
   .medicine-cabinet-message {
@@ -1223,14 +1227,4 @@ html[data-theme="dark"] .theme-logo-dark {
 .catalog-rail::-webkit-scrollbar-thumb {
   background: rgb(var(--color-line));
   border-radius: 3px;
-}
-
-
-/* Keep the partner strip below the first viewport on small screens so the
-   cabinet hero can hold brand + ask without chrome stacking. */
-@media (max-width: 767px) {
-  .cabinet-partner-marquee,
-  .partner-marquee {
-    margin-top: min(42vh, 18rem);
-  }
 }
