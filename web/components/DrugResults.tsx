@@ -10,6 +10,7 @@ import type { Locale } from "@/lib/i18n";
 import { getRequestLocale } from "@/lib/locale-server";
 import { partnersForProduct } from "@/lib/partners";
 import { known } from "@/lib/pending";
+import { productShowcaseScene } from "@/lib/product-showcase";
 import type { AreaSlug } from "@/lib/types";
 
 export interface DrugResultRow extends DrugSummary {
@@ -104,6 +105,7 @@ export async function DrugResults({
     <div className="grid max-w-[1040px] gap-3">
       {results.map((r) => {
         const drug = drugCopy(r.drug, locale);
+        const scene = productShowcaseScene(r.drug.slug);
         // 規格未知就只印品名 —— 搜尋結果原本直接把「規格待確認」接在品名後面。
         const title = [drug.name, known(drug.spec)].filter(Boolean).join(" ");
         const reason = r.match ? matchReason(r.match, locale) : known(drug.nutritionFocus);
@@ -118,17 +120,18 @@ export async function DrugResults({
           >
             <span className="grid grid-cols-[76px_minmax(0,1fr)] gap-4 sm:grid-cols-[88px_minmax(0,1fr)_190px] sm:items-center">
               <span className="relative block aspect-square w-[76px] overflow-hidden border border-line sm:w-[88px]">
-                {r.drug.image ? (
+                {scene ? (
                   <Image
-                    src={r.drug.image.src}
+                    src={scene.src}
                     alt=""
                     fill
                     sizes="88px"
-                    className="object-contain p-2"
+                    className="object-cover"
                   />
                 ) : (
                   <CatalogImagePlaceholder locale={locale} />
                 )}
+                {scene && <span className="absolute bottom-0 left-0 bg-paper/95 px-1.5 py-0.5 text-[11px] text-muted">{locale === "en" ? "Illustration" : "示意圖"}</span>}
               </span>
 
               <span className="min-w-0 self-start sm:self-center">
