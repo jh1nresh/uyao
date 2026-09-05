@@ -1,4 +1,4 @@
-import { CONTACT_EMAIL } from "./seo";
+import { CONSUMER_DESCRIPTION, CONTACT_EMAIL } from "./seo";
 
 /**
  * Machine-readable public pages for agents.
@@ -159,7 +159,7 @@ export function shopHomepageMarkdown(locale: "zh" | "en"): string {
     return [
       "# uYao Medicine Finder",
       "",
-      "> Search a trial catalog and nearby public pharmacy records, then leave a medicine request. A pharmacy or pharmacist confirms supply, pickup, and medicine questions.",
+      `> ${CONSUMER_DESCRIPTION.en}`,
       "",
       "## When to use",
       "",
@@ -188,7 +188,7 @@ export function shopHomepageMarkdown(locale: "zh" | "en"): string {
   return [
     "# uYao 找藥",
     "",
-    "> 搜尋試營運目錄與附近公開藥局資料；找不到時可以留下找藥需求。實際供應、領取與用藥問題仍由藥局或藥師確認。",
+    `> ${CONSUMER_DESCRIPTION.zh}`,
     "",
     "## 適合使用",
     "",

@@ -15,8 +15,8 @@ const PAGE = AEO_PAGES.findMedicineNearby;
 const { datePublished: PUBLISHED, dateModified: UPDATED } = PAGE;
 
 const TITLES: Record<Locale, string> = {
-  zh: "附近藥局怎麼找藥？搜尋、確認與到店步驟｜uYao",
-  en: "How to find medicine at a pharmacy near you: search, confirm, collect | uYao",
+  zh: "台灣附近藥局怎麼找？查詢與出發前確認步驟｜uYao",
+  en: "How to find a pharmacy near you in Taiwan and confirm supply | uYao",
 };
 
 const SERVICE_AREA_EN = "Taipei, New Taipei, Taichung, Miaoli, and Yilan";
@@ -45,7 +45,7 @@ const CONTENT: Record<Locale, FindCopy> = {
     kicker: "找藥指南",
     stepsHeading: "五個步驟",
     steps: [
-      ["輸入你知道的資訊", "可搜尋商品名、主成分或症狀描述。症狀搜尋只協助縮小方向，不是診斷。"],
+      ["輸入你知道的資訊", "先記下商品名或主成分，再選擇地區查詢。若只有症狀、不知道需要什麼品項，請先向藥師詢問。"],
       ["選擇地區", `目前首波收錄範圍為${SERVICE_AREA_LABEL}；收錄不代表藥局已與 uYao 合作。`],
       ["查看資料狀態", "分清楚公開藥局資料、試營運品項紀錄與需要藥局確認的供應狀態。"],
       ["留下找藥需求", "找不到時可留下品項與地區需求，讓 uYao 記錄這次搜尋落空。"],
@@ -54,6 +54,11 @@ const CONTENT: Record<Locale, FindCopy> = {
     faqHeading: "常見問題",
     faq: [
       { question: PAGE.zh.question, answer: PAGE.zh.directAnswer },
+      {
+        question: "搜尋「附近西藥房」或「藥房附近」時，要確認哪些資訊？",
+        answer:
+          "先確認藥局所在地區、地址與電話，再向店家確認實際營業時間，以及是否能提供你要找的品項。uYao 的公開藥局資料可以作為聯絡線索；收錄不代表合作、目前營業或已有現貨。",
+      },
       {
         question: "uYao 顯示的是即時庫存嗎？",
         answer:
@@ -95,7 +100,7 @@ const CONTENT: Record<Locale, FindCopy> = {
     steps: [
       [
         "Enter whatever you know",
-        "Search by product name, active ingredient, or a description of the symptom. Symptom search only narrows the direction; it is not a diagnosis.",
+        "Start with the product name or active ingredient, then choose a district. If you only know your symptoms and not which product you need, ask a pharmacist first.",
       ],
       [
         "Pick your district",
@@ -117,6 +122,11 @@ const CONTENT: Record<Locale, FindCopy> = {
     faqHeading: "Common questions",
     faq: [
       { question: PAGE.en.question, answer: PAGE.en.directAnswer },
+      {
+        question: "What should I check in a pharmacy-nearby search result in Taiwan?",
+        answer:
+          "Check the district, address, and phone number, then ask the pharmacy about actual opening hours and whether it can supply the product. uYao's public records are contact leads; a listing does not mean a partnership, an open store, or stock on hand.",
+      },
       {
         question: "Does uYao show live inventory?",
         answer:

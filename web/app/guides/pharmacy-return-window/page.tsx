@@ -19,8 +19,8 @@ const PAGE = AEO_PAGES.pharmacyReturnWindow;
 const { datePublished: PUBLISHED, dateModified: UPDATED } = PAGE;
 
 const TITLES: Record<Locale, string> = {
-  zh: "藥品退貨前要確認的事：窗口、條件與單據｜uYao 藥局營運指南",
-  en: "Before a drug return: window, conditions, and paperwork | uYao",
+  zh: "藥局向供應商退貨：窗口、條件與單據清單｜uYao",
+  en: "Pharmacy stock returns to suppliers: deadlines and paperwork | uYao",
 };
 
 export async function generateMetadata(): Promise<Metadata> {
