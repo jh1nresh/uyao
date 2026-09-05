@@ -65,9 +65,9 @@ node scripts/smoke-commerce-agent.mjs --expect-mode claude
 }
 ```
 
-`messages` 為 1–8 則 user／assistant 純文字，最後必須是 user；每則會清理並截到 600 字元。`area` 必須是目錄支援地區，`locale` 為 `zh` 或 `en`。可省略 `screen`；若提供，最多 5 個存在於伺服器目錄的 product slug。續問時帶前次回覆的 product slugs。
+`messages` 為 1–8 則 user／assistant 純文字，最後必須是 user；每則須為最多 600 字元的字串；超長會拒絕，不截斷句尾。`area` 必須是目錄支援地區，`locale` 為 `zh` 或 `en`。可省略 `screen`；若提供，最多 5 個存在於伺服器目錄的 product slug。續問時帶前次回覆的 product slugs。
 
-正式 UI 在聊天內先完成過敏問答，不使用 modal；首頁導向 Agent 也不再攔截彈窗。已知過敏需填過敏原，不確定者可直接找藥師。答案在 tab 的 `sessionStorage` 暫存，30 分鐘後不再重用；更正回答或開新對話會重設，API 只接受 gate 布林值。過敏欄位不送模型，但使用者自行輸入對話的健康資訊可能送出。此布林值不是身份驗證或藥品適用性證明。合成測試使用 `true` 不等於對真人完成過敏評估。
+正式 UI 在聊天內先完成過敏問答，不使用 modal；首頁導向 Agent 也不再攔截彈窗。已知過敏需填過敏原，不確定者可直接找藥師。答案在 tab 的 `sessionStorage` 暫存，30 分鐘後不再重用；更正回答或開新對話會重設，API 只接受 gate 布林值。過敏欄位不送模型，原始對話歷史也不轉送外部供應商；只送核對過的目錄詞、固定指令、地區與公開品項資料。此布林值不是身份驗證或藥品適用性證明。合成測試使用 `true` 不等於對真人完成過敏評估。
 
 固定目錄 dev server 啟動後，可手動檢查一個 JSON 回覆：
 
@@ -106,7 +106,7 @@ progress 的 stage 為 checking／searching／presenting，數量依實際分支
 
 ## 架構與驗證範圍
 
-此實作參考 [Anthropic commerce-agents](https://github.com/anthropics/commerce-agents) 的 server-owned presentation、工具溯源與受限 loop，採自寫 TypeScript Messages API adapter；沒有直接使用其 Agent SDK、Managed Agents、MerchantBackend 或持久記憶。工具限 search_catalog、present_products、present_pharmacies、present_no_match、present_guidance；最後一個只輸出固定專業轉介或範圍提醒，沒有交易工具。症狀／個人化用藥／交易關鍵字在呼叫模型前檢查送入的全部 user 歷史；優先顯示安全提醒。這是有限路由，不能保證涵蓋所有措辭或經過截斷的歷史。
+此實作參考 [Anthropic commerce-agents](https://github.com/anthropics/commerce-agents) 的 server-owned presentation、工具溯源與受限 loop，採自寫 TypeScript Messages API adapter；沒有直接使用其 Agent SDK、Managed Agents、MerchantBackend 或持久記憶。工具限 search_catalog、present_products、present_pharmacies、present_no_match、present_guidance；最後一個只輸出固定專業轉介或範圍提醒，沒有交易工具。症狀／個人化用藥／交易關鍵字在呼叫模型前檢查送入的全部 user 歷史；優先顯示安全提醒。未知自由文字預設拒絕；只有完整目錄詞與有限的編號續問能進工具流程。模型不能改查其他商品，Agent 僅展示非藥品分類；參見規範文件的限制與回歸案例。這仍不是合規認證。
 
 對照 [官方安全架構](https://github.com/anthropics/commerce-agents/blob/main/docs/safety.md)、[模型 ID](https://platform.claude.com/docs/en/models/overview)、[API limits](https://platform.claude.com/docs/en/api/rate-limits)。目前 eval 主要驗證固定目錄與 mock tool calls；真實 Claude smoke 不代表醫療適用性、完整多輪品質或 production 流量驗證。
 
