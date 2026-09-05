@@ -51,6 +51,7 @@ export const PARTNER_PHARMACIES = {
       "益固康 Elgucare",
       "安格雅葡萄籽膠囊",
       "普大綠茶複方膠囊",
+      "得力干",
     ],
   },
   南興西藥房: {
@@ -89,7 +90,7 @@ export const PARTNER_PHARMACIES = {
   樂活健保藥局: {
     storeSlug: "樂活健保藥局",
     aliases: ["樂活健保藥局"],
-    confirmedProducts: [],
+    confirmedProducts: ["護理順", "泄力寧"],
   },
   祥好大藥局: {
     storeSlug: "祥好大藥局",
@@ -151,7 +152,7 @@ export const PARTNER_PHARMACIES = {
     storeSlug: "喜來樂中西藥局",
     // 店家與健保署登記名稱都沒有「新莊」，但在地習慣連著行政區一起講。
     aliases: ["喜來樂中西藥局", "新莊喜來樂中西藥局", "喜來樂藥局"],
-    confirmedProducts: [],
+    confirmedProducts: ["進鑫速通寧"],
   },
   一銘藥局: {
     storeSlug: "一銘藥局",

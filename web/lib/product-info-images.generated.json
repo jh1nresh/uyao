@@ -6548,5 +6548,237 @@
         ]
       }
     }
+  ],
+  "deligan:zh": [
+    {
+      "sha256": "dd1fcd3728f068e945d12df45ec16def6fe1a5f12c4c677886e1083cc2f346ba",
+      "src": "/products/info-v2/deligan-zh-facts.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "facts",
+        "name": "得力干",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "成分資料待確認。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "尚無已驗證的產品資料來源。",
+          "請以實際包裝及藥師確認為準。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "deligan:en": [
+    {
+      "sha256": "d44e52804a12ef3d42f78f47f800451e56581617d373ca20336505f3002007b2",
+      "src": "/products/info-v2/deligan-en-facts.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "facts",
+        "name": "得力干",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "Ingredient details require verification."
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "No verified product source is available.",
+          "Check the actual package and confirm the details with a pharmacist.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "jinxin-sutongning:zh": [
+    {
+      "sha256": "5fcffcdf4b8d7053f4951039cbbaf2e29497d72cee8f68ed12ee37d3f1fb00fc",
+      "src": "/products/info-v2/jinxin-sutongning-zh-facts.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "facts",
+        "name": "進鑫速通寧",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "成分資料待確認。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "尚無已驗證的產品資料來源。",
+          "請以實際包裝及藥師確認為準。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "jinxin-sutongning:en": [
+    {
+      "sha256": "1f1a27f5495de315101e64cfe91956d1d01ec524013a2cfe31e5c7cee1cfe7ee",
+      "src": "/products/info-v2/jinxin-sutongning-en-facts.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "facts",
+        "name": "進鑫速通寧",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "Ingredient details require verification."
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "No verified product source is available.",
+          "Check the actual package and confirm the details with a pharmacist.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "hulishun:zh": [
+    {
+      "sha256": "0b5b30b2d189eef1273d6cfb1554be33935ba1900eed546676a9b2efcf665298",
+      "src": "/products/info-v2/hulishun-zh-facts.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "facts",
+        "name": "護理順",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "成分資料待確認。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "尚無已驗證的產品資料來源。",
+          "請以實際包裝及藥師確認為準。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "hulishun:en": [
+    {
+      "sha256": "a746a12ed47a28844f2be26c4db9feccd83bad59271d3d3225c50f47665115aa",
+      "src": "/products/info-v2/hulishun-en-facts.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "facts",
+        "name": "護理順",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "Ingredient details require verification."
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "No verified product source is available.",
+          "Check the actual package and confirm the details with a pharmacist.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "xielining:zh": [
+    {
+      "sha256": "ad9fe340491682b2b42065e7fa7a0e65baa8ada102f3e09b3cc3a14c67b8a91a",
+      "src": "/products/info-v2/xielining-zh-facts.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "facts",
+        "name": "泄力寧",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "成分資料待確認。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "尚無已驗證的產品資料來源。",
+          "請以實際包裝及藥師確認為準。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "xielining:en": [
+    {
+      "sha256": "2ded3c1872f29c9d948ecc1bb316e3fb98304efd54808bc9fa9141c954a7eda3",
+      "src": "/products/info-v2/xielining-en-facts.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "facts",
+        "name": "泄力寧",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "Ingredient details require verification."
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "No verified product source is available.",
+          "Check the actual package and confirm the details with a pharmacist.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
   ]
 }
