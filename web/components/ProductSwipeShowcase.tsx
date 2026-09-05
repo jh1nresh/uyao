@@ -45,6 +45,7 @@ export function ProductSwipeShowcase({
   const dragRef = useRef<DragState | null>(null);
   const suppressClick = useRef(false);
   const scrollFrame = useRef<number | null>(null);
+  const snapTarget = useRef<number | null>(null);
   const settleTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pillRailRef = useRef<HTMLDivElement>(null);
   const pillRefs = useRef<Array<HTMLButtonElement | null>>([]);
@@ -67,15 +68,23 @@ export function ProductSwipeShowcase({
   const centerBay = useCallback((bay: HTMLElement, smooth: boolean) => {
     const rail = stageRef.current;
     if (!rail) return;
-    rail.scrollTo({
-      left: bay.offsetLeft - (rail.clientWidth - bay.clientWidth) / 2,
-      behavior: smooth && !window.matchMedia("(prefers-reduced-motion: reduce)").matches
-        ? "smooth" : "instant",
-    });
+    const left = bay.offsetLeft - (rail.clientWidth - bay.clientWidth) / 2;
+    const animate = smooth && Math.abs(rail.scrollLeft - left) > 1
+      && !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    // Restoring mandatory snap before scrollTo would jump to the bay immediately.
+    rail.dataset.freeScrolling = String(animate);
+    snapTarget.current = animate ? left : null;
+    rail.scrollTo({ left, behavior: animate ? "smooth" : "instant" });
   }, []);
 
   const settle = useCallback(() => {
     if (dragRef.current) return;
+    const rail = stageRef.current;
+    if (!rail) return;
+    // An interrupted scroll can deliver scrollend after a new animation starts.
+    if (snapTarget.current !== null && Math.abs(rail.scrollLeft - snapTarget.current) > 1) return;
+    snapTarget.current = null;
+    rail.dataset.freeScrolling = "false";
     const bay = nearestBay();
     if (!bay || bay.dataset.cycle === "1") return;
     const original = stageRef.current?.querySelector<HTMLElement>(
@@ -143,8 +152,14 @@ export function ProductSwipeShowcase({
 
   function onPointerDown(event: React.PointerEvent<HTMLDivElement>) {
     suppressClick.current = false;
-    if (event.pointerType === "touch" || !event.isPrimary || event.button !== 0) return;
+    if (!event.isPrimary || event.button !== 0) return;
     const rail = event.currentTarget;
+    snapTarget.current = null;
+    if (event.pointerType === "touch") {
+      rail.dataset.freeScrolling = "false";
+      return;
+    }
+    rail.dataset.freeScrolling = "true";
     rail.scrollTo({ left: rail.scrollLeft, behavior: "instant" });
     dragRef.current = { pointerId: event.pointerId, x: event.clientX, y: event.clientY, scrollLeft: rail.scrollLeft, moved: false };
   }
@@ -157,6 +172,7 @@ export function ProductSwipeShowcase({
       if (Math.max(Math.abs(deltaX), Math.abs(event.clientY - drag.y)) < 6) return;
       if (Math.abs(deltaX) <= Math.abs(event.clientY - drag.y)) {
         dragRef.current = null;
+        event.currentTarget.dataset.freeScrolling = "false";
         return;
       }
       drag.moved = true;
@@ -175,7 +191,7 @@ export function ProductSwipeShowcase({
     dragRef.current = null;
     event.currentTarget.dataset.dragging = "false";
     if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
-    if (drag.moved && bay) centerBay(bay, true);
+    if (bay) centerBay(bay, drag.moved);
   }
 
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
@@ -185,9 +201,6 @@ export function ProductSwipeShowcase({
   }
 
   if (count === 0) return null;
-  const current = items[active] ?? items[0];
-  const copy = drugCopy(current.drug, locale);
-  const metaLine = [known(copy.spec), known(copy.drugClass)].filter(Boolean).join(" · ") || null;
 
   return (
     <div className="product-showcase-canvas relative">
@@ -237,6 +250,10 @@ export function ProductSwipeShowcase({
             tabIndex={0}
             onKeyDown={onKeyDown}
             onScroll={onScroll}
+            onWheel={() => {
+              snapTarget.current = null;
+              if (stageRef.current) stageRef.current.dataset.freeScrolling = "false";
+            }}
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={endDrag}
@@ -293,46 +310,56 @@ export function ProductSwipeShowcase({
           </div>
         </div>
 
-        <div className="mt-5 sm:mt-1" aria-live="polite">
-          <div className="mx-auto min-w-0 max-w-[520px] text-center">
-            <p className="m-0 text-[19px] font-bold leading-[1.35] text-ink sm:text-[22px]">
-              {copy.name}
-            </p>
-            {metaLine && (
-              <p className="mx-auto mb-0 mt-1.5 max-w-[460px] text-[14px] leading-[1.6] text-muted">
-                {metaLine}
-              </p>
-            )}
-            <p className="mx-auto mb-0 mt-1 line-clamp-2 max-w-[460px] text-[13px] leading-[1.6] text-muted-2">
-              {copy.nutritionFocus}
-            </p>
-            {hrefPrefix && (
-              <Link
-                href={`${hrefPrefix}/${current.drug.slug}${hrefQuery}`}
-                className="action-secondary mt-3.5 inline-flex min-h-11 items-center px-4 text-xs font-medium"
+        {/* Shared intrinsic rows reserve the longest copy at every viewport/font size. */}
+        <div className="product-showcase-details mx-auto mt-5 max-w-[520px] text-center sm:mt-1" aria-live="polite">
+          {items.map((item, i) => {
+            const copy = drugCopy(item.drug, locale);
+            const metaLine = [known(copy.spec), known(copy.drugClass)].filter(Boolean).join(" · ");
+            return (
+              <div
+                key={item.drug.slug}
+                className="product-showcase-detail"
+                aria-hidden={i !== active}
+                inert={i !== active}
               >
-                {locale === "en" ? "View item →" : "看這一項 →"}
-              </Link>
-            )}
-          </div>
+                <p className="m-0 text-[19px] font-bold leading-[1.35] text-ink sm:text-[22px]">
+                  {copy.name}
+                </p>
+                <p className="m-0 mx-auto max-w-[460px] text-[14px] leading-[1.6] text-muted">
+                  {metaLine}
+                </p>
+                <p className="m-0 mx-auto max-w-[460px] text-[13px] leading-[1.6] text-muted-2">
+                  {copy.nutritionFocus}
+                </p>
+                {hrefPrefix && (
+                  <Link
+                    href={`${hrefPrefix}/${item.drug.slug}${hrefQuery}`}
+                    className="action-secondary mt-2 inline-flex min-h-11 items-center justify-self-center px-4 text-xs font-medium"
+                  >
+                    {locale === "en" ? "View item →" : "看這一項 →"}
+                  </Link>
+                )}
+              </div>
+            );
+          })}
         </div>
 
         <p className="mb-0 mt-3 text-center text-xs text-muted-2">
           {locale === "en" ? "Product illustrations; refer to actual packaging." : "商品示意，包裝以實品為準。"}
         </p>
 
-        <div className="mt-5 flex items-center justify-center gap-4">
+        <div className="mx-auto mt-5 flex max-w-[358px] items-center justify-center gap-3 sm:gap-4">
           <ArrowButton
             dir="prev"
             label={locale === "en" ? "Previous product" : "上一項"}
             onClick={() => go(activeRef.current - 1)}
           />
-          <div className="flex gap-1.5" aria-hidden>
+          <div className="flex min-w-0 flex-1 items-center gap-1 sm:gap-1.5" aria-hidden>
             {items.map((item, i) => (
               <span
                 key={item.drug.slug}
                 className={`transition-colors motion-reduce:transition-none ${
-                  i === active ? "h-[3px] w-7 bg-ink sm:w-8" : "h-px w-5 bg-line-strong sm:w-6"
+                  i === active ? "h-[3px] flex-[1.4] bg-ink" : "h-px flex-1 bg-line-strong"
                 }`}
               />
             ))}
