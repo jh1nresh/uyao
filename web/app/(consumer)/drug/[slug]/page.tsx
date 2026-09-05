@@ -244,7 +244,7 @@ export default async function DrugPage({
                   {drug.source && displayDrug.ingredients.length > 0 ? (
                     <dl className={styles.ingredients}>
                       {ingredientRows(displayDrug.ingredients).map((row) => (
-                        <div key={row.name}><dt>{row.name}</dt><dd>{row.amount ?? (english ? "Not listed" : "未列含量")}</dd></div>
+                        <div key={row.name}><dt>{row.name}</dt><dd>{row.amount ?? "—"}</dd></div>
                       ))}
                     </dl>
                   ) : <p className={styles.emptyNote}>{english ? "No verified ingredient source is available for this item. Ask a pharmacist for details." : "此品項尚無可核對的成分來源，請向藥師確認。"}</p>}
