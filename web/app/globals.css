@@ -296,7 +296,8 @@ html[data-theme="dark"] .theme-logo-dark {
 
 /* The landing page stays on the cabinet's fixed warm-light palette so lower
    information sections do not split into a separate dark-mode surface. */
-.medicine-cabinet-home {
+.medicine-cabinet-home,
+.uyao-consumer-world {
   color-scheme: light;
   --color-ink: 28 39 34;
   --color-forest: 23 57 44;
@@ -337,42 +338,30 @@ html[data-theme="dark"] .theme-logo-dark {
    the ask-medicine copy sits inside the photographed upper bays, not on the
    open wood field below the top rail. */
 
-.medicine-cabinet-stage .theme-logo-light.theme-logo-light {
-  display: none;
-}
-
-.medicine-cabinet-stage .theme-logo-dark.theme-logo-dark {
+.cabinet-header-band .theme-logo-light.theme-logo-light {
   display: block;
 }
 
-.cabinet-header-band {
-  border-bottom: 1px solid rgb(var(--color-paper) / 0.28);
-  background: rgb(var(--color-forest) / 0.88);
-  box-shadow:
-    inset 0 -1px 0 rgb(28 39 34 / 0.2),
-    0 8px 24px rgb(28 39 34 / 0.08);
+.cabinet-header-band .theme-logo-dark.theme-logo-dark {
+  display: none;
 }
 
-.cabinet-workspace-nav {
-  border-right: 1px solid rgb(var(--color-paper) / 0.2);
-  border-left: 1px solid rgb(var(--color-paper) / 0.2);
+.cabinet-header-band {
+  border-bottom: 1px solid rgb(var(--color-line-strong));
+  background: rgb(var(--color-paper));
+  color: rgb(var(--color-forest));
 }
 
 .cabinet-workspace-tab[aria-current="page"] {
-  background: rgb(var(--color-paper) / 0.1);
+  background: rgb(var(--color-forest) / 0.04);
 }
 
 .cabinet-header-band :focus-visible {
-  outline-color: rgb(var(--color-paper));
+  outline-color: rgb(var(--color-forest));
 }
 
 .cabinet-header-language {
-  color: rgb(var(--color-paper));
-  text-shadow: 0 1px 8px rgb(28 39 34 / 0.28);
-}
-
-.cabinet-header-language:hover {
-  color: white;
+  color: rgb(var(--color-forest));
 }
 
 .cabinet-header-controls > div > div,
@@ -383,18 +372,12 @@ html[data-theme="dark"] .theme-logo-dark {
   box-shadow: none;
 }
 
-.cabinet-header-controls > :not(:first-child) {
-  border-left: 1px solid rgb(var(--color-paper) / 0.42);
-}
-
 .cabinet-header-controls :is(button, a, select) {
-  color: rgb(var(--color-paper));
-  text-shadow: 0 1px 8px rgb(28 39 34 / 0.28);
+  color: rgb(var(--color-forest));
 }
 
 .cabinet-header-controls :is(button, a, select):hover {
-  background-color: rgb(var(--color-paper) / 0.12);
-  color: white;
+  background-color: rgb(var(--color-surface));
 }
 
 .cabinet-header-controls option {
@@ -402,20 +385,15 @@ html[data-theme="dark"] .theme-logo-dark {
   color: rgb(var(--color-ink));
 }
 
-/* Mobile disclosure sits under .cabinet-header-controls, which forces nested
-   surfaces transparent for the compact header row. Restore a readable paper
-   panel so Shop / Agent / area controls stay legible over the cabinet. */
 .cabinet-header-controls > div > .site-header-mobile-panel {
   border-color: rgb(var(--color-line-strong));
   background: rgb(var(--color-paper));
-  box-shadow: 0 16px 40px rgb(28 39 34 / 0.16);
+  box-shadow: 0 16px 40px rgb(28 39 34 / 0.12);
   color: rgb(var(--color-ink));
-  text-shadow: none;
 }
 
 .cabinet-header-controls .site-header-mobile-panel :is(a, button, select) {
   color: inherit;
-  text-shadow: none;
 }
 
 .cabinet-header-controls .site-header-mobile-panel a[aria-current="page"] {
@@ -487,7 +465,7 @@ html[data-theme="dark"] .theme-logo-dark {
 }
 
 .medicine-cabinet-heading {
-  font-size: clamp(1.45rem, 2.15vw, 2.2rem);
+  font-size: clamp(1.45rem, 2.5vw, 2.6rem);
   text-shadow:
     0 1px 1px rgb(255 246 224 / 0.62),
     0 10px 22px rgb(234 216 184 / 0.42);
