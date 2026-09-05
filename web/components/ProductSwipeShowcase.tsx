@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { type CSSProperties, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { useLocale } from "./LocaleProvider";
 import { drugCopy } from "@/lib/i18n";
@@ -246,42 +246,50 @@ export function ProductSwipeShowcase({
             data-lenis-prevent
             className="product-showcase-rail"
           >
-            {cycles.flatMap((cycle) => items.map((item, i) => (
-              <div
-                key={`${cycle}-${item.drug.slug}`}
-                data-showcase-index={i}
-                data-cycle={cycle}
-                data-active={i === active}
-                aria-hidden={cycle !== 1}
-                role="group"
-                aria-label={`${i + 1} / ${count}: ${drugCopy(item.drug, locale).name}`}
-                className="product-showcase-bay"
-                style={{
-                  "--bay-width": item.bay === "wide" ? "1.6743" : "1.24",
-                  "--bay-offset": item.bay === "wide" ? "-1.64" : item.bay === "sunlit" ? "-3.32" : "-0.4",
-                  "--packshot-height": `${item.shelfHeight}%`,
-                } as CSSProperties}
-              >
-                <button
-                  type="button"
-                  tabIndex={-1}
-                  onClick={() => { if (!suppressClick.current) go(i); }}
-                  aria-label={drugCopy(item.drug, locale).name}
-                  className="product-showcase-item"
+            {cycles.flatMap((cycle) => items.map((item, i) => {
+              const name = drugCopy(item.drug, locale).name;
+              const scene = (
+                <Image
+                  src={item.scene.src}
+                  alt={cycle === 1 ? `${name}${locale === "en" ? " on the shelf — product illustration" : "陳列於木架上的商品示意圖"}` : ""}
+                  width={item.scene.width}
+                  height={item.scene.height}
+                  sizes="(min-width: 768px) 600px, 90vw"
+                  loading={cycle === 1 && i < 2 ? "eager" : "lazy"}
+                  draggable={false}
+                  className="product-showcase-scene"
+                />
+              );
+              return (
+                <div
+                  key={`${cycle}-${item.drug.slug}`}
+                  data-showcase-index={i}
+                  data-cycle={cycle}
+                  data-active={i === active}
+                  aria-hidden={cycle !== 1}
+                  role="group"
+                  aria-label={`${i + 1} / ${count}: ${name}`}
+                  className="product-showcase-bay"
                 >
-                  <Image
-                    src={item.cutout.src}
-                    alt={cycle === 1 ? `${drugCopy(item.drug, locale).name}${locale === "en" ? " product illustration" : "商品示意圖"}` : ""}
-                    width={item.cutout.width}
-                    height={item.cutout.height}
-                    sizes="(min-width: 768px) 360px, 240px"
-                    loading={cycle === 1 && i < 2 ? "eager" : "lazy"}
-                    draggable={false}
-                    className="product-showcase-packshot"
-                  />
-                </button>
-              </div>
-            )))}
+                  {hrefPrefix ? (
+                    <Link
+                      href={`${hrefPrefix}/${item.drug.slug}${hrefQuery}`}
+                      tabIndex={cycle === 1 ? 0 : -1}
+                      draggable={false}
+                      onClick={(event) => { if (suppressClick.current && event.detail !== 0) event.preventDefault(); }}
+                      aria-label={locale === "en" ? `View ${name}` : `查看 ${name}`}
+                      className="product-showcase-item"
+                    >
+                      {scene}
+                    </Link>
+                  ) : (
+                    <button type="button" tabIndex={-1} onClick={() => { if (!suppressClick.current) go(i); }} className="product-showcase-item">
+                      {scene}
+                    </button>
+                  )}
+                </div>
+              );
+            }))}
           </div>
         </div>
 

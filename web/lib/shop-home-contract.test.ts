@@ -92,7 +92,7 @@ describe("household medicine storefront homepage", () => {
     expect(appPage).toContain("medicine-cabinet-showcase-section");
     expect(productSwipeShowcase).toContain("product-showcase-stage");
     expect(productSwipeShowcase).toContain("product-showcase-item");
-    expect(productSwipeShowcase).toContain("product-showcase-packshot");
+    expect(productSwipeShowcase).toContain("product-showcase-scene");
     expect(productSwipeShowcase).toContain("product-showcase-arrow");
     expect(productSwipeShowcase).toContain("product-showcase-rail");
     expect(productSwipeShowcase).toContain("product-showcase-bay");
@@ -107,8 +107,8 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).not.toMatch(/#[0-9a-fA-F]{6}/);
     expect(globalCss).toContain("scroll-snap-type: x mandatory");
     expect(globalCss).toContain("touch-action: pan-x pan-y");
-    expect(globalCss).toContain("/brand/uyao-product-cabinet-reference-v3.webp");
-    expect(globalCss).toContain(".product-showcase-stage::after");
+    expect(productShowcase).toContain("/products/shelf-scenes-v2/");
+    expect(globalCss).not.toContain(".product-showcase-item::before");
     expect(productShowcase).toContain("PRODUCT_SHOWCASE_SLUGS");
     expect(partnerMarquee).toContain("cabinet-partner-marquee");
     expect(partnerMarquee).toContain("sm:pb-2.5 sm:pt-5");
