@@ -10,7 +10,8 @@ export function commerceAgentSafetyMessage(
   messages: Array<{ role: "user" | "assistant"; content: string }>,
   locale: Locale,
 ): string | null {
-  const queries = messages.filter((message) => message.role === "user").map((message) => message.content);
+  const queries = messages.filter((message) => message.role === "user")
+    .map((message) => message.content.normalize("NFKC").replace(/[\u200b-\u200f\u202a-\u202e\u2060-\u2069\ufeff]/g, ""));
   if (queries.some((query) => URGENT.test(query))) {
     return locale === "en"
       ? "This description may need urgent medical attention. Seek medical care now; call 119 in Taiwan if you need emergency help. Do not wait for the allergy check or an AI reply."
@@ -18,8 +19,7 @@ export function commerceAgentSafetyMessage(
   }
   for (const query of [...queries].reverse()) {
     const symptom = matchSymptom(query);
-    if (symptom?.kind === "refer") return locale === "en" ? symptom.adviceEn : symptom.adviceZh;
-    if (PROFESSIONAL_REVIEW.test(query)) {
+    if (symptom?.kind === "refer" || PROFESSIONAL_REVIEW.test(query)) {
       return locale === "en"
         ? "Please ask a pharmacist or clinician to assess this symptom or medicine question. I cannot diagnose, choose a medicine or supplement for you, or decide a dose, substitution, or whether to stop treatment. Seek medical care if symptoms are severe or worsening."
         : "這次症狀或用藥問題需要由藥師或醫師評估。我不會代為診斷、挑選治療藥品或保健品，也不決定劑量、換藥或停藥；若症狀嚴重或惡化，請就醫。";

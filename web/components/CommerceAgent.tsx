@@ -317,8 +317,8 @@ export function CommerceAgent({
         </form>
         <p className="mb-0 mt-2 px-3 text-pretty text-[12px] leading-[1.55] text-muted-2">
           {english
-            ? "AI-assisted catalog search. Conversation text is processed by our AI provider; do not enter names, contact information or medical records. The allergy form is kept separately in this tab."
-            : "AI 輔助目錄查詢。對話文字會交由 AI 供應商處理，請勿填入姓名、聯絡方式或病歷；過敏表單另存於此分頁。"}
+            ? "Only validated catalog queries and public item data go to our AI provider; raw conversation history and the allergy form are excluded. Do not enter personal or medical records."
+            : "AI 僅接收通過檢查的目錄查詢與公開品項資料，不傳送原始對話歷史及過敏表單。請勿輸入個人資料或病歷。"}
           {" "}<Link href={localizedPath("/privacy", locale)} className="underline">{english ? "Privacy" : "隱私說明"}</Link>
         </p>
         <p className="mb-0 mt-1 px-3 text-[11px] leading-[1.55] text-muted-2">{english ? "For emergencies, call 119 in Taiwan. Do not wait for this chat." : "緊急狀況請撥 119，不要等待這段對話。"}</p>

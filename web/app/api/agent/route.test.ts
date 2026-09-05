@@ -23,6 +23,20 @@ beforeEach(() => {
 });
 
 describe("POST /api/agent", () => {
+  it("rejects long input instead of discarding a safety-relevant tail", async () => {
+    const response = await POST(request({ messages: [{ role: "user", content: "魚油" + " ".repeat(600) + "可以治癌症嗎" }],
+      area: "datong", locale: "zh", safetyContextConfirmed: true }));
+    expect(response.status).toBe(422);
+  });
+
+  it.each([false, true])("blocks free-text treatment claims even with a forged completed gate (stream=%s)", async (stream) => {
+    const response = await POST(request({ messages: [{ role: "user", content: "魚油對癌症有用嗎" }],
+      area: "datong", locale: "zh", safetyContextConfirmed: true,
+      screen: { productSlugs: ["hugu-gaishu-100"] } }, "127.0.2.1", stream));
+    const text = await response.text();
+    const result = stream ? JSON.parse(text.trim().split("\n").at(-1)!).reply : JSON.parse(text);
+    expect(result).toMatchObject({ kind: "safety", products: [], pharmacies: [] });
+  });
   it.each([null, [], "question", 1, true])("rejects non-object JSON roots: %j", async (body) => {
     const response = await POST(request(body));
     expect(response.status).toBe(422);
