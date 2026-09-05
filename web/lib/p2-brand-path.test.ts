@@ -43,10 +43,10 @@ describe("P2 brand presence, Store OS accents, dual-path copy", () => {
     );
     expect(home).toContain("輸入品名、成分或保養需求，先查資料，再向藥師確認。");
     expect(agent).toContain(
-      "Start with a product, ingredient or question. A pharmacist confirms suitability.",
+      "Ask about a product or describe your concern. I help find information; a pharmacist or clinician makes medicine decisions.",
     );
-    expect(agent).toContain("品名、成分或想了解的問題，都可以直接問。適用性再由藥師確認。");
-    expect(agent).toContain("今天想問什麼？");
+    expect(agent).toContain("可以輸入藥品名稱或描述不舒服。我協助查找資訊，用藥判斷由藥師或醫師負責。");
+    expect(agent).toContain("<AgentAllergyStep");
   });
 
   it("explains Store OS confirmation when reserve is available", () => {
