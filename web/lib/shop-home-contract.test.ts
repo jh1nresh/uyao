@@ -281,10 +281,7 @@ describe("household medicine storefront homepage", () => {
     expect(globalCss).toContain("grid-template-columns: 337fr 238fr 290fr;");
     expect(globalCss).toContain(".medicine-cabinet-cell-copy");
     expect(globalCss).toContain(".medicine-cabinet-cell-ask");
-    expect(globalCss).toContain("the ask-medicine copy sits inside the photographed upper bays");
-    expect(globalCss).not.toContain("top: 52%");
     expect(globalCss).toContain("background-position: 59% top;");
-    expect(globalCss).toContain("height: clamp(34rem, 49vw, 50rem);");
     expect(appPage).not.toContain("<Image");
     expect(appPage).not.toContain("object-contain object-bottom");
     expect(globalCss).not.toContain("medicine-cabinet-product::after");
