@@ -149,6 +149,12 @@ export function SearchInput({
     const query = String(new FormData(event.currentTarget).get("q") ?? "").trim();
     if (!query) return;
     event.preventDefault();
+    if (resultsPath === "/agent") {
+      const params = new URLSearchParams({ q: query });
+      if (area) params.set("area", area);
+      router.push(`${localizedPath(resultsPath, locale)}?${params.toString()}`);
+      return;
+    }
     if (continueConversation) {
       try {
         const previousDraft = readLatestShopSearchIntakeDraft(

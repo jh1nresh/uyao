@@ -75,7 +75,7 @@ describe("household medicine storefront homepage", () => {
     expect(searchInput).toContain('new URLSearchParams({ draft: value })');
     expect(commerceAgentPage).toContain("initialDraft");
     expect(commerceAgentPage).toContain("initialDraft={initialDraft}");
-    expect(commerceAgent).toContain("defaultValue={initialDraft}");
+    expect(commerceAgent).toContain("useState(initialDraft)");
     expect(commerceAgent).toContain("uyao-agent-composer");
     expect(appPage).not.toContain("家裡現在需要什麼？");
     expect(appPage).not.toContain("問藥時，上排品項留在原位。");
@@ -187,7 +187,9 @@ describe("household medicine storefront homepage", () => {
     expect(siteHeader).toContain("uYao 主要導覽");
     expect(siteHeader).toContain('aria-current={activeWorkspace === "agent" ? "page" : undefined}');
     expect(siteHeader).toContain('href={localizedPath("/agent", locale)}');
-    expect(commerceAgent).toContain('presentation="agent"');
+    expect(commerceAgent).toContain("<AgentAllergyStep");
+    expect(commerceAgent).not.toContain("<SearchInput");
+    expect(commerceAgent).not.toContain("createPortal");
     expect(commerceAgentPage).toContain("<CommerceAgent");
     expect(commerceAgentPage).not.toContain("CatalogItemGrid");
     expect(commerceAgentPage).not.toContain("ReservationAccess");

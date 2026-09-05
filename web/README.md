@@ -59,7 +59,7 @@ box ingest → 庫存／效期狀態 → 消費端搜尋與 console
 | Web Push | `WEB_PUSH_PUBLIC_KEY`、`WEB_PUSH_PRIVATE_KEY`、`WEB_PUSH_SUBJECT` |
 | Email | `RESEND_API_KEY`、`PILOT_EMAIL_FROM`、`PILOT_EMAIL_TO` |
 | Record sinks | `RECORD_WEBHOOK_URL`、`PILOT_WEBHOOK_URL` |
-| uYao Agent（選填） | `UYAO_COMMERCE_AGENT_PROVIDER=anthropic`、`ANTHROPIC_API_KEY`、`ANTHROPIC_MODEL` |
+| uYao Agent（選填） | `UYAO_COMMERCE_AGENT_PROVIDER=openai`、`OPENAI_API_KEY`、`OPENAI_MODEL`（預設 `gpt-5.6-luna`）；亦支援 `anthropic`、`ANTHROPIC_API_KEY`、`ANTHROPIC_MODEL` |
 | 廣告量測（選填） | `NEXT_PUBLIC_GA4_ID`、`NEXT_PUBLIC_META_PIXEL_ID` |
 
 不要把實際值、Vercel sensitive pull 結果、Push subscription endpoint 或私鑰寫進 README。

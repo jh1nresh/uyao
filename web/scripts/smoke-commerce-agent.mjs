@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 // Three read-only synthetic requests; never sends a key or creates a reservation.
-const usage = "node scripts/smoke-commerce-agent.mjs --expect-mode catalog|claude [--endpoint URL] [--allow-external]";
+const usage = "node scripts/smoke-commerce-agent.mjs --expect-mode catalog|claude|openai [--endpoint URL] [--allow-external]";
 
 function options(args) {
   const result = { endpoint: "http://localhost:3100/api/agent", allowExternal: false };
@@ -14,7 +14,7 @@ function options(args) {
       result[arg === "--endpoint" ? "endpoint" : "mode"] = value;
     } else throw new Error(usage);
   }
-  if (!["catalog", "claude"].includes(result.mode)) throw new Error(usage);
+  if (!["catalog", "claude", "openai"].includes(result.mode)) throw new Error(usage);
   const url = new URL(result.endpoint);
   if (!["http:", "https:"].includes(url.protocol) || url.username || url.password || url.search || url.hash) {
     throw new Error("Endpoint must be an HTTP(S) URL without credentials, query, or fragment.");
@@ -82,7 +82,7 @@ async function ask(config, messages, screen, stream, expectedKind) {
 
 try {
   const config = options(process.argv.slice(2));
-  if (config.mode === "claude") console.log("Claude smoke: 3 API requests, up to 12 billed model calls; no retries.");
+  if (config.mode !== "catalog") console.log(`${config.mode} smoke: 3 API requests, up to 12 billed model calls; no retries.`);
   const firstMessage = { role: "user", content: "補鈣" };
   await ask(config, [firstMessage], { productSlugs: [] }, false, "products");
   const first = await ask(config, [firstMessage], { productSlugs: [] }, true, "products");
