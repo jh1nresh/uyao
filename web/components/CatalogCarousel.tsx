@@ -15,6 +15,7 @@ import { CatalogImagePlaceholder } from "./CatalogImagePlaceholder";
 import { catalogSourceStatus } from "./CatalogItemGrid";
 import { CATALOG_GROUPS, catalogGroupForDrug } from "@/lib/catalog-groups";
 import { known } from "@/lib/pending";
+import { productShowcaseScene } from "@/lib/product-showcase";
 import { drugCopy, localizedPath, type Locale } from "@/lib/i18n";
 import type { AreaSlug, Drug } from "@/lib/types";
 
@@ -208,6 +209,7 @@ export function CatalogCarousel({
       >
         {drugs.map((item) => {
           const drug = drugCopy(item, locale);
+          const scene = productShowcaseScene(item.slug);
           const groupSlug = catalogGroupForDrug(item);
           const group = CATALOG_GROUPS.find((candidate) => candidate.slug === groupSlug);
           const groupName = group
@@ -225,17 +227,18 @@ export function CatalogCarousel({
                 <span className="num absolute left-3 top-3 z-[1] bg-paper/90 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-oxblood">
                   {groupName}
                 </span>
-                {item.image ? (
+                {scene ? (
                   <Image
-                    src={item.image.src}
+                    src={scene.src}
                     alt=""
                     fill
                     sizes="(max-width: 639px) 45vw, (max-width: 1023px) 30vw, 23vw"
-                    className="object-contain p-5 transition-transform duration-300 group-hover:scale-[1.025]"
+                    className="object-cover transition-transform duration-300 group-hover:scale-[1.025]"
                   />
                 ) : (
                   <CatalogImagePlaceholder locale={locale} />
                 )}
+                {scene && <span className="absolute bottom-0 left-0 bg-paper/95 px-1.5 py-0.5 text-[11px] text-muted">{locale === "en" ? "Illustration" : "示意圖"}</span>}
               </span>
               <span className="flex flex-1 flex-col px-4 py-4 sm:px-5 sm:py-5">
                 <span className="block min-h-[2.9em] line-clamp-2 text-[15px] font-bold leading-[1.45] text-ink sm:text-[17px]">

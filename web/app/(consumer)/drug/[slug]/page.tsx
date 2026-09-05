@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Fragment } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
@@ -7,7 +6,7 @@ import { AreaSwitch } from "@/components/AreaSwitch";
 import { StoreBuyBox } from "@/components/StoreBuyBox";
 import { NoInventoryYet } from "@/components/NoInventoryYet";
 import { PharmacyList } from "@/components/PharmacyList";
-import { ProductGallery, type GalleryImage } from "@/components/ProductGallery";
+import { ProductGallery } from "@/components/ProductGallery";
 import { SearchInput } from "@/components/SearchInput";
 import styles from "@/components/ProductDetail.module.css";
 import { productShowcaseScene } from "@/lib/product-showcase";
@@ -24,7 +23,7 @@ import {
 } from "@/lib/data";
 import { JsonLd } from "@/components/JsonLd";
 import { categoryName, drugCopy, localizedPath, secondaryProductName } from "@/lib/i18n";
-import { hasAmounts, ingredientRows } from "@/lib/ingredients";
+import { ingredientRows } from "@/lib/ingredients";
 import { getRequestLocale } from "@/lib/locale-server";
 import { isPending, known } from "@/lib/pending";
 import { partnersForProduct } from "@/lib/partners";
@@ -120,31 +119,9 @@ export default async function DrugPage({
     .map((partner) => getStore(partner.storeSlug))
     .filter((store): store is NonNullable<typeof store> => store !== undefined);
 
-  // 延續首頁木架；包裝實拍保留為獨立圖片，示意圖不可當作標示來源。
   const shelfScene = productShowcaseScene(drug.slug);
-  const galleryImages: GalleryImage[] = [
-    ...(shelfScene ? [{
-      src: shelfScene.src,
-      alt: locale === "en" ? `${displayDrug.name} — shelf illustration` : `${displayDrug.name}：木架商品示意圖`,
-      label: locale === "en" ? "Shelf illustration" : "木架示意",
-    }] : []),
-    ...(drug.image
-      ? [{
-          src: drug.image.src,
-          alt: locale === "en" ? drug.image.altEn : drug.image.alt,
-          label: locale === "en" ? "Packaging photo" : "包裝照",
-        }]
-      : []),
-    ...(drug.detailImages ?? []).map((item, i) => ({
-      src: item.src,
-      alt: locale === "en" ? item.altEn : item.alt,
-      label:
-        locale === "en"
-          ? ["Hero", "Features", "Ingredients"][i] ?? `Image ${i + 1}`
-          : ["主圖", "產品特色", "成分規格"][i] ?? `圖 ${i + 1}`,
-    })),
-  ];
-
+  const english = locale === "en";
+  const hasFeatures = Boolean(drug.highlights?.length || drug.dosage || drug.cautions);
   const rows = storesForDrug(drug.slug, area);
   const alternatives = alternativesFor(drug.slug, area);
   const category = getCategory(drug.category);
@@ -165,7 +142,7 @@ export default async function DrugPage({
                   : "合作藥局提供的目錄品項；產品資料與供應狀態仍須由藥局確認。"),
               path: canonicalPath,
               inLanguage: locale === "en" ? "en" : "zh-Hant-TW",
-              image: drug.image?.src,
+              // Source packshots are kept in the catalog record, not displayed on this page.
               category: category
                 ? categoryName(category.slug, category.name, locale)
                 : undefined,
@@ -185,346 +162,125 @@ export default async function DrugPage({
       )}
 
       <SiteHeader tone="cabinet" showSearch={false} showTagline={false} activeWorkspace="shop" area={area} preserveAreaPath locatable />
+      <main className={styles.page}>
+        <div className={`shop-shell ${styles.toolbar}`}>
+          <nav aria-label={english ? "Breadcrumb" : "麵包屑"} className={styles.breadcrumb}>
+            <Link href={`${SHOP_URL}${localizedPath("/", locale)}?area=${area}#catalog`}>{english ? "← Back to the cabinet" : "← 回到藥櫃"}</Link>
+            {category && <span>{categoryName(category.slug, category.name, locale)}</span>}
+          </nav>
+          <div className="hidden md:block xl:hidden"><AreaSwitch area={area} preservePath locatable compact /></div>
+          <details className={styles.search}>
+            <summary>{english ? "Find another item ⌕" : "找其他品項 ⌕"}</summary>
+            <SearchInput size="sm" area={area} defaultValue="" />
+          </details>
+        </div>
 
-      <div className="shop-shell pt-3 md:hidden">
-        <AreaSwitch area={area} preservePath locatable compact />
-      </div>
-
-      <div className={`shop-shell ${styles.toolbar}`}>
-      <nav aria-label={locale === "en" ? "Breadcrumb" : "麵包屑"} className="min-w-0 text-xs leading-relaxed text-muted-2">
-        <Link href={`${SHOP_URL}${localizedPath("/", locale)}?area=${area}`} className="-my-3 inline-flex min-h-11 items-center text-muted-2 no-underline hover:text-ink">
-          {locale === "en" ? "Home" : "首頁"}
-        </Link>
-        {category && (
-          <>
-            {" / "}
-            <Link
-              href={`${localizedPath(`/category/${category.slug}`, locale)}?area=${area}`}
-              className="-my-3 inline-flex min-h-11 items-center text-muted-2 no-underline hover:text-ink"
-            >
-              {categoryName(category.slug, category.name, locale)}
-            </Link>
-          </>
-        )}
-        {" / "}
-        {displayDrug.name}
-      </nav>
-      <SearchInput size="sm" area={area} defaultValue={displayDrug.name} className={styles.search} />
-      </div>
-
-      <section className="border-b border-line bg-ivory">
-      <div className={`shop-shell ${styles.hero} ${galleryImages.length ? "" : styles.withoutGallery}`}>
-        {galleryImages.length > 0 && (
-          <div className={styles.gallery}>
-            <ProductGallery images={galleryImages} locale={locale} />
-            {shelfScene && (
-              <p className="m-0 text-xs leading-[1.7] text-muted-2">
-                {locale === "en" ? "The shelf image is an illustration. Check the packaging photo and the actual product for details." : "木架圖為商品示意；產品細節請查看包裝照，並以實品為準。"}
-              </p>
+        <section className={`shop-shell ${styles.hero} ${shelfScene ? "" : styles.withoutGallery}`} aria-labelledby="product-heading">
+          <div className={styles.heading}>
+            <p className="shop-kicker">{english ? "FROM THE UYAO CABINET" : "uYao 藥櫃選品"}</p>
+            <h1 id="product-heading" className={styles.title}>{displayDrug.name}</h1>
+            {secondaryName && <p className={styles.secondary}>{secondaryName}</p>}
+            {(metaLine || !classPending || drug.licenseNo) && (
+              <p className={styles.meta}>{[metaLine, !classPending ? displayDrug.drugClass : null, drug.licenseNo].filter(Boolean).join(" · ")}</p>
             )}
-            <details className="text-xs leading-[1.7] text-muted-2">
-              <summary className="cursor-pointer py-2 font-medium text-forest">{locale === "en" ? "Image notes and source" : "圖片說明與來源"}</summary>
-              <div className="flex flex-col gap-3 pb-2">
-            {drug.image && (
-              <p className="m-0 text-xs leading-[1.7] text-muted-2">
-                {drug.image.kind === "packshot"
-                  ? locale === "en"
-                    ? "The packaging photo was supplied by the partner pharmacy."
-                    : "包裝照由合作藥局提供。"
-                  : locale === "en"
-                    ? "Illustration only — not the actual packaging."
-                    : "示意圖，非實際包裝。"}
-              </p>
-            )}
-            {/*
-              圖廊裡除了包裝圖，還有排了文案的商品說明圖，歸屬要跟著**底圖**走：
-              說明圖是拿上面那張當底再排字的，底圖是實拍就沿用原廠標示的歸屬，
-              底圖是示意圖就不能借用它 —— 掛「原廠標示」等於替一張生成的盒子
-              背書，跟把生成圖標成 packshot 是同一種錯。
-            */}
-            {drug.detailImages && drug.detailImages.length > 0 && (
-              <p className="m-0 text-xs leading-[1.7] text-muted-2">
-                <span className="mr-1.5 border border-oxblood px-[5px] py-px text-[11px] font-bold text-oxblood">
-                  {drug.image?.kind === "illustration"
-                    ? locale === "en" ? "ILLUSTRATION" : "示意圖"
-                    : locale === "en" ? "MANUFACTURER'S OWN WORDING" : "原廠標示"}
-                </span>
-                {drug.image?.kind === "illustration"
-                  ? locale === "en"
-                    ? "Detail images are laid out over the illustration above — not real packaging — with text typeset from this item's own record. Nothing on the rendered carton is a citable product label."
-                    : "說明圖以上方的示意圖為底（非實際包裝），文字依本品項的資料排版；盒面上的字不是可引用的包裝標示。"
-                  : locale === "en"
-                    ? "Detail images combine partner-supplied product photos with text copied from the package or the manufacturer's own material. uYao has not independently verified those claims."
-                    : "說明圖是合作藥局提供的商品照，加上照抄自包裝或原廠資料的排版文字；uYao 未獨立驗證其中的說法，也不構成背書。"}
-              </p>
-            )}
-              </div>
-            </details>
           </div>
-        )}
-        <div className={styles.summary}>
-          <p className="mb-1 text-[14px] font-bold text-forest">
-            {locale === "en" ? "Partner-listed item" : "合作藥局提供品項"}
-          </p>
-          <h1 className={`editorial-display ${styles.title}`}>
-            {displayDrug.name}{" "}
-            {secondaryName && (
-              <span className="num text-sm font-medium text-muted">{secondaryName}</span>
-            )}
-          </h1>
-          {(metaLine || drug.licenseNo || !classPending) && (
-            <div className="flex flex-wrap items-center gap-2.5 text-[15px] text-ink-2">
-              {metaLine && <span>{metaLine}</span>}
-              {/* 許可證字號在行動端收起來 — 小螢幕先讓「規格 + 藥品分類」站穩 */}
-              {drug.licenseNo && (
-                <>
-                  <span className="hidden text-line-strong sm:inline" aria-hidden>
-                    |
-                  </span>
-                  <span className="num hidden text-xs sm:inline">{drug.licenseNo}</span>
-                </>
-              )}
-              {!classPending && (
-                <>
-                  {metaLine && (
-                    <span className="text-line-strong" aria-hidden>
-                      |
-                    </span>
-                  )}
-                  <span className="border border-green px-[7px] py-px text-[14px] font-bold text-green">
-                    {displayDrug.drugClass}
-                  </span>
-                </>
-              )}
+          {shelfScene && (
+            <div className={styles.gallery}>
+              <ProductGallery image={{ src: shelfScene.src, alt: english ? `${displayDrug.name} — shelf illustration` : `${displayDrug.name}：木架商品示意圖` }} locale={locale} />
+              <p className={styles.imageNote}>{english ? "Product illustration. Packaging and labels must be checked against the actual item." : "商品示意，包裝與標示以實品為準。"}</p>
             </div>
           )}
-          <p className="text-xs text-muted-2">
-            <span className="sm:hidden">
-              {locale === "en"
-                ? "Catalog details and supply still require pharmacy confirmation."
-                : "品項資料與供應狀態仍須向藥局確認。"}
-            </span>
-            <span className="hidden sm:inline">
-              {partnerProvidedDetails
-                ? locale === "en"
-                  ? "The product name, ingredients, origin, and supplier details below were provided by a partner pharmacy and have not been independently verified against a public source. They do not establish approved medicine classification or treatment efficacy."
-                  : "下方品名、成分、產地與供應資訊由合作藥局提供，尚未以公開來源獨立驗證；不代表核准藥品分類或療效。"
-                : drug.source
-                ? locale === "en"
-                  ? "The public product source presents this as a food or nutrition supplement, not an approved medicine. Its nutrition focus is not a treatment indication."
-                  : "公開商品資料將此品項列為食品類營養補充品，而非核准藥品；下方是營養補充／日常保養定位，不是治療用途或藥品適應症。"
-                : locale === "en"
-                  ? "We only show the partner-confirmed item name and package size."
-                  : "目前只顯示合作藥局確認的品名與規格。"}
-            </span>
-          </p>
-          {/* 內文與成分摘要直接放右欄：打開頁面第一屏就該知道這是什麼、
-              裡面有什麼 —— 不必捲到頁面下段。成分細節與來源仍在下方區塊。 */}
-          {known(displayDrug.nutritionFocus) && (
-            <p className="mb-0 mt-1 text-[15.5px] leading-[1.85] text-ink-2">
-              {displayDrug.nutritionFocus}
-            </p>
-          )}
-          {drug.source && displayDrug.ingredients.length > 0 && (
-            <p className="m-0 line-clamp-2 text-[14px] leading-[1.7] text-muted">
-              <span className="font-bold text-forest">
-                {locale === "en" ? "Main ingredients: " : "主要成分："}
-              </span>
-              {displayDrug.ingredients.join(locale === "en" ? ", " : "、")}
-            </p>
-          )}
-        </div>
-
-        {/* 這頁只要回答一件事：哪家藥局有這個藥、電話幾號。
-            有掃描庫存就用庫存 rows；還沒有掃描流時，用合作藥局自己確認過的
-            販售品項 —— 44 個品項都講得出至少一家，不必讓人捲到頁尾。 */}
-        <div className={styles.pharmacies}>
-          <StoreBuyBox
-            drug={{ slug: drug.slug, name: displayDrug.name, spec: drug.spec }}
-            rows={rows}
-            carryingStores={partnerStores}
-          />
-        </div>
-      </div>
-      </section>
-
-      {/* 成分與來源緊跟 hero：右欄的摘要在這裡展開成對照表。
-          完整藥局清單移到本區之後 —— 第一屏的精簡卡已經接住「哪裡拿得到」。 */}
-      <section id="ingredients" className="scroll-mt-24 border-b border-line bg-ivory" aria-labelledby="nutrition-focus-heading">
-        <div className="shop-shell py-8 sm:py-10">
-          <h2 id="nutrition-focus-heading" className="editorial-display m-0 max-w-[900px] text-[26px] leading-[1.3] sm:text-[32px]">
-            {partnerProvidedDetails
-              ? locale === "en" ? "Product composition provided by the pharmacy" : "合作藥局提供的產品組成"
-              : drug.source
-              ? locale === "en" ? "Ingredients and product source" : "成分與資料來源"
-              : locale === "en" ? "Product details pending verification" : "產品資料待驗證"}
-          </h2>
-          <div className="mt-5 max-w-[900px]">
-            <div className="max-w-[560px] border border-line bg-paper px-4 py-4">
-              {drug.source ? (
-                <>
-                  <p className="m-0 text-[14px] font-bold text-forest">
-                    {partnerProvidedDetails
-                      ? locale === "en" ? "INGREDIENTS PROVIDED BY THE PHARMACY" : "合作藥局提供的成分"
-                      : locale === "en" ? "MAIN INGREDIENTS LISTED BY SOURCE" : "公開商品資料所列主要成分"}
-                  </p>
-                  {/* 有標示含量就排成對照表，看得出每項各多少；沒有含量的維持一行式列舉。 */}
-                  {hasAmounts(displayDrug.ingredients) ? (
-                    <dl className="mb-0 mt-2 grid grid-cols-[1fr_max-content] gap-x-3 text-[14.5px] leading-[1.75]">
-                      {ingredientRows(displayDrug.ingredients).map((row) => (
-                        <Fragment key={row.name}>
-                          <dt className="border-b border-line-soft py-1 text-muted">{row.name}</dt>
-                          <dd className="num m-0 border-b border-line-soft py-1 text-right font-bold text-forest">
-                            {row.amount ?? ""}
-                          </dd>
-                        </Fragment>
-                      ))}
-                    </dl>
-                  ) : (
-                    <p className="mb-0 mt-2 text-[14.5px] leading-[1.75] text-muted">
-                      {displayDrug.ingredients.join(locale === "en" ? ", " : "、")}
-                    </p>
-                  )}
-                  <p className="mb-0 mt-3 text-[14px] leading-[1.7] text-muted-2">
-                    {locale === "en" ? "Product source: " : "產品資料來源："}
-                    {drug.source.url ? (
-                      <a
-                        href={drug.source.url}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="font-medium text-green"
-                      >
-                        {drug.source.label} ↗
-                      </a>
-                    ) : (
-                      <span className="font-medium text-ink-2">{drug.source.label}</span>
-                    )}
-                  </p>
-                  {(known(drug.manufacturer) || known(drug.origin)) && (
-                    <dl className="mb-0 mt-3 grid grid-cols-[max-content_1fr] gap-x-3 gap-y-1 pt-3 text-[14px] leading-[1.7] text-muted-2">
-                      {known(drug.manufacturer) && (
-                        <>
-                          <dt>{locale === "en" ? "Company" : "廠商／供應資訊"}</dt>
-                          <dd className="m-0 text-ink-2">{drug.manufacturer}</dd>
-                        </>
-                      )}
-                      {known(drug.origin) && (
-                        <>
-                          <dt>{locale === "en" ? "Origin" : "產地"}</dt>
-                          <dd className="m-0 text-ink-2">{drug.origin}</dd>
-                        </>
-                      )}
-                    </dl>
-                  )}
-                </>
-              ) : (
-                <p className="m-0 text-[14px] leading-[1.75] text-muted">
-                  {locale === "en"
-                    ? "No public product source has been verified for this package size."
-                    : "此規格尚未驗證公開產品資料來源。"}
-                </p>
-              )}
-            </div>
-          </div>
-          <p className="mb-0 mt-5 max-w-[900px] border-l-2 border-oxblood pl-3 text-[14px] leading-[1.75] text-muted">
-            {partnerProvidedDetails ? (
-              locale === "en"
-                ? "Partner-provided product details must be checked against the actual package and confirmed with a pharmacist. Ingredient or wellness wording cannot be interpreted as prevention or treatment of disease."
-                : "合作藥局提供的產品資料仍須以實際包裝並向藥師確認；成分或保養文字不能解讀為預防或治療疾病。"
-            ) : drug.source ? (
-              <>
-                {locale === "en"
-                  ? "Food and supplement positioning cannot be read as prevention or treatment of disease. If you have symptoms, take medicines, are pregnant, or have a chronic condition, ask a pharmacist or physician before choosing a product."
-                  : "食品與營養補充品的保養定位不能解讀為預防或治療疾病。若已有症狀、正在用藥、懷孕或有慢性病，選購前請先問藥師或醫師。"}{" "}
-                <a
-                  href="https://www.fda.gov.tw/tc/siteContent.aspx?sid=1776"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="font-medium text-green"
-                >
-                  {locale === "en" ? "TFDA guidance ↗" : "TFDA 食品標示與廣告說明 ↗"}
-                </a>
-              </>
-            ) : locale === "en"
-              ? "This package has no verified public product source. Do not infer its ingredients, food or supplement classification, or suitability; ask a pharmacist before choosing it."
-              : "此規格尚無已驗證的公開產品資料來源；請勿推定其成分、食品或營養補充品分類及適用性，選購前請先詢問藥師。"}
-          </p>
-        </div>
-      </section>
-
-      {rows.length > 0 ? (
-        <PharmacyList
-          drug={{ slug: drug.slug, name: displayDrug.name, spec: drug.spec }}
-          rows={rows}
-        />
-      ) : (
-        <NoInventoryYet
-          drugName={displayLabel}
-          drugSlug={drug.slug}
-          area={area}
-        />
-      )}
-
-      {/* 產品特色、建議用量與注意事項全部照包裝或原廠標示逐條收，不是 uYao 的評價。
-          標題上的「原廠標示」標籤是宣告，不是裝飾 —— 把廠商說法呈現成本站說法會誤導。 */}
-      {(drug.highlights?.length || drug.dosage || drug.cautions) && (
-        <section className="border-b border-line bg-paper" aria-labelledby="pack-detail-heading">
-          <div className="shop-shell py-8 sm:py-10">
-            <div className="flex max-w-[900px] flex-wrap items-baseline gap-x-3 gap-y-1">
-              <h2 id="pack-detail-heading" className="editorial-display m-0 text-[26px] leading-[1.3] sm:text-[32px]">
-                {locale === "en" ? "As stated on the package" : "包裝標示內容"}
-              </h2>
-              <span className="border border-oxblood px-[7px] py-px text-[13px] font-bold text-oxblood">
-                {locale === "en" ? "MANUFACTURER'S OWN WORDING" : "原廠標示，非 uYao 評價"}
-              </span>
-            </div>
-
-            {drug.highlights && drug.highlights.length > 0 && (
-              <ol className="m-0 mt-6 grid max-w-[900px] list-none gap-4 p-0 sm:grid-cols-2">
-                {drug.highlights.map((item, i) => (
-                  <li key={item.title} className="flex gap-3 border border-line bg-ivory px-4 py-3.5">
-                    <span className="num flex h-7 w-7 flex-none items-center justify-center rounded-full bg-forest text-[13px] font-bold text-paper">
-                      {i + 1}
-                    </span>
-                    <span>
-                      <span className="block text-[16px] font-bold text-ink">{item.title}</span>
-                      <span className="mt-1 block text-[14.5px] leading-[1.7] text-muted">{item.body}</span>
-                    </span>
-                  </li>
-                ))}
-              </ol>
-            )}
-
-            {(drug.dosage || drug.cautions) && (
-              <div className="mt-5 grid max-w-[900px] gap-4 sm:grid-cols-2">
-                {drug.dosage && (
-                  <div className="border-l-2 border-forest bg-ivory px-4 py-3.5">
-                    <p className="m-0 text-[14px] font-bold text-forest">
-                      {locale === "en" ? "SUGGESTED USE" : "建議用量"}
-                    </p>
-                    <p className="mb-0 mt-1.5 text-[14.5px] leading-[1.75] text-ink-2">{drug.dosage}</p>
-                  </div>
-                )}
-                {drug.cautions && (
-                  <div className="border-l-2 border-oxblood bg-ivory px-4 py-3.5">
-                    <p className="m-0 text-[14px] font-bold text-oxblood">
-                      {locale === "en" ? "CAUTIONS AND ALLERGENS" : "注意事項與過敏原"}
-                    </p>
-                    <p className="mb-0 mt-1.5 text-[14.5px] leading-[1.75] text-ink-2">{drug.cautions}</p>
-                  </div>
-                )}
-              </div>
-            )}
-
-            <p className="mb-0 mt-5 max-w-[900px] border-l-2 border-oxblood pl-3 text-[14px] leading-[1.75] text-muted">
-              {locale === "en"
-                ? "The wording above is copied from the product package or the manufacturer's own material. uYao has not independently verified it, and it is not an endorsement. Food and supplement wording cannot be read as prevention or treatment of disease — check the actual package and ask a pharmacist."
-                : "以上文字照抄自產品包裝或原廠資料，uYao 未獨立驗證，也不構成背書。食品與營養補充品的文字不能解讀為預防或治療疾病；請以實際包裝為準並向藥師確認。"}
-            </p>
+          <div className={styles.overview}>
+            {known(displayDrug.nutritionFocus) && <p className={styles.focus}>{displayDrug.nutritionFocus}</p>}
+            <p className={styles.confirmation}>{english ? "A partner-listed catalog item. Ask a pharmacist to confirm supply, price and suitability." : "合作藥局提供的目錄品項。供應、價格與適用性，仍須向藥師確認。"}</p>
+            <a href="#contact-pharmacy" className={styles.primaryAction}>{english ? "Ask a pharmacy" : "向藥局詢問"}<span aria-hidden>↗</span></a>
+            <a href="#ingredients" className={styles.textAction}>{english ? "Read ingredients and specifications ↓" : "查看成分與規格 ↓"}</a>
           </div>
         </section>
-      )}
 
+        <nav className={`shop-shell ${styles.sectionNav}`} aria-label={english ? "Product sections" : "品項內容導覽"}>
+          {hasFeatures && <a href="#product-features">{english ? "01 / Product features" : "01 / 產品特色"}</a>}
+          <a href="#ingredients">{english ? "02 / Ingredients & specifications" : "02 / 成分規格"}</a>
+          <a href="#contact-pharmacy">{english ? "03 / Pharmacy contacts" : "03 / 詢問藥局"}</a>
+        </nav>
+
+        {hasFeatures && (
+          <section id="product-features" className={`shop-shell ${styles.editorialSection}`} aria-labelledby="features-heading">
+            <header className={styles.sectionHeading}>
+              <p className="shop-kicker">01 / {english ? "PRODUCT NOTES" : "認識這個品項"}</p>
+              <h2 id="features-heading">{english ? "Product features" : "產品特色"}</h2>
+              <p>{english ? "As stated on the package or by the manufacturer. These are not uYao's evaluations." : "依包裝或原廠資料整理，非 uYao 評價。"}</p>
+            </header>
+            <div className={styles.sectionContent}>
+              {drug.highlights && drug.highlights.length > 0 && (
+                <ol className={styles.features}>
+                  {drug.highlights.map((item, i) => (
+                    <li key={item.title}><span className={styles.number}>{String(i + 1).padStart(2, "0")}</span><div><h3>{item.title}</h3><p>{item.body}</p></div></li>
+                  ))}
+                </ol>
+              )}
+              {(drug.dosage || drug.cautions) && (
+                <div className={styles.usage}>
+                  {drug.dosage && <div><h3>{english ? "Suggested use on the label" : "標示建議用量"}</h3><p>{drug.dosage}</p></div>}
+                  {drug.cautions && <div><h3>{english ? "Cautions and allergens" : "注意事項與過敏原"}</h3><p>{drug.cautions}</p></div>}
+                </div>
+              )}
+              <p className={styles.sourceNote}>{english ? "The wording above comes from product packaging or manufacturer material. uYao has not independently verified these claims and does not endorse them. Food and supplement wording cannot be read as prevention or treatment of disease." : "以上文字取自產品包裝或原廠資料，uYao 未獨立驗證，也不構成背書。食品與營養補充品的文字不能解讀為預防或治療疾病。"}</p>
+            </div>
+          </section>
+        )}
+
+        <section id="ingredients" className={styles.factsSection} aria-labelledby="nutrition-focus-heading">
+          <div className={`shop-shell ${styles.editorialSection}`}>
+            <header className={styles.sectionHeading}>
+              <p className="shop-kicker">02 / {english ? "THE DETAILS" : "把內容看清楚"}</p>
+              <h2 id="nutrition-focus-heading">{english ? "Ingredients & specifications" : "成分與規格"}</h2>
+              <p>{partnerProvidedDetails ? (english ? "Details provided by a partner pharmacy." : "合作藥局提供的產品資料。") : (english ? "Recorded product details and their sources." : "已收錄的產品資料與來源。")}</p>
+            </header>
+            <div className={styles.sectionContent}>
+              <div className={styles.factsGrid}>
+                <div>
+                  <h3 className={styles.smallHeading}>{english ? "Ingredients listed by source" : "資料所列成分"}</h3>
+                  {drug.source && displayDrug.ingredients.length > 0 ? (
+                    <dl className={styles.ingredients}>
+                      {ingredientRows(displayDrug.ingredients).map((row) => (
+                        <div key={row.name}><dt>{row.name}</dt><dd>{row.amount ?? (english ? "Not listed" : "未列含量")}</dd></div>
+                      ))}
+                    </dl>
+                  ) : <p className={styles.emptyNote}>{english ? "No verified ingredient source is available for this item. Ask a pharmacist for details." : "此品項尚無可核對的成分來源，請向藥師確認。"}</p>}
+                </div>
+                <div>
+                  <h3 className={styles.smallHeading}>{english ? "Product record" : "品項資料"}</h3>
+                  <dl className={styles.specifications}>
+                    {known(displayDrug.spec) && <div><dt>{english ? "Pack size" : "規格"}</dt><dd>{displayDrug.spec}</dd></div>}
+                    {known(displayDrug.form) && <div><dt>{english ? "Form" : "劑型"}</dt><dd>{displayDrug.form}</dd></div>}
+                    {known(drug.manufacturer) && <div><dt>{english ? "Company / supplier" : "廠商／供應資訊"}</dt><dd>{drug.manufacturer}</dd></div>}
+                    {known(drug.origin) && <div><dt>{english ? "Origin" : "產地"}</dt><dd>{drug.origin}</dd></div>}
+                  </dl>
+                </div>
+              </div>
+              <div className={styles.provenance}>
+                <h3 className={styles.smallHeading}>{english ? "Product source" : "產品資料來源"}</h3>
+                {drug.source ? (drug.source.url ? <a href={drug.source.url} target="_blank" rel="noreferrer">{drug.source.label} ↗</a> : <p>{drug.source.label}</p>) : <p>{english ? "No public product source has been verified for this package size." : "此規格尚未驗證公開產品資料來源。"}</p>}
+                <p>{partnerProvidedDetails ? (english ? "Names, ingredients, origin and supply information are partner-provided and have not been independently verified against a public source. They do not establish approved medicine classification or treatment efficacy." : "品名、成分、產地與供應資訊由合作藥局提供，尚未以公開來源獨立驗證；不代表核准藥品分類或療效。") : drug.source ? (english ? "The public product source describes a food or nutrition supplement, not an approved medicine. Its wellness positioning is not a treatment indication." : "公開商品資料將此品項列為食品類營養補充品，而非核准藥品；保養定位不是治療用途或藥品適應症。") : (english ? "Do not infer ingredients, classification or suitability without a verified source." : "缺少可核對的來源時，請勿推定成分、分類與適用性。")}</p>
+                <p>{english ? "Check the actual package and ask a pharmacist. If you have symptoms, take medicines, are pregnant or have a chronic condition, consult a pharmacist or physician before choosing a product." : "請以實際包裝並向藥師確認。若已有症狀、正在用藥、懷孕或有慢性病，選購前請先問藥師或醫師。"} <a href="https://www.fda.gov.tw/tc/siteContent.aspx?sid=1776" target="_blank" rel="noreferrer">{english ? "TFDA guidance ↗" : "TFDA 說明 ↗"}</a></p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="contact-pharmacy" className={`shop-shell ${styles.editorialSection}`} aria-labelledby="contact-heading">
+          <header className={styles.sectionHeading}>
+            <p className="shop-kicker">03 / {english ? "ASK BEFORE YOU GO" : "出門前，先問一聲"}</p>
+            <h2 id="contact-heading">{english ? "Talk to a pharmacy" : "交給藥師確認"}</h2>
+            <p>{english ? "A listed item does not mean it is currently in stock. Contact the pharmacy to confirm." : "收錄品項不代表即時有貨。先聯絡藥局，確認後再前往。"}</p>
+          </header>
+          <div className={styles.sectionContent}>
+            <StoreBuyBox drug={{ slug: drug.slug, name: displayDrug.name, spec: drug.spec }} rows={rows} carryingStores={partnerStores} />
+            <Link className={styles.textAction} href={`${localizedPath("/agent", locale)}?${new URLSearchParams({ draft: drug.name, area })}`}>{english ? "Ask uYao about this item ↗" : "帶著這個品項，問 uYao ↗"}</Link>
+          </div>
+        </section>
+        {rows.length > 0 ? <PharmacyList drug={{ slug: drug.slug, name: displayDrug.name, spec: drug.spec }} rows={rows} /> : <NoInventoryYet drugName={displayLabel} drugSlug={drug.slug} area={area} />}
       {alternatives.length > 0 && (
         <section className="bg-ivory">
           <div className="shop-shell py-10 sm:py-14">
@@ -558,6 +314,7 @@ export default async function DrugPage({
         </section>
       )}
 
+      </main>
       <SiteFooter />
     </div>
   );
