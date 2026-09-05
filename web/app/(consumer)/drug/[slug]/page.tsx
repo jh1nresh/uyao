@@ -23,7 +23,9 @@ import {
 } from "@/lib/data";
 import { JsonLd } from "@/components/JsonLd";
 import { categoryName, drugCopy, localizedPath, secondaryProductName } from "@/lib/i18n";
-import { ingredientRows } from "@/lib/ingredients";
+import { ProductInfoImage } from "@/components/ProductInfoImage";
+import infoImages from "@/lib/product-info-images.generated.json";
+import type { ProductInfoPanel } from "@/lib/product-info-content";
 import { getRequestLocale } from "@/lib/locale-server";
 import { isPending, known } from "@/lib/pending";
 import { partnersForProduct } from "@/lib/partners";
@@ -121,7 +123,10 @@ export default async function DrugPage({
 
   const shelfScene = productShowcaseScene(drug.slug);
   const english = locale === "en";
-  const hasFeatures = Boolean(drug.highlights?.length || drug.dosage || drug.cautions);
+  const images = (infoImages as Record<string, { src: string; width: number; height: number; content: ProductInfoPanel }[]>)[`${drug.slug}:${locale}`];
+  const featureImage = images.find((image) => image.content.kind === "features");
+  const factsImage = images.find((image) => image.content.kind === "facts")!;
+  const hasFeatures = Boolean(featureImage);
   const rows = storesForDrug(drug.slug, area);
   const alternatives = alternativesFor(drug.slug, area);
   const category = getCategory(drug.category);
@@ -212,20 +217,7 @@ export default async function DrugPage({
               <p>{english ? "As stated on the package or by the manufacturer. These are not uYao's evaluations." : "依包裝或原廠資料整理，非 uYao 評價。"}</p>
             </header>
             <div className={styles.sectionContent}>
-              {drug.highlights && drug.highlights.length > 0 && (
-                <ol className={styles.features}>
-                  {drug.highlights.map((item, i) => (
-                    <li key={item.title}><span className={styles.number}>{String(i + 1).padStart(2, "0")}</span><div><h3>{item.title}</h3><p>{item.body}</p></div></li>
-                  ))}
-                </ol>
-              )}
-              {(drug.dosage || drug.cautions) && (
-                <div className={styles.usage}>
-                  {drug.dosage && <div><h3>{english ? "Suggested use on the label" : "標示建議用量"}</h3><p>{drug.dosage}</p></div>}
-                  {drug.cautions && <div><h3>{english ? "Cautions and allergens" : "注意事項與過敏原"}</h3><p>{drug.cautions}</p></div>}
-                </div>
-              )}
-              <p className={styles.sourceNote}>{english ? "The wording above comes from product packaging or manufacturer material. uYao has not independently verified these claims and does not endorse them. Food and supplement wording cannot be read as prevention or treatment of disease." : "以上文字取自產品包裝或原廠資料，uYao 未獨立驗證，也不構成背書。食品與營養補充品的文字不能解讀為預防或治療疾病。"}</p>
+              {featureImage && <ProductInfoImage image={featureImage} english={english} />}
             </div>
           </section>
         )}
@@ -238,27 +230,7 @@ export default async function DrugPage({
               <p>{partnerProvidedDetails ? (english ? "Details provided by a partner pharmacy." : "合作藥局提供的產品資料。") : (english ? "Recorded product details and their sources." : "已收錄的產品資料與來源。")}</p>
             </header>
             <div className={styles.sectionContent}>
-              <div className={styles.factsGrid}>
-                <div>
-                  <h3 className={styles.smallHeading}>{english ? "Ingredients listed by source" : "資料所列成分"}</h3>
-                  {drug.source && displayDrug.ingredients.length > 0 ? (
-                    <dl className={styles.ingredients}>
-                      {ingredientRows(displayDrug.ingredients).map((row) => (
-                        <div key={row.name}><dt>{row.name}</dt><dd>{row.amount ?? "—"}</dd></div>
-                      ))}
-                    </dl>
-                  ) : <p className={styles.emptyNote}>{english ? "No verified ingredient source is available for this item. Ask a pharmacist for details." : "此品項尚無可核對的成分來源，請向藥師確認。"}</p>}
-                </div>
-                <div>
-                  <h3 className={styles.smallHeading}>{english ? "Product record" : "品項資料"}</h3>
-                  <dl className={styles.specifications}>
-                    {known(displayDrug.spec) && <div><dt>{english ? "Pack size" : "規格"}</dt><dd>{displayDrug.spec}</dd></div>}
-                    {known(displayDrug.form) && <div><dt>{english ? "Form" : "劑型"}</dt><dd>{displayDrug.form}</dd></div>}
-                    {known(drug.manufacturer) && <div><dt>{english ? "Company / supplier" : "廠商／供應資訊"}</dt><dd>{drug.manufacturer}</dd></div>}
-                    {known(drug.origin) && <div><dt>{english ? "Origin" : "產地"}</dt><dd>{drug.origin}</dd></div>}
-                  </dl>
-                </div>
-              </div>
+              <ProductInfoImage image={factsImage} english={english} />
               <div className={styles.provenance}>
                 <h3 className={styles.smallHeading}>{english ? "Product source" : "產品資料來源"}</h3>
                 {drug.source ? (drug.source.url ? <a href={drug.source.url} target="_blank" rel="noreferrer">{drug.source.label} ↗</a> : <p>{drug.source.label}</p>) : <p>{english ? "No public product source has been verified for this package size." : "此規格尚未驗證公開產品資料來源。"}</p>}
