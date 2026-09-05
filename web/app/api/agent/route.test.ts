@@ -23,6 +23,21 @@ beforeEach(() => {
 });
 
 describe("POST /api/agent", () => {
+  it.each([null, [], "question", 1, true])("rejects non-object JSON roots: %j", async (body) => {
+    const response = await POST(request(body));
+    expect(response.status).toBe(422);
+    expect(await response.json()).toHaveProperty("error");
+  });
+
+  it("rejects invalid JSON", async () => {
+    const response = await POST(new Request("http://localhost/api/agent", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: "{",
+    }));
+    expect(response.status).toBe(400);
+  });
+
   it("returns grounded catalog cards without exposing price or stock claims", async () => {
     const response = await POST(request({
       messages: [{ role: "user", content: "補鈣" }],
