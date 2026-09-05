@@ -1,6 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
+import styles from "./CommerceAgent.module.css";
+import { productShowcaseScene } from "@/lib/product-showcase";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 
 import { SearchResultLink } from "@/components/SearchResultLink";
@@ -156,15 +159,15 @@ export function CommerceAgent({
   }
 
   return (
-    <section className="flex min-h-[calc(100dvh-4rem)] flex-col" aria-live="polite">
-      <div className="flex-1 space-y-8 py-7 pb-36 sm:py-10 sm:pb-40">
+    <section className="flex min-h-[calc(100dvh-9rem)] flex-col" aria-live="polite">
+      <div className="flex-1 space-y-8 py-7 pb-12 sm:py-10 sm:pb-16">
         {turns.map((turn, turnIndex) => (
           <article key={`${turnIndex}-${turn.query}`} className="space-y-6">
             <div className="ml-auto max-w-[82%] bg-brand-surface px-4 py-3 text-on-dark sm:max-w-[70%]">
               <p className="m-0 text-pretty text-[15px] leading-[1.65]">{turn.query}</p>
             </div>
 
-            <div className="min-w-0 max-w-[680px]">
+            <div className="min-w-0 max-w-[760px]">
               <p className="mb-2 mt-0 font-mono text-[11px] font-semibold tracking-[0.08em] text-forest">
                 uYao Agent
               </p>
@@ -172,21 +175,26 @@ export function CommerceAgent({
               {turn.reply.degraded && (
                 <p className="mb-0 mt-2 text-pretty text-[12px] leading-[1.55] text-muted-2">
                   {english
-                    ? "The model provider did not respond, so this answer used deterministic catalog matching."
-                    : "模型服務未回覆，這次改用固定目錄比對。"}
+                    ? "This reply uses catalog matches only. You can still view sources and pharmacy contact details."
+                    : "這次先以目錄比對回覆；仍可查看來源與藥局聯絡方式。"}
                 </p>
               )}
 
                 {turn.reply.products.length > 0 && (
                   <div className="mt-5 max-w-[640px] border-y border-line-strong">
-                    {turn.reply.products.map((product) => (
+                    {turn.reply.products.map((product, productIndex) => {
+                      const scene = productShowcaseScene(product.slug);
+                      return (
                       <SearchResultLink
                         key={product.slug}
                         href={product.href}
                         drugSlug={product.slug}
                         query={turn.query}
-                        className="group block border-b border-line px-0 py-5 no-underline transition-colors last:border-b-0 hover:bg-paper"
+                        className={`${styles.product} group border-b border-line py-5 no-underline transition-colors last:border-b-0 hover:bg-paper`}
                       >
+                        {scene ? <span><Image src={scene.src} alt="" width={scene.width} height={scene.height} sizes="144px" className={styles.productImage} /><span className="mt-1 block text-[11px] text-muted-2">{english ? "Illustration" : "商品示意"}</span></span> : <span className={styles.productIndex} aria-hidden>{String(productIndex + 1).padStart(2, "0")}</span>}
+                        <span className="min-w-0">
+                        <span className={styles.resultLabel}>{english ? "CATALOG MATCH" : "目錄品項"}</span>
                         <span className="block text-pretty text-[16px] font-bold leading-[1.5] text-ink">
                           {[product.name, product.spec].filter(Boolean).join(" ")}
                         </span>
@@ -197,8 +205,9 @@ export function CommerceAgent({
                         <span className="mt-3 inline-flex min-h-11 items-center text-[13px] font-bold text-forest">
                           {english ? "View source and pharmacy options" : "查看來源與藥局選項"}
                         </span>
+                        </span>
                       </SearchResultLink>
-                    ))}
+                    );})}
                   </div>
                 )}
 
