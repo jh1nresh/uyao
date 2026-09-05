@@ -78,7 +78,7 @@ export function SiteHeaderMobileMenu({
         type="button"
         className={`inline-flex h-11 w-11 flex-none items-center justify-center border transition-[background-color,border-color,color] duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ${
           cabinetTone
-            ? "border-transparent bg-transparent text-paper hover:bg-paper/12 hover:text-white focus-visible:outline-paper"
+            ? "border-transparent bg-transparent text-forest hover:bg-surface focus-visible:outline-forest"
             : "border-line-strong bg-paper text-ink hover:border-forest hover:bg-surface focus-visible:outline-green"
         }`}
         aria-expanded={open}

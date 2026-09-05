@@ -138,6 +138,7 @@ export default async function HomePage({
         <div className="medicine-cabinet-stage relative">
           <SiteHeader
             showSearch={false}
+            showTagline={false}
             area={area}
             preserveAreaPath
             locatable
@@ -177,8 +178,8 @@ export default async function HomePage({
               </div>
               <p className="medicine-cabinet-copy mb-0 text-ink-2">
                 {locale === "en"
-                  ? "Ask uYao in the box — that opens Agent. Browse the cabinet below when you already know the item."
-                  : "在框裡問 uYao 會進入 Agent；已知品項可直接逛下方藥櫃。"}
+                  ? "Search a name, ingredient, or wellness need. Check the details before asking a pharmacist."
+                  : "輸入品名、成分或保養需求，先查資料，再向藥師確認。"}
               </p>
               <div className="medicine-cabinet-cell-ask">
                 <SearchInput

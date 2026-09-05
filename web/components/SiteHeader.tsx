@@ -37,15 +37,11 @@ export async function SiteHeader({
   const cabinetTone = tone === "cabinet";
   const showWorkspaceNavigation = Boolean(activeWorkspace) && !showSearch;
   const showPharmacyCta = !(showSearch || showWorkspaceNavigation);
-  const workspaceActiveClass = cabinetTone
-    ? "border-paper font-bold text-paper"
-    : "border-forest font-bold text-forest";
-  const workspaceInactiveClass = cabinetTone
-    ? "border-transparent font-semibold text-paper/80 hover:border-paper/60 hover:text-paper"
-    : "border-transparent font-semibold text-muted hover:border-line-strong hover:text-ink";
+  const workspaceActiveClass = "border-forest font-bold text-forest";
+  const workspaceInactiveClass = "border-transparent font-semibold text-muted hover:border-line-strong hover:text-ink";
   return (
     <header className={cabinetTone
-      ? "cabinet-overlay-header cabinet-header-band absolute inset-x-0 top-0 z-40"
+      ? "cabinet-overlay-header cabinet-header-band relative z-40"
       : "sticky top-0 z-40 border-b border-line-strong bg-ivory/95 backdrop-blur-sm"
     }>
       <div className={`shop-shell items-center ${
@@ -63,7 +59,9 @@ export async function SiteHeader({
             showWorkspaceNavigation ? "md:justify-self-start" : ""
           }`}
         >
-          {showSearch ? (
+          {cabinetTone ? (
+            <BrandLogo height={28} />
+          ) : showSearch ? (
             <>
               <span className="sm:hidden"><BrandMark size={34} /></span>
               <span className="hidden sm:block"><BrandLogo height={34} /></span>
@@ -76,7 +74,7 @@ export async function SiteHeader({
           )}
           {showTagline && (
             <span className={`ml-1 hidden border-l pl-3 text-[12px] font-medium tracking-[.04em] lg:inline ${
-              cabinetTone ? "border-paper/40 text-paper" : "border-line-strong text-muted"
+              "border-line-strong text-muted"
             }`}>
               {locale === "en" ? "Nearby pharmacies · Medicine requests" : "附近藥局・找藥需求"}
             </span>
@@ -129,7 +127,7 @@ export async function SiteHeader({
           <div className={showWorkspaceNavigation ? "hidden xl:block" : "hidden md:block"}>
             <AreaSwitch area={area} preservePath={preserveAreaPath} locatable={locatable} compact />
           </div>
-          <ThemeToggle locale={locale} />
+          {!cabinetTone && <ThemeToggle locale={locale} />}
           <LanguageSwitch className={cabinetTone ? "cabinet-header-language" : ""} />
           {/* 供給側入口。合作說明留在公司站；已開通店家從 Store OS 網域登入。
               手機有搜尋框或 workspace 導覽時先讓寬度給主流程（頁尾仍有藥局合作入口）；
