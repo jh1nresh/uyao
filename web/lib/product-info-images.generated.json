@@ -1,0 +1,6552 @@
+{
+  "hugu-gaishu-100:zh": [
+    {
+      "sha256": "c1511ae5a03b6a44b9d184deff0da16ccda7bfc73dbba173ce5e1549872b6e70",
+      "src": "/products/info-v2/hugu-gaishu-100-zh-facts.webp",
+      "width": 1000,
+      "height": 1572,
+      "content": {
+        "kind": "facts",
+        "name": "護谷鈣素",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "MCHC鈣"
+              },
+              {
+                "name": "葡萄糖胺"
+              },
+              {
+                "name": "軟骨膠原"
+              },
+              {
+                "name": "維生素D3"
+              },
+              {
+                "name": "磷"
+              },
+              {
+                "name": "鎂"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "100粒"
+              },
+              {
+                "name": "劑型",
+                "value": "軟膠囊"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "弘鎰貿易產品資料",
+          "請以實際包裝及藥師確認為準。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "hugu-gaishu-100:en": [
+    {
+      "sha256": "f87646d07d60c77a6567314187e22af89aca53649554142ef526e51e60efd354",
+      "src": "/products/info-v2/hugu-gaishu-100-en-facts.webp",
+      "width": 1000,
+      "height": 1572,
+      "content": {
+        "kind": "facts",
+        "name": "護谷鈣素",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "MCHC鈣"
+              },
+              {
+                "name": "葡萄糖胺"
+              },
+              {
+                "name": "軟骨膠原"
+              },
+              {
+                "name": "維生素D3"
+              },
+              {
+                "name": "磷"
+              },
+              {
+                "name": "鎂"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "100 count"
+              },
+              {
+                "name": "Form",
+                "value": "Softgel"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "弘鎰貿易產品資料",
+          "Check the actual package and confirm the details with a pharmacist.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "shengkangning-150:zh": [
+    {
+      "sha256": "2dbdd7b74a451377a0ffd45bf2a2454f365701c445cfc73c9975b95ec514c98e",
+      "src": "/products/info-v2/shengkangning-150-zh-facts.webp",
+      "width": 1000,
+      "height": 1484,
+      "content": {
+        "kind": "facts",
+        "name": "勝康寧",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "南瓜子油"
+              },
+              {
+                "name": "南瓜子粉"
+              },
+              {
+                "name": "油菜籽油花粉"
+              },
+              {
+                "name": "大豆卵磷脂"
+              },
+              {
+                "name": "芸香葉"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "150粒"
+              },
+              {
+                "name": "劑型",
+                "value": "膠囊"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "富康活力藥局商品資料",
+          "請以實際包裝及藥師確認為準。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "shengkangning-150:en": [
+    {
+      "sha256": "e57ddedd565d51885196c686eebc0dc540d3225a2568ee74a8a99f15b91e0ccd",
+      "src": "/products/info-v2/shengkangning-150-en-facts.webp",
+      "width": 1000,
+      "height": 1484,
+      "content": {
+        "kind": "facts",
+        "name": "勝康寧",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "南瓜子油"
+              },
+              {
+                "name": "南瓜子粉"
+              },
+              {
+                "name": "油菜籽油花粉"
+              },
+              {
+                "name": "大豆卵磷脂"
+              },
+              {
+                "name": "芸香葉"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "150 count"
+              },
+              {
+                "name": "Form",
+                "value": "Capsule"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "富康活力藥局商品資料",
+          "Check the actual package and confirm the details with a pharmacist.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "entineng-230:zh": [
+    {
+      "sha256": "6c82f9a7ee34030bb1af87851a9b03d2922739e9297060ad24f6bd6b562d9de4",
+      "src": "/products/info-v2/entineng-230-zh-facts.webp",
+      "width": 1000,
+      "height": 1131,
+      "content": {
+        "kind": "facts",
+        "name": "恩體能",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "山楂萃取液"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "230粒"
+              },
+              {
+                "name": "劑型",
+                "value": "膠囊"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "大墩藥局商品資料",
+          "請以實際包裝及藥師確認為準。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "entineng-230:en": [
+    {
+      "sha256": "cb91884daf915eb95175a3762a2795a387e09ae0868cb68078c8a7cde2212281",
+      "src": "/products/info-v2/entineng-230-en-facts.webp",
+      "width": 1000,
+      "height": 1131,
+      "content": {
+        "kind": "facts",
+        "name": "恩體能",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "山楂萃取液"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "230 count"
+              },
+              {
+                "name": "Form",
+                "value": "Capsule"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "大墩藥局商品資料",
+          "Check the actual package and confirm the details with a pharmacist.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "jinjiweichang-60:zh": [
+    {
+      "sha256": "20b2b0ea58d917b2599a2b63d84da9437a9577edcd53c71df43a91f661f4f2f7",
+      "src": "/products/info-v2/jinjiweichang-60-zh-facts.webp",
+      "width": 1000,
+      "height": 1219,
+      "content": {
+        "kind": "facts",
+        "name": "進磯為常-D",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "松花青素"
+              },
+              {
+                "name": "綜合酵素"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "60粒"
+              },
+              {
+                "name": "劑型",
+                "value": "膠囊"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "康鈺藥局產品資料",
+          "請以實際包裝及藥師確認為準。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "jinjiweichang-60:en": [
+    {
+      "sha256": "1dfef7eef819b33a7bfa9c60e9ad80e0d52bc570f005384a9ead046eed7ab6e2",
+      "src": "/products/info-v2/jinjiweichang-60-en-facts.webp",
+      "width": 1000,
+      "height": 1219,
+      "content": {
+        "kind": "facts",
+        "name": "進磯為常-D",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "松花青素"
+              },
+              {
+                "name": "綜合酵素"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "60 count"
+              },
+              {
+                "name": "Form",
+                "value": "Capsule"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "康鈺藥局產品資料",
+          "Check the actual package and confirm the details with a pharmacist.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "keqiqing-capsule:zh": [
+    {
+      "sha256": "2606a6e05af983363b32f15b181d82e477e90c485758c30cbf23a16cd473d6ad",
+      "src": "/products/info-v2/keqiqing-capsule-zh-facts.webp",
+      "width": 1000,
+      "height": 1660,
+      "content": {
+        "kind": "facts",
+        "name": "克氣清膠囊",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "薄荷油"
+              },
+              {
+                "name": "甘草"
+              },
+              {
+                "name": "療肺草"
+              },
+              {
+                "name": "百里香萃取"
+              },
+              {
+                "name": "接骨木萃取"
+              },
+              {
+                "name": "鼠尾草萃取"
+              },
+              {
+                "name": "紫蘇葉"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "50粒"
+              },
+              {
+                "name": "劑型",
+                "value": "軟膠囊"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "麗登藥妝產品資料",
+          "請以實際包裝及藥師確認為準。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "keqiqing-capsule:en": [
+    {
+      "sha256": "8d6bf40436f2bb71c68ab506a5736a1c4c08a2609666d93c4055a030b3e99ea7",
+      "src": "/products/info-v2/keqiqing-capsule-en-facts.webp",
+      "width": 1000,
+      "height": 1660,
+      "content": {
+        "kind": "facts",
+        "name": "克氣清膠囊",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "薄荷油"
+              },
+              {
+                "name": "甘草"
+              },
+              {
+                "name": "療肺草"
+              },
+              {
+                "name": "百里香萃取"
+              },
+              {
+                "name": "接骨木萃取"
+              },
+              {
+                "name": "鼠尾草萃取"
+              },
+              {
+                "name": "紫蘇葉"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "50 count"
+              },
+              {
+                "name": "Form",
+                "value": "Softgel"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "麗登藥妝產品資料",
+          "Check the actual package and confirm the details with a pharmacist.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "huzhikang-60:zh": [
+    {
+      "sha256": "42025994a53f9b57237e2bd42db8a69631431aac433f5b090106fe98be19bf7f",
+      "src": "/products/info-v2/huzhikang-60-zh-facts.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "facts",
+        "name": "護智慷",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "成分資料待確認。"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "60粒"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "尚無已驗證的產品資料來源。",
+          "請以實際包裝及藥師確認為準。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "huzhikang-60:en": [
+    {
+      "sha256": "94c09d936ecb260fa73f3045627ae774af966023ce031c22f6ab76600901e359",
+      "src": "/products/info-v2/huzhikang-60-en-facts.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "facts",
+        "name": "護智慷",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "Ingredient details require verification."
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "60 count"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "No verified product source is available.",
+          "Check the actual package and confirm the details with a pharmacist.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "huzhikang-150:zh": [
+    {
+      "sha256": "a779eed98f8184218784e1bedf8c6efb1231257afc14f7e120511954c2ff656a",
+      "src": "/products/info-v2/huzhikang-150-zh-facts.webp",
+      "width": 1000,
+      "height": 1396,
+      "content": {
+        "kind": "facts",
+        "name": "護智慷",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "磷脂醯絲胺酸"
+              },
+              {
+                "name": "L-絲胺酸"
+              },
+              {
+                "name": "大豆油"
+              },
+              {
+                "name": "卵磷脂"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "150粒"
+              },
+              {
+                "name": "劑型",
+                "value": "軟膠囊"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "歐頤康實體藥局商品資料",
+          "請以實際包裝及藥師確認為準。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "huzhikang-150:en": [
+    {
+      "sha256": "0aee66bca61bb9e57122950f79a6ee1a8dff998c96da815493ccbf6d9cc20ddb",
+      "src": "/products/info-v2/huzhikang-150-en-facts.webp",
+      "width": 1000,
+      "height": 1396,
+      "content": {
+        "kind": "facts",
+        "name": "護智慷",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "磷脂醯絲胺酸"
+              },
+              {
+                "name": "L-絲胺酸"
+              },
+              {
+                "name": "大豆油"
+              },
+              {
+                "name": "卵磷脂"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "150 count"
+              },
+              {
+                "name": "Form",
+                "value": "Softgel"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "歐頤康實體藥局商品資料",
+          "Check the actual package and confirm the details with a pharmacist.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "top-fish-oil-60:zh": [
+    {
+      "sha256": "25a5abbf94de3841de27da22911ec3dcaaa2da8feca4c6c8a4a63351192bbfff",
+      "src": "/products/info-v2/top-fish-oil-60-zh-facts.webp",
+      "width": 1000,
+      "height": 1219,
+      "content": {
+        "kind": "facts",
+        "name": "TOP高單位頂級魚油軟膠囊",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "魚油"
+              },
+              {
+                "name": "維生素E"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "60顆"
+              },
+              {
+                "name": "劑型",
+                "value": "軟膠囊"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "承霖興業產品資料",
+          "請以實際包裝及藥師確認為準。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "top-fish-oil-60:en": [
+    {
+      "sha256": "57712671af1f60e74e6f205dd23e44b4f98fd046545217332e372e887b2dfa52",
+      "src": "/products/info-v2/top-fish-oil-60-en-facts.webp",
+      "width": 1000,
+      "height": 1219,
+      "content": {
+        "kind": "facts",
+        "name": "TOP高單位頂級魚油軟膠囊",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "魚油"
+              },
+              {
+                "name": "維生素E"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "60 count"
+              },
+              {
+                "name": "Form",
+                "value": "Softgel"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "承霖興業產品資料",
+          "Check the actual package and confirm the details with a pharmacist.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "guanlihu-60:zh": [
+    {
+      "sha256": "4694b8fb82c18a98da19ad7cf242042a47b9b81c2acfae3d93d4d6ada0a72be6",
+      "src": "/products/info-v2/guanlihu-60-zh-facts.webp",
+      "width": 1000,
+      "height": 1131,
+      "content": {
+        "kind": "facts",
+        "name": "關立護",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "成分資料待確認。"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "60錠"
+              },
+              {
+                "name": "劑型",
+                "value": "錠"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "尚無已驗證的產品資料來源。",
+          "請以實際包裝及藥師確認為準。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "guanlihu-60:en": [
+    {
+      "sha256": "46172fbb32edd4f5706a4e3baa94825cb91084f40e23d5253ba0af2da1b784fc",
+      "src": "/products/info-v2/guanlihu-60-en-facts.webp",
+      "width": 1000,
+      "height": 1131,
+      "content": {
+        "kind": "facts",
+        "name": "關立護",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "Ingredient details require verification."
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "60 count"
+              },
+              {
+                "name": "Form",
+                "value": "錠"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "No verified product source is available.",
+          "Check the actual package and confirm the details with a pharmacist.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "kimura-tiancheng-60:zh": [
+    {
+      "sha256": "1b690b1d58aa404b04f7fca2ccc01202b77a4fac38b4f75085ac504ac2d88b2b",
+      "src": "/products/info-v2/kimura-tiancheng-60-zh-facts.webp",
+      "width": 1000,
+      "height": 1131,
+      "content": {
+        "kind": "facts",
+        "name": "木村 添誠膠囊食品",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "成分資料待確認。"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "60粒"
+              },
+              {
+                "name": "劑型",
+                "value": "膠囊"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "尚無已驗證的產品資料來源。",
+          "請以實際包裝及藥師確認為準。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "kimura-tiancheng-60:en": [
+    {
+      "sha256": "d279b8912ce371c14e013b319734fe599b139e9ed63ff242bdd665713fef2b63",
+      "src": "/products/info-v2/kimura-tiancheng-60-en-facts.webp",
+      "width": 1000,
+      "height": 1131,
+      "content": {
+        "kind": "facts",
+        "name": "木村 添誠膠囊食品",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "Ingredient details require verification."
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "60 count"
+              },
+              {
+                "name": "Form",
+                "value": "Capsule"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "No verified product source is available.",
+          "Check the actual package and confirm the details with a pharmacist.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "shuwei-600-fish-oil-60:zh": [
+    {
+      "sha256": "b712aa53022ccc79d3021bcddc1f42629429539f1637895cb642ea54812528e2",
+      "src": "/products/info-v2/shuwei-600-fish-oil-60-zh-facts.webp",
+      "width": 1000,
+      "height": 1307,
+      "content": {
+        "kind": "facts",
+        "name": "舒維-600魚油",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "魚油"
+              },
+              {
+                "name": "維生素E"
+              },
+              {
+                "name": "大豆油"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "60粒"
+              },
+              {
+                "name": "劑型",
+                "value": "膠囊"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "輸入錠狀膠囊狀食品查驗登記資料",
+          "請以實際包裝及藥師確認為準。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "shuwei-600-fish-oil-60:en": [
+    {
+      "sha256": "c93aeaef7923a51d6134e45672a5a4d32a68e6eb5fbc96d9ae5176236830e42e",
+      "src": "/products/info-v2/shuwei-600-fish-oil-60-en-facts.webp",
+      "width": 1000,
+      "height": 1307,
+      "content": {
+        "kind": "facts",
+        "name": "舒維-600魚油",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "魚油"
+              },
+              {
+                "name": "維生素E"
+              },
+              {
+                "name": "大豆油"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "60 count"
+              },
+              {
+                "name": "Form",
+                "value": "Capsule"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "輸入錠狀膠囊狀食品查驗登記資料",
+          "Check the actual package and confirm the details with a pharmacist.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "baiyi-capsule-60:zh": [
+    {
+      "sha256": "1f219167cdca45e6d92370a2cc1e55da315ec404d58adadce0d017a5c9d32875",
+      "src": "/products/info-v2/baiyi-capsule-60-zh-facts.webp",
+      "width": 1000,
+      "height": 1660,
+      "content": {
+        "kind": "facts",
+        "name": "百益膠囊食品",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "山藥子粉"
+              },
+              {
+                "name": "藍莓粉"
+              },
+              {
+                "name": "決明子粉"
+              },
+              {
+                "name": "大豆卵磷脂"
+              },
+              {
+                "name": "枸杞子粉"
+              },
+              {
+                "name": "菊花粉"
+              },
+              {
+                "name": "紅藻萃取物"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "60粒"
+              },
+              {
+                "name": "劑型",
+                "value": "膠囊"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "康健知識庫產品資料",
+          "請以實際包裝及藥師確認為準。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "baiyi-capsule-60:en": [
+    {
+      "sha256": "13f467dab4090c7586d30689be408880670638dcfd8cfb0043d395f6f345466a",
+      "src": "/products/info-v2/baiyi-capsule-60-en-facts.webp",
+      "width": 1000,
+      "height": 1660,
+      "content": {
+        "kind": "facts",
+        "name": "百益膠囊食品",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "山藥子粉"
+              },
+              {
+                "name": "藍莓粉"
+              },
+              {
+                "name": "決明子粉"
+              },
+              {
+                "name": "大豆卵磷脂"
+              },
+              {
+                "name": "枸杞子粉"
+              },
+              {
+                "name": "菊花粉"
+              },
+              {
+                "name": "紅藻萃取物"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "60 count"
+              },
+              {
+                "name": "Form",
+                "value": "Capsule"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "康健知識庫產品資料",
+          "Check the actual package and confirm the details with a pharmacist.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "cm-sheliwei-softgel:zh": [
+    {
+      "sha256": "3574a301bac8a1b05f67e2ed4f472fe8456c342920d8b2bfffedfddd28d24854",
+      "src": "/products/info-v2/cm-sheliwei-softgel-zh-facts.webp",
+      "width": 1000,
+      "height": 1711,
+      "content": {
+        "kind": "facts",
+        "name": "中美 攝利威軟膠囊",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "黑麥花粉"
+              },
+              {
+                "name": "南瓜籽油"
+              },
+              {
+                "name": "南瓜籽萃取"
+              },
+              {
+                "name": "茄紅素"
+              },
+              {
+                "name": "L-精胺酸"
+              },
+              {
+                "name": "鋅"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "劑型",
+                "value": "軟膠囊"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "中美醫藥"
+              },
+              {
+                "name": "產地",
+                "value": "南瓜籽油標示德國有機原料，不等於成品德國製"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "cm-sheliwei-softgel:en": [
+    {
+      "sha256": "1b09dc53d0abeb5f8a066a5b62d907377da1abaa5c3a8027fb97d872615ddffd",
+      "src": "/products/info-v2/cm-sheliwei-softgel-en-facts.webp",
+      "width": 1000,
+      "height": 1711,
+      "content": {
+        "kind": "facts",
+        "name": "中美 攝利威軟膠囊",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "黑麥花粉"
+              },
+              {
+                "name": "南瓜籽油"
+              },
+              {
+                "name": "南瓜籽萃取"
+              },
+              {
+                "name": "茄紅素"
+              },
+              {
+                "name": "L-精胺酸"
+              },
+              {
+                "name": "鋅"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Form",
+                "value": "Softgel"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "中美醫藥"
+              },
+              {
+                "name": "Origin",
+                "value": "南瓜籽油標示德國有機原料，不等於成品德國製"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "wewell-vision-softgel:zh": [
+    {
+      "sha256": "4d6b3a1e47b15182884e13de0deacb7382cf6b110a8644efebb31be8a11a29d9",
+      "src": "/products/info-v2/wewell-vision-softgel-zh-facts.webp",
+      "width": 1000,
+      "height": 1924,
+      "content": {
+        "kind": "facts",
+        "name": "維維樂 視清／小視清軟膠囊",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "魚油（EPA／DHA）"
+              },
+              {
+                "name": "明膠"
+              },
+              {
+                "name": "葉黃素（紅花籽油、葉黃素、維生素E）"
+              },
+              {
+                "name": "甘油"
+              },
+              {
+                "name": "純水"
+              },
+              {
+                "name": "紅藻萃取物（蝦紅素）"
+              },
+              {
+                "name": "大豆卵磷脂"
+              },
+              {
+                "name": "二氧化鈦"
+              },
+              {
+                "name": "維生素A棕櫚酸酯"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "劑型",
+                "value": "軟膠囊"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "維維樂／宜果國際體系"
+              },
+              {
+                "name": "產地",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "wewell-vision-softgel:en": [
+    {
+      "sha256": "cbb9f0d82f0d2f2ecf61c90ca992eb13c73c463bbdd21657c5236dfca37a19a0",
+      "src": "/products/info-v2/wewell-vision-softgel-en-facts.webp",
+      "width": 1000,
+      "height": 1924,
+      "content": {
+        "kind": "facts",
+        "name": "維維樂 視清／小視清軟膠囊",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "魚油（EPA／DHA）"
+              },
+              {
+                "name": "明膠"
+              },
+              {
+                "name": "葉黃素（紅花籽油、葉黃素、維生素E）"
+              },
+              {
+                "name": "甘油"
+              },
+              {
+                "name": "純水"
+              },
+              {
+                "name": "紅藻萃取物（蝦紅素）"
+              },
+              {
+                "name": "大豆卵磷脂"
+              },
+              {
+                "name": "二氧化鈦"
+              },
+              {
+                "name": "維生素A棕櫚酸酯"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Form",
+                "value": "Softgel"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "維維樂／宜果國際體系"
+              },
+              {
+                "name": "Origin",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "cm-jinguguanjian-sr:zh": [
+    {
+      "sha256": "705feb83d912598eaf571cc2385e7c0a6f5d18f3462272091f8c2fbbe27dab78",
+      "src": "/products/info-v2/cm-jinguguanjian-sr-zh-features.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "features",
+        "name": "中美 金固關健緩釋錠",
+        "title": "產品特色",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "標示建議用量",
+            "rows": [
+              {
+                "name": "每日2錠，飯後食用；一日請勿超過2錠。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao 未獨立驗證原廠說法。食品與營養補充品的文字不能解讀為預防或治療疾病。",
+          "請以實際包裝並向藥師確認。"
+        ]
+      }
+    },
+    {
+      "sha256": "31880b5aadd622e4f70bdc2aab8ac6fbdce413f676d7d4204be51a3af335eb2e",
+      "src": "/products/info-v2/cm-jinguguanjian-sr-zh-facts.webp",
+      "width": 1000,
+      "height": 1572,
+      "content": {
+        "kind": "facts",
+        "name": "中美 金固關健緩釋錠",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "雞胸軟骨萃取物（含非變性二型膠原蛋白）"
+              },
+              {
+                "name": "乳木果油萃取"
+              },
+              {
+                "name": "MSM（甲基硫醯基甲烷）"
+              },
+              {
+                "name": "葡萄糖酸鋅"
+              },
+              {
+                "name": "維生素D3"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "劑型",
+                "value": "緩釋錠"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "中美醫藥"
+              },
+              {
+                "name": "產地",
+                "value": "台灣（通路標示）"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；中美醫藥公開產品資料核對",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "cm-jinguguanjian-sr:en": [
+    {
+      "sha256": "0f6b00afbdbdea87419545cc67d1d685476433a8e4abbd9c43469be66120c4ba",
+      "src": "/products/info-v2/cm-jinguguanjian-sr-en-features.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "features",
+        "name": "中美 金固關健緩釋錠",
+        "title": "Product features",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Suggested use on the label",
+            "rows": [
+              {
+                "name": "每日2錠，飯後食用；一日請勿超過2錠。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao has not independently verified manufacturer claims. Food and supplement wording does not establish disease prevention or treatment.",
+          "Check the actual package and ask a pharmacist."
+        ]
+      }
+    },
+    {
+      "sha256": "49c2c9555761d7e951ce6a15238f26d648dc732b47b8f2fcde9116e22831dd02",
+      "src": "/products/info-v2/cm-jinguguanjian-sr-en-facts.webp",
+      "width": 1000,
+      "height": 1572,
+      "content": {
+        "kind": "facts",
+        "name": "中美 金固關健緩釋錠",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "雞胸軟骨萃取物（含非變性二型膠原蛋白）"
+              },
+              {
+                "name": "乳木果油萃取"
+              },
+              {
+                "name": "MSM（甲基硫醯基甲烷）"
+              },
+              {
+                "name": "葡萄糖酸鋅"
+              },
+              {
+                "name": "維生素D3"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Form",
+                "value": "緩釋錠"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "中美醫藥"
+              },
+              {
+                "name": "Origin",
+                "value": "台灣（通路標示）"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；中美醫藥公開產品資料核對",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "likuo-fish-oil-30:zh": [
+    {
+      "sha256": "592b6632336aab60481c8551a86acd1724cbc43fc7a43e55ce351121b18ebcfe",
+      "src": "/products/info-v2/likuo-fish-oil-30-zh-facts.webp",
+      "width": 1000,
+      "height": 1572,
+      "content": {
+        "kind": "facts",
+        "name": "立國 精粹魚油膠囊",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "魚油 1000 mg（EPA 480 mg、DHA 360 mg）"
+              },
+              {
+                "name": "明膠"
+              },
+              {
+                "name": "甘油"
+              },
+              {
+                "name": "純水"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "30粒"
+              },
+              {
+                "name": "劑型",
+                "value": "膠囊"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "立國藥品股份有限公司"
+              },
+              {
+                "name": "產地",
+                "value": "立國官方產品頁未標成品產地"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "likuo-fish-oil-30:en": [
+    {
+      "sha256": "2bd51c47ac847d34f15f7e0c8b3dfb20a063ceeea342490610382df233a89f77",
+      "src": "/products/info-v2/likuo-fish-oil-30-en-facts.webp",
+      "width": 1000,
+      "height": 1572,
+      "content": {
+        "kind": "facts",
+        "name": "立國 精粹魚油膠囊",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "魚油 1000 mg（EPA 480 mg、DHA 360 mg）"
+              },
+              {
+                "name": "明膠"
+              },
+              {
+                "name": "甘油"
+              },
+              {
+                "name": "純水"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "30 count"
+              },
+              {
+                "name": "Form",
+                "value": "Capsule"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "立國藥品股份有限公司"
+              },
+              {
+                "name": "Origin",
+                "value": "立國官方產品頁未標成品產地"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "tianxia-yangshen-jingqu:zh": [
+    {
+      "sha256": "864877a34fd34a0d2fe6377c557bb6f7b9f7ecb7c700934f4e7c5565eb0ae185",
+      "src": "/products/info-v2/tianxia-yangshen-jingqu-zh-features.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "features",
+        "name": "天下生物科技 養身景麴膠囊",
+        "title": "產品特色",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "標示建議用量",
+            "rows": [
+              {
+                "name": "每日1～2次，每次1～2粒。"
+              }
+            ]
+          },
+          {
+            "title": "注意事項與過敏原",
+            "rows": [
+              {
+                "name": "孕婦及12歲以下兒童不宜食用。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao 未獨立驗證原廠說法。食品與營養補充品的文字不能解讀為預防或治療疾病。",
+          "請以實際包裝並向藥師確認。"
+        ]
+      }
+    },
+    {
+      "sha256": "561ea1484d1ceb0658d6a7c6ecac06dd1857428154c6b82acb46668fd6c3d7cc",
+      "src": "/products/info-v2/tianxia-yangshen-jingqu-zh-facts.webp",
+      "width": 1000,
+      "height": 2541,
+      "content": {
+        "kind": "facts",
+        "name": "天下生物科技 養身景麴膠囊",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "紅麴"
+              },
+              {
+                "name": "紅景天萃取物"
+              },
+              {
+                "name": "納豆萃取物（納豆激酶）"
+              },
+              {
+                "name": "人參"
+              },
+              {
+                "name": "肌醇"
+              },
+              {
+                "name": "維生素E"
+              },
+              {
+                "name": "葡萄籽萃取粉"
+              },
+              {
+                "name": "銀杏果"
+              },
+              {
+                "name": "甘蔗蠟萃取物"
+              },
+              {
+                "name": "靈芝菌絲體"
+              },
+              {
+                "name": "維生素B1"
+              },
+              {
+                "name": "維生素B2"
+              },
+              {
+                "name": "維生素B6"
+              },
+              {
+                "name": "葉酸"
+              },
+              {
+                "name": "維生素B12"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "90粒"
+              },
+              {
+                "name": "劑型",
+                "value": "膠囊"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "天下生物科技"
+              },
+              {
+                "name": "產地",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；歐頤康實體藥局公開商品資料核對",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "tianxia-yangshen-jingqu:en": [
+    {
+      "sha256": "19b4711d466a3b9a1a6d909cd14dd1df09068b846f1f76c1b6cb01e4597e2413",
+      "src": "/products/info-v2/tianxia-yangshen-jingqu-en-features.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "features",
+        "name": "天下生物科技 養身景麴膠囊",
+        "title": "Product features",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Suggested use on the label",
+            "rows": [
+              {
+                "name": "每日1～2次，每次1～2粒。"
+              }
+            ]
+          },
+          {
+            "title": "Cautions and allergens",
+            "rows": [
+              {
+                "name": "孕婦及12歲以下兒童不宜食用。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao has not independently verified manufacturer claims. Food and supplement wording does not establish disease prevention or treatment.",
+          "Check the actual package and ask a pharmacist."
+        ]
+      }
+    },
+    {
+      "sha256": "25ec7849727d31b86a07ef501ac8c58c573a7e31bac06828695602fed28828b0",
+      "src": "/products/info-v2/tianxia-yangshen-jingqu-en-facts.webp",
+      "width": 1000,
+      "height": 2541,
+      "content": {
+        "kind": "facts",
+        "name": "天下生物科技 養身景麴膠囊",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "紅麴"
+              },
+              {
+                "name": "紅景天萃取物"
+              },
+              {
+                "name": "納豆萃取物（納豆激酶）"
+              },
+              {
+                "name": "人參"
+              },
+              {
+                "name": "肌醇"
+              },
+              {
+                "name": "維生素E"
+              },
+              {
+                "name": "葡萄籽萃取粉"
+              },
+              {
+                "name": "銀杏果"
+              },
+              {
+                "name": "甘蔗蠟萃取物"
+              },
+              {
+                "name": "靈芝菌絲體"
+              },
+              {
+                "name": "維生素B1"
+              },
+              {
+                "name": "維生素B2"
+              },
+              {
+                "name": "維生素B6"
+              },
+              {
+                "name": "葉酸"
+              },
+              {
+                "name": "維生素B12"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "90 count"
+              },
+              {
+                "name": "Form",
+                "value": "Capsule"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "天下生物科技"
+              },
+              {
+                "name": "Origin",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；歐頤康實體藥局公開商品資料核對",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "hongren-riqingsheng-lm:zh": [
+    {
+      "sha256": "adb88308b87301ed80da6eafe5ada355a3a66207b605ae3d08200e03d7477e01",
+      "src": "/products/info-v2/hongren-riqingsheng-lm-zh-facts.webp",
+      "width": 1000,
+      "height": 1572,
+      "content": {
+        "kind": "facts",
+        "name": "鴻仁 日清勝 LM機能益生菌",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "微結晶狀α-纖維素"
+              },
+              {
+                "name": "Lactobacillus plantarum MFM 30-3"
+              },
+              {
+                "name": "Lactobacillus paracasei MFM 18"
+              },
+              {
+                "name": "硬脂酸鎂"
+              },
+              {
+                "name": "比利時專利果寡糖 Orafti® P95"
+              },
+              {
+                "name": "二氧化矽"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "廠商／供應資訊",
+                "value": "鴻仁生技有限公司"
+              },
+              {
+                "name": "產地",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "hongren-riqingsheng-lm:en": [
+    {
+      "sha256": "28a87f86618cbf55d09a1adb8ad027dfac7bc5561652293a4ff1d99b28401416",
+      "src": "/products/info-v2/hongren-riqingsheng-lm-en-facts.webp",
+      "width": 1000,
+      "height": 1572,
+      "content": {
+        "kind": "facts",
+        "name": "鴻仁 日清勝 LM機能益生菌",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "微結晶狀α-纖維素"
+              },
+              {
+                "name": "Lactobacillus plantarum MFM 30-3"
+              },
+              {
+                "name": "Lactobacillus paracasei MFM 18"
+              },
+              {
+                "name": "硬脂酸鎂"
+              },
+              {
+                "name": "比利時專利果寡糖 Orafti® P95"
+              },
+              {
+                "name": "二氧化矽"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Company / supplier",
+                "value": "鴻仁生技有限公司"
+              },
+              {
+                "name": "Origin",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "cm-guer-gan-150mg:zh": [
+    {
+      "sha256": "61e89d3e3146ba7edfb6cf9832495e7c7c441aad340c2894324012e1a883b45c",
+      "src": "/products/info-v2/cm-guer-gan-150mg-zh-facts.webp",
+      "width": 1000,
+      "height": 1410,
+      "content": {
+        "kind": "facts",
+        "name": "中美 顧爾肝膠囊",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "乾燥乳薊果實萃取物 225 mg（相當於 Silymarin 150 mg，以 Silybin 計）"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "150 mg"
+              },
+              {
+                "name": "劑型",
+                "value": "膠囊"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "供應商：興中美生技有限公司；製造商：中美兄弟製藥股份有限公司"
+              },
+              {
+                "name": "產地",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "cm-guer-gan-150mg:en": [
+    {
+      "sha256": "0375c72f5c852adbe922e72ea5d7e13e87cab2d37d670ada6da9a9fa2cdbedc8",
+      "src": "/products/info-v2/cm-guer-gan-150mg-en-facts.webp",
+      "width": 1000,
+      "height": 1410,
+      "content": {
+        "kind": "facts",
+        "name": "中美 顧爾肝膠囊",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "乾燥乳薊果實萃取物 225 mg（相當於 Silymarin 150 mg，以 Silybin 計）"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "150 mg"
+              },
+              {
+                "name": "Form",
+                "value": "Capsule"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "供應商：興中美生技有限公司；製造商：中美兄弟製藥股份有限公司"
+              },
+              {
+                "name": "Origin",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "gude-yishengning-p:zh": [
+    {
+      "sha256": "308a2472ea63c5b3ccaaa1f19cb92a9f308c96c7b951d41e4319b4585dbaa98e",
+      "src": "/products/info-v2/gude-yishengning-p-zh-facts.webp",
+      "width": 1000,
+      "height": 2101,
+      "content": {
+        "kind": "facts",
+        "name": "益聖寧-P軟膠囊",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "蕁麻"
+              },
+              {
+                "name": "杜松子油"
+              },
+              {
+                "name": "南瓜子油"
+              },
+              {
+                "name": "蒲公英"
+              },
+              {
+                "name": "蔓越莓"
+              },
+              {
+                "name": "葡萄糖酸鋅"
+              },
+              {
+                "name": "咸豐草"
+              },
+              {
+                "name": "玉米鬚粉"
+              },
+              {
+                "name": "番茄紅素"
+              },
+              {
+                "name": "葡萄籽"
+              },
+              {
+                "name": "小麥胚芽油"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "劑型",
+                "value": "軟膠囊"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "谷淂藥品生技有限公司"
+              },
+              {
+                "name": "產地",
+                "value": "德國"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "gude-yishengning-p:en": [
+    {
+      "sha256": "baca93ea3ebe47c07b605b802afb7bd135c9af8bf0e27a2c2877785cf2ffff0c",
+      "src": "/products/info-v2/gude-yishengning-p-en-facts.webp",
+      "width": 1000,
+      "height": 2101,
+      "content": {
+        "kind": "facts",
+        "name": "益聖寧-P軟膠囊",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "蕁麻"
+              },
+              {
+                "name": "杜松子油"
+              },
+              {
+                "name": "南瓜子油"
+              },
+              {
+                "name": "蒲公英"
+              },
+              {
+                "name": "蔓越莓"
+              },
+              {
+                "name": "葡萄糖酸鋅"
+              },
+              {
+                "name": "咸豐草"
+              },
+              {
+                "name": "玉米鬚粉"
+              },
+              {
+                "name": "番茄紅素"
+              },
+              {
+                "name": "葡萄籽"
+              },
+              {
+                "name": "小麥胚芽油"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Form",
+                "value": "Softgel"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "谷淂藥品生技有限公司"
+              },
+              {
+                "name": "Origin",
+                "value": "德國"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "jingcui-huxinan:zh": [
+    {
+      "sha256": "f78570d76ab1665eeb11137df0442a8b8666b6de206ed6ea265a3bad339260cc",
+      "src": "/products/info-v2/jingcui-huxinan-zh-features.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "features",
+        "name": "護欣胺微粒膠囊",
+        "title": "產品特色",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "標示建議用量",
+            "rows": [
+              {
+                "name": "每日2次，每次1～2粒。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao 未獨立驗證原廠說法。食品與營養補充品的文字不能解讀為預防或治療疾病。",
+          "請以實際包裝並向藥師確認。"
+        ]
+      }
+    },
+    {
+      "sha256": "08c9c51791d1fc93414745d99fbe94e49a3de7afef7e13afa337d34bb2a9365b",
+      "src": "/products/info-v2/jingcui-huxinan-zh-facts.webp",
+      "width": 1000,
+      "height": 1924,
+      "content": {
+        "kind": "facts",
+        "name": "護欣胺微粒膠囊",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "L-精胺酸"
+              },
+              {
+                "name": "維生素C"
+              },
+              {
+                "name": "松樹皮萃取物"
+              },
+              {
+                "name": "L-麩醯胺酸"
+              },
+              {
+                "name": "綠茶萃取物"
+              },
+              {
+                "name": "丹參萃取物"
+              },
+              {
+                "name": "維生素E"
+              },
+              {
+                "name": "葉酸"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "120粒"
+              },
+              {
+                "name": "劑型",
+                "value": "微粒膠囊"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "精萃載體科技股份有限公司"
+              },
+              {
+                "name": "產地",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；蜂藥師實體藥局公開商品資料核對",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "jingcui-huxinan:en": [
+    {
+      "sha256": "2418b122a2d3cae140c6cb988a180cc1a84ca66546360ca13a6d499326974432",
+      "src": "/products/info-v2/jingcui-huxinan-en-features.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "features",
+        "name": "護欣胺微粒膠囊",
+        "title": "Product features",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Suggested use on the label",
+            "rows": [
+              {
+                "name": "每日2次，每次1～2粒。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao has not independently verified manufacturer claims. Food and supplement wording does not establish disease prevention or treatment.",
+          "Check the actual package and ask a pharmacist."
+        ]
+      }
+    },
+    {
+      "sha256": "74569218c2db622602b632fe8cfc00106b01d6c3ff97e3a33753c65fff749f2b",
+      "src": "/products/info-v2/jingcui-huxinan-en-facts.webp",
+      "width": 1000,
+      "height": 1924,
+      "content": {
+        "kind": "facts",
+        "name": "護欣胺微粒膠囊",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "L-精胺酸"
+              },
+              {
+                "name": "維生素C"
+              },
+              {
+                "name": "松樹皮萃取物"
+              },
+              {
+                "name": "L-麩醯胺酸"
+              },
+              {
+                "name": "綠茶萃取物"
+              },
+              {
+                "name": "丹參萃取物"
+              },
+              {
+                "name": "維生素E"
+              },
+              {
+                "name": "葉酸"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "120 count"
+              },
+              {
+                "name": "Form",
+                "value": "微粒膠囊"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "精萃載體科技股份有限公司"
+              },
+              {
+                "name": "Origin",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；蜂藥師實體藥局公開商品資料核對",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "toyo-cukang-b:zh": [
+    {
+      "sha256": "3fc75d0374130ea8cd26bf20ef8e59ee26b46f160bc3796310c3a67bb086c96e",
+      "src": "/products/info-v2/toyo-cukang-b-zh-features.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "features",
+        "name": "醋康B膠囊",
+        "title": "產品特色",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "標示建議用量",
+            "rows": [
+              {
+                "name": "每日早餐後3～4粒。"
+              }
+            ]
+          },
+          {
+            "title": "注意事項與過敏原",
+            "rows": [
+              {
+                "name": "請置於兒童無法取得處。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao 未獨立驗證原廠說法。食品與營養補充品的文字不能解讀為預防或治療疾病。",
+          "請以實際包裝並向藥師確認。"
+        ]
+      }
+    },
+    {
+      "sha256": "b27d8ee53c0bff21f6e61c61ba3da41459741f9a83f4fb86de20f12e55a98775",
+      "src": "/products/info-v2/toyo-cukang-b-zh-facts.webp",
+      "width": 1000,
+      "height": 1748,
+      "content": {
+        "kind": "facts",
+        "name": "醋康B膠囊",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "黑醋萃取物",
+                "value": "90 mg"
+              },
+              {
+                "name": "紅花籽油"
+              },
+              {
+                "name": "維生素E"
+              },
+              {
+                "name": "維生素B1"
+              },
+              {
+                "name": "維生素B6"
+              },
+              {
+                "name": "蜂蠟"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "120粒"
+              },
+              {
+                "name": "劑型",
+                "value": "膠囊"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "東洋"
+              },
+              {
+                "name": "產地",
+                "value": "日本"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；一成藥品公開產品資料核對",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "toyo-cukang-b:en": [
+    {
+      "sha256": "1b79d3446f4967ddbf66f949212c5f1dec9ad025ea2f827a874b2461fa8761f1",
+      "src": "/products/info-v2/toyo-cukang-b-en-features.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "features",
+        "name": "醋康B膠囊",
+        "title": "Product features",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Suggested use on the label",
+            "rows": [
+              {
+                "name": "每日早餐後3～4粒。"
+              }
+            ]
+          },
+          {
+            "title": "Cautions and allergens",
+            "rows": [
+              {
+                "name": "請置於兒童無法取得處。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao has not independently verified manufacturer claims. Food and supplement wording does not establish disease prevention or treatment.",
+          "Check the actual package and ask a pharmacist."
+        ]
+      }
+    },
+    {
+      "sha256": "b526a7ed9d72e267c1eeff8098f814804d356d53928dc9b5cfed95cffd0db441",
+      "src": "/products/info-v2/toyo-cukang-b-en-facts.webp",
+      "width": 1000,
+      "height": 1748,
+      "content": {
+        "kind": "facts",
+        "name": "醋康B膠囊",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "黑醋萃取物",
+                "value": "90 mg"
+              },
+              {
+                "name": "紅花籽油"
+              },
+              {
+                "name": "維生素E"
+              },
+              {
+                "name": "維生素B1"
+              },
+              {
+                "name": "維生素B6"
+              },
+              {
+                "name": "蜂蠟"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "120 count"
+              },
+              {
+                "name": "Form",
+                "value": "Capsule"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "東洋"
+              },
+              {
+                "name": "Origin",
+                "value": "日本"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；一成藥品公開產品資料核對",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "icheng-meileshi:zh": [
+    {
+      "sha256": "ec81cd99df61f082b202b82db21af2fe65bb9eb4f597a97dda278a17f6bc7beb",
+      "src": "/products/info-v2/icheng-meileshi-zh-features.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "features",
+        "name": "美樂適素食膠囊",
+        "title": "產品特色",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "標示建議用量",
+            "rows": [
+              {
+                "name": "每日早餐後2粒。"
+              }
+            ]
+          },
+          {
+            "title": "注意事項與過敏原",
+            "rows": [
+              {
+                "name": "15歲以下、孕婦、哺乳婦及服用抗凝血劑者不宜食用。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao 未獨立驗證原廠說法。食品與營養補充品的文字不能解讀為預防或治療疾病。",
+          "請以實際包裝並向藥師確認。"
+        ]
+      }
+    },
+    {
+      "sha256": "98207da4a6f11093b63defad1b576172b3de21a2b94fa0177323ec2f07911c3f",
+      "src": "/products/info-v2/icheng-meileshi-zh-facts.webp",
+      "width": 1000,
+      "height": 1572,
+      "content": {
+        "kind": "facts",
+        "name": "美樂適素食膠囊",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "紅花籽油"
+              },
+              {
+                "name": "薯蕷皂素 Diosgenin"
+              },
+              {
+                "name": "輔酶Q10"
+              },
+              {
+                "name": "脂肪酸聚合甘油酯"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "60粒"
+              },
+              {
+                "name": "劑型",
+                "value": "素食膠囊"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "一成藥品股份有限公司"
+              },
+              {
+                "name": "產地",
+                "value": "日本"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；一成藥品公開產品資料核對",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "icheng-meileshi:en": [
+    {
+      "sha256": "eddb2d7762dbef99858d1090fc280684c7dfd8002bfb9fa9878210a076c338b9",
+      "src": "/products/info-v2/icheng-meileshi-en-features.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "features",
+        "name": "美樂適素食膠囊",
+        "title": "Product features",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Suggested use on the label",
+            "rows": [
+              {
+                "name": "每日早餐後2粒。"
+              }
+            ]
+          },
+          {
+            "title": "Cautions and allergens",
+            "rows": [
+              {
+                "name": "15歲以下、孕婦、哺乳婦及服用抗凝血劑者不宜食用。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao has not independently verified manufacturer claims. Food and supplement wording does not establish disease prevention or treatment.",
+          "Check the actual package and ask a pharmacist."
+        ]
+      }
+    },
+    {
+      "sha256": "53a1142242491e8b237cd53fe0f77c854d91c34b5c5b747631714e3232a87b6a",
+      "src": "/products/info-v2/icheng-meileshi-en-facts.webp",
+      "width": 1000,
+      "height": 1572,
+      "content": {
+        "kind": "facts",
+        "name": "美樂適素食膠囊",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "紅花籽油"
+              },
+              {
+                "name": "薯蕷皂素 Diosgenin"
+              },
+              {
+                "name": "輔酶Q10"
+              },
+              {
+                "name": "脂肪酸聚合甘油酯"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "60 count"
+              },
+              {
+                "name": "Form",
+                "value": "素食膠囊"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "一成藥品股份有限公司"
+              },
+              {
+                "name": "Origin",
+                "value": "日本"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；一成藥品公開產品資料核對",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "icheng-siyunmeng:zh": [
+    {
+      "sha256": "d475a3c6980bc834ceff3011bffebf1b798d0a8e646c1dc7f212bf86e0259bc1",
+      "src": "/products/info-v2/icheng-siyunmeng-zh-features.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "features",
+        "name": "思韻蒙軟膠囊",
+        "title": "產品特色",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "標示建議用量",
+            "rows": [
+              {
+                "name": "每日早餐後2粒。"
+              }
+            ]
+          },
+          {
+            "title": "注意事項與過敏原",
+            "rows": [
+              {
+                "name": "15歲以下、孕婦、哺乳婦及服用抗凝血劑者不宜食用。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao 未獨立驗證原廠說法。食品與營養補充品的文字不能解讀為預防或治療疾病。",
+          "請以實際包裝並向藥師確認。"
+        ]
+      }
+    },
+    {
+      "sha256": "fa018360771006eeaaadee53d281650a92e42af76add61ee7a509ab7fb56720c",
+      "src": "/products/info-v2/icheng-siyunmeng-zh-facts.webp",
+      "width": 1000,
+      "height": 1484,
+      "content": {
+        "kind": "facts",
+        "name": "思韻蒙軟膠囊",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "紅花籽油"
+              },
+              {
+                "name": "薯蕷皂素 Diosgenin"
+              },
+              {
+                "name": "輔酶Q10"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "60粒"
+              },
+              {
+                "name": "劑型",
+                "value": "軟膠囊"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "一成藥品股份有限公司"
+              },
+              {
+                "name": "產地",
+                "value": "日本"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；一成藥品公開產品資料核對",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "icheng-siyunmeng:en": [
+    {
+      "sha256": "eb87a6c09fd4f302d5327aed4040b57561d11baec7d768ee71238bed89c65767",
+      "src": "/products/info-v2/icheng-siyunmeng-en-features.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "features",
+        "name": "思韻蒙軟膠囊",
+        "title": "Product features",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Suggested use on the label",
+            "rows": [
+              {
+                "name": "每日早餐後2粒。"
+              }
+            ]
+          },
+          {
+            "title": "Cautions and allergens",
+            "rows": [
+              {
+                "name": "15歲以下、孕婦、哺乳婦及服用抗凝血劑者不宜食用。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao has not independently verified manufacturer claims. Food and supplement wording does not establish disease prevention or treatment.",
+          "Check the actual package and ask a pharmacist."
+        ]
+      }
+    },
+    {
+      "sha256": "25c5378deb705324fac6d5c065f2c9a4b81ef68166117b01e94ead1e8120bb83",
+      "src": "/products/info-v2/icheng-siyunmeng-en-facts.webp",
+      "width": 1000,
+      "height": 1484,
+      "content": {
+        "kind": "facts",
+        "name": "思韻蒙軟膠囊",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "紅花籽油"
+              },
+              {
+                "name": "薯蕷皂素 Diosgenin"
+              },
+              {
+                "name": "輔酶Q10"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "60 count"
+              },
+              {
+                "name": "Form",
+                "value": "Softgel"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "一成藥品股份有限公司"
+              },
+              {
+                "name": "Origin",
+                "value": "日本"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；一成藥品公開產品資料核對",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "jixiang-jishukang:zh": [
+    {
+      "sha256": "04c30c26d5d7c54a8a4a06d17f678322d141823d32907b9a7a1073cb5e98dc21",
+      "src": "/products/info-v2/jixiang-jishukang-zh-facts.webp",
+      "width": 1000,
+      "height": 1586,
+      "content": {
+        "kind": "facts",
+        "name": "吉舒康軟膠囊",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "深海魚油"
+              },
+              {
+                "name": "南極蝦油"
+              },
+              {
+                "name": "EPA"
+              },
+              {
+                "name": "DHA"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "劑型",
+                "value": "軟膠囊"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "吉祥行有限公司"
+              },
+              {
+                "name": "產地",
+                "value": "台灣（建利販售頁標示；公司資料另使用「美國吉舒康」名稱，上線前建議核對盒底產地）"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "jixiang-jishukang:en": [
+    {
+      "sha256": "022e23dfe144302e11bcfacf83f08678df0e485b55ce4550604117bb506161d0",
+      "src": "/products/info-v2/jixiang-jishukang-en-facts.webp",
+      "width": 1000,
+      "height": 1586,
+      "content": {
+        "kind": "facts",
+        "name": "吉舒康軟膠囊",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "深海魚油"
+              },
+              {
+                "name": "南極蝦油"
+              },
+              {
+                "name": "EPA"
+              },
+              {
+                "name": "DHA"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Form",
+                "value": "Softgel"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "吉祥行有限公司"
+              },
+              {
+                "name": "Origin",
+                "value": "台灣（建利販售頁標示；公司資料另使用「美國吉舒康」名稱，上線前建議核對盒底產地）"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "bio-stand-calcium-softgel:zh": [
+    {
+      "sha256": "74cd16fad92c4eed2646ff46b2ea343857a0bf310c6fd381b982eb8e372ebb56",
+      "src": "/products/info-v2/bio-stand-calcium-softgel-zh-facts.webp",
+      "width": 1000,
+      "height": 1748,
+      "content": {
+        "kind": "facts",
+        "name": "Bio-Stand 挺液鈣軟膠囊",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "磷酸氫鈣"
+              },
+              {
+                "name": "葡萄糖酸鈣"
+              },
+              {
+                "name": "維生素D3"
+              },
+              {
+                "name": "大豆油"
+              },
+              {
+                "name": "大豆卵磷脂"
+              },
+              {
+                "name": "蜂膠"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "100粒"
+              },
+              {
+                "name": "劑型",
+                "value": "軟膠囊"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "臺灣默化實業有限公司"
+              },
+              {
+                "name": "產地",
+                "value": "美國（進口品）"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；公開通路商品資料核對",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "bio-stand-calcium-softgel:en": [
+    {
+      "sha256": "cff432821f09e37157a1049eb620284223cb6b593e0f840e858b9938471641b9",
+      "src": "/products/info-v2/bio-stand-calcium-softgel-en-facts.webp",
+      "width": 1000,
+      "height": 1748,
+      "content": {
+        "kind": "facts",
+        "name": "Bio-Stand 挺液鈣軟膠囊",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "磷酸氫鈣"
+              },
+              {
+                "name": "葡萄糖酸鈣"
+              },
+              {
+                "name": "維生素D3"
+              },
+              {
+                "name": "大豆油"
+              },
+              {
+                "name": "大豆卵磷脂"
+              },
+              {
+                "name": "蜂膠"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "100 count"
+              },
+              {
+                "name": "Form",
+                "value": "Softgel"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "臺灣默化實業有限公司"
+              },
+              {
+                "name": "Origin",
+                "value": "美國（進口品）"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；公開通路商品資料核對",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "rending-gujieyou:zh": [
+    {
+      "sha256": "99f4031cc51b04b4a9717694de157e76af1905c791202cca0dd49d45c299be06",
+      "src": "/products/info-v2/rending-gujieyou-zh-facts.webp",
+      "width": 1000,
+      "height": 1748,
+      "content": {
+        "kind": "facts",
+        "name": "固捷優",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "BioCell Collagen II 二型膠原蛋白",
+                "value": "200 mg"
+              },
+              {
+                "name": "Hytolive 橄欖果萃取",
+                "value": "100 mg"
+              },
+              {
+                "name": "MSM",
+                "value": "100 mg"
+              },
+              {
+                "name": "檸檬酸鈣",
+                "value": "70 mg"
+              },
+              {
+                "name": "維生素C",
+                "value": "40 mg"
+              },
+              {
+                "name": "UC-II 非變性二型膠原蛋白",
+                "value": "20 mg"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "60顆"
+              },
+              {
+                "name": "劑型",
+                "value": "膠囊"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "仁鼎生技有限公司"
+              },
+              {
+                "name": "產地",
+                "value": "台灣（通路標示）"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；建利健康生活網公開商品資料核對",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "rending-gujieyou:en": [
+    {
+      "sha256": "c681d76e25f80c91cdc46c6a1a5f097b0c305c87d5a11dfb7f10df1b3ad17e14",
+      "src": "/products/info-v2/rending-gujieyou-en-facts.webp",
+      "width": 1000,
+      "height": 1748,
+      "content": {
+        "kind": "facts",
+        "name": "固捷優",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "BioCell Collagen II 二型膠原蛋白",
+                "value": "200 mg"
+              },
+              {
+                "name": "Hytolive 橄欖果萃取",
+                "value": "100 mg"
+              },
+              {
+                "name": "MSM",
+                "value": "100 mg"
+              },
+              {
+                "name": "檸檬酸鈣",
+                "value": "70 mg"
+              },
+              {
+                "name": "維生素C",
+                "value": "40 mg"
+              },
+              {
+                "name": "UC-II 非變性二型膠原蛋白",
+                "value": "20 mg"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "60 count"
+              },
+              {
+                "name": "Form",
+                "value": "Capsule"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "仁鼎生技有限公司"
+              },
+              {
+                "name": "Origin",
+                "value": "台灣（通路標示）"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；建利健康生活網公開商品資料核對",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "ouye-jingyong:zh": [
+    {
+      "sha256": "d0ec5694bf381aa999fea5b1b5f1c056511f0ecb0d4bc15ac4af73fe0fcf72c7",
+      "src": "/products/info-v2/ouye-jingyong-zh-features.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "features",
+        "name": "勁勇軟膠囊",
+        "title": "產品特色",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "標示建議用量",
+            "rows": [
+              {
+                "name": "每日1粒，飯後食用。"
+              }
+            ]
+          },
+          {
+            "title": "注意事項與過敏原",
+            "rows": [
+              {
+                "name": "本品含堅果種子類成分；管花肉蓯蓉不建議嬰幼兒、孕婦與哺乳婦食用。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao 未獨立驗證原廠說法。食品與營養補充品的文字不能解讀為預防或治療疾病。",
+          "請以實際包裝並向藥師確認。"
+        ]
+      }
+    },
+    {
+      "sha256": "6333f89489153bb61f6c000fb2bb58bec537c228c2afa8bd5d89c175ee96bf1c",
+      "src": "/products/info-v2/ouye-jingyong-zh-facts.webp",
+      "width": 1000,
+      "height": 2189,
+      "content": {
+        "kind": "facts",
+        "name": "勁勇軟膠囊",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "馬卡根萃取"
+              },
+              {
+                "name": "鹿鞭"
+              },
+              {
+                "name": "葫蘆巴萃取"
+              },
+              {
+                "name": "透納葉"
+              },
+              {
+                "name": "鹿茸"
+              },
+              {
+                "name": "南瓜子粉"
+              },
+              {
+                "name": "管花肉蓯蓉"
+              },
+              {
+                "name": "L-精胺酸"
+              },
+              {
+                "name": "銀杏"
+              },
+              {
+                "name": "鋅"
+              },
+              {
+                "name": "維生素B群"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "60粒"
+              },
+              {
+                "name": "劑型",
+                "value": "軟膠囊"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "歐業藥品"
+              },
+              {
+                "name": "產地",
+                "value": "美國（通路標示）"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；富康活力藥局公開商品資料核對",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "ouye-jingyong:en": [
+    {
+      "sha256": "82e8d27f71648c3702ece55eec1ce5e449511fa9ed31ff270ea39ebf4ddb1c99",
+      "src": "/products/info-v2/ouye-jingyong-en-features.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "features",
+        "name": "勁勇軟膠囊",
+        "title": "Product features",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Suggested use on the label",
+            "rows": [
+              {
+                "name": "每日1粒，飯後食用。"
+              }
+            ]
+          },
+          {
+            "title": "Cautions and allergens",
+            "rows": [
+              {
+                "name": "本品含堅果種子類成分；管花肉蓯蓉不建議嬰幼兒、孕婦與哺乳婦食用。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao has not independently verified manufacturer claims. Food and supplement wording does not establish disease prevention or treatment.",
+          "Check the actual package and ask a pharmacist."
+        ]
+      }
+    },
+    {
+      "sha256": "eb6cb8e2100748b0230ba122e1114daedf3214ce12f5cf55a1f8e934a09c39b4",
+      "src": "/products/info-v2/ouye-jingyong-en-facts.webp",
+      "width": 1000,
+      "height": 2189,
+      "content": {
+        "kind": "facts",
+        "name": "勁勇軟膠囊",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "馬卡根萃取"
+              },
+              {
+                "name": "鹿鞭"
+              },
+              {
+                "name": "葫蘆巴萃取"
+              },
+              {
+                "name": "透納葉"
+              },
+              {
+                "name": "鹿茸"
+              },
+              {
+                "name": "南瓜子粉"
+              },
+              {
+                "name": "管花肉蓯蓉"
+              },
+              {
+                "name": "L-精胺酸"
+              },
+              {
+                "name": "銀杏"
+              },
+              {
+                "name": "鋅"
+              },
+              {
+                "name": "維生素B群"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "60 count"
+              },
+              {
+                "name": "Form",
+                "value": "Softgel"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "歐業藥品"
+              },
+              {
+                "name": "Origin",
+                "value": "美國（通路標示）"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；富康活力藥局公開商品資料核對",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "greenplus-vasopower:zh": [
+    {
+      "sha256": "02a15bb017bf1c2976b1f170fe51d7a1b852133d7bba4e8ff6593f747350f241",
+      "src": "/products/info-v2/greenplus-vasopower-zh-facts.webp",
+      "width": 1000,
+      "height": 1836,
+      "content": {
+        "kind": "facts",
+        "name": "舒絡寶 Vasopower",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "人參"
+              },
+              {
+                "name": "當歸"
+              },
+              {
+                "name": "刺五加"
+              },
+              {
+                "name": "雞屎藤"
+              },
+              {
+                "name": "木瓜"
+              },
+              {
+                "name": "桂枝"
+              },
+              {
+                "name": "白朮"
+              },
+              {
+                "name": "紅棗"
+              },
+              {
+                "name": "甘草"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "廠商／供應資訊",
+                "value": "綠加科技／綠杏"
+              },
+              {
+                "name": "產地",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "greenplus-vasopower:en": [
+    {
+      "sha256": "367359eb9ebad7ebb1825c9a4ce15476c30d43022cf2944ec58151cb4ee0a347",
+      "src": "/products/info-v2/greenplus-vasopower-en-facts.webp",
+      "width": 1000,
+      "height": 1836,
+      "content": {
+        "kind": "facts",
+        "name": "Vasopower",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "人參"
+              },
+              {
+                "name": "當歸"
+              },
+              {
+                "name": "刺五加"
+              },
+              {
+                "name": "雞屎藤"
+              },
+              {
+                "name": "木瓜"
+              },
+              {
+                "name": "桂枝"
+              },
+              {
+                "name": "白朮"
+              },
+              {
+                "name": "紅棗"
+              },
+              {
+                "name": "甘草"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Company / supplier",
+                "value": "綠加科技／綠杏"
+              },
+              {
+                "name": "Origin",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "greenplus-discpower:zh": [
+    {
+      "sha256": "9f78ca79652cded175081cd27429b46a477992226d723712c4ca6d052b780a59",
+      "src": "/products/info-v2/greenplus-discpower-zh-facts.webp",
+      "width": 1000,
+      "height": 1836,
+      "content": {
+        "kind": "facts",
+        "name": "龍固寶 DiscPower",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "黃耆萃取"
+              },
+              {
+                "name": "木瓜萃取"
+              },
+              {
+                "name": "丹參萃取"
+              },
+              {
+                "name": "雞屎藤萃取"
+              },
+              {
+                "name": "玉竹萃取"
+              },
+              {
+                "name": "紅景天萃取"
+              },
+              {
+                "name": "天麻萃取"
+              },
+              {
+                "name": "紅棗萃取"
+              },
+              {
+                "name": "甘草萃取"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "廠商／供應資訊",
+                "value": "綠加科技／綠杏"
+              },
+              {
+                "name": "產地",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "greenplus-discpower:en": [
+    {
+      "sha256": "39715cd996287f9ba23bd75382abab85c792c90a2171a18223d023f7664aabbc",
+      "src": "/products/info-v2/greenplus-discpower-en-facts.webp",
+      "width": 1000,
+      "height": 1836,
+      "content": {
+        "kind": "facts",
+        "name": "DiscPower",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "黃耆萃取"
+              },
+              {
+                "name": "木瓜萃取"
+              },
+              {
+                "name": "丹參萃取"
+              },
+              {
+                "name": "雞屎藤萃取"
+              },
+              {
+                "name": "玉竹萃取"
+              },
+              {
+                "name": "紅景天萃取"
+              },
+              {
+                "name": "天麻萃取"
+              },
+              {
+                "name": "紅棗萃取"
+              },
+              {
+                "name": "甘草萃取"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Company / supplier",
+                "value": "綠加科技／綠杏"
+              },
+              {
+                "name": "Origin",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "greenplus-elgucare:zh": [
+    {
+      "sha256": "ea89c306337b1d1e2da9284828343190ca236ce3f46edb8a22600bd9cfa45c3c",
+      "src": "/products/info-v2/greenplus-elgucare-zh-features.webp",
+      "width": 1000,
+      "height": 1735,
+      "content": {
+        "kind": "features",
+        "name": "益固康 Elgucare",
+        "title": "產品特色",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "原廠標示特色",
+            "rows": [
+              {
+                "name": "中醫藥專家研製",
+                "value": "集多年經驗，依人體生理機能需要特別研製的保健配方"
+              },
+              {
+                "name": "八種草本萃取複方",
+                "value": "黃耆・紅棗・丹參・雞屎藤・伸筋草・玉竹・紅景天・甘草"
+              },
+              {
+                "name": "生活挺立、能量豐沛",
+                "value": "日常保健，可讓生活挺立、豐沛人體能量"
+              },
+              {
+                "name": "全素可食",
+                "value": "素食者可安心食用，兩種容量規格自由選擇"
+              }
+            ]
+          },
+          {
+            "title": "標示建議用量",
+            "rows": [
+              {
+                "name": "保健：每日 2 次，每次 1~2 粒。加強：每日 2 次，每次 2~3 粒。飯前空腹食用最佳，多食無益。"
+              }
+            ]
+          },
+          {
+            "title": "注意事項與過敏原",
+            "rows": [
+              {
+                "name": "避免孩童自行取用，請置於陰涼處、避免陽光直射。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao 未獨立驗證原廠說法。食品與營養補充品的文字不能解讀為預防或治療疾病。",
+          "請以實際包裝並向藥師確認。"
+        ]
+      }
+    },
+    {
+      "sha256": "a0f0f9a195072a8680370ab867138011ea5fd9792aabae900f052e89bc223eef",
+      "src": "/products/info-v2/greenplus-elgucare-zh-facts.webp",
+      "width": 1000,
+      "height": 1799,
+      "content": {
+        "kind": "facts",
+        "name": "益固康 Elgucare",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "黃耆萃取物",
+                "value": "210 mg"
+              },
+              {
+                "name": "大棗萃取物",
+                "value": "100 mg"
+              },
+              {
+                "name": "丹參萃取物",
+                "value": "45 mg"
+              },
+              {
+                "name": "雞屎藤萃取物",
+                "value": "35 mg"
+              },
+              {
+                "name": "伸筋草萃取物",
+                "value": "35 mg"
+              },
+              {
+                "name": "玉竹萃取物",
+                "value": "35 mg"
+              },
+              {
+                "name": "紅景天萃取物",
+                "value": "20 mg"
+              },
+              {
+                "name": "甘草萃取物",
+                "value": "20 mg"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "廠商／供應資訊",
+                "value": "綠杏生物科技有限公司／綠加科技（LHBcare）"
+              },
+              {
+                "name": "產地",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "greenplus-elgucare:en": [
+    {
+      "sha256": "67e0b83def6823f3b6a6a30cb811061271e60f4216ad86a635af1c6535b14377",
+      "src": "/products/info-v2/greenplus-elgucare-en-features.webp",
+      "width": 1000,
+      "height": 1774,
+      "content": {
+        "kind": "features",
+        "name": "Elgucare",
+        "title": "Product features",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "As stated on the package",
+            "rows": [
+              {
+                "name": "中醫藥專家研製",
+                "value": "集多年經驗，依人體生理機能需要特別研製的保健配方"
+              },
+              {
+                "name": "八種草本萃取複方",
+                "value": "黃耆・紅棗・丹參・雞屎藤・伸筋草・玉竹・紅景天・甘草"
+              },
+              {
+                "name": "生活挺立、能量豐沛",
+                "value": "日常保健，可讓生活挺立、豐沛人體能量"
+              },
+              {
+                "name": "全素可食",
+                "value": "素食者可安心食用，兩種容量規格自由選擇"
+              }
+            ]
+          },
+          {
+            "title": "Suggested use on the label",
+            "rows": [
+              {
+                "name": "保健：每日 2 次，每次 1~2 粒。加強：每日 2 次，每次 2~3 粒。飯前空腹食用最佳，多食無益。"
+              }
+            ]
+          },
+          {
+            "title": "Cautions and allergens",
+            "rows": [
+              {
+                "name": "避免孩童自行取用，請置於陰涼處、避免陽光直射。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao has not independently verified manufacturer claims. Food and supplement wording does not establish disease prevention or treatment.",
+          "Check the actual package and ask a pharmacist."
+        ]
+      }
+    },
+    {
+      "sha256": "62137fc14b88e15594e5289d74bab7e2445a60cc73ced973a9c228d3f710f37a",
+      "src": "/products/info-v2/greenplus-elgucare-en-facts.webp",
+      "width": 1000,
+      "height": 1799,
+      "content": {
+        "kind": "facts",
+        "name": "Elgucare",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "黃耆萃取物",
+                "value": "210 mg"
+              },
+              {
+                "name": "大棗萃取物",
+                "value": "100 mg"
+              },
+              {
+                "name": "丹參萃取物",
+                "value": "45 mg"
+              },
+              {
+                "name": "雞屎藤萃取物",
+                "value": "35 mg"
+              },
+              {
+                "name": "伸筋草萃取物",
+                "value": "35 mg"
+              },
+              {
+                "name": "玉竹萃取物",
+                "value": "35 mg"
+              },
+              {
+                "name": "紅景天萃取物",
+                "value": "20 mg"
+              },
+              {
+                "name": "甘草萃取物",
+                "value": "20 mg"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Company / supplier",
+                "value": "綠杏生物科技有限公司／綠加科技（LHBcare）"
+              },
+              {
+                "name": "Origin",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "puda-grape-seed:zh": [
+    {
+      "sha256": "144590f7f96dfbc7650432d4e50bfdce30b1808ef31ec426ded1dfcaff47d791",
+      "src": "/products/info-v2/puda-grape-seed-zh-facts.webp",
+      "width": 1000,
+      "height": 1484,
+      "content": {
+        "kind": "facts",
+        "name": "安格雅葡萄籽膠囊",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "葡萄籽"
+              },
+              {
+                "name": "花粉"
+              },
+              {
+                "name": "維他命C"
+              },
+              {
+                "name": "小麥胚芽油"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "劑型",
+                "value": "膠囊"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "普大藥品"
+              },
+              {
+                "name": "產地",
+                "value": "美國"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "puda-grape-seed:en": [
+    {
+      "sha256": "b650e65d5c1d926bead58fab50bb11f21205124137c440a5a81f2984f79d3bde",
+      "src": "/products/info-v2/puda-grape-seed-en-facts.webp",
+      "width": 1000,
+      "height": 1484,
+      "content": {
+        "kind": "facts",
+        "name": "安格雅葡萄籽膠囊",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "葡萄籽"
+              },
+              {
+                "name": "花粉"
+              },
+              {
+                "name": "維他命C"
+              },
+              {
+                "name": "小麥胚芽油"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Form",
+                "value": "Capsule"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "普大藥品"
+              },
+              {
+                "name": "Origin",
+                "value": "美國"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "puda-green-tea-compound:zh": [
+    {
+      "sha256": "1260c505afdcecade26607ccd1969af2e201975a78a6dce14eab54967aad36cf",
+      "src": "/products/info-v2/puda-green-tea-compound-zh-facts.webp",
+      "width": 1000,
+      "height": 1748,
+      "content": {
+        "kind": "facts",
+        "name": "普大綠茶複方膠囊",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "銀杏"
+              },
+              {
+                "name": "山楂"
+              },
+              {
+                "name": "葡萄籽"
+              },
+              {
+                "name": "綠茶葉／綠茶粉"
+              },
+              {
+                "name": "啤酒酵母"
+              },
+              {
+                "name": "苜蓿葉"
+              },
+              {
+                "name": "維生素"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "劑型",
+                "value": "膠囊"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "普大藥品"
+              },
+              {
+                "name": "產地",
+                "value": "美國"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "puda-green-tea-compound:en": [
+    {
+      "sha256": "0baeb7f0952524f0aebb1a7cb26b5f2d67f28175185e1b8ee9633b9ab495479e",
+      "src": "/products/info-v2/puda-green-tea-compound-en-facts.webp",
+      "width": 1000,
+      "height": 1748,
+      "content": {
+        "kind": "facts",
+        "name": "普大綠茶複方膠囊",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "銀杏"
+              },
+              {
+                "name": "山楂"
+              },
+              {
+                "name": "葡萄籽"
+              },
+              {
+                "name": "綠茶葉／綠茶粉"
+              },
+              {
+                "name": "啤酒酵母"
+              },
+              {
+                "name": "苜蓿葉"
+              },
+              {
+                "name": "維生素"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Form",
+                "value": "Capsule"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "普大藥品"
+              },
+              {
+                "name": "Origin",
+                "value": "美國"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "yingkai-guguanjian-ucii:zh": [
+    {
+      "sha256": "c68a23468614669566e3cebc2024c7b53d8a4e67b3bc08fa9521c0a5fd555a3f",
+      "src": "/products/info-v2/yingkai-guguanjian-ucii-zh-facts.webp",
+      "width": 1000,
+      "height": 1799,
+      "content": {
+        "kind": "facts",
+        "name": "固關鍵 UC II",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "UC-II® 非變性二型膠原蛋白",
+                "value": "40 mg"
+              },
+              {
+                "name": "北海道鮭魚鼻軟骨"
+              },
+              {
+                "name": "乳油木果萃取"
+              },
+              {
+                "name": "葡萄糖胺"
+              },
+              {
+                "name": "95% 玻尿酸"
+              },
+              {
+                "name": "MSM"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "60粒"
+              },
+              {
+                "name": "劑型",
+                "value": "膠囊"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "迎凱有限公司"
+              },
+              {
+                "name": "產地",
+                "value": "台灣（依合作藥局提供的產品資料）"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；迎凱公開產品資料核對",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "yingkai-guguanjian-ucii:en": [
+    {
+      "sha256": "985f411e02d49bdad580cddca40b8990aa568a7af666337fe7a36c6d60e7856e",
+      "src": "/products/info-v2/yingkai-guguanjian-ucii-en-facts.webp",
+      "width": 1000,
+      "height": 1799,
+      "content": {
+        "kind": "facts",
+        "name": "固關鍵 UC II",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "UC-II® 非變性二型膠原蛋白",
+                "value": "40 mg"
+              },
+              {
+                "name": "北海道鮭魚鼻軟骨"
+              },
+              {
+                "name": "乳油木果萃取"
+              },
+              {
+                "name": "葡萄糖胺"
+              },
+              {
+                "name": "95% 玻尿酸"
+              },
+              {
+                "name": "MSM"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "60 count"
+              },
+              {
+                "name": "Form",
+                "value": "Capsule"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "迎凱有限公司"
+              },
+              {
+                "name": "Origin",
+                "value": "台灣（依合作藥局提供的產品資料）"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；迎凱公開產品資料核對",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "youquan-super-magnesium:zh": [
+    {
+      "sha256": "2e1ad219266b1a0df2680acef48906fcaa2936813491195cba8fb907aec54dbf",
+      "src": "/products/info-v2/youquan-super-magnesium-zh-facts.webp",
+      "width": 1000,
+      "height": 2101,
+      "content": {
+        "kind": "facts",
+        "name": "新優力超級鎂",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "無水檸檬酸鎂"
+              },
+              {
+                "name": "水溶性海藻鈣"
+              },
+              {
+                "name": "D-核糖"
+              },
+              {
+                "name": "束絲藻"
+              },
+              {
+                "name": "L-精胺酸"
+              },
+              {
+                "name": "離胺酸"
+              },
+              {
+                "name": "異白胺酸"
+              },
+              {
+                "name": "纈胺酸"
+              },
+              {
+                "name": "白胺酸"
+              },
+              {
+                "name": "維生素D3"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "60顆"
+              },
+              {
+                "name": "劑型",
+                "value": "膠囊"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "優全生技有限公司"
+              },
+              {
+                "name": "產地",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；東亞健康公開商品資料核對",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "youquan-super-magnesium:en": [
+    {
+      "sha256": "fc04215d2dad1642d3b8f5257244ddc9f095b6481e778b9569d5c54a20310c8e",
+      "src": "/products/info-v2/youquan-super-magnesium-en-facts.webp",
+      "width": 1000,
+      "height": 2101,
+      "content": {
+        "kind": "facts",
+        "name": "新優力超級鎂",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "無水檸檬酸鎂"
+              },
+              {
+                "name": "水溶性海藻鈣"
+              },
+              {
+                "name": "D-核糖"
+              },
+              {
+                "name": "束絲藻"
+              },
+              {
+                "name": "L-精胺酸"
+              },
+              {
+                "name": "離胺酸"
+              },
+              {
+                "name": "異白胺酸"
+              },
+              {
+                "name": "纈胺酸"
+              },
+              {
+                "name": "白胺酸"
+              },
+              {
+                "name": "維生素D3"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "60 count"
+              },
+              {
+                "name": "Form",
+                "value": "Capsule"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "優全生技有限公司"
+              },
+              {
+                "name": "Origin",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；東亞健康公開商品資料核對",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "chung-jih-youweining:zh": [
+    {
+      "sha256": "c5992b3af392459ee97345cb14b0f947f54891b6730bc1af0e1f6f8ade2ee8b7",
+      "src": "/products/info-v2/chung-jih-youweining-zh-facts.webp",
+      "width": 1000,
+      "height": 1836,
+      "content": {
+        "kind": "facts",
+        "name": "佑衛寧 高麗菜濃縮複方膠囊",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "全食物型高麗菜濃縮粉（含天然維生素U／S-甲基蛋胺酸）"
+              },
+              {
+                "name": "SOR-10 秋葵萃取物"
+              },
+              {
+                "name": "牛蒡濃縮"
+              },
+              {
+                "name": "芹菜"
+              },
+              {
+                "name": "蔥"
+              },
+              {
+                "name": "洋蔥"
+              },
+              {
+                "name": "鋅"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "30粒"
+              },
+              {
+                "name": "劑型",
+                "value": "膠囊"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "中日藥品"
+              },
+              {
+                "name": "產地",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；公開通路商品資料核對",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "chung-jih-youweining:en": [
+    {
+      "sha256": "efe9567a4b5fd54e16092fe7bb0ec8b95f1a73d69d6f77d99f48cead7eb1b89a",
+      "src": "/products/info-v2/chung-jih-youweining-en-facts.webp",
+      "width": 1000,
+      "height": 1836,
+      "content": {
+        "kind": "facts",
+        "name": "佑衛寧 高麗菜濃縮複方膠囊",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "全食物型高麗菜濃縮粉（含天然維生素U／S-甲基蛋胺酸）"
+              },
+              {
+                "name": "SOR-10 秋葵萃取物"
+              },
+              {
+                "name": "牛蒡濃縮"
+              },
+              {
+                "name": "芹菜"
+              },
+              {
+                "name": "蔥"
+              },
+              {
+                "name": "洋蔥"
+              },
+              {
+                "name": "鋅"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "30 count"
+              },
+              {
+                "name": "Form",
+                "value": "Capsule"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "中日藥品"
+              },
+              {
+                "name": "Origin",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；公開通路商品資料核對",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "luhsin-l-glutamine:zh": [
+    {
+      "sha256": "c70ca53a888bf5f264bcc9c34b8528b7b500c6655f78d0831064586831e9d44b",
+      "src": "/products/info-v2/luhsin-l-glutamine-zh-features.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "features",
+        "name": "賜利康療養素－左旋麩醯胺酸",
+        "title": "產品特色",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "標示建議用量",
+            "rows": [
+              {
+                "name": "每日1包，以溫水或飲品沖泡後食用。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao 未獨立驗證原廠說法。食品與營養補充品的文字不能解讀為預防或治療疾病。",
+          "請以實際包裝並向藥師確認。"
+        ]
+      }
+    },
+    {
+      "sha256": "56f125db564923bcb14bee4ba8f896cfdf9025eb0e8381f86077bdc797ba6a03",
+      "src": "/products/info-v2/luhsin-l-glutamine-zh-facts.webp",
+      "width": 1000,
+      "height": 1307,
+      "content": {
+        "kind": "facts",
+        "name": "賜利康療養素－左旋麩醯胺酸",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "左旋麩醯胺酸（L-Glutamine）"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "30包（每包5公克）"
+              },
+              {
+                "name": "劑型",
+                "value": "粉狀"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "綠心藥品生化科技有限公司"
+              },
+              {
+                "name": "產地",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；公開通路商品資料核對",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "luhsin-l-glutamine:en": [
+    {
+      "sha256": "bb6100df92bf92f25f4b9d6f727df497983503c5ac32a62cd06f5fd91495c939",
+      "src": "/products/info-v2/luhsin-l-glutamine-en-features.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "features",
+        "name": "L-Glutamine",
+        "title": "Product features",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Suggested use on the label",
+            "rows": [
+              {
+                "name": "每日1包，以溫水或飲品沖泡後食用。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao has not independently verified manufacturer claims. Food and supplement wording does not establish disease prevention or treatment.",
+          "Check the actual package and ask a pharmacist."
+        ]
+      }
+    },
+    {
+      "sha256": "235f802f0db7f1061e3b08298795ea6fb156a9051dc7dc1cd0c67a29a2e4f9f1",
+      "src": "/products/info-v2/luhsin-l-glutamine-en-facts.webp",
+      "width": 1000,
+      "height": 1307,
+      "content": {
+        "kind": "facts",
+        "name": "L-Glutamine",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "左旋麩醯胺酸（L-Glutamine）"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "30包（每包5公克）"
+              },
+              {
+                "name": "Form",
+                "value": "粉狀"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "綠心藥品生化科技有限公司"
+              },
+              {
+                "name": "Origin",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料；公開通路商品資料核對",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "aob-vitality-beauty-45:zh": [
+    {
+      "sha256": "0ab1f3079de3fc15ca5762c0206deb671b17c4f88188e9b3b58abe35867f61c1",
+      "src": "/products/info-v2/aob-vitality-beauty-45-zh-features.webp",
+      "width": 1000,
+      "height": 1180,
+      "content": {
+        "kind": "features",
+        "name": "New AOB Vitality Beauty",
+        "title": "產品特色",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "原廠標示特色",
+            "rows": [
+              {
+                "name": "健全體調",
+                "value": "包裝標示「健全體調」"
+              },
+              {
+                "name": "美容增進",
+                "value": "包裝標示「美容增進」"
+              },
+              {
+                "name": "45 包條狀隨身包",
+                "value": "單包分裝的鋁袋條狀包，免量取"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao 未獨立驗證原廠說法。食品與營養補充品的文字不能解讀為預防或治療疾病。",
+          "請以實際包裝並向藥師確認。"
+        ]
+      }
+    },
+    {
+      "sha256": "f688cda627c4d5cfdf23579517511671b1f6d0dc20726971bb47741d83f7df7c",
+      "src": "/products/info-v2/aob-vitality-beauty-45-zh-facts.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "facts",
+        "name": "New AOB Vitality Beauty",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "成分資料待確認。"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "45包"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "尚無已驗證的產品資料來源。",
+          "請以實際包裝及藥師確認為準。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "aob-vitality-beauty-45:en": [
+    {
+      "sha256": "669e5a641ec4f48ec4d6a2a1c578a8e86879c01322debac47444ef9836c35161",
+      "src": "/products/info-v2/aob-vitality-beauty-45-en-features.webp",
+      "width": 1000,
+      "height": 1219,
+      "content": {
+        "kind": "features",
+        "name": "AOB Vitality Beauty",
+        "title": "Product features",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "As stated on the package",
+            "rows": [
+              {
+                "name": "健全體調",
+                "value": "包裝標示「健全體調」"
+              },
+              {
+                "name": "美容增進",
+                "value": "包裝標示「美容增進」"
+              },
+              {
+                "name": "45 包條狀隨身包",
+                "value": "單包分裝的鋁袋條狀包，免量取"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao has not independently verified manufacturer claims. Food and supplement wording does not establish disease prevention or treatment.",
+          "Check the actual package and ask a pharmacist."
+        ]
+      }
+    },
+    {
+      "sha256": "40488544b326a38f7e4b891c436355f2e73614a9fc019b2009a3c663cd682242",
+      "src": "/products/info-v2/aob-vitality-beauty-45-en-facts.webp",
+      "width": 1000,
+      "height": 1100,
+      "content": {
+        "kind": "facts",
+        "name": "AOB Vitality Beauty",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "Ingredient details require verification."
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "45包"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "No verified product source is available.",
+          "Check the actual package and confirm the details with a pharmacist.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "chungchi-yiyuansu-gastrodia-100:zh": [
+    {
+      "sha256": "a5bbdc07431ac1ef8d0fe07f812044e21329aae3e8a46512c86bde363e44d230",
+      "src": "/products/info-v2/chungchi-yiyuansu-gastrodia-100-zh-features.webp",
+      "width": 1000,
+      "height": 1735,
+      "content": {
+        "kind": "features",
+        "name": "憶元素 天麻100膠囊",
+        "title": "產品特色",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "原廠標示特色",
+            "rows": [
+              {
+                "name": "龍眼花＋天麻 雙萃取",
+                "value": "每粒含龍眼花萃取物 200 mg、天麻萃取物 100 mg"
+              },
+              {
+                "name": "綜合維生素B群 75 mg",
+                "value": "B1・B2・B6・B12、菸鹼醯胺、葉酸、生物素"
+              },
+              {
+                "name": "蜂王乳・魚油・黑豆複方",
+                "value": "蜂王乳粉 50 mg、魚油粉 30 mg、黑豆粉 10 mg"
+              },
+              {
+                "name": "SGS 檢驗合格",
+                "value": "每日 1 粒，本包裝含 60 份"
+              }
+            ]
+          },
+          {
+            "title": "標示建議用量",
+            "rows": [
+              {
+                "name": "每日 1 粒。"
+              }
+            ]
+          },
+          {
+            "title": "注意事項與過敏原",
+            "rows": [
+              {
+                "name": "本品含乳糖、魚油、黑豆，對其成分過敏者請留意。請置於陰涼乾燥處，避免陽光直射。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao 未獨立驗證原廠說法。食品與營養補充品的文字不能解讀為預防或治療疾病。",
+          "請以實際包裝並向藥師確認。"
+        ]
+      }
+    },
+    {
+      "sha256": "010473d3a5685ab815b68c277a1c988d82f7d6d8b8aaa907ea325894f4087c1e",
+      "src": "/products/info-v2/chungchi-yiyuansu-gastrodia-100-zh-facts.webp",
+      "width": 1000,
+      "height": 2013,
+      "content": {
+        "kind": "facts",
+        "name": "憶元素 天麻100膠囊",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "龍眼花萃取物 200 mg（含綠蜂膠粉、β-環狀糊精）"
+              },
+              {
+                "name": "天麻萃取物",
+                "value": "100 mg"
+              },
+              {
+                "name": "綜合維生素B群",
+                "value": "75 mg"
+              },
+              {
+                "name": "蜂王乳粉",
+                "value": "50 mg"
+              },
+              {
+                "name": "魚油粉",
+                "value": "30 mg"
+              },
+              {
+                "name": "乳糖",
+                "value": "25.5 mg"
+              },
+              {
+                "name": "黑豆粉",
+                "value": "10 mg"
+              },
+              {
+                "name": "維生素E粉",
+                "value": "5 mg"
+              },
+              {
+                "name": "二氧化矽",
+                "value": "4.5 mg"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "60粒"
+              },
+              {
+                "name": "劑型",
+                "value": "膠囊"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "中旗生物科技股份有限公司"
+              },
+              {
+                "name": "產地",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "chungchi-yiyuansu-gastrodia-100:en": [
+    {
+      "sha256": "3a622f6453f458c2fba8413f1d9bd1a1ead3a80105dce624c213b944e8963af0",
+      "src": "/products/info-v2/chungchi-yiyuansu-gastrodia-100-en-features.webp",
+      "width": 1000,
+      "height": 1774,
+      "content": {
+        "kind": "features",
+        "name": "憶元素 天麻100膠囊",
+        "title": "Product features",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "As stated on the package",
+            "rows": [
+              {
+                "name": "龍眼花＋天麻 雙萃取",
+                "value": "每粒含龍眼花萃取物 200 mg、天麻萃取物 100 mg"
+              },
+              {
+                "name": "綜合維生素B群 75 mg",
+                "value": "B1・B2・B6・B12、菸鹼醯胺、葉酸、生物素"
+              },
+              {
+                "name": "蜂王乳・魚油・黑豆複方",
+                "value": "蜂王乳粉 50 mg、魚油粉 30 mg、黑豆粉 10 mg"
+              },
+              {
+                "name": "SGS 檢驗合格",
+                "value": "每日 1 粒，本包裝含 60 份"
+              }
+            ]
+          },
+          {
+            "title": "Suggested use on the label",
+            "rows": [
+              {
+                "name": "每日 1 粒。"
+              }
+            ]
+          },
+          {
+            "title": "Cautions and allergens",
+            "rows": [
+              {
+                "name": "本品含乳糖、魚油、黑豆，對其成分過敏者請留意。請置於陰涼乾燥處，避免陽光直射。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao has not independently verified manufacturer claims. Food and supplement wording does not establish disease prevention or treatment.",
+          "Check the actual package and ask a pharmacist."
+        ]
+      }
+    },
+    {
+      "sha256": "10b2a4fcf7b0a24a7c9b8ee8a031e5030775a92d94b9fdd441671a76426c2262",
+      "src": "/products/info-v2/chungchi-yiyuansu-gastrodia-100-en-facts.webp",
+      "width": 1000,
+      "height": 2013,
+      "content": {
+        "kind": "facts",
+        "name": "憶元素 天麻100膠囊",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "龍眼花萃取物 200 mg（含綠蜂膠粉、β-環狀糊精）"
+              },
+              {
+                "name": "天麻萃取物",
+                "value": "100 mg"
+              },
+              {
+                "name": "綜合維生素B群",
+                "value": "75 mg"
+              },
+              {
+                "name": "蜂王乳粉",
+                "value": "50 mg"
+              },
+              {
+                "name": "魚油粉",
+                "value": "30 mg"
+              },
+              {
+                "name": "乳糖",
+                "value": "25.5 mg"
+              },
+              {
+                "name": "黑豆粉",
+                "value": "10 mg"
+              },
+              {
+                "name": "維生素E粉",
+                "value": "5 mg"
+              },
+              {
+                "name": "二氧化矽",
+                "value": "4.5 mg"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "60 count"
+              },
+              {
+                "name": "Form",
+                "value": "Capsule"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "中旗生物科技股份有限公司"
+              },
+              {
+                "name": "Origin",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "yuanding-puregps-defense-450:zh": [
+    {
+      "sha256": "fd1d00f07f2f15f20f33fa943c22d3337981245b3b24de181195d5e4372cd294",
+      "src": "/products/info-v2/yuanding-puregps-defense-450-zh-features.webp",
+      "width": 1000,
+      "height": 1830,
+      "content": {
+        "kind": "features",
+        "name": "強抗力優 450+ Defense",
+        "title": "產品特色",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "原廠標示特色",
+            "rows": [
+              {
+                "name": "高純度多醣體",
+                "value": "專利技術純化酵母，β-1,3/1,6 長鏈酵母葡聚多醣體純度高達 75% 以上"
+              },
+              {
+                "name": "國際原料授權",
+                "value": "採用 Wellmune WGP®，屬 Kerry 公司原料授權使用"
+              },
+              {
+                "name": "國際獲獎配方",
+                "value": "榮獲 2007 年 IFT 美國食品科學學會「創新研究獎」"
+              },
+              {
+                "name": "每天 1 顆，輕鬆保養",
+                "value": "每顆膠囊含 400 mg β-1,3/1,6 酵母葡聚多醣體，天天食用防護周到"
+              }
+            ]
+          },
+          {
+            "title": "標示建議用量",
+            "rows": [
+              {
+                "name": "每日 1~2 粒，餐後食用。"
+              }
+            ]
+          },
+          {
+            "title": "注意事項與過敏原",
+            "rows": [
+              {
+                "name": "孕婦及授乳中婦女請遵照醫師指示食用；對穀胱甘肽過敏者、孕婦、哺乳婦女及嬰幼兒應避免食用。請保存於陰涼乾燥處，避免熱及陽光直射。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao 未獨立驗證原廠說法。食品與營養補充品的文字不能解讀為預防或治療疾病。",
+          "請以實際包裝並向藥師確認。"
+        ]
+      }
+    },
+    {
+      "sha256": "89fd1cef4a2d1984ade9eb132dd1f6e437a951e5ef06f903f28973938a3f3c72",
+      "src": "/products/info-v2/yuanding-puregps-defense-450-zh-facts.webp",
+      "width": 1000,
+      "height": 1748,
+      "content": {
+        "kind": "facts",
+        "name": "強抗力優 450+ Defense",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "非水溶性葡聚多醣體",
+                "value": "250 mg"
+              },
+              {
+                "name": "水溶性葡聚多醣體",
+                "value": "150 mg"
+              },
+              {
+                "name": "穀胱甘肽",
+                "value": "50 mg"
+              },
+              {
+                "name": "植物膠（羥丙基甲基纖維素）"
+              },
+              {
+                "name": "鹿角菜膠"
+              },
+              {
+                "name": "氯化鉀"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "60粒"
+              },
+              {
+                "name": "劑型",
+                "value": "植物膠囊"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "圓鼎生物科技有限公司"
+              },
+              {
+                "name": "產地",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "yuanding-puregps-defense-450:en": [
+    {
+      "sha256": "82ef2397fe2e6429e8da619cfd769ae62f031438f88a8e185798f1681bb06105",
+      "src": "/products/info-v2/yuanding-puregps-defense-450-en-features.webp",
+      "width": 1000,
+      "height": 1869,
+      "content": {
+        "kind": "features",
+        "name": "PUREGPS Defense",
+        "title": "Product features",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "As stated on the package",
+            "rows": [
+              {
+                "name": "高純度多醣體",
+                "value": "專利技術純化酵母，β-1,3/1,6 長鏈酵母葡聚多醣體純度高達 75% 以上"
+              },
+              {
+                "name": "國際原料授權",
+                "value": "採用 Wellmune WGP®，屬 Kerry 公司原料授權使用"
+              },
+              {
+                "name": "國際獲獎配方",
+                "value": "榮獲 2007 年 IFT 美國食品科學學會「創新研究獎」"
+              },
+              {
+                "name": "每天 1 顆，輕鬆保養",
+                "value": "每顆膠囊含 400 mg β-1,3/1,6 酵母葡聚多醣體，天天食用防護周到"
+              }
+            ]
+          },
+          {
+            "title": "Suggested use on the label",
+            "rows": [
+              {
+                "name": "每日 1~2 粒，餐後食用。"
+              }
+            ]
+          },
+          {
+            "title": "Cautions and allergens",
+            "rows": [
+              {
+                "name": "孕婦及授乳中婦女請遵照醫師指示食用；對穀胱甘肽過敏者、孕婦、哺乳婦女及嬰幼兒應避免食用。請保存於陰涼乾燥處，避免熱及陽光直射。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao has not independently verified manufacturer claims. Food and supplement wording does not establish disease prevention or treatment.",
+          "Check the actual package and ask a pharmacist."
+        ]
+      }
+    },
+    {
+      "sha256": "9994d3c16ec7bb6665e2f0df0d278deeba39d100734bca01d3729242258365ed",
+      "src": "/products/info-v2/yuanding-puregps-defense-450-en-facts.webp",
+      "width": 1000,
+      "height": 1748,
+      "content": {
+        "kind": "facts",
+        "name": "PUREGPS Defense",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "非水溶性葡聚多醣體",
+                "value": "250 mg"
+              },
+              {
+                "name": "水溶性葡聚多醣體",
+                "value": "150 mg"
+              },
+              {
+                "name": "穀胱甘肽",
+                "value": "50 mg"
+              },
+              {
+                "name": "植物膠（羥丙基甲基纖維素）"
+              },
+              {
+                "name": "鹿角菜膠"
+              },
+              {
+                "name": "氯化鉀"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "60 count"
+              },
+              {
+                "name": "Form",
+                "value": "植物膠囊"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "圓鼎生物科技有限公司"
+              },
+              {
+                "name": "Origin",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "chungchi-ganmeijia-coral-ca:zh": [
+    {
+      "sha256": "212cebdce8aa6d6e2e65f739fdc9a53846f23d2e9f3a18b01c0a6f38d99369c1",
+      "src": "/products/info-v2/chungchi-ganmeijia-coral-ca-zh-features.webp",
+      "width": 1000,
+      "height": 1556,
+      "content": {
+        "kind": "features",
+        "name": "甘鎂佳珊瑚鈣",
+        "title": "產品特色",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "原廠標示特色",
+            "rows": [
+              {
+                "name": "珊瑚鈣 Coral Ca",
+                "value": "以珊瑚鈣為鈣質來源"
+              },
+              {
+                "name": "甘胺酸鎂 Magnesium Glycinate",
+                "value": "鎂與鈣搭配補充"
+              },
+              {
+                "name": "維生素 K2（MK-7）＋ D3",
+                "value": "K2 選用 MK-7 形式，搭配維生素 D3"
+              },
+              {
+                "name": "加拿大製造",
+                "value": "Made in Canada，60 錠裝"
+              }
+            ]
+          },
+          {
+            "title": "注意事項與過敏原",
+            "rows": [
+              {
+                "name": "請置於陰涼乾燥處，避免孩童自行取用。孕婦及慢性病患者食用前請諮詢專業人員。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao 未獨立驗證原廠說法。食品與營養補充品的文字不能解讀為預防或治療疾病。",
+          "請以實際包裝並向藥師確認。"
+        ]
+      }
+    },
+    {
+      "sha256": "2ae96ff4e9be99c32eb9d250ec91d69017ef536f35043cf9c6811188c511d3f6",
+      "src": "/products/info-v2/chungchi-ganmeijia-coral-ca-zh-facts.webp",
+      "width": 1000,
+      "height": 1623,
+      "content": {
+        "kind": "facts",
+        "name": "甘鎂佳珊瑚鈣",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "甘胺酸鎂（Magnesium Glycinate）"
+              },
+              {
+                "name": "珊瑚鈣（Coral Ca）"
+              },
+              {
+                "name": "維生素K2（MK-7）"
+              },
+              {
+                "name": "維生素D3"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "60錠"
+              },
+              {
+                "name": "劑型",
+                "value": "錠劑"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "中旗生物科技股份有限公司"
+              },
+              {
+                "name": "產地",
+                "value": "加拿大（包裝標示 MADE IN CANADA）"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "chungchi-ganmeijia-coral-ca:en": [
+    {
+      "sha256": "18cac21a1f532c610df6b498240fbc39152be15fef9b093fdf54529a95af8761",
+      "src": "/products/info-v2/chungchi-ganmeijia-coral-ca-en-features.webp",
+      "width": 1000,
+      "height": 1595,
+      "content": {
+        "kind": "features",
+        "name": "Magnesium Glycinate Coral Ca",
+        "title": "Product features",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "As stated on the package",
+            "rows": [
+              {
+                "name": "珊瑚鈣 Coral Ca",
+                "value": "以珊瑚鈣為鈣質來源"
+              },
+              {
+                "name": "甘胺酸鎂 Magnesium Glycinate",
+                "value": "鎂與鈣搭配補充"
+              },
+              {
+                "name": "維生素 K2（MK-7）＋ D3",
+                "value": "K2 選用 MK-7 形式，搭配維生素 D3"
+              },
+              {
+                "name": "加拿大製造",
+                "value": "Made in Canada，60 錠裝"
+              }
+            ]
+          },
+          {
+            "title": "Cautions and allergens",
+            "rows": [
+              {
+                "name": "請置於陰涼乾燥處，避免孩童自行取用。孕婦及慢性病患者食用前請諮詢專業人員。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao has not independently verified manufacturer claims. Food and supplement wording does not establish disease prevention or treatment.",
+          "Check the actual package and ask a pharmacist."
+        ]
+      }
+    },
+    {
+      "sha256": "a9dcdea5300b7847435f6e024a72163fc44f0c5a479b7f510a6bc8d6326521c0",
+      "src": "/products/info-v2/chungchi-ganmeijia-coral-ca-en-facts.webp",
+      "width": 1000,
+      "height": 1623,
+      "content": {
+        "kind": "facts",
+        "name": "Magnesium Glycinate Coral Ca",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "甘胺酸鎂（Magnesium Glycinate）"
+              },
+              {
+                "name": "珊瑚鈣（Coral Ca）"
+              },
+              {
+                "name": "維生素K2（MK-7）"
+              },
+              {
+                "name": "維生素D3"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "60 count"
+              },
+              {
+                "name": "Form",
+                "value": "錠劑"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "中旗生物科技股份有限公司"
+              },
+              {
+                "name": "Origin",
+                "value": "加拿大（包裝標示 MADE IN CANADA）"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "tianxia-chan-c-80:zh": [
+    {
+      "sha256": "504793f0985a4b8d84b226fb2e8922f37dc7f094715c67a2316ba397eeea8f80",
+      "src": "/products/info-v2/tianxia-chan-c-80-zh-features.webp",
+      "width": 1000,
+      "height": 1330,
+      "content": {
+        "kind": "features",
+        "name": "強喜錠 Chan-C",
+        "title": "產品特色",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "原廠標示特色",
+            "rows": [
+              {
+                "name": "維生素 C ＋ B6 複方",
+                "value": "維生素C（抗壞血酸）、抗壞血酸鈉搭配維生素B6"
+              },
+              {
+                "name": "添加 β-胡蘿蔔素",
+                "value": "另含泛酸鈣，營養更完整"
+              },
+              {
+                "name": "草莓風味咀嚼錠",
+                "value": "草莓香料調味，大人小孩都好接受"
+              },
+              {
+                "name": "國家品質標章",
+                "value": "台灣製造，井田國際醫藥廠生產"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao 未獨立驗證原廠說法。食品與營養補充品的文字不能解讀為預防或治療疾病。",
+          "請以實際包裝並向藥師確認。"
+        ]
+      }
+    },
+    {
+      "sha256": "aef3c88464dd8ae509526d94605a773dc351006dd2d563b8c789f5cfdf94e7fc",
+      "src": "/products/info-v2/tianxia-chan-c-80-zh-facts.webp",
+      "width": 1000,
+      "height": 1976,
+      "content": {
+        "kind": "facts",
+        "name": "強喜錠 Chan-C",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "維生素C（抗壞血酸）"
+              },
+              {
+                "name": "抗壞血酸鈉"
+              },
+              {
+                "name": "泛酸鈣"
+              },
+              {
+                "name": "維生素B6"
+              },
+              {
+                "name": "β-胡蘿蔔素"
+              },
+              {
+                "name": "蔗糖"
+              },
+              {
+                "name": "氧化澱粉"
+              },
+              {
+                "name": "草莓香料"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "80錠"
+              },
+              {
+                "name": "劑型",
+                "value": "錠劑"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "井田國際醫藥廠股份有限公司（天下生物科技股份有限公司總代理）"
+              },
+              {
+                "name": "產地",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "tianxia-chan-c-80:en": [
+    {
+      "sha256": "a08212afd7044a1a538cea5968e853e880b6dfa765dc8e9ebfa1f14ea11568f5",
+      "src": "/products/info-v2/tianxia-chan-c-80-en-features.webp",
+      "width": 1000,
+      "height": 1369,
+      "content": {
+        "kind": "features",
+        "name": "Chan-C Tablets",
+        "title": "Product features",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "As stated on the package",
+            "rows": [
+              {
+                "name": "維生素 C ＋ B6 複方",
+                "value": "維生素C（抗壞血酸）、抗壞血酸鈉搭配維生素B6"
+              },
+              {
+                "name": "添加 β-胡蘿蔔素",
+                "value": "另含泛酸鈣，營養更完整"
+              },
+              {
+                "name": "草莓風味咀嚼錠",
+                "value": "草莓香料調味，大人小孩都好接受"
+              },
+              {
+                "name": "國家品質標章",
+                "value": "台灣製造，井田國際醫藥廠生產"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao has not independently verified manufacturer claims. Food and supplement wording does not establish disease prevention or treatment.",
+          "Check the actual package and ask a pharmacist."
+        ]
+      }
+    },
+    {
+      "sha256": "e3ac7a11f80f49a87cb411f3351c6a226832895c8e38d09659a3ebf47c92570a",
+      "src": "/products/info-v2/tianxia-chan-c-80-en-facts.webp",
+      "width": 1000,
+      "height": 1976,
+      "content": {
+        "kind": "facts",
+        "name": "Chan-C Tablets",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "維生素C（抗壞血酸）"
+              },
+              {
+                "name": "抗壞血酸鈉"
+              },
+              {
+                "name": "泛酸鈣"
+              },
+              {
+                "name": "維生素B6"
+              },
+              {
+                "name": "β-胡蘿蔔素"
+              },
+              {
+                "name": "蔗糖"
+              },
+              {
+                "name": "氧化澱粉"
+              },
+              {
+                "name": "草莓香料"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "80 count"
+              },
+              {
+                "name": "Form",
+                "value": "錠劑"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "井田國際醫藥廠股份有限公司（天下生物科技股份有限公司總代理）"
+              },
+              {
+                "name": "Origin",
+                "value": "台灣"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "huamao-progifted-lp28:zh": [
+    {
+      "sha256": "04dc13db55d1ea390e8e92acadb63eb5fcb3b0bab30e8eb3d17a961658482844",
+      "src": "/products/info-v2/huamao-progifted-lp28-zh-features.webp",
+      "width": 1000,
+      "height": 1330,
+      "content": {
+        "kind": "features",
+        "name": "Progifted LP-28 益生菌",
+        "title": "產品特色",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "原廠標示特色",
+            "rows": [
+              {
+                "name": "第4代專利三層包埋",
+                "value": "三層包埋技術，通過耐胃酸、耐膽鹽與活力穩定試驗"
+              },
+              {
+                "name": "120億・15種共生型菌株",
+                "value": "含 LP-28® 等 15 種三層包埋複合乳酸菌，每包 120×10⁸ cfu"
+              },
+              {
+                "name": "多國專利葡聚多醣",
+                "value": "獨家添加美國專利 β-葡聚多醣與菊糖"
+              },
+              {
+                "name": "日本天野綜合酵素",
+                "value": "添加日本天野製藥（Amano）3 種綜合酵素"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao 未獨立驗證原廠說法。食品與營養補充品的文字不能解讀為預防或治療疾病。",
+          "請以實際包裝並向藥師確認。"
+        ]
+      }
+    },
+    {
+      "sha256": "b8920a41b8b02e92158e814d9ac1424ad482cf04a257931d1cdb513cf3faeb0e",
+      "src": "/products/info-v2/huamao-progifted-lp28-zh-facts.webp",
+      "width": 1000,
+      "height": 1572,
+      "content": {
+        "kind": "facts",
+        "name": "Progifted LP-28 益生菌",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "15種三層包埋複合乳酸菌（含 LP-28®）"
+              },
+              {
+                "name": "日本天野（Amano）3種綜合酵素"
+              },
+              {
+                "name": "β-葡聚多醣（多國專利）"
+              },
+              {
+                "name": "菊糖"
+              },
+              {
+                "name": "蘋果口味"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "30包"
+              },
+              {
+                "name": "劑型",
+                "value": "粉末（隨身包）"
+              },
+              {
+                "name": "廠商／供應資訊",
+                "value": "華貿行實業股份有限公司"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "huamao-progifted-lp28:en": [
+    {
+      "sha256": "215c3142edc167cff1c2668e864ef9544890387334d426affef45dff45672a4c",
+      "src": "/products/info-v2/huamao-progifted-lp28-en-features.webp",
+      "width": 1000,
+      "height": 1369,
+      "content": {
+        "kind": "features",
+        "name": "Progifted LP-28",
+        "title": "Product features",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "As stated on the package",
+            "rows": [
+              {
+                "name": "第4代專利三層包埋",
+                "value": "三層包埋技術，通過耐胃酸、耐膽鹽與活力穩定試驗"
+              },
+              {
+                "name": "120億・15種共生型菌株",
+                "value": "含 LP-28® 等 15 種三層包埋複合乳酸菌，每包 120×10⁸ cfu"
+              },
+              {
+                "name": "多國專利葡聚多醣",
+                "value": "獨家添加美國專利 β-葡聚多醣與菊糖"
+              },
+              {
+                "name": "日本天野綜合酵素",
+                "value": "添加日本天野製藥（Amano）3 種綜合酵素"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao has not independently verified manufacturer claims. Food and supplement wording does not establish disease prevention or treatment.",
+          "Check the actual package and ask a pharmacist."
+        ]
+      }
+    },
+    {
+      "sha256": "34dc5ac0bded685c4a60608a360900a121aaacabecf8d134201722d6482c6569",
+      "src": "/products/info-v2/huamao-progifted-lp28-en-facts.webp",
+      "width": 1000,
+      "height": 1572,
+      "content": {
+        "kind": "facts",
+        "name": "Progifted LP-28",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "15種三層包埋複合乳酸菌（含 LP-28®）"
+              },
+              {
+                "name": "日本天野（Amano）3種綜合酵素"
+              },
+              {
+                "name": "β-葡聚多醣（多國專利）"
+              },
+              {
+                "name": "菊糖"
+              },
+              {
+                "name": "蘋果口味"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "30包"
+              },
+              {
+                "name": "Form",
+                "value": "粉末（隨身包）"
+              },
+              {
+                "name": "Company / supplier",
+                "value": "華貿行實業股份有限公司"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ],
+  "gaoyouzhi-vitamin-b-60:zh": [
+    {
+      "sha256": "3c13762ea7b7966b66d95ec0965b4a859f81ab03453f0bcc351ec188f4ce8dba",
+      "src": "/products/info-v2/gaoyouzhi-vitamin-b-60-zh-features.webp",
+      "width": 1000,
+      "height": 1510,
+      "content": {
+        "kind": "features",
+        "name": "高優質維他命B群",
+        "title": "產品特色",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "原廠標示特色",
+            "rows": [
+              {
+                "name": "原料嚴選 DSM 德國廠",
+                "value": "維生素原料來自 DSM 德國廠"
+              },
+              {
+                "name": "完整 B 群",
+                "value": "B1・B2・B6・B12、葉酸、生物素一次補足"
+              },
+              {
+                "name": "95% 薑黃・啤酒酵母・五味子",
+                "value": "加強版配方，複方協同"
+              },
+              {
+                "name": "一天一粒，方便持續",
+                "value": "軟膠囊好吞食，60 粒約一個月份"
+              }
+            ]
+          },
+          {
+            "title": "注意事項與過敏原",
+            "rows": [
+              {
+                "name": "請置於陰涼乾燥處，避免高溫與陽光直射；開封後請儘早食用。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao 未獨立驗證原廠說法。食品與營養補充品的文字不能解讀為預防或治療疾病。",
+          "請以實際包裝並向藥師確認。"
+        ]
+      }
+    },
+    {
+      "sha256": "f22573d004ee319e3685e14085928f7a39ab8d531490c18e42d31bf2b83416ff",
+      "src": "/products/info-v2/gaoyouzhi-vitamin-b-60-zh-facts.webp",
+      "width": 1000,
+      "height": 1836,
+      "content": {
+        "kind": "facts",
+        "name": "高優質維他命B群",
+        "title": "成分與規格",
+        "subtitle": "依來源資料整理，非 uYao 評價或背書。",
+        "sections": [
+          {
+            "title": "資料所列成分",
+            "rows": [
+              {
+                "name": "維生素B1"
+              },
+              {
+                "name": "維生素B2"
+              },
+              {
+                "name": "維生素B6"
+              },
+              {
+                "name": "維生素B12"
+              },
+              {
+                "name": "生物素"
+              },
+              {
+                "name": "葉酸"
+              },
+              {
+                "name": "薑黃萃取物（盒面標示 95%）"
+              },
+              {
+                "name": "啤酒酵母"
+              },
+              {
+                "name": "五味子"
+              }
+            ]
+          },
+          {
+            "title": "品項資料",
+            "rows": [
+              {
+                "name": "規格",
+                "value": "60粒"
+              },
+              {
+                "name": "劑型",
+                "value": "軟膠囊"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "合作藥局提供資料，尚未以公開來源獨立驗證。",
+          "目錄收錄不代表即時有貨、價格或適用性。"
+        ]
+      }
+    }
+  ],
+  "gaoyouzhi-vitamin-b-60:en": [
+    {
+      "sha256": "68ab04b1cc7b5aacf4d78f7f930949db02d914817b9bf9a289c632ad526a322e",
+      "src": "/products/info-v2/gaoyouzhi-vitamin-b-60-en-features.webp",
+      "width": 1000,
+      "height": 1549,
+      "content": {
+        "kind": "features",
+        "name": "高優質維他命B群",
+        "title": "Product features",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "As stated on the package",
+            "rows": [
+              {
+                "name": "原料嚴選 DSM 德國廠",
+                "value": "維生素原料來自 DSM 德國廠"
+              },
+              {
+                "name": "完整 B 群",
+                "value": "B1・B2・B6・B12、葉酸、生物素一次補足"
+              },
+              {
+                "name": "95% 薑黃・啤酒酵母・五味子",
+                "value": "加強版配方，複方協同"
+              },
+              {
+                "name": "一天一粒，方便持續",
+                "value": "軟膠囊好吞食，60 粒約一個月份"
+              }
+            ]
+          },
+          {
+            "title": "Cautions and allergens",
+            "rows": [
+              {
+                "name": "請置於陰涼乾燥處，避免高溫與陽光直射；開封後請儘早食用。"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "uYao has not independently verified manufacturer claims. Food and supplement wording does not establish disease prevention or treatment.",
+          "Check the actual package and ask a pharmacist."
+        ]
+      }
+    },
+    {
+      "sha256": "69ba46b5f01e6058acf0195b70ef7a36ea8b2c5b497a6557013c3c3010e0a263",
+      "src": "/products/info-v2/gaoyouzhi-vitamin-b-60-en-facts.webp",
+      "width": 1000,
+      "height": 1836,
+      "content": {
+        "kind": "facts",
+        "name": "高優質維他命B群",
+        "title": "Ingredients & specifications",
+        "subtitle": "Source wording, not a uYao endorsement.",
+        "sections": [
+          {
+            "title": "Ingredients listed by source",
+            "rows": [
+              {
+                "name": "維生素B1"
+              },
+              {
+                "name": "維生素B2"
+              },
+              {
+                "name": "維生素B6"
+              },
+              {
+                "name": "維生素B12"
+              },
+              {
+                "name": "生物素"
+              },
+              {
+                "name": "葉酸"
+              },
+              {
+                "name": "薑黃萃取物（盒面標示 95%）"
+              },
+              {
+                "name": "啤酒酵母"
+              },
+              {
+                "name": "五味子"
+              }
+            ]
+          },
+          {
+            "title": "Product record",
+            "rows": [
+              {
+                "name": "Pack size",
+                "value": "60 count"
+              },
+              {
+                "name": "Form",
+                "value": "Softgel"
+              }
+            ]
+          }
+        ],
+        "notes": [
+          "合作藥局提供商品資料",
+          "Partner-provided information; not independently verified against a public source.",
+          "A catalog listing does not establish stock, price or suitability."
+        ]
+      }
+    }
+  ]
+}
