@@ -814,8 +814,7 @@ html[data-theme="dark"] .theme-logo-dark {
   isolation: isolate;
 }
 
-/* One photographed cabinet, tiled at its original bay boundaries (1774 × 350).
-   Background, package baseline and front lip all use the same shelf height. */
+/* Each bay is one integrated product-on-shelf scene; no separate floating cutout. */
 .product-showcase-stage {
   --shelf-height: clamp(17rem, 21vw, 25rem);
   width: 100vw;
@@ -858,61 +857,29 @@ html[data-theme="dark"] .theme-logo-dark {
 
 .product-showcase-bay {
   position: relative;
-  flex: 0 0 calc(var(--shelf-height) * var(--bay-width));
+  flex: 0 0 calc(var(--shelf-height) * 1.5);
   height: 100%;
   scroll-snap-align: center;
-  background-image: url("/brand/uyao-product-cabinet-reference-v3.webp");
-  background-size: auto var(--shelf-height);
-  background-position: calc(var(--shelf-height) * var(--bay-offset)) top;
-  background-repeat: no-repeat;
 }
 
 .product-showcase-item {
-  position: absolute;
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
   border: 0;
   padding: 0;
   background: transparent;
   cursor: inherit;
-  left: 13%;
-  right: 5%;
-  bottom: 2%;
-  height: var(--packshot-height);
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  outline-offset: -4px;
 }
 
-.product-showcase-item::before {
-  content: "";
-  position: absolute;
-  bottom: -1%;
-  width: 65%;
-  height: 5%;
-  border-radius: 50%;
-  background: radial-gradient(ellipse, rgb(54 31 12 / 0.42), transparent 70%);
-}
-
-.product-showcase-packshot {
-  position: relative;
-  width: auto;
+.product-showcase-scene {
+  display: block;
+  width: 100%;
   height: 100%;
-  max-width: 100%;
-  object-fit: contain;
-  object-position: bottom center;
-  filter: drop-shadow(5px 4px 3px rgb(57 33 12 / 0.24));
+  object-fit: cover;
   pointer-events: none;
-}
-
-/* The front edge occludes the package bottoms, just as the reference shelf does. */
-.product-showcase-stage::after {
-  content: "";
-  position: absolute;
-  z-index: 2;
-  inset: auto 0 -3px;
-  height: 12px;
-  pointer-events: none;
-  background: linear-gradient(180deg, #ead2ad, #c69e6d 75%, #a87949);
-  box-shadow: 0 2px 5px rgb(57 33 12 / 0.2);
 }
 
 .product-showcase-arrow {
@@ -929,7 +896,7 @@ html[data-theme="dark"] .theme-logo-dark {
 
 @media (max-width: 767px) {
   .product-showcase-stage {
-    --shelf-height: clamp(10rem, 49vw, 17rem);
+    --shelf-height: clamp(12rem, 57vw, 22rem);
   }
 }
 
