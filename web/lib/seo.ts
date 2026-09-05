@@ -175,9 +175,14 @@ export const ENTITY_DESCRIPTION: Record<Locale, string> = {
   en: "uYao is the AI operating system for independent pharmacies. It turns inventory, expiry, and local demand into return, reorder, and reservation workflows, with pharmacists approving critical decisions.",
 };
 
+export const CONSUMER_TITLE: Record<Locale, string> = {
+  zh: "台灣附近藥局與品項查詢｜出發前先確認供應｜uYao 找藥",
+  en: "Find pharmacies and products in Taiwan | uYao Medicine Finder",
+};
+
 export const CONSUMER_DESCRIPTION: Record<Locale, string> = {
-  zh: "uYao 找藥協助使用者搜尋藥品與附近公開藥局資料，並留下找藥需求；實際庫存、預留、領取與用藥問題仍由藥局或藥師確認。",
-  en: "uYao Medicine Finder helps people search a trial medicine catalog and nearby public pharmacy records, then leave a medicine request. Pharmacies and pharmacists confirm supply, pickup, and medicine questions.",
+  zh: "用 uYao 查台灣已收錄地區的附近藥局與試營運品項，依品名、成分與地區留下找藥需求。出發前先向藥局確認供應與領取方式；目錄不代表即時庫存，用藥問題由藥師確認。",
+  en: "Find public pharmacy records and trial catalog items in supported areas of Taiwan. Leave a request with the product and district, then confirm supply and pickup with the pharmacy before travelling. Listings are not live stock; ask a pharmacist about medication.",
 };
 
 export const CONTACT_EMAIL = "uyao@agentmail.to";
@@ -265,7 +270,7 @@ export function consumerWebPageJsonLd(locale: Locale): JsonLd {
   return {
     "@type": "WebPage",
     "@id": `${SHOP_URL}${path}#webpage`,
-    name: locale === "en" ? "Find medicine nearby | uYao Medicine Finder" : "附近藥局找藥與到貨通知｜uYao 找藥",
+    name: CONSUMER_TITLE[locale],
     url: `${SHOP_URL}${path}`,
     inLanguage: locale === "en" ? "en" : "zh-Hant-TW",
     description: CONSUMER_DESCRIPTION[locale],
