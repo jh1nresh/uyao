@@ -29,6 +29,7 @@ import type { ProductInfoPanel } from "@/lib/product-info-content";
 import { getRequestLocale } from "@/lib/locale-server";
 import { isPending, known } from "@/lib/pending";
 import { partnersForProduct } from "@/lib/partners";
+import { catalogItemIdentity, catalogSearchDescription } from "@/lib/catalog-search-description";
 import { consumerBreadcrumbJsonLd, consumerProductJsonLd } from "@/lib/seo";
 import { consumerIndexablePageRobots } from "@/lib/seo-server";
 import { SHOP_URL } from "@/lib/shop";
@@ -52,9 +53,7 @@ export async function generateMetadata({
       robots: { index: false, follow: false },
     };
   }
-  const displayDrug = drugCopy(drug, locale);
-  const label = drug.spec === "規格待確認" ? displayDrug.name : `${displayDrug.name} ${displayDrug.spec}`;
-  const partnerProvidedDetails = drug.source?.kind === "partner";
+  const label = catalogItemIdentity(drug, locale);
   // metadataBase 是公司站，所以 consumer canonical 必須寫成絕對網址，
   // 否則 /zh-tw/drug/x 會被解析成 uyaohealth.com 上不存在的頁面。
   //
@@ -64,17 +63,7 @@ export async function generateMetadata({
   const canonicalUrl = `${SHOP_URL}${localizedPath(`/drug/${drug.slug}`, canonicalLocale)}`;
   return {
     title: locale === "en" ? `${label} — partner-listed item` : `${label}｜合作藥局提供品項`,
-    description: partnerProvidedDetails
-      ? locale === "en"
-        ? `${label} is listed from information provided by a partner pharmacy.`
-        : `${label}由合作藥局提供並收錄於 uYao 試營運目錄；成分與產地請以實際包裝及藥師確認為準。`
-      : drug.source
-      ? locale === "en"
-        ? `${label} is a partner-listed non-drug product. See its sourced nutrition focus and ingredients.`
-        : `${label}由合作藥局提供並收錄於 uYao 試營運目錄；頁面列出有來源的營養補充方向與成分。`
-      : locale === "en"
-        ? `${label} is a partner-listed item provided by a partner pharmacy.`
-        : `${label}由合作藥局提供並收錄於 uYao 試營運目錄。`,
+    description: catalogSearchDescription(drug, locale),
     // `?area=` 只換附近藥局清單，不換品項內容 —— canonical 一律指沒有
     // query 的乾淨網址，否則十個服務區會變成同一頁的十份副本。
     alternates: {
