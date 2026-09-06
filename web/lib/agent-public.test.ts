@@ -116,6 +116,11 @@ describe("trust pages", () => {
     expect(TRUST_PAGES["/docs"].body).toMatch(/Retry-After/);
     expect(TRUST_PAGES["/docs"].body).toMatch(/X-uYao-API-Version/);
     expect(TRUST_PAGES["/docs"].body).toMatch(/Deprecation header.*Sunset date/i);
+    expect(TRUST_PAGES["/docs"].title).toContain("uyaohealth");
+    expect(TRUST_PAGES["/docs"].body).toContain("GET /api/catalog/{slug}");
+    expect(TRUST_PAGES["/docs"].body).toContain("require no API key");
+    expect(TRUST_PAGES["/docs"].body).toContain("not published to npm yet");
+    expect(pageMarkdown("/docs")).toContain("uyaohealth-cli");
   });
 
   it("keeps contact on the AgentMail inbox and refuses a public phone or address", () => {
@@ -165,6 +170,7 @@ describe("organization JSON-LD", () => {
     expect(org.contactPoint).toEqual({
       "@type": "ContactPoint",
       email: "uyao@agentmail.to",
+      contactType: "customer support",
     });
     expect(org).not.toHaveProperty("address");
     expect(org).not.toHaveProperty("telephone");

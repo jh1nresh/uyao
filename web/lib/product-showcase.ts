@@ -1,7 +1,11 @@
 import type { Drug } from "./types";
+import { drugCopy, type Locale } from "./i18n";
+
+type ShowcaseCopy = Pick<ReturnType<typeof drugCopy>, "name" | "spec" | "drugClass" | "nutritionFocus">;
 
 export interface ShowcaseItem {
-  drug: Drug;
+  slug: string;
+  copy: Record<Locale, ShowcaseCopy>;
   /** Product, contact shadows and shelf share one composition. */
   scene: { src: string; width: number; height: number };
 }
@@ -54,6 +58,12 @@ export function productShowcaseItems(drugs: readonly Drug[]): ShowcaseItem[] {
     const drug = bySlug.get(slug);
     if (drug?.image?.kind !== "packshot") return [];
     const scene = productShowcaseScene(slug);
-    return scene ? [{ drug, scene }] : [];
+    if (!scene) return [];
+    // Only ship the fields the carousel renders, not full packaging/source data.
+    const display = (locale: Locale): ShowcaseCopy => {
+      const { name, spec, drugClass, nutritionFocus } = drugCopy(drug, locale);
+      return { name, spec, drugClass, nutritionFocus };
+    };
+    return [{ slug, copy: { zh: display("zh"), en: display("en") }, scene }];
   });
 }
