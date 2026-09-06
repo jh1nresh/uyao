@@ -33,7 +33,8 @@ export function advanceShopSearchConversation(
   const next = cleanTurn(current);
   if (!next) return { previous: [], turns: [] };
   const latest = turns.at(-1);
-  if (!latest || latest.query !== next.query || latest.summary !== next.summary) turns.push(next);
+  if (latest && latest.query === next.query) turns[turns.length - 1] = next;
+  else turns.push(next);
   turns = turns.slice(-MAX_TURNS);
   return { previous: turns.slice(0, -1), turns };
 }
