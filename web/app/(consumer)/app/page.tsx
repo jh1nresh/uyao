@@ -14,6 +14,7 @@ import { getRequestLocale } from "@/lib/locale-server";
 import { PARTNER_STORE_ITEMS } from "@/lib/partner-stores";
 import { productShowcaseItems } from "@/lib/product-showcase";
 import {
+  BRAND_NAME,
   CONSUMER_DESCRIPTION,
   CONSUMER_TITLE,
   SITE_URL,
@@ -54,6 +55,8 @@ export async function generateMetadata(): Promise<Metadata> {
           },
         },
         openGraph: {
+          type: "website",
+          siteName: BRAND_NAME,
           title,
           description: CONSUMER_DESCRIPTION.en,
           locale: "en_US",
@@ -80,6 +83,8 @@ export async function generateMetadata(): Promise<Metadata> {
           },
         },
         openGraph: {
+          type: "website",
+          siteName: BRAND_NAME,
           title,
           description: CONSUMER_DESCRIPTION.zh,
           locale: "zh_TW",
