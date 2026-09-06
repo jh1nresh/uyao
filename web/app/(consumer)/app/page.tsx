@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { AreaSwitch } from "@/components/AreaSwitch";
 import { JsonLd } from "@/components/JsonLd";
+import { PharmacyDirectoryLinks } from "@/components/PharmacyDirectoryLinks";
 import { ProductSwipeShowcase } from "@/components/ProductSwipeShowcase";
 import { SearchInput } from "@/components/SearchInput";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -26,7 +27,7 @@ import {
 import { consumerIndexablePageRobots } from "@/lib/seo-server";
 import { SHOP_URL } from "@/lib/shop";
 
-const UPDATED_AT = "2026-09-05";
+const UPDATED_AT = "2026-09-06";
 const HOME_CABINET_SLUGS = [
   "greenplus-elgucare",
   "chungchi-yiyuansu-gastrodia-100",
@@ -325,7 +326,13 @@ export default async function HomePage({
         </div>
       </section>
 
-        <SiteFooter />
+      <div className="border-t border-line bg-paper">
+        <div className="shop-shell py-12 sm:py-16">
+          <PharmacyDirectoryLinks locale={locale} />
+        </div>
+      </div>
+
+      <SiteFooter />
       </div>
     </>
   );

@@ -130,7 +130,7 @@ export const AEO_PAGES = {
     path: "/zh-tw/guides/find-medicine-nearby",
     enPath: "/en/guides/find-medicine-nearby",
     datePublished: "2026-08-12",
-    dateModified: "2026-09-05",
+    dateModified: "2026-09-06",
     zh: {
       question: "在台灣怎麼找附近藥局並確認品項？",
       directAnswer:
