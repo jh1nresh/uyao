@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { JsonLd } from "@/components/JsonLd";
-import { PharmacyDirectoryLinks } from "@/components/PharmacyDirectoryLinks";
 import { KnowledgeShell, ProvenanceBox } from "@/components/landing/KnowledgeShell";
 import { AEO_PAGES, aeoPath } from "@/lib/aeo";
 import { aeoPageMetadata } from "@/lib/aeo-server";
@@ -239,8 +238,6 @@ export default async function FindMedicineNearbyGuidePage() {
             ))}
           </dl>
         </section>
-
-        <PharmacyDirectoryLinks locale={locale} className="mt-11" />
 
         <section className="mt-11 border border-forest bg-sage p-7">
           <h2 className="editorial-display m-0 text-[24px] leading-[1.4]">{content.ctaHeading}</h2>
