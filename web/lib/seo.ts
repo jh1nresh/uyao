@@ -208,6 +208,7 @@ export function organizationJsonLd(): JsonLd {
     contactPoint: {
       "@type": "ContactPoint",
       email: CONTACT_EMAIL,
+      contactType: "customer support",
     },
     description: ENTITY_DESCRIPTION.zh,
     sameAs: [X_URL, INSTAGRAM_URL],
@@ -258,6 +259,7 @@ export function consumerWebSiteJsonLd(locale: Locale): JsonLd {
     "@type": "WebSite",
     "@id": `${SHOP_URL}/#website`,
     name: locale === "en" ? "uYao Medicine Finder" : "uYao 找藥",
+    alternateName: [BRAND_NAME, ...BRAND_ALTERNATE_NAMES, CANONICAL_HOST],
     url: `${SHOP_URL}${path}`,
     inLanguage: locale === "en" ? "en" : "zh-Hant-TW",
     description: CONSUMER_DESCRIPTION[locale],

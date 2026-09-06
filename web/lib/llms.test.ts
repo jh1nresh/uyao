@@ -12,6 +12,22 @@ describe("llms.txt", () => {
   const shop = shopLlmsTxt();
   const store = storeLlmsTxt();
 
+  it("uses the llms.txt H1, summary and H2 file-list format", () => {
+    for (const document of [company, shop, store, nonCanonicalLlmsTxt()]) {
+      expect(document).toMatch(/^# [^\n]+\n\n> /);
+      expect(document.match(/^# /gm)).toHaveLength(1);
+      for (const section of document.split(/^## .+$/m).slice(1)) {
+        const lines = section.split("\n").filter((line) => line.trim());
+        expect(lines.length).toBeGreaterThan(0);
+        for (const line of lines) expect(line).toMatch(/^- \[[^\]]+\]\((?:https:\/\/|mailto:)[^)]+\)(?:: .+)?$/);
+      }
+    }
+    expect(company).toContain("uyaohealth");
+    expect(company).toContain(`${SITE_URL}/docs#authentication`);
+    expect(company).toContain(`${SITE_URL}/docs#cli`);
+    expect(company).toContain("Not yet published to npm");
+  });
+
   it("lists every registered answer in both locales with an absolute URL", () => {
     for (const page of AEO_ANSWER_PAGES) {
       expect(company).toContain(`${SITE_URL}${page.path}`);

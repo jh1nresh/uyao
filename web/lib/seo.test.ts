@@ -216,7 +216,7 @@ describe("json-ld", () => {
     expect(CONTACT_EMAIL).toBe("uyao@agentmail.to");
     expect(organizationJsonLd()).toMatchObject({
       email: CONTACT_EMAIL,
-      contactPoint: { "@type": "ContactPoint", email: CONTACT_EMAIL },
+      contactPoint: { "@type": "ContactPoint", email: CONTACT_EMAIL, contactType: "customer support" },
     });
     expect(organizationJsonLd()).not.toHaveProperty("address");
     expect(organizationJsonLd()).not.toHaveProperty("telephone");

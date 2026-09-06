@@ -42,7 +42,7 @@ export function companyLlmsTxt(): string {
     line(page.zh.question, `${SITE_URL}${page.path}`, page.zh.directAnswer),
   );
 
-  return `# ${BRAND_NAME}
+  return `# ${BRAND_NAME} (uyaohealth.com)
 
 > ${ENTITY_DESCRIPTION.en}
 
@@ -60,16 +60,20 @@ these boundaries intact:
 
 ## When to use
 
-- 使用者要查台灣附近公開藥局資料、試營運目錄，或留下找藥需求（品項+地區）。
-- 獨立藥局要了解 Store OS prototype：訊號 → 藥師核准 → 執行 → receipt；或申請試點。
-- 查公開 GET：/api/catalog、/api/pharmacies（若已文件化）。這些不是即時庫存。
+${line("找藥服務", `${SITE_URL}/zh-tw`, "使用者要查台灣附近公開藥局資料、試營運目錄，或留下找藥需求（品項+地區）。")}
+${line("Store OS prototype", `${SITE_URL}/zh-tw/pharmacy`, "訊號 → 藥師核准 → 執行 → receipt；獨立藥局可了解試點。")}
+${line("公開 GET", `${SITE_URL}/docs`, "查 /api/catalog、/api/pharmacies。這些不是即時庫存。")}
 
 ## When not to use
 
-- 不要當成即時庫存、預留保證或電商結帳。
-- 不要當成診斷、用藥、劑量或處方建議。
-- 不要寫入 Store OS、不要當 POS 或健保申報。
-- 不要向使用者編造藥局有貨或電話。
+${line("供應邊界", `${SITE_URL}/zh-tw/about`, "不要當成即時庫存、預留保證或電商結帳。不要向使用者編造藥局有貨或電話。")}
+${line("專業邊界", `${SITE_URL}/docs`, "不要當成診斷、用藥、劑量或處方建議。不要寫入 Store OS、不要當 POS 或健保申報。")}
+
+## uYao developer resources (uyaohealth)
+
+${line("uYao Developer Resources", `${SITE_URL}/docs`, "Official public read API documentation on uyaohealth.com.")}
+${line("uYao API authentication", `${SITE_URL}/docs#authentication`, "Public GETs need no API key or login. Store OS actions are private. No public MCP or webhook service.")}
+${line("uYao CLI (uyaohealth-cli)", `${SITE_URL}/docs#cli`, "Read-only CLI source and repository installation. Not yet published to npm.")}
 
 ## Answers (English)
 
@@ -102,11 +106,9 @@ ${line("Robots", `${SITE_URL}/robots.txt`, "Crawl policy. /console and /store-os
 
 ## Contact
 
-Contact: ${CONTACT_EMAIL}
-Site: ${SITE_URL}/zh-tw
-Shop: ${SHOP_URL}/zh-tw
-Evidence: ${SITE_URL}/zh-tw/evidence
-${line("Email", `mailto:${CONTACT_EMAIL}`, "Corrections to any claim on this site are welcome.")}
+${line("Email", `mailto:${CONTACT_EMAIL}`, `Contact: ${CONTACT_EMAIL}. Corrections to any claim on this site are welcome.`)}
+${line("Site and medicine finder", `${SITE_URL}/zh-tw`, "Canonical uYao 有藥 homepage.")}
+${line("Evidence", `${SITE_URL}/zh-tw/evidence`, "Verified facts and prototype limits.")}
 `;
 }
 
@@ -185,7 +187,7 @@ ${line("Robots", `${STORE_URL}/robots.txt`, "Crawler policy for the Store OS hos
 ${line("uYao 有藥", `${SITE_URL}/zh-tw`, ENTITY_DESCRIPTION.zh)}
 ${line("Product evidence", `${SITE_URL}/zh-tw/evidence`, "Verified code and test evidence versus prototype claims.")}
 
-Contact: ${CONTACT_EMAIL}
+${line("Email", `mailto:${CONTACT_EMAIL}`, `Contact: ${CONTACT_EMAIL}. Ask uYao about the pilot.`)}
 `;
 }
 

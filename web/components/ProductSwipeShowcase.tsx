@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import { useLocale } from "./LocaleProvider";
-import { drugCopy } from "@/lib/i18n";
 import { known } from "@/lib/pending";
 import type { ShowcaseItem } from "@/lib/product-showcase";
 
@@ -219,7 +218,7 @@ export function ProductSwipeShowcase({
         >
           {items.map((item, i) => (
             <button
-              key={item.drug.slug}
+              key={item.slug}
               ref={(node) => {
                 pillRefs.current[i] = node;
               }}
@@ -235,7 +234,7 @@ export function ProductSwipeShowcase({
                     : "border-line-strong bg-paper text-ink-2 hover:border-forest hover:text-forest"
                 }`}
               >
-                {drugCopy(item.drug, locale).name}
+                {item.copy[locale].name}
               </span>
             </button>
           ))}
@@ -264,7 +263,7 @@ export function ProductSwipeShowcase({
             className="product-showcase-rail"
           >
             {cycles.flatMap((cycle) => items.map((item, i) => {
-              const name = drugCopy(item.drug, locale).name;
+              const name = item.copy[locale].name;
               const scene = (
                 <Image
                   src={item.scene.src}
@@ -279,7 +278,7 @@ export function ProductSwipeShowcase({
               );
               return (
                 <div
-                  key={`${cycle}-${item.drug.slug}`}
+                  key={`${cycle}-${item.slug}`}
                   data-showcase-index={i}
                   data-cycle={cycle}
                   data-active={i === active}
@@ -290,7 +289,7 @@ export function ProductSwipeShowcase({
                 >
                   {hrefPrefix ? (
                     <Link
-                      href={`${hrefPrefix}/${item.drug.slug}${hrefQuery}`}
+                      href={`${hrefPrefix}/${item.slug}${hrefQuery}`}
                       tabIndex={cycle === 1 ? 0 : -1}
                       draggable={false}
                       onClick={(event) => { if (suppressClick.current && event.detail !== 0) event.preventDefault(); }}
@@ -313,11 +312,11 @@ export function ProductSwipeShowcase({
         {/* Shared intrinsic rows reserve the longest copy at every viewport/font size. */}
         <div className="product-showcase-details mx-auto mt-5 max-w-[520px] text-center sm:mt-1" aria-live="polite">
           {items.map((item, i) => {
-            const copy = drugCopy(item.drug, locale);
+            const copy = item.copy[locale];
             const metaLine = [known(copy.spec), known(copy.drugClass)].filter(Boolean).join(" · ");
             return (
               <div
-                key={item.drug.slug}
+                key={item.slug}
                 className="product-showcase-detail"
                 aria-hidden={i !== active}
                 inert={i !== active}
@@ -333,7 +332,7 @@ export function ProductSwipeShowcase({
                 </p>
                 {hrefPrefix && (
                   <Link
-                    href={`${hrefPrefix}/${item.drug.slug}${hrefQuery}`}
+                    href={`${hrefPrefix}/${item.slug}${hrefQuery}`}
                     className="action-secondary mt-2 inline-flex min-h-11 items-center justify-self-center px-4 text-xs font-medium"
                   >
                     {locale === "en" ? "View item →" : "看這一項 →"}
@@ -357,7 +356,7 @@ export function ProductSwipeShowcase({
           <div className="flex min-w-0 flex-1 items-center gap-1 sm:gap-1.5" aria-hidden>
             {items.map((item, i) => (
               <span
-                key={item.drug.slug}
+                key={item.slug}
                 className={`transition-colors motion-reduce:transition-none ${
                   i === active ? "h-[3px] flex-[1.4] bg-ink" : "h-px flex-1 bg-line-strong"
                 }`}
