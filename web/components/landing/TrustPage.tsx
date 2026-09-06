@@ -84,8 +84,9 @@ function DocsEndpoints() {
     <section className="mt-10 border border-line-strong bg-surface p-6">
       <h2 className="editorial-display m-0 text-[24px]">Public GET endpoints</h2>
       <p className="mt-4 text-[15px] leading-[1.7] text-ink-2">
-        These two reads are the public contract. They are not live inventory.
-        OpenAPI for just these paths is below; the host also serves the fuller
+        These collection reads and the catalog item read are the public contract.
+        They are not live inventory. OpenAPI for the two collections is below;
+        the host also serves the fuller
         {" "}<a href="/openapi.json">/openapi.json</a>, which marks site-form
         POST routes <code>x-internal</code>.
       </p>
@@ -94,11 +95,33 @@ function DocsEndpoints() {
         Partner-listed catalog records. No price, stock, or availability field.
       </p>
       <pre className="mt-3 overflow-x-auto bg-ivory p-4 text-[13px]">{`curl -sS https://uyaohealth.com/api/catalog`}</pre>
+      <h3 className="mt-6 text-[16px] font-bold">GET /api/catalog/&#123;slug&#125;</h3>
+      <p className="mt-2 text-[15px] leading-[1.7] text-ink-2">
+        One catalog record with packaging details and listed pharmacies. Supply
+        still requires pharmacy confirmation. See the full OpenAPI for its schema.
+      </p>
       <h3 className="mt-6 text-[16px] font-bold">GET /api/pharmacies</h3>
       <p className="mt-2 text-[15px] leading-[1.7] text-ink-2">
         Public pharmacy records from Taiwan open data. A listing is not stock.
       </p>
       <pre className="mt-3 overflow-x-auto bg-ivory p-4 text-[13px]">{`curl -sS https://uyaohealth.com/api/pharmacies`}</pre>
+      <h2 id="authentication" className="editorial-display mb-0 mt-10 text-[24px]">uYao API authentication</h2>
+      <p className="mt-4 text-[15px] leading-[1.7] text-ink-2">
+        Public GET endpoints need no API key, account, cookies, or bearer token.
+        Store OS authentication is separate; its private actions are not a public
+        API. No public MCP server or webhook subscription is available.
+      </p>
+      <h2 id="cli" className="editorial-display mb-0 mt-10 text-[24px]">uYao CLI (uyaohealth-cli)</h2>
+      <p className="mt-4 text-[15px] leading-[1.7] text-ink-2">
+        The read-only CLI source supports catalog records, individual catalog
+        items, public pharmacies, and OpenAPI. It requires Node.js 20 or newer,
+        preserves JSON disclaimers, and reports API errors with nonzero exit codes.
+        The package is not published to npm yet.
+        {" "}<a href="https://github.com/jh1nresh/uyao/tree/main/cli">uYao CLI source and installation instructions</a>.
+      </p>
+      <pre className="mt-3 overflow-x-auto bg-ivory p-4 text-[13px]">{`# From a checkout of the uYao repository
+node cli/bin/uyao.mjs catalog --locale en
+node cli/bin/uyao.mjs pharmacies --area datong`}</pre>
       <h2 id="api-errors" className="editorial-display mb-0 mt-10 text-[24px]">Structured API errors</h2>
       <p className="mt-4 text-[15px] leading-[1.7] text-ink-2">
         API failures use RFC 9457 <code>application/problem+json</code>. Every
