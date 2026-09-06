@@ -3,7 +3,6 @@ import Link from "next/link";
 
 import { AreaSwitch } from "@/components/AreaSwitch";
 import { JsonLd } from "@/components/JsonLd";
-import { PharmacyDirectoryLinks } from "@/components/PharmacyDirectoryLinks";
 import { ProductSwipeShowcase } from "@/components/ProductSwipeShowcase";
 import { SearchInput } from "@/components/SearchInput";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -330,12 +329,6 @@ export default async function HomePage({
           </div>
         </div>
       </section>
-
-      <div className="border-t border-line bg-paper">
-        <div className="shop-shell py-12 sm:py-16">
-          <PharmacyDirectoryLinks locale={locale} />
-        </div>
-      </div>
 
       <SiteFooter />
       </div>
