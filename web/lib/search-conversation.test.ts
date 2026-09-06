@@ -19,4 +19,52 @@ describe("shop search conversation", () => {
       turns: [{ query: "補鈣", summary: "找到資料" }],
     });
   });
+
+  it("replaces the latest turn when the same query returns a refreshed summary", () => {
+    const raw = JSON.stringify([
+      { query: "補鈣", summary: "先前結果" },
+      { query: "維他命 C", summary: "舊結果摘要" },
+    ]);
+    const result = advanceShopSearchConversation(raw, {
+      query: "維他命 C",
+      summary: "更新的結果摘要",
+    });
+    expect(result.previous).toEqual([{ query: "補鈣", summary: "先前結果" }]);
+    expect(result.turns).toEqual([
+      { query: "補鈣", summary: "先前結果" },
+      { query: "維他命 C", summary: "更新的結果摘要" },
+    ]);
+  });
+
+  it("treats a trimmed current query as the same latest turn", () => {
+    const raw = JSON.stringify([
+      { query: "補鈣", summary: "先前結果" },
+      { query: "維他命 C", summary: "舊結果摘要" },
+    ]);
+    const result = advanceShopSearchConversation(raw, {
+      query: "  維他命 C  ",
+      summary: "更新的結果摘要",
+    });
+    expect(result.previous).toEqual([{ query: "補鈣", summary: "先前結果" }]);
+    expect(result.turns).toEqual([
+      { query: "補鈣", summary: "先前結果" },
+      { query: "維他命 C", summary: "更新的結果摘要" },
+    ]);
+  });
+
+  it("keeps A then B then A as three distinct turns", () => {
+    let raw: string | null = null;
+    raw = JSON.stringify(advanceShopSearchConversation(raw, { query: "A", summary: "A1" }).turns);
+    raw = JSON.stringify(advanceShopSearchConversation(raw, { query: "B", summary: "B1" }).turns);
+    const result = advanceShopSearchConversation(raw, { query: "A", summary: "A2" });
+    expect(result.previous).toEqual([
+      { query: "A", summary: "A1" },
+      { query: "B", summary: "B1" },
+    ]);
+    expect(result.turns).toEqual([
+      { query: "A", summary: "A1" },
+      { query: "B", summary: "B1" },
+      { query: "A", summary: "A2" },
+    ]);
+  });
 });
