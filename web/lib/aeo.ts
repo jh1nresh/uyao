@@ -264,7 +264,7 @@ const NON_AEO_LAST_MODIFIED = {
   "/zh-tw/about": "2026-08-22",
   "/zh-tw/contact": "2026-08-22",
   "/zh-tw/privacy": "2026-08-22",
-  "/docs": "2026-08-22",
+  "/docs": "2026-09-06",
   "/zh-tw/pharmacy": "2026-08-16",
   "/en/pharmacy": "2026-08-16",
   "/zh-tw/guides": "2026-09-05",
