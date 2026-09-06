@@ -11,6 +11,8 @@ let localeHeader = "zh";
 let host = SHOP_CANONICAL_HOST;
 let vercelEnv: string | undefined;
 
+vi.mock("server-only", () => ({}));
+
 vi.mock("next/headers", () => ({
   headers: async () =>
     new Headers({
