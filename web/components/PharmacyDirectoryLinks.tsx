@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import { AREAS, allStores, storesInArea } from "@/lib/data";
-import { areaCopy, type Locale } from "@/lib/i18n";
+import type { Locale } from "@/lib/i18n";
 
 export function pharmacyRecordHref(slug: string): string {
   return `/zh-tw/store/${encodeURIComponent(slug)}`;
@@ -51,18 +51,13 @@ export function PharmacyDirectoryLinks({
       </p>
 
       <div className="mt-6 grid gap-7 sm:grid-cols-2">
-        {groups.map(({ area, stores: areaStores }) => {
-          const areaLabel = areaCopy(area, locale);
-          return (
+        {groups.map(({ area, stores: areaStores }) => (
             <div key={area.slug}>
               <h3 className="m-0 text-[13.5px] font-bold text-oxblood">
-                {areaLabel.name}
+                {area.name}
               </h3>
               <ul className="m-0 mt-1.5 list-none p-0">
-                {areaStores.map((store) => {
-                  const district =
-                    locale === "en" ? areaLabel.shortName : store.district;
-                  return (
+                {areaStores.map((store) => (
                     <li key={store.slug} className="min-w-0">
                       <Link
                         href={pharmacyRecordHref(store.slug)}
@@ -72,17 +67,15 @@ export function PharmacyDirectoryLinks({
                           {store.name}
                           <span className="font-normal text-muted">
                             {" "}
-                            · {district}
+                            · {store.district}
                           </span>
                         </span>
                       </Link>
                     </li>
-                  );
-                })}
+                ))}
               </ul>
             </div>
-          );
-        })}
+        ))}
       </div>
     </section>
   );

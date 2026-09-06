@@ -102,8 +102,10 @@ describe("pharmacy directory links", () => {
     expect(en).toContain("16 pharmacy records currently listed on uYao");
     expect(en).toContain("A public listing is not live stock and is not proof of a uYao partnership.");
     expect(en).toContain("Pharmacy names stay in Chinese as recorded.");
-    expect(en).toContain("Datong District, Taipei");
+    expect(en).toContain("臺北市大同區");
+    expect(en).toContain("臺北市士林區");
     expect(en).toContain("建利西藥房");
+    expect(en).toContain("士林區");
     expect(en).not.toContain("Jianli Pharmacy");
     expect(en).not.toContain("every pharmacy in");
   });
