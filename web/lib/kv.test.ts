@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   __resetForTests,
   append,
+  createReservation,
   getMany,
   lastN,
   listAll,
@@ -85,6 +86,37 @@ describe("KV list and batch primitives", () => {
     await expect(setAndUpdateHistory("r:token", "record", 60, "history", "token", 500)).rejects.toThrow(
       "KV reservation history update failed",
     );
+  });
+
+  it("validates every creation index before one atomic EVAL commit", async () => {
+    const mockedFetch = mockRestSuccessBody({ result: "OK" });
+    await expect(createReservation(
+      "r:token",
+      "record",
+      "c:A-001",
+      "token",
+      60,
+      "history",
+      "active",
+      true,
+      500,
+    )).resolves.toBeUndefined();
+    const request = mockedFetch.mock.calls[0][1] as RequestInit;
+    const args = JSON.parse(String(request.body)) as unknown[];
+    expect(args.slice(0, 7)).toEqual([
+      "EVAL", expect.any(String), 4, "r:token", "c:A-001", "history", "active",
+    ]);
+    const script = args[1] as string;
+    expect(script).toContain("local codeType = redis.call('TYPE', KEYS[2]).ok");
+    expect(script).toContain("local historyType = redis.call('TYPE', KEYS[3]).ok");
+    expect(script).toContain("local activeType = redis.call('TYPE', KEYS[4]).ok");
+    expect(script.indexOf("local activeType")).toBeLessThan(script.indexOf("redis.call('SET', KEYS[1]"));
+    expect(args.slice(-5)).toEqual(["record", 60, "token", 500, "1"]);
+
+    mockRestSuccessBody({ error: "WRONGTYPE" });
+    await expect(createReservation(
+      "r:token", "record", "c:A-001", "token", 60, "history", "active", true, 500,
+    )).rejects.toThrow("KV command failed");
   });
 
 });

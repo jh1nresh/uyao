@@ -206,9 +206,9 @@ export async function POST(request: Request) {
   try {
     await saveReservation(record);
   } catch (err) {
-    console.error("[reservations] 寫入 store 失敗，取貨頁將查不到", code, String(err).slice(0, 200));
-    // Store OS 是唯一店務入口；寫不進去就不能假裝預留已送達。
-    return NextResponse.json({ error: demo ? "示範預留未送達，請再試一次" : "預留未送達藥局，請再試一次" }, { status: 503 });
+    console.error("[reservations] 無法確認 store 寫入結果", code, String(err).slice(0, 200));
+    // 傳輸失敗時交易可能已完成，不能宣稱未送達並鼓勵立即重複建單。
+    return NextResponse.json({ error: demo ? "暫時無法確認示範預留狀態，請重新整理後確認" : "暫時無法確認預留狀態，請聯絡藥局確認後再試" }, { status: 503 });
   }
   // agent 代號只進營運紀錄，不進 StoredReservation —— Store OS 與取貨頁是
   // 給藥師和消費者看的，他們不需要知道這筆是哪支 agent 送的。

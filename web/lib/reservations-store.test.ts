@@ -209,18 +209,16 @@ describe("取貨憑證的鍵", () => {
     ]));
   });
 
-  it("keeps an in-flight active token indexed but invisible until creation commits", async () => {
-    const originalAppend = kv.append;
-    const cleanup = vi.spyOn(kv, "removeFromList");
-    let duringSetup: Awaited<ReturnType<typeof listStoreReservationPage>> | undefined;
-    vi.spyOn(kv, "append").mockImplementation(async (key, value, keepLast) => {
-      await originalAppend(key, value, keepLast);
-      if (keepLast === null) duringSetup = await listStoreReservationPage("中山藥局");
+  it("lets readers observe creation before or after the one storage commit", async () => {
+    const originalCreate = kv.createReservation;
+    let beforeCommit: Awaited<ReturnType<typeof listStoreReservationPage>> | undefined;
+    vi.spyOn(kv, "createReservation").mockImplementation(async (...args) => {
+      beforeCommit = await listStoreReservationPage("中山藥局");
+      await originalCreate(...args);
     });
 
     await saveReservation(make({ code: "P-010" }));
-    expect(duringSetup?.reservations).toEqual([]);
-    expect(cleanup).not.toHaveBeenCalled();
+    expect(beforeCommit?.reservations).toEqual([]);
 
     for (let index = 0; index < 550; index += 1) {
       await saveReservation(make({ code: `H-${String(index).padStart(3, "0")}`, status: "picked_up" }));
@@ -230,29 +228,31 @@ describe("取貨憑證的鍵", () => {
   });
 
   it("keeps a failed reservation creation invisible to API readers", async () => {
-    const originalAppend = kv.append;
     const r = make({ code: "P-020" });
-    vi.spyOn(kv, "append").mockImplementation(async (key, value, keepLast) => {
-      if (keepLast === null) throw new Error("active index unavailable");
-      await originalAppend(key, value, keepLast);
-    });
+    const historyKey = legacyHistoryKey(r.storeSlug);
+    vi.spyOn(kv, "createReservation").mockRejectedValueOnce(new Error("creation unavailable"));
 
-    await expect(saveReservation(r)).rejects.toThrow("active index unavailable");
+    await expect(saveReservation(r)).rejects.toThrow("creation unavailable");
     await expect(getByToken(r.token)).resolves.toBeNull();
+    await expect(getByCode(r.code)).resolves.toBeNull();
     await expect(listStoreReservations("中山藥局")).resolves.toEqual([]);
+    await expect(kv.lastN(historyKey, 500)).resolves.toEqual([]);
+    await expect(kv.listAll(`${historyKey}:active`)).resolves.toEqual([]);
   });
 
-  it("does not trim full history when the final visible creation commit fails", async () => {
+  it("does not trim full history or leave pointers when atomic creation fails", async () => {
     const historyKey = legacyHistoryKey("中山藥局");
     for (let index = 0; index < 500; index += 1) {
       await seedLegacyReservation(make({ code: `H-${String(index).padStart(3, "0")}`, status: "picked_up" }), historyKey);
     }
     const before = await kv.lastN(historyKey, 500);
+    const activeBefore = await kv.listAll(`${historyKey}:active`);
     const created = make({ code: "P-021" });
-    vi.spyOn(kv, "setAndUpdateHistory").mockRejectedValueOnce(new Error("final record unavailable"));
+    vi.spyOn(kv, "createReservation").mockRejectedValueOnce(new Error("creation unavailable"));
 
-    await expect(saveReservation(created)).rejects.toThrow("final record unavailable");
+    await expect(saveReservation(created)).rejects.toThrow("creation unavailable");
     await expect(kv.lastN(historyKey, 500)).resolves.toEqual(before);
+    await expect(kv.listAll(`${historyKey}:active`)).resolves.toEqual(activeBefore);
     await expect(getByToken(created.token)).resolves.toBeNull();
     await expect(getByCode(created.code)).resolves.toBeNull();
     await expect(listStoreReservations(created.storeSlug)).resolves.not.toEqual(expect.arrayContaining([
@@ -263,7 +263,23 @@ describe("取貨憑證的鍵", () => {
     const after = await kv.lastN(historyKey, 500);
     expect(after).toEqual([...before.slice(1), created.token]);
     expect(after.filter((token) => token === created.token)).toHaveLength(1);
+    await expect(kv.listAll(`${historyKey}:active`)).resolves.toEqual([created.token]);
     await expect(getByCode(created.code)).resolves.toMatchObject({ status: "pending_store_confirm" });
+  });
+
+  it("rejects a pickup-code collision without changing the existing reservation", async () => {
+    const existing = make({ code: "P-022" });
+    await saveReservation(existing);
+    const historyKey = legacyHistoryKey(existing.storeSlug);
+    const beforeHistory = await kv.lastN(historyKey, 500);
+    const beforeActive = await kv.listAll(`${historyKey}:active`);
+    const colliding = make({ code: existing.code });
+
+    await expect(saveReservation(colliding)).rejects.toThrow("pickup code already reserved");
+    await expect(getByCode(existing.code)).resolves.toMatchObject({ token: existing.token });
+    await expect(getByToken(colliding.token)).resolves.toBeNull();
+    await expect(kv.lastN(historyKey, 500)).resolves.toEqual(beforeHistory);
+    await expect(kv.listAll(`${historyKey}:active`)).resolves.toEqual(beforeActive);
   });
 
   it("propagates a batch-read failure without treating active tokens as stale", async () => {
