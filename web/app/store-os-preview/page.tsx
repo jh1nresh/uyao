@@ -20,6 +20,9 @@ export default function StoreOsPreviewPage() {
       demo: true,
       sourceStoreName: "安心藥局",
       intake: {
+        source: "shop_search",
+        allergyStatus: "has_allergies",
+        allergens: "青黴素",
         searchQuery: "頭痛 退燒",
         note: "小孩發燒 38.5,想先問有沒有兒童劑型",
       } as StoreReservationSummary["intake"],
@@ -33,6 +36,7 @@ export default function StoreOsPreviewPage() {
       status: "confirmed",
       createdAt: new Date(Date.now() - 55 * 60 * 1000).toISOString(),
       confirmedAt: new Date(Date.now() - 40 * 60 * 1000).toISOString(),
+      holdExpiresAt: new Date(Date.now() + 200 * 60 * 1000).toISOString(),
       demo: true,
     },
     {
@@ -68,6 +72,7 @@ export default function StoreOsPreviewPage() {
       operatorRole="owner"
       reservations={reservations}
       demoMode
+      previewMode
       webPushPublicKey={null}
     />
   );

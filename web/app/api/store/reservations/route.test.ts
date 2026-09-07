@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-import { __resetForTests } from "@/lib/kv";
+import * as kv from "@/lib/kv";
 import { newToken, saveReservation, type StoredReservation } from "@/lib/reservations-store";
 import {
   createStoreSessionToken,
@@ -48,12 +48,13 @@ function reservation(storeSlug: string, code: string, contact: string): StoredRe
 }
 
 beforeEach(() => {
-  __resetForTests();
+  vi.restoreAllMocks();
+  kv.__resetForTests();
   process.env.STORE_OS_SESSION_SECRET = "test-session-secret-that-is-long-enough";
 });
 
-function requestWithSession(token?: string) {
-  return new NextRequest("http://localhost/api/store/reservations", {
+function requestWithSession(token?: string, search = "") {
+  return new NextRequest(`http://localhost/api/store/reservations${search}`, {
     headers: token ? { cookie: `uyao_store_session=${token}` } : undefined,
   });
 }
@@ -154,6 +155,15 @@ describe("GET /api/store/reservations", () => {
     );
     expect(response.status).toBe(503);
   });
+
+  it("rejects an invalid history cursor without exposing another store's rows", async () => {
+    await saveReservation({ ...reservation("B 藥局", "B-999", "0999888777"), status: "picked_up" });
+    const response = await handleGetReservations(
+      requestWithSession(createStoreSessionToken(user), "?historyCursor=not-a-cursor"),
+      activeSession,
+    );
+    expect(response.status).toBe(400);
+  });
 });
 
 describe("PATCH /api/store/reservations", () => {
@@ -165,9 +175,6 @@ describe("PATCH /api/store/reservations", () => {
       status: StoredReservation["status"],
       expectedStatus?: StoredReservation["status"],
     ) => (await import("@/lib/reservations-store")).updateStatus(code, status, expectedStatus),
-    listReservations: async (storeSlug: string) => (
-      await import("@/lib/reservations-store")
-    ).listStoreReservations(storeSlug),
     record: vi.fn(async () => undefined),
   };
 
@@ -197,7 +204,7 @@ describe("PATCH /api/store/reservations", () => {
     );
     expect(confirmed.status).toBe(200);
     expect(await confirmed.json()).toMatchObject({
-      reservation: { code: "A-111", status: "confirmed", contactTail: "333" },
+      reservation: { code: "A-111", status: "confirmed", contactTail: "333", holdExpiresAt: expect.any(String) },
     });
 
     const pickedUp = await handleUpdateReservation(
@@ -207,6 +214,57 @@ describe("PATCH /api/store/reservations", () => {
     expect(pickedUp.status).toBe(200);
     expect(await pickedUp.json()).toMatchObject({
       reservation: { code: "A-111", status: "picked_up" },
+    });
+  });
+
+  it("returns the persisted update without an inbox reread dependency", async () => {
+    await saveReservation({
+      ...reservation("A 藥局", "A-121", "0911222333"),
+      intake: {
+        source: "shop_search",
+        allergyStatus: "none",
+        consentedAt: "2026-09-08T00:00:00.000Z",
+      },
+    });
+    const response = await handleUpdateReservation(
+      actionRequest(createStoreSessionToken(user), { code: "A-121", action: "confirm" }),
+      dependencies,
+    );
+    expect(response.status).toBe(200);
+    const body = await response.json() as { reservation: Record<string, unknown> };
+    expect(body).toMatchObject({
+      reservation: { code: "A-121", status: "confirmed", contactTail: "333" },
+    });
+    expect(body.reservation).not.toHaveProperty("contact");
+    expect(body.reservation).not.toHaveProperty("token");
+    expect(body.reservation.intake).not.toHaveProperty("consentedAt");
+  });
+
+  it("does not commit a terminal transition when its required history append fails", async () => {
+    await saveReservation(reservation("A 藥局", "A-131", "0911222333"));
+    vi.spyOn(kv, "append").mockRejectedValueOnce(new Error("history unavailable"));
+
+    const response = await handleUpdateReservation(
+      actionRequest(createStoreSessionToken(user), { code: "A-131", action: "reject" }),
+      dependencies,
+    );
+    expect(response.status).toBe(409);
+    await expect((await import("@/lib/reservations-store")).getByCode("A-131")).resolves.toMatchObject({
+      status: "pending_store_confirm",
+    });
+  });
+
+  it("returns the committed terminal summary when active-index cleanup fails", async () => {
+    await saveReservation(reservation("A 藥局", "A-141", "0911222333"));
+    vi.spyOn(kv, "removeFromList").mockRejectedValueOnce(new Error("cleanup unavailable"));
+
+    const response = await handleUpdateReservation(
+      actionRequest(createStoreSessionToken(user), { code: "A-141", action: "reject" }),
+      dependencies,
+    );
+    expect(response.status).toBe(200);
+    expect(await response.json()).toMatchObject({
+      reservation: { code: "A-141", status: "rejected_no_stock", contactTail: "333" },
     });
   });
 

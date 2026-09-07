@@ -120,21 +120,61 @@ export async function del(key: string): Promise<void> {
   }
 }
 
-/** 附加到 list 尾端，並修剪長度上限 —— 需求訊號用，不需要無限成長。 */
-export async function append(key: string, value: string, keepLast = 2000): Promise<void> {
+/** 附加到 list 尾端。`keepLast = null` 用於本來就有生命週期清理的 active index。 */
+export async function append(key: string, value: string, keepLast: number | null = 2000): Promise<void> {
   if (useMemory()) {
-    memory.set(key, (memory.get(key) ?? "") + value + "\n");
+    const next = [...(memory.get(key) ?? "").split("\n").filter(Boolean), value];
+    memory.set(key, (keepLast === null ? next : next.slice(-keepLast)).join("\n") + "\n");
     return;
   }
   if (config()) {
     await command(["RPUSH", key, value]);
-    await command(["LTRIM", key, -keepLast, -1]);
+    if (keepLast !== null) await command(["LTRIM", key, -keepLast, -1]);
     return;
   }
   const p = filePath(key);
   await mkdir(path.dirname(p), { recursive: true });
+  if (keepLast !== null) {
+    const current = await readFile(p, "utf8").catch(() => "");
+    const next = [...current.split("\n").filter(Boolean), value].slice(-keepLast);
+    await writeFile(p, `${next.join("\n")}\n`, "utf8");
+    return;
+  }
   const { appendFile } = await import("node:fs/promises");
   await appendFile(p, `${value}\n`, "utf8");
+}
+
+/** 移除 list 裡所有相同值。索引清理失敗時讀取端仍會以資料本身過濾。 */
+export async function removeFromList(key: string, value: string): Promise<void> {
+  if (useMemory()) {
+    const next = (memory.get(key) ?? "").split("\n").filter((item) => item && item !== value);
+    memory.set(key, next.length ? `${next.join("\n")}\n` : "");
+    return;
+  }
+  if (config()) {
+    await command(["LREM", key, 0, value]);
+    return;
+  }
+  const p = filePath(key);
+  const current = await readFile(p, "utf8").catch(() => "");
+  const next = current.split("\n").filter((item) => item && item !== value);
+  await writeFile(p, next.length ? `${next.join("\n")}\n` : "", "utf8");
+}
+
+/** 一次讀多筆，避免 inbox 對每個 token 做一輪網路往返。 */
+export async function getMany(keys: string[]): Promise<(string | null)[]> {
+  if (!keys.length) return [];
+  if (useMemory()) return keys.map((key) => memory.get(key) ?? null);
+  if (config()) {
+    const result = await command(["MGET", ...keys]);
+    if (!Array.isArray(result) || result.length !== keys.length || result.some(
+      (value) => value !== null && typeof value !== "string",
+    )) {
+      throw new Error("KV MGET returned an invalid result");
+    }
+    return result;
+  }
+  return Promise.all(keys.map((key) => get(key)));
 }
 
 /**
@@ -165,12 +205,32 @@ export async function lastN(key: string, n: number): Promise<string[]> {
     return (memory.get(key) ?? "").split("\n").filter(Boolean).slice(-n);
   }
   if (config()) {
-    const r = await command(["LRANGE", key, -n, -1]);
-    return Array.isArray(r) ? (r as string[]) : [];
+    const result = await command(["LRANGE", key, -n, -1]);
+    if (!Array.isArray(result) || result.some((value) => typeof value !== "string")) {
+      throw new Error("KV LRANGE returned an invalid result");
+    }
+    return result;
   }
   try {
     const raw = await readFile(filePath(key), "utf8");
     return raw.split("\n").filter(Boolean).slice(-n);
+  } catch {
+    return [];
+  }
+}
+
+/** 讀完整個受生命週期管理的 list；只適用於 active index，不能用於歷史掃描。 */
+export async function listAll(key: string): Promise<string[]> {
+  if (useMemory()) return (memory.get(key) ?? "").split("\n").filter(Boolean);
+  if (config()) {
+    const result = await command(["LRANGE", key, 0, -1]);
+    if (!Array.isArray(result) || result.some((value) => typeof value !== "string")) {
+      throw new Error("KV LRANGE returned an invalid result");
+    }
+    return result;
+  }
+  try {
+    return (await readFile(filePath(key), "utf8")).split("\n").filter(Boolean);
   } catch {
     return [];
   }

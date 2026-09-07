@@ -66,6 +66,8 @@ export interface StoredReservation {
   demo?: true;
   /** 顧客明確同意提供的需求脈絡；不進 Web Push、record webhook 或公開取貨頁。 */
   intake?: ReservationIntake;
+  /** 建單索引尚未齊全時的內部 provisional marker；舊資料沒有它，視為已就緒。 */
+  indexReady?: boolean;
 }
 
 /**
@@ -109,6 +111,9 @@ export function contactTail(r: Pick<StoredReservation, "contact">): string {
 
 // 保留 7 天就夠 —— 預留只有 4 小時效期，多留幾天是給人回頭查
 const TTL = 7 * 24 * 3600;
+const HISTORY_RETAINED_MAX = 500;
+const HISTORY_PAGE_SIZE = 50;
+export const TRANSITION_LOCK_TTL_SECONDS = 45;
 
 const set = (key: string, value: string) => kv.set(key, value, TTL);
 const get = (key: string) => kv.get(key);
@@ -123,18 +128,36 @@ function sandboxReservationKey(): string {
   return `store-sandbox-reservations:${STORE_DEMO_SANDBOX_SLUG}`;
 }
 
+function activeReservationKey(indexKey: string): string {
+  return `${indexKey}:active`;
+}
+
+function reservationIndexKey(r: Pick<StoredReservation, "storeSlug" | "demo">): string {
+  return r.demo ? sandboxReservationKey() : storeReservationKey(r.storeSlug);
+}
+
+function isActiveStatus(status: ReservationStatus): boolean {
+  return status === "pending_store_confirm" || status === "confirmed";
+}
+
+function isReservationReady(r: StoredReservation): boolean {
+  return r.indexReady !== false;
+}
+
 export const isStoreAvailable = kv.isAvailable;
 
 export async function saveReservation(r: StoredReservation): Promise<void> {
-  await set(`r:${r.token}`, JSON.stringify(r));
+  // `r:` only becomes externally visible after every required index exists. This
+  // lets a failed active-index append reject the POST without creating a phantom
+  // reservation; legacy records without the marker remain readable.
+  await set(`r:${r.token}`, JSON.stringify({ ...r, indexReady: false }));
   // postback 只帶得回取貨碼，需要一條 code → token 的索引
   await set(`c:${r.code}`, r.token);
-  // Store OS 的 inbox 不能在每次請求掃完整個 KV。只在新單建立時附加一次，
-  // 讀取時再以 token 取最新狀態；舊 token 過期後會自然被略過。
-  await kv.append(storeReservationKey(r.storeSlug), r.token, 500);
-  // Preview 預留只額外進獨立 sandbox queue。正式門市仍會在自己的 inbox
-  // 過濾 demo record，兩邊不共用清單，也不需要偽造一個真實門市 slug。
-  if (r.demo) await kv.append(sandboxReservationKey(), r.token, 500);
+  // 歷史保留 500 筆；active queue 只留尚在流程中的單，不能用歷史 cap 截斷。
+  const indexKey = reservationIndexKey(r);
+  await kv.append(indexKey, r.token, HISTORY_RETAINED_MAX);
+  if (isActiveStatus(r.status)) await kv.append(activeReservationKey(indexKey), r.token, null);
+  await set(`r:${r.token}`, JSON.stringify({ ...r, indexReady: true }));
 }
 
 export interface StoreReservationSummary {
@@ -147,6 +170,7 @@ export interface StoreReservationSummary {
   status: ReservationStatus;
   createdAt: string;
   confirmedAt: string | null;
+  holdExpiresAt?: string | null;
   demo: boolean;
   sourceStoreName?: string;
   intake?: ReservationIntakeSummary;
@@ -156,47 +180,160 @@ export interface StoreReservationSummary {
  * 只回傳該門市的最小 inbox 欄位。完整電話與 consumer capability token
  * 永遠不離開 server，demo 單也不混進正式店務。
  */
-export async function listStoreReservations(
-  storeSlug: string,
-  limit = 50,
-): Promise<StoreReservationSummary[]> {
-  const sandbox = isStoreDemoSandbox(storeSlug);
-  const tokens = await kv.lastN(
-    sandbox ? sandboxReservationKey() : storeReservationKey(storeSlug),
-    Math.min(Math.max(limit, 1), 100),
-  );
-  const out: StoreReservationSummary[] = [];
-  const seen = new Set<string>();
+function holdExpiresAt(r: StoredReservation): string | null | undefined {
+  if (r.confirmedAt === null) return null;
+  const confirmedAt = Date.parse(r.confirmedAt);
+  if (!Number.isFinite(confirmedAt) || !Number.isFinite(r.holdHours) || r.holdHours < 0) return undefined;
+  const expiresAt = confirmedAt + r.holdHours * 60 * 60 * 1000;
+  if (!Number.isFinite(expiresAt) || Math.abs(expiresAt) > 8.64e15) return undefined;
+  return new Date(expiresAt).toISOString();
+}
 
-  for (const token of [...tokens].reverse()) {
-    if (seen.has(token)) continue;
-    seen.add(token);
-    const reservation = await getByToken(token).catch(() => null);
-    if (!reservation) continue;
-    if (sandbox ? !reservation.demo : reservation.storeSlug !== storeSlug || reservation.demo) continue;
-    out.push({
-      code: reservation.code,
-      drugName: reservation.drugName,
-      drugSpec: reservation.drugSpec,
-      priceTwd: reservation.priceTwd,
-      contactTail: contactTail(reservation),
-      status: reservation.status,
-      createdAt: reservation.createdAt,
-      confirmedAt: reservation.confirmedAt,
-      demo: reservation.demo === true,
-      ...(reservation.intake ? {
-        intake: {
-          source: reservation.intake.source,
-          allergyStatus: reservation.intake.allergyStatus,
-          ...(reservation.intake.allergens ? { allergens: reservation.intake.allergens } : {}),
-          ...(reservation.intake.searchQuery ? { searchQuery: reservation.intake.searchQuery } : {}),
-          ...(reservation.intake.note ? { note: reservation.intake.note } : {}),
-        },
-      } : {}),
-      ...(sandbox ? { sourceStoreName: reservation.storeName } : {}),
-    });
+export function toStoreReservationSummary(
+  r: StoredReservation,
+  includeSourceStoreName = false,
+): StoreReservationSummary {
+  const deadline = holdExpiresAt(r);
+  return {
+    code: r.code,
+    drugName: r.drugName,
+    drugSpec: r.drugSpec,
+    priceTwd: r.priceTwd,
+    contactTail: contactTail(r),
+    status: r.status,
+    createdAt: r.createdAt,
+    confirmedAt: r.confirmedAt,
+    ...(deadline === undefined ? {} : { holdExpiresAt: deadline }),
+    demo: r.demo === true,
+    ...(r.intake ? {
+      intake: {
+        source: r.intake.source,
+        allergyStatus: r.intake.allergyStatus,
+        ...(r.intake.allergens ? { allergens: r.intake.allergens } : {}),
+        ...(r.intake.searchQuery ? { searchQuery: r.intake.searchQuery } : {}),
+        ...(r.intake.note ? { note: r.intake.note } : {}),
+      },
+    } : {}),
+    ...(includeSourceStoreName ? { sourceStoreName: r.storeName } : {}),
+  };
+}
+
+function ownsStoreReservation(r: StoredReservation, storeSlug: string, sandbox: boolean): boolean {
+  return sandbox ? r.demo === true : r.storeSlug === storeSlug && r.demo !== true;
+}
+
+function historyCursorFor(r: StoredReservation): string {
+  return Buffer.from(JSON.stringify({ v: 1, createdAt: r.createdAt, code: r.code }), "utf8").toString("base64url");
+}
+
+function parseHistoryCursor(cursor: string): { createdAt: string; code: string } | null {
+  try {
+    const value = JSON.parse(Buffer.from(cursor, "base64url").toString("utf8")) as Record<string, unknown>;
+    return value.v === 1 && typeof value.createdAt === "string" && typeof value.code === "string"
+      ? { createdAt: value.createdAt, code: value.code }
+      : null;
+  } catch {
+    return null;
   }
-  return out;
+}
+
+export class InvalidHistoryCursorError extends Error {
+  constructor() {
+    super("Invalid history cursor");
+  }
+}
+
+export interface StoreReservationPage {
+  reservations: StoreReservationSummary[];
+  nextHistoryCursor?: string;
+}
+
+/**
+ * 首頁回傳所有 active 加一頁歷史；後續 cursor 頁只回歷史。歷史索引刻意只保留
+ * 最近 500 筆，舊版已被 trim 的 token 不做掃描或 migration。cursor 以最後一筆
+ * 歷史資料定位，避免新單推進 500-item window 時 offset 位移。
+ */
+export async function listStoreReservationPage(
+  storeSlug: string,
+  historyCursor?: string,
+): Promise<StoreReservationPage> {
+  const sandbox = isStoreDemoSandbox(storeSlug);
+  const indexKey = sandbox ? sandboxReservationKey() : storeReservationKey(storeSlug);
+  const [historyTokens, activeTokens] = await Promise.all([
+    kv.lastN(indexKey, HISTORY_RETAINED_MAX),
+    kv.listAll(activeReservationKey(indexKey)),
+  ]);
+  const tokens = [...new Set([...activeTokens, ...historyTokens])];
+  const rawReservations = await kv.getMany(tokens.map((token) => `r:${token}`));
+  const byToken = new Map<string, StoredReservation>();
+  const provisionalTokens = new Set<string>();
+  for (let index = 0; index < tokens.length; index += 1) {
+    const raw = rawReservations[index];
+    if (!raw) continue;
+    try {
+      const reservation = JSON.parse(raw) as StoredReservation;
+      if (!ownsStoreReservation(reservation, storeSlug, sandbox)) continue;
+      if (!isReservationReady(reservation)) {
+        provisionalTokens.add(tokens[index]);
+        continue;
+      }
+      byToken.set(tokens[index], reservation);
+    } catch {
+      /* 壞掉的單筆略過，不讓 inbox 整批失敗。 */
+    }
+  }
+  const activeKey = activeReservationKey(indexKey);
+  const indexedActiveTokens = new Set(activeTokens);
+  const legacyActiveTokens = [...new Set(historyTokens)].filter((token) => {
+    const reservation = byToken.get(token);
+    return !indexedActiveTokens.has(token) && reservation !== undefined && isActiveStatus(reservation.status);
+  });
+  if (legacyActiveTokens.length) {
+    await Promise.all(legacyActiveTokens.map((token) => kv.append(activeKey, token, null)));
+  }
+  const staleActiveTokens = activeTokens.filter((token) => {
+    if (provisionalTokens.has(token)) return false;
+    const reservation = byToken.get(token);
+    return !reservation || !isActiveStatus(reservation.status);
+  });
+  if (staleActiveTokens.length) {
+    await Promise.all(staleActiveTokens.map((token) => kv.removeFromList(activeKey, token).catch(() => undefined)));
+  }
+
+  const history: StoredReservation[] = [];
+  const seenHistoryTokens = new Set<string>();
+  for (const token of [...historyTokens].reverse()) {
+    if (seenHistoryTokens.has(token)) continue;
+    seenHistoryTokens.add(token);
+    const reservation = byToken.get(token);
+    if (reservation && !isActiveStatus(reservation.status)) history.push(reservation);
+  }
+  const cursor = historyCursor === undefined ? null : parseHistoryCursor(historyCursor);
+  if (historyCursor !== undefined && !cursor) throw new InvalidHistoryCursorError();
+
+  let historyStart = 0;
+  if (cursor) {
+    const anchor = history.findIndex((r) => r.code === cursor.code && r.createdAt === cursor.createdAt);
+    if (anchor < 0) throw new InvalidHistoryCursorError();
+    historyStart = anchor + 1;
+  }
+  const historyPage = history.slice(historyStart, historyStart + HISTORY_PAGE_SIZE);
+  const next = history[historyStart + HISTORY_PAGE_SIZE];
+  const active = historyCursor === undefined
+    ? [...byToken.values()]
+      .filter((r) => isActiveStatus(r.status))
+      .sort((a, b) => b.createdAt.localeCompare(a.createdAt) || b.code.localeCompare(a.code))
+    : [];
+
+  return {
+    reservations: [...active, ...historyPage].map((r) => toStoreReservationSummary(r, sandbox)),
+    ...(next && historyPage.length ? { nextHistoryCursor: historyCursorFor(historyPage.at(-1)!) } : {}),
+  };
+}
+
+/** 既有呼叫端維持只取得預設首頁的 reservations array。 */
+export async function listStoreReservations(storeSlug: string): Promise<StoreReservationSummary[]> {
+  return (await listStoreReservationPage(storeSlug)).reservations;
 }
 
 /**
@@ -224,7 +361,8 @@ export async function getByToken(token: string): Promise<StoredReservation | nul
   const raw = await get(`r:${token}`);
   if (!raw) return null;
   try {
-    return JSON.parse(raw) as StoredReservation;
+    const reservation = JSON.parse(raw) as StoredReservation;
+    return isReservationReady(reservation) ? reservation : null;
   } catch {
     return null;
   }
@@ -237,7 +375,16 @@ export async function getByCode(code: string): Promise<StoredReservation | null>
 
 /** 覆寫整筆。給 cron 標記「已催過」用。 */
 export async function save(r: StoredReservation): Promise<void> {
+  if (!isActiveStatus(r.status)) {
+    // A long-lived active reservation may already be outside the 500-entry history
+    // window. Reinsert it before the authoritative write: an index failure must not
+    // turn a committed transition into a false 409 response.
+    await kv.append(reservationIndexKey(r), r.token, HISTORY_RETAINED_MAX);
+  }
   await set(`r:${r.token}`, JSON.stringify(r));
+  if (!isActiveStatus(r.status)) {
+    await kv.removeFromList(activeReservationKey(reservationIndexKey(r)), r.token).catch(() => undefined);
+  }
 }
 
 /**
@@ -252,7 +399,7 @@ export async function allActive(): Promise<StoredReservation[]> {
     if (!raw) continue;
     try {
       const r = JSON.parse(raw) as StoredReservation;
-      if (r.status === "pending_store_confirm" || r.status === "confirmed") out.push(r);
+      if (isReservationReady(r) && (r.status === "pending_store_confirm" || r.status === "confirmed")) out.push(r);
       // picked_up 是終態，不進 cron 的掃描範圍
     } catch {
       /* 壞掉的那筆跳過，不要讓整個 cron 掛掉 */
@@ -302,7 +449,7 @@ export async function updateStatus(
   expectedStatus?: ReservationStatus,
 ): Promise<StoredReservation | null> {
   const lockKey = `reservation-transition:${code}`;
-  if (!(await kv.setIfAbsent(lockKey, "1", 10))) return null;
+  if (!(await kv.setIfAbsent(lockKey, "1", TRANSITION_LOCK_TTL_SECONDS))) return null;
   try {
     const r = await getByCode(code);
     if (!r || (expectedStatus && r.status !== expectedStatus)) return null;
@@ -313,7 +460,7 @@ export async function updateStatus(
       confirmedAt: status === "confirmed" ? now : r.confirmedAt,
       pickedUpAt: status === "picked_up" ? now : r.pickedUpAt,
     };
-    await set(`r:${next.token}`, JSON.stringify(next));
+    await save(next);
     return next;
   } finally {
     await kv.del(lockKey).catch(() => undefined);
