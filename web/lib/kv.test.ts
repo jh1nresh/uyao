@@ -1,6 +1,15 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { __resetForTests, append, getMany, lastN, listAll, removeFromList, set } from "./kv";
+import {
+  __resetForTests,
+  append,
+  getMany,
+  lastN,
+  listAll,
+  removeFromList,
+  set,
+  setAndUpdateHistory,
+} from "./kv";
 
 beforeEach(() => __resetForTests());
 
@@ -10,11 +19,15 @@ afterEach(() => {
   vi.unstubAllEnvs();
 });
 
-function mockRestSuccessBody(body: unknown): void {
+function mockRestSuccessBody(body: unknown) {
   vi.stubEnv("NODE_ENV", "development");
   vi.stubEnv("KV_REST_API_URL", "https://kv.test");
   vi.stubEnv("KV_REST_API_TOKEN", "test-token");
-  vi.stubGlobal("fetch", vi.fn(async () => new Response(JSON.stringify(body), { status: 200 })));
+  const mockedFetch = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) => (
+    new Response(JSON.stringify(body), { status: 200 })
+  ));
+  vi.stubGlobal("fetch", mockedFetch);
+  return mockedFetch;
 }
 
 describe("KV list and batch primitives", () => {
@@ -58,4 +71,20 @@ describe("KV list and batch primitives", () => {
     mockRestSuccessBody({ error: "WRONGTYPE" });
     await expect(append("store-reservations:test:active", "token", null)).rejects.toThrow("KV command failed");
   });
+
+  it("sends one EVAL for the atomic record/history update and requires its OK result", async () => {
+    const mockedFetch = mockRestSuccessBody({ result: "OK" });
+    await expect(setAndUpdateHistory("r:token", "record", 60, "history", "token", 500)).resolves.toBeUndefined();
+    const request = mockedFetch.mock.calls[0][1] as RequestInit;
+    const args = JSON.parse(String(request.body)) as unknown[];
+    expect(args.slice(0, 5)).toEqual(["EVAL", expect.any(String), 2, "r:token", "history"]);
+    expect(args[1]).toContain("redis.call('TYPE', KEYS[2]).ok");
+    expect(args.slice(-4)).toEqual(["record", 60, "token", 500]);
+
+    mockRestSuccessBody({ result: null });
+    await expect(setAndUpdateHistory("r:token", "record", 60, "history", "token", 500)).rejects.toThrow(
+      "KV reservation history update failed",
+    );
+  });
+
 });

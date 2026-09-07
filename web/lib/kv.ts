@@ -1,4 +1,4 @@
-import { mkdir, readFile, readdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, readdir, rename, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 /**
@@ -57,6 +57,33 @@ async function command(args: (string | number)[]): Promise<unknown> {
     throw new Error("KV command failed");
   }
   return payload.result;
+}
+
+const SET_AND_UPDATE_HISTORY_SCRIPT = [
+  "local historyType = redis.call('TYPE', KEYS[2]).ok",
+  "if historyType ~= 'none' and historyType ~= 'list' then return redis.error_reply('history index is not a list') end",
+  "redis.call('SET', KEYS[1], ARGV[1], 'EX', ARGV[2])",
+  "redis.call('LREM', KEYS[2], 0, ARGV[3])",
+  "redis.call('RPUSH', KEYS[2], ARGV[3])",
+  "redis.call('LTRIM', KEYS[2], -tonumber(ARGV[4]), -1)",
+  "return 'OK'",
+].join("\n");
+
+async function readOptionalFile(pathname: string): Promise<string | undefined> {
+  try {
+    return await readFile(pathname, "utf8");
+  } catch (error) {
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") return undefined;
+    throw error;
+  }
+}
+
+async function restoreFile(pathname: string, previous: string | undefined): Promise<void> {
+  if (previous === undefined) {
+    await unlink(pathname);
+    return;
+  }
+  await writeFile(pathname, previous, "utf8");
 }
 
 function filePath(key: string): string {
@@ -152,6 +179,77 @@ export async function append(key: string, value: string, keepLast: number | null
   }
   const { appendFile } = await import("node:fs/promises");
   await appendFile(p, `${value}\n`, "utf8");
+}
+
+/**
+ * Atomically commit a reservation record and its deduplicated bounded history.
+ * Redis executes the Lua script as one command. The single-process file driver
+ * stages replacements and rolls history back if the record commit fails; it is
+ * not crash-atomic and remains a local-development fallback only.
+ */
+export async function setAndUpdateHistory(
+  key: string,
+  value: string,
+  ttlSeconds: number,
+  historyKey: string,
+  token: string,
+  keepLast: number,
+): Promise<void> {
+  if (useMemory()) {
+    const history = (memory.get(historyKey) ?? "").split("\n").filter(Boolean);
+    const next = [...history.filter((item) => item !== token), token].slice(-keepLast);
+    memory.set(key, value);
+    memory.set(historyKey, `${next.join("\n")}\n`);
+    return;
+  }
+  if (config()) {
+    const result = await command([
+      "EVAL",
+      SET_AND_UPDATE_HISTORY_SCRIPT,
+      2,
+      key,
+      historyKey,
+      value,
+      ttlSeconds,
+      token,
+      keepLast,
+    ]);
+    if (result !== "OK") throw new Error("KV reservation history update failed");
+    return;
+  }
+  // Single-process local development only: stage both replacement files, commit
+  // history first, and restore its snapshot if the authoritative record rename
+  // fails. A process crash between renames is not filesystem-ACID; production
+  // requires the Redis EVAL branch above.
+  const recordPath = filePath(key);
+  const historyPath = filePath(historyKey);
+  await mkdir(path.dirname(recordPath), { recursive: true });
+  await mkdir(path.dirname(historyPath), { recursive: true });
+  const [previousRecord, previousHistory] = await Promise.all([
+    readOptionalFile(recordPath),
+    readOptionalFile(historyPath),
+  ]);
+  const history = (previousHistory ?? "").split("\n").filter(Boolean);
+  const nextHistory = [...history.filter((item) => item !== token), token].slice(-keepLast);
+  const suffix = `${process.pid}.${Date.now()}.${Math.random().toString(36).slice(2)}`;
+  const recordTemp = `${recordPath}.${suffix}.tmp`;
+  const historyTemp = `${historyPath}.${suffix}.tmp`;
+  try {
+    await Promise.all([
+      writeFile(recordTemp, value, "utf8"),
+      writeFile(historyTemp, `${nextHistory.join("\n")}\n`, "utf8"),
+    ]);
+    await rename(historyTemp, historyPath);
+    try {
+      await rename(recordTemp, recordPath);
+    } catch (error) {
+      await restoreFile(historyPath, previousHistory);
+      throw error;
+    }
+  } finally {
+    await unlink(recordTemp).catch(() => undefined);
+    await unlink(historyTemp).catch(() => undefined);
+  }
 }
 
 /** 移除 list 裡所有相同值。索引清理失敗時讀取端仍會以資料本身過濾。 */

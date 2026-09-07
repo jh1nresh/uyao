@@ -240,9 +240,9 @@ describe("PATCH /api/store/reservations", () => {
     expect(body.reservation.intake).not.toHaveProperty("consentedAt");
   });
 
-  it("does not commit a terminal transition when its required history append fails", async () => {
+  it("does not commit a terminal transition when its atomic record/history write fails", async () => {
     await saveReservation(reservation("A 藥局", "A-131", "0911222333"));
-    vi.spyOn(kv, "append").mockRejectedValueOnce(new Error("history unavailable"));
+    vi.spyOn(kv, "setAndUpdateHistory").mockRejectedValueOnce(new Error("history unavailable"));
 
     const response = await handleUpdateReservation(
       actionRequest(createStoreSessionToken(user), { code: "A-131", action: "reject" }),

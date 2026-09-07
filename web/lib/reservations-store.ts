@@ -214,11 +214,18 @@ export async function saveReservation(r: StoredReservation): Promise<void> {
   await set(`r:${r.token}`, JSON.stringify({ ...r, indexReady: false }));
   // postback 只帶得回取貨碼，需要一條 code → token 的索引
   await set(`c:${r.code}`, r.token);
-  // 歷史保留 500 筆；active queue 只留尚在流程中的單，不能用歷史 cap 截斷。
+  // Active queue is required before the record becomes visible. Its retained
+  // history row and the final visible record then commit as one operation.
   const indexKey = reservationIndexKey(r);
-  await kv.append(indexKey, r.token, HISTORY_RETAINED_MAX);
   if (isActiveStatus(r.status)) await kv.append(activeReservationKey(indexKey), r.token, null);
-  await set(`r:${r.token}`, JSON.stringify({ ...r, indexReady: true }));
+  await kv.setAndUpdateHistory(
+    `r:${r.token}`,
+    JSON.stringify({ ...r, indexReady: true }),
+    TTL,
+    indexKey,
+    r.token,
+    HISTORY_RETAINED_MAX,
+  );
 }
 
 export interface StoreReservationSummary {
@@ -438,12 +445,20 @@ export async function getByCode(code: string): Promise<StoredReservation | null>
 export async function save(r: StoredReservation): Promise<void> {
   if (!isActiveStatus(r.status)) {
     // A long-lived active reservation may already be outside the 500-entry history
-    // window. Reinsert it before the authoritative write: an index failure must not
-    // turn a committed transition into a false 409 response.
+    // window. Commit its authoritative record plus one deduplicated retained
+    // history row together; a failed write must not evict history or fake a 409.
     await ensureActiveIndexBootstrap(r);
-    await kv.append(reservationIndexKey(r), r.token, HISTORY_RETAINED_MAX);
+    await kv.setAndUpdateHistory(
+      `r:${r.token}`,
+      JSON.stringify(r),
+      TTL,
+      reservationIndexKey(r),
+      r.token,
+      HISTORY_RETAINED_MAX,
+    );
+  } else {
+    await set(`r:${r.token}`, JSON.stringify(r));
   }
-  await set(`r:${r.token}`, JSON.stringify(r));
   if (!isActiveStatus(r.status)) {
     await kv.removeFromList(activeReservationKey(reservationIndexKey(r)), r.token).catch(() => undefined);
   }

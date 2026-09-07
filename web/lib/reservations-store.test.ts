@@ -242,6 +242,30 @@ describe("取貨憑證的鍵", () => {
     await expect(listStoreReservations("中山藥局")).resolves.toEqual([]);
   });
 
+  it("does not trim full history when the final visible creation commit fails", async () => {
+    const historyKey = legacyHistoryKey("中山藥局");
+    for (let index = 0; index < 500; index += 1) {
+      await seedLegacyReservation(make({ code: `H-${String(index).padStart(3, "0")}`, status: "picked_up" }), historyKey);
+    }
+    const before = await kv.lastN(historyKey, 500);
+    const created = make({ code: "P-021" });
+    vi.spyOn(kv, "setAndUpdateHistory").mockRejectedValueOnce(new Error("final record unavailable"));
+
+    await expect(saveReservation(created)).rejects.toThrow("final record unavailable");
+    await expect(kv.lastN(historyKey, 500)).resolves.toEqual(before);
+    await expect(getByToken(created.token)).resolves.toBeNull();
+    await expect(getByCode(created.code)).resolves.toBeNull();
+    await expect(listStoreReservations(created.storeSlug)).resolves.not.toEqual(expect.arrayContaining([
+      expect.objectContaining({ code: created.code }),
+    ]));
+
+    await expect(saveReservation(created)).resolves.toBeUndefined();
+    const after = await kv.lastN(historyKey, 500);
+    expect(after).toEqual([...before.slice(1), created.token]);
+    expect(after.filter((token) => token === created.token)).toHaveLength(1);
+    await expect(getByCode(created.code)).resolves.toMatchObject({ status: "pending_store_confirm" });
+  });
+
   it("propagates a batch-read failure without treating active tokens as stale", async () => {
     await saveReservation(make({ code: "P-001" }));
     const cleanup = vi.spyOn(kv, "removeFromList");
@@ -439,6 +463,38 @@ describe("放鳥計數", () => {
 });
 
 describe("狀態流轉", () => {
+  it("does not evict full history when atomic terminal writes fail, and retries append once", async () => {
+    const active = make({ code: "C-008" });
+    const historyKey = legacyHistoryKey(active.storeSlug);
+    await kv.set(`r:${active.token}`, JSON.stringify(active));
+    await kv.set(`c:${active.code}`, active.token);
+    for (let index = 0; index < 500; index += 1) {
+      await seedLegacyReservation(make({ code: `H-${String(index).padStart(3, "0")}`, status: "picked_up" }), historyKey);
+    }
+    const before = await kv.lastN(historyKey, 500);
+    const originalWrite = kv.setAndUpdateHistory;
+    vi.spyOn(kv, "setAndUpdateHistory")
+      .mockRejectedValueOnce(new Error("authoritative SET unavailable"))
+      .mockRejectedValueOnce(new Error("authoritative SET unavailable"));
+
+    await expect(updateStatus(active.code, "rejected_no_stock", "pending_store_confirm")).rejects.toThrow(
+      "authoritative SET unavailable",
+    );
+    await expect(updateStatus(active.code, "rejected_no_stock", "pending_store_confirm")).rejects.toThrow(
+      "authoritative SET unavailable",
+    );
+    await expect(kv.lastN(historyKey, 500)).resolves.toEqual(before);
+    await expect(getByCode(active.code)).resolves.toMatchObject({ status: "pending_store_confirm" });
+
+    vi.mocked(kv.setAndUpdateHistory).mockImplementation(originalWrite);
+    await expect(updateStatus(active.code, "rejected_no_stock", "pending_store_confirm")).resolves.toMatchObject({
+      status: "rejected_no_stock",
+    });
+    const after = await kv.lastN(historyKey, 500);
+    expect(after).toEqual([...before.slice(1), active.token]);
+    expect(after.filter((token) => token === active.token)).toHaveLength(1);
+  });
+
   it("bootstraps terminal history before claiming the bounded transition lock", async () => {
     const r = make({ code: "C-009" });
     await seedLegacyReservation(r);
