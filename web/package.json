@@ -6,6 +6,8 @@
     "dev": "next dev -p 3100",
     "build": "next build",
     "generate:static-avatars": "node scripts/generate-static-avatars.mjs",
+    "generate:brand-assets": "node scripts/generate-brand-assets.mjs",
+    "check:brand-assets": "node scripts/generate-brand-assets.mjs --check",
     "start": "next start -p 3100",
     "typecheck": "tsc --noEmit",
     "lint": "next lint",
