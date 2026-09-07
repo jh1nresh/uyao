@@ -13,7 +13,6 @@ import { SupportAgent } from "@/components/SupportAgent";
 import {
   ApprovalCard,
   TaskRows,
-  Thinking,
   ToolTrace,
   type ApprovalQuestion,
   type StatusTone,
@@ -44,6 +43,9 @@ import {
 import type { StoreRole } from "@/lib/store-identity";
 import type { StoreReservationSummary } from "@/lib/reservations-store";
 
+import { reservationsForView, mergeReservationPage, isActiveReservation, type StoreWorkView } from "@/lib/store-reservation-view";
+import { createReservationLoader, ReservationLoadError } from "@/lib/store-reservation-loader";
+
 import styles from "./StoreOsShell.module.css";
 
 type ExportedAvatar = ComponentType<{
@@ -54,7 +56,7 @@ type ExportedAvatar = ComponentType<{
 
 type StoreTheme = "light" | "dark";
 type ComposerNoticeTone = "answer" | "success" | "warning";
-type StoreWorkView = "attention" | "all" | "completed";
+
 type PushState = "checking" | "available" | "enabling" | "enabled" | "disabling" | "denied" | "unsupported" | "unconfigured" | "error";
 
 function applicationServerKey(value: string): Uint8Array {
@@ -135,13 +137,6 @@ function draftApprovalQuestions(
   ];
 }
 
-const COMPLETED_RESERVATION_STATUSES = new Set<StoreReservationSummary["status"]>([
-  "rejected_no_stock",
-  "cancelled_by_user",
-  "picked_up",
-  "expired",
-]);
-
 const STORE_ROLE_LABELS: Record<StoreRole, string> = {
   owner: "店家擁有者",
   manager: "門市管理者",
@@ -170,180 +165,107 @@ function taipeiTime(iso: string): string {
 }
 
 function ReservationInbox({
-  reservations,
-  view,
-  animate,
-  busyCode,
-  actionError,
-  locale,
-  onAction,
+  reservations, view, busyCode, actionError, locale, now, onAction, onView,
+  nextHistoryCursor, historyBusy, onLoadHistory, readOnly,
 }: {
   reservations: StoreReservationSummary[];
   view: StoreWorkView;
-  animate: boolean;
   busyCode: string;
   actionError: string;
   locale: Locale;
+  now: number;
   onAction: (code: string, action: StoreReservationAction) => void;
+  onView: (view: StoreWorkView) => void;
+  nextHistoryCursor: string | null;
+  historyBusy: boolean;
+  onLoadHistory: () => void;
+  readOnly: boolean;
 }) {
   const english = locale === "en";
-  const statusLabels = english ? STATUS_LABELS_EN : STATUS_LABELS;
-  const waiting = reservations.filter((reservation) => reservation.status === "pending_store_confirm");
-  const completed = reservations.filter((reservation) => COMPLETED_RESERVATION_STATUSES.has(reservation.status));
-  const visibleReservations = view === "attention"
-    ? waiting
-    : view === "completed"
-      ? completed
-      : reservations;
-  const withIntake = visibleReservations.filter((reservation) => reservation.intake).length;
-  const heading = english
-    ? view === "attention" ? "Needs you" : view === "completed" ? "Completed" : "All work"
-    : view === "attention" ? "需要你" : view === "completed" ? "完成紀錄" : "全部工作";
-  const eyebrow = view === "attention" ? "ACTION" : view === "completed" ? "CLOSED" : "ALL";
-  const emptyTitle = english
-    ? view === "attention" ? "No reservations need confirmation" : view === "completed" ? "No completed records yet" : "No reservations yet"
-    : view === "attention" ? "目前沒有需要確認的預留" : view === "completed" ? "還沒有完成紀錄" : "還沒有預留單";
-  const emptyDetail = english
-    ? view === "attention"
-      ? "New reservations will appear here for confirmation."
-      : view === "completed"
-        ? "Picked-up, out-of-stock, cancelled, and expired reservations remain here."
-        : "When a customer reserves through uYao, the code appears here directly. Enable off-site alerts in Account settings."
-    : view === "attention"
-      ? "新的預留建立後，會直接出現在這裡等你確認。"
-      : view === "completed"
-        ? "已取貨、缺貨、取消或逾期的預留會保留在這裡。"
-        : "客戶從 uYao 完成預留後，單號會直接出現在這裡；離站提醒可在帳號設定開啟。";
+  const visibleReservations = reservationsForView(reservations, view);
+  const tabs: Array<[StoreWorkView, string, string]> = [
+    ["attention", "待確認", "To confirm"], ["pickup", "待取貨", "Pickup"],
+    ["completed", "已結束", "Closed"], ["all", "全部", "All"],
+  ];
+  const title = tabs.find(([id]) => id === view)!;
   return (
     <>
       <div className={styles.workHeading}>
-        <p>RESERVATIONS / {eyebrow}</p>
-        <h1>{heading}</h1>
-        <div>
-          <span>{english ? `${waiting.length} awaiting confirmation` : `${waiting.length} 筆等待確認`}</span>
-          <span>{english ? `${withIntake} with customer context` : `${withIntake} 筆附需求脈絡`}</span>
-        </div>
+        <p>{english ? "STORE / RESERVATIONS" : "門市工作 / 預留單"}</p>
+        <h1>{english ? title[2] : title[1]}</h1>
       </div>
-
-      <section className={styles.agentMessage} aria-live="polite">
-        <AgentOrb id="manager" active animated={animate} />
-        <div>
-          <p className={styles.sender}>{english ? "Advanced command · Manager Agent" : "進階指令 · 店長 Agent"} <time>{english ? "Now" : "現在"}</time></p>
-          {busyCode ? (
-            <div className={styles.thinkingSlot}>
-              <Thinking
-                label={english ? `Updating ${busyCode}…` : `更新 ${busyCode} 中…`}
-                steps={[
-                  { id: "verify", label: english ? "Checked store identity" : "已核對門市身份", state: "done" },
-                  { id: "write", label: english ? "Writing the reservation status" : "寫入預留狀態", state: "active" },
-                  { id: "notify", label: english ? "Update the customer pickup page" : "更新顧客取貨頁", state: "pending" },
-                ]}
-              />
-            </div>
-          ) : (
-          <p>
-            {english
-              ? view === "completed"
-                ? `${completed.length} completed reservations are shown. Records retain only what staff need for verification.`
-                : waiting.length > 0
-                  ? `${waiting.length} new reservations need confirmation. Only the last three phone digits required for in-store verification are shown.`
-                  : "No new reservations are awaiting confirmation. New reservations will appear here directly."
-              : view === "completed"
-                ? `目前顯示 ${completed.length} 筆已結束預留；紀錄只保留店務核對所需資訊。`
-                : waiting.length > 0
-                  ? `有 ${waiting.length} 筆新預留等你確認。我只顯示到店核對所需的手機末三碼。`
-                  : "目前沒有等待確認的新預留；新單建立後會直接出現在這裡。"}
-          </p>
-          )}
-        </div>
-      </section>
-
+      <nav className={styles.reservationTabs} aria-label={english ? "Reservation status" : "預留單分類"}>
+        {tabs.map(([id, zh, en]) => (
+          <button key={id} type="button" aria-current={view === id ? "page" : undefined} onClick={() => onView(id)}>
+            {english ? en : zh} <b>{reservationsForView(reservations, id).length}</b>
+          </button>
+        ))}
+      </nav>
       {actionError && <p className={styles.reservationError} role="alert">{actionError}</p>}
-
-      <section className={styles.reservationList} aria-label={english ? "Store reservations" : "門市預留單"}>
+      {busyCode && <p className={styles.operationStatus} role="status">{english ? `Updating ${busyCode}…` : `更新 ${busyCode} 中…`}</p>}
+      <section key={view} className={styles.reservationList} aria-label={english ? "Store reservations" : "門市預留單"}>
         {visibleReservations.length === 0 ? (
           <div className={styles.emptyInbox}>
-            <strong>{emptyTitle}</strong>
-            <p>{emptyDetail}</p>
+            <strong>{english ? `No ${title[2].toLowerCase()} reservations` : `目前沒有${title[1]}的預留單`}</strong>
+            <p>{english ? "Switch tabs to check other reservations." : "可切換上方分類查看其他預留。"}</p>
           </div>
-        ) : visibleReservations.map((reservation) => (
+        ) : visibleReservations.map((reservation) => {
+          const elapsed = now ? Math.max(0, Math.floor((now - Date.parse(reservation.createdAt)) / 60000)) : null;
+          const deadline = reservation.holdExpiresAt ? Date.parse(reservation.holdExpiresAt) : NaN;
+          const overdue = now > 0 && deadline <= now;
+          return (
           <article className={styles.reservationCard} key={reservation.code}>
             <header>
               <span className={styles.reservationCode}>{reservation.code}</span>
               {reservation.demo && <span className={styles.reservationDemo}>{english ? "Demo" : "示範"}</span>}
-              <span data-status={reservation.status}>{statusLabels[reservation.status]}</span>
+              <span data-status={reservation.status}>{reservation.status === "confirmed" ? (english ? "Awaiting pickup" : "待取貨") : (english ? STATUS_LABELS_EN : STATUS_LABELS)[reservation.status]}</span>
             </header>
             <h2>{reservation.drugName}</h2>
-            <p>
-              {/* 沒有掃描流就沒有價格 —— 寫「門市報價」而不是 NT$ 0，
-                  藥師看到 0 會以為是免費或系統壞了。 */}
-              {reservation.drugSpec} ·{" "}
-              {reservation.priceTwd === null
-                ? english ? "Price at counter" : "門市報價"
-                : `NT$ ${reservation.priceTwd}`}
-              {reservation.sourceStoreName ? ` · ${english ? "Source page" : "來源頁"} ${reservation.sourceStoreName}` : ""}
-            </p>
-            {reservation.intake && (
-              <section className={styles.reservationIntake} aria-label={english ? "Customer context" : "顧客需求脈絡"}>
-                <header>
-                  <strong>{english ? "Customer context" : "顧客需求脈絡"}</strong>
-                  <span>{english ? "Shared with customer consent" : "顧客已同意提供"}</span>
-                </header>
-                <div>
-                  <span>{english ? "Known allergies" : "已知過敏原"}</span>
-                  <p>{reservation.intake.allergyStatus === "none"
-                    ? english ? "No known allergies reported" : "顧客回答目前沒有已知過敏"
-                    : reservation.intake.allergens
-                      ?? (english ? "Not collected on this older reservation" : "舊預留單未收集過敏回答")}</p>
-                </div>
-                {reservation.intake.searchQuery && (
-                  <div>
-                    <span>{english ? "Original Shop search" : "Shop 原始搜尋"}</span>
-                    <p>{reservation.intake.searchQuery}</p>
-                  </div>
-                )}
-                {reservation.intake.note && (
-                  <div>
-                    <span>{english ? "Customer note" : "顧客補充描述"}</span>
-                    <p>{reservation.intake.note}</p>
-                  </div>
-                )}
-                <small>{english
-                  ? "For the pharmacist's in-store questions and judgment only. This is not a diagnosis or a product-suitability claim."
-                  : "僅供藥師到店詢問與判斷，不代表系統診斷或品項適用性。"}</small>
-              </section>
-            )}
-            <footer>
-              <span>{english ? "Last 3 phone digits" : "手機末三碼"} {reservation.contactTail}</span>
-              <time dateTime={reservation.createdAt}>{taipeiTime(reservation.createdAt)}</time>
-            </footer>
-            {reservation.status === "pending_store_confirm" && (
-              <div className={styles.reservationActions}>
-                <button
-                  type="button"
-                  className={styles.reservationPrimaryAction}
-                  disabled={busyCode === reservation.code}
-                  onClick={() => onAction(reservation.code, "confirm")}
-                >{busyCode === reservation.code ? (english ? "Processing…" : "處理中…") : (english ? "Confirm in stock" : "確認有貨")}</button>
-                <button
-                  type="button"
-                  disabled={busyCode === reservation.code}
-                  onClick={() => onAction(reservation.code, "reject")}
-                >{english ? "Report out of stock" : "回報無庫存"}</button>
-              </div>
+            <p>{reservation.drugSpec} · {reservation.priceTwd === null ? (english ? "Price at counter" : "門市報價") : `NT$ ${reservation.priceTwd}`}</p>
+            {reservation.status === "pending_store_confirm" && elapsed !== null && (
+              <p className={styles.reservationTiming} data-urgent={elapsed >= 15}>
+                {english ? `Waiting ${elapsed} min · Oldest first` : `已等待 ${elapsed} 分鐘 · 依等待時間排序`}
+              </p>
             )}
             {reservation.status === "confirmed" && (
+              <p className={styles.reservationTiming} data-urgent={overdue}>
+                {Number.isFinite(deadline)
+                  ? `${english ? "Hold until" : "保留至"} ${taipeiTime(reservation.holdExpiresAt!)}${overdue ? (english ? " · Deadline passed; verify status" : " · 已超過期限，請核對狀態") : ""}`
+                  : (english ? "Hold deadline unavailable; verify in store" : "保留期限未提供，請門市核對")}
+              </p>
+            )}
+            <div className={styles.allergySummary} data-alert={reservation.intake?.allergyStatus !== "none"}>
+              <strong>{english ? "Known allergies" : "已知過敏原"}</strong>
+              <p>{reservation.intake?.allergyStatus === "none" ? (english ? "No known allergies reported" : "顧客回答目前沒有已知過敏")
+                : reservation.intake?.allergens ?? (english ? "Not collected; ask the customer" : "尚未收集，請向顧客確認")}</p>
+            </div>
+            {reservation.intake?.note && <p className={styles.customerNote}><strong>{english ? "Customer note: " : "顧客補充："}</strong>{reservation.intake.note}</p>}
+            <footer>
+              <span>{english ? "Phone suffix" : "手機末三碼"} <strong>{reservation.contactTail}</strong></span>
+              <time dateTime={reservation.createdAt}>{taipeiTime(reservation.createdAt)}</time>
+            </footer>
+            {isActiveReservation(reservation) && (
               <div className={styles.reservationActions}>
-                <button
-                  type="button"
-                  className={styles.reservationPrimaryAction}
-                  disabled={busyCode === reservation.code}
-                  onClick={() => onAction(reservation.code, "pickup")}
-                >{busyCode === reservation.code ? (english ? "Processing…" : "處理中…") : (english ? "Complete pickup" : "完成取貨")}</button>
+                <button type="button" className={styles.reservationPrimaryAction} disabled={readOnly || Boolean(busyCode)}
+                  onClick={() => onAction(reservation.code, reservation.status === "confirmed" ? "pickup" : "confirm")}>
+                  {busyCode === reservation.code ? (english ? "Processing…" : "處理中…") : reservation.status === "confirmed" ? (english ? "Complete pickup" : "完成取貨") : (english ? "Confirm in stock" : "確認有貨")}
+                </button>
+                {reservation.status === "pending_store_confirm" && <button type="button" disabled={readOnly || Boolean(busyCode)} onClick={() => onAction(reservation.code, "reject")}>{english ? "Out of stock" : "回報無庫存"}</button>}
               </div>
             )}
+            {(reservation.intake || reservation.sourceStoreName) && <details className={styles.intakeDetails}>
+              <summary>{english ? "Source and sharing details" : "來源與資料說明"}</summary>
+              {reservation.intake?.searchQuery && <p>{english ? "Original search: " : "原始搜尋："}{reservation.intake.searchQuery}</p>}
+              {reservation.sourceStoreName && <p>{english ? "Source page: " : "來源頁："}{reservation.sourceStoreName}</p>}
+              <p>{english ? "Customer-consented context for pharmacist questions and judgment; not a diagnosis or suitability claim." : "需求脈絡由顧客同意提供，僅供藥師詢問與判斷，不代表診斷或品項適用性。"}</p>
+            </details>}
           </article>
-        ))}
+          );
+        })}
+        {(view === "completed" || view === "all") && nextHistoryCursor && <button type="button" className={styles.loadHistory} disabled={historyBusy || Boolean(busyCode)} onClick={onLoadHistory}>
+          {historyBusy ? (english ? "Loading…" : "載入中…") : (english ? "Load older records" : "載入較早紀錄")}
+        </button>}
+        {(view === "completed" || view === "all") && <p className={styles.historyNote}>{english ? "Recent retained records; counts reflect loaded records." : "顯示近期保留紀錄；數量以已載入資料為準。"}</p>}
       </section>
     </>
   );
@@ -389,6 +311,7 @@ export function StoreOsShell({
   reservations,
   demoMode,
   webPushPublicKey,
+  previewMode = false,
 }: {
   storeName: string;
   storeSlug: string;
@@ -398,6 +321,7 @@ export function StoreOsShell({
   reservations: StoreReservationSummary[];
   demoMode: boolean;
   webPushPublicKey: string | null;
+  previewMode?: boolean;
 }) {
   const [activeAgentId, setActiveAgentId] = useState<StoreAgentId>("manager");
   const [draftOpen, setDraftOpen] = useState(false);
@@ -410,6 +334,16 @@ export function StoreOsShell({
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [liveReservations, setLiveReservations] = useState(reservations);
   const [reservationBusyCode, setReservationBusyCode] = useState("");
+  const [commandsOpen, setCommandsOpen] = useState(false);
+  const [now, setNow] = useState(0);
+  const [syncState, setSyncState] = useState<"checking" | "ready" | "error">("checking");
+  const [lastSyncedAt, setLastSyncedAt] = useState<number | null>(null);
+  const [nextHistoryCursor, setNextHistoryCursor] = useState<string | null>(null);
+  const [historyBusy, setHistoryBusy] = useState(false);
+  const historyDepthRef = useRef(0);
+  const mutationRef = useRef(false);
+  const loaderRef = useRef<ReturnType<typeof createReservationLoader> | null>(null);
+  const syncRef = useRef<() => Promise<void>>(async () => {});
   const [reservationActionError, setReservationActionError] = useState("");
   const [supportOpen, setSupportOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -425,8 +359,10 @@ export function StoreOsShell({
   const workItem = storeWorkItemCopy(locale);
   const activeAgentAvailable = isStoreAgentAvailable(activeAgentId, demoMode);
   const draftQuestions = draftApprovalQuestions(workItem.draft, english);
-  const waitingCount = liveReservations.filter((reservation) => reservation.status === "pending_store_confirm").length;
-  const completedCount = liveReservations.filter((reservation) => COMPLETED_RESERVATION_STATUSES.has(reservation.status)).length;
+  const syncLabel = previewMode ? (english ? "Preview data" : "示範資料")
+    : syncState === "error" ? (english ? "Sync failed" : "同步中斷")
+    : syncState === "checking" ? (english ? "Checking connection" : "正在核對連線")
+    : (english ? "Reservations synced" : "預留已同步");
 
   async function registerStoreServiceWorker(): Promise<ServiceWorkerRegistration> {
     return navigator.serviceWorker.register("/store-sw.js", { scope: "/" });
@@ -580,29 +516,72 @@ export function StoreOsShell({
   }
 
   useEffect(() => {
+    setNow(Date.now());
+    const clock = window.setInterval(() => setNow(Date.now()), 30_000);
+    return () => window.clearInterval(clock);
+  }, []);
+
+  useEffect(() => {
+    if (previewMode) return;
+    const loader = createReservationLoader();
+    loaderRef.current = loader;
     let stopped = false;
     async function syncReservations() {
-      const response = await fetch("/api/store/reservations", { cache: "no-store" }).catch(() => null);
-      if (response?.status === 401) {
-        window.location.reload();
-        return;
+      if (stopped || mutationRef.current || document.visibilityState === "hidden") return;
+      try {
+        const page = await loader.load();
+        if (!page || stopped) return;
+        setLiveReservations((current) => historyDepthRef.current > 0
+          ? mergeReservationPage(current.filter((item) => !isActiveReservation(item)), page.reservations)
+          : page.reservations);
+        if (historyDepthRef.current === 0) setNextHistoryCursor(page.nextHistoryCursor ?? null);
+        setLastSyncedAt(Date.now());
+        setSyncState("ready");
+      } catch (error) {
+        if (stopped) return;
+        if (error instanceof ReservationLoadError && error.status === 401) {
+          window.location.reload();
+          return;
+        }
+        setSyncState("error");
       }
-      if (!response?.ok) return;
-      const result = await response.json().catch(() => null) as { reservations?: StoreReservationSummary[] } | null;
-      if (!stopped && Array.isArray(result?.reservations)) setLiveReservations(result.reservations);
     }
-
+    syncRef.current = syncReservations;
+    void syncReservations();
     const timer = window.setInterval(syncReservations, 15_000);
     const onVisibility = () => {
       if (document.visibilityState === "visible") void syncReservations();
+      else loader.invalidate();
     };
     document.addEventListener("visibilitychange", onVisibility);
     return () => {
       stopped = true;
+      loader.invalidate();
+      loaderRef.current = null;
       window.clearInterval(timer);
       document.removeEventListener("visibilitychange", onVisibility);
     };
-  }, []);
+  }, [previewMode]);
+
+  async function loadHistory() {
+    if (!nextHistoryCursor || historyBusy || mutationRef.current) return;
+    setHistoryBusy(true);
+    try {
+      const page = await loaderRef.current?.load(`/api/store/reservations?historyCursor=${encodeURIComponent(nextHistoryCursor)}`);
+      if (!page) return;
+      setLiveReservations((current) => mergeReservationPage(current, page.reservations));
+      setNextHistoryCursor(page.nextHistoryCursor ?? null);
+      historyDepthRef.current += 1;
+    } catch (error) {
+      if (error instanceof ReservationLoadError && error.status === 401) window.location.reload();
+      else if (error instanceof ReservationLoadError && error.status === 400) {
+        historyDepthRef.current = 0;
+        setNextHistoryCursor(null);
+        setReservationActionError(english ? "History changed. Reloading recent records." : "歷史紀錄已變更，正在重新載入近期紀錄。");
+        void syncRef.current();
+      } else setReservationActionError(english ? "Couldn't load older records. Please retry." : "較早紀錄載入失敗，請重試。");
+    } finally { setHistoryBusy(false); }
+  }
 
   useEffect(() => {
     if (!draftOpen) return;
@@ -638,7 +617,9 @@ export function StoreOsShell({
   }
 
   async function updateReservation(code: string, action: StoreReservationAction): Promise<boolean> {
-    if (reservationBusyCode) return false;
+    if (mutationRef.current || previewMode) return false;
+    mutationRef.current = true;
+    loaderRef.current?.invalidate();
     setReservationBusyCode(code);
     setReservationActionError("");
     setComposerNotice("");
@@ -647,6 +628,7 @@ export function StoreOsShell({
         method: "PATCH",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({ code, action }),
+        signal: AbortSignal.timeout(10_000),
       });
       if (response.status === 401) {
         window.location.reload();
@@ -667,9 +649,7 @@ export function StoreOsShell({
         setReservationActionError(`${code} · ${error}`);
         return false;
       }
-      setLiveReservations((current) => current.map((item) => (
-        item.code === code ? result.reservation! : item
-      )));
+      setLiveReservations((current) => mergeReservationPage(current, [result.reservation!]));
       const actionLabel = english
         ? action === "confirm" ? "confirmed in stock" : action === "reject" ? "reported out of stock" : "marked as picked up"
         : action === "confirm" ? "已確認有貨" : action === "reject" ? "已回報無庫存" : "已完成取貨";
@@ -679,10 +659,12 @@ export function StoreOsShell({
       setComposerNoticeTone("success");
       return true;
     } catch {
-      setReservationActionError(`${code} · ${english ? "Network request failed; status was not updated." : "網路連線失敗，狀態尚未更新。"}`);
+      setReservationActionError(`${code} · ${english ? "Result could not be confirmed. Refresh the status before retrying." : "尚未確認操作結果，請先重新同步狀態再重試。"}`);
       return false;
     } finally {
+      mutationRef.current = false;
       setReservationBusyCode("");
+      void syncRef.current();
     }
   }
 
@@ -753,6 +735,7 @@ export function StoreOsShell({
         <div className={styles.agentList}>
           {agents.map((agent) => {
             const available = isStoreAgentAvailable(agent.id, demoMode);
+            const stateLabel = agent.id === "manager" ? syncLabel : available ? agent.stateLabel : "Coming soon";
             return (
               <button
                 key={agent.id}
@@ -761,8 +744,8 @@ export function StoreOsShell({
                   !supportOpen && activeAgentId === agent.id ? styles.agentRowActive : ""
                 } ${!available ? styles.agentRowComingSoon : ""}`}
                 aria-pressed={!supportOpen && activeAgentId === agent.id}
-                aria-label={`${agent.name} · ${available ? agent.stateLabel : "Coming soon"}`}
-                title={sidebarCollapsed ? `${agent.name} · ${available ? agent.stateLabel : "Coming soon"}` : undefined}
+                aria-label={`${agent.name} · ${stateLabel}`}
+                title={sidebarCollapsed ? `${agent.name} · ${stateLabel}` : undefined}
                 onClick={() => {
                   setActiveAgentId(agent.id);
                   setSupportOpen(false);
@@ -775,37 +758,16 @@ export function StoreOsShell({
                 />
                 <span className={styles.agentCopy}>
                   <strong>{agent.name}</strong>
-                  <small>{agent.description}</small>
+                  <small>{agent.id === "manager" ? (english ? "Reservations and pickup" : "預留確認與取貨") : agent.description}</small>
                 </span>
                 <span className={`${styles.agentState} ${available ? styles[agent.state] : styles.comingSoon}`}>
-                  {available ? agent.stateLabel : "Coming soon"}
+                  {stateLabel}
                 </span>
               </button>
             );
           })}
         </div>
 
-        <p className={styles.sectionLabel}>{english ? "Work" : "工作"}</p>
-        <nav className={styles.workNav} aria-label={english ? "Work categories" : "工作分類"}>
-          <button
-            type="button"
-            className={workView === "attention" && !supportOpen && activeAgentId === "manager" ? styles.workNavActive : ""}
-            aria-current={workView === "attention" && !supportOpen && activeAgentId === "manager" ? "page" : undefined}
-            onClick={() => openWorkView("attention")}
-          >{english ? "Needs you" : "需要你"} <b>{waitingCount}</b></button>
-          <button
-            type="button"
-            className={workView === "all" && !supportOpen && activeAgentId === "manager" ? styles.workNavActive : ""}
-            aria-current={workView === "all" && !supportOpen && activeAgentId === "manager" ? "page" : undefined}
-            onClick={() => openWorkView("all")}
-          >{english ? "All work" : "全部工作"} <b>{liveReservations.length}</b></button>
-          <button
-            type="button"
-            className={workView === "completed" && !supportOpen && activeAgentId === "manager" ? styles.workNavActive : ""}
-            aria-current={workView === "completed" && !supportOpen && activeAgentId === "manager" ? "page" : undefined}
-            onClick={() => openWorkView("completed")}
-          >{english ? "Completed" : "完成紀錄"} <b>{completedCount}</b></button>
-        </nav>
 
         <div className={styles.sidebarSupport}>
           <button
@@ -836,7 +798,7 @@ export function StoreOsShell({
           aria-haspopup="dialog"
         >
           <i aria-hidden="true" />
-          <span><strong>{storeName}</strong><small>{operatorName} · {english ? "System connected" : "系統連線正常"}</small></span>
+          <span><strong>{storeName}</strong><small>{operatorName} · {syncLabel}</small></span>
           <span className={styles.profileChevron} aria-hidden="true">›</span>
         </button>
       </aside>
@@ -855,10 +817,12 @@ export function StoreOsShell({
             <small>
               {supportOpen
                 ? (english ? "Product help and human support · Connected" : "操作協助與真人支援 · 已連線")
-                : `${activeAgent.description} · ${activeAgentAvailable ? activeAgent.stateLabel : "Coming soon"}`}
+                : activeAgentId === "manager"
+                  ? (english ? "Reservations and pickup" : "預留確認與取貨")
+                  : `${activeAgent.description} · ${activeAgentAvailable ? activeAgent.stateLabel : "Coming soon"}`}
             </small>
           </span>
-          <span className={styles.prototypeBadge}>{supportOpen ? (english ? "Support backend connected" : "支援後端已連線") : (english ? "Reservation backend connected" : "預留後端已連線")}</span>
+          <span className={styles.prototypeBadge}>{supportOpen ? (english ? "Support" : "支援") : syncLabel}</span>
           <span className={styles.syncTime}>{storeName}</span>
           <button
             type="button"
@@ -886,7 +850,7 @@ export function StoreOsShell({
           </button>
         </header>
 
-        <div className={styles.contentGrid}>
+        <div className={styles.contentGrid} data-reservations={!supportOpen && activeAgentId === "manager"}>
           <article className={styles.workspace}>
             <SupportAgent
               animate={!prefersReducedMotion}
@@ -895,15 +859,27 @@ export function StoreOsShell({
               defaultReplyEmail={operatorEmail}
             />
             {!supportOpen && (activeAgentId === "manager" ? (
+              <>
+              <div className={styles.syncStatus} data-state={previewMode ? "preview" : syncState} role="status">
+                <span>{syncLabel}{lastSyncedAt ? ` · ${english ? "Last success" : "最後成功"} ${taipeiTime(new Date(lastSyncedAt).toISOString())}` : ""}</span>
+                {!previewMode && <button type="button" disabled={Boolean(reservationBusyCode)} onClick={() => { void syncRef.current(); }}>{english ? "Refresh" : "重新同步"}</button>}
+              </div>
+              {previewMode && <p className={styles.previewNotice}>{english ? "Reservation preview · reservation actions disabled" : "預留唯讀示範 · 預留操作已停用"}</p>}
               <ReservationInbox
                 reservations={liveReservations}
                 view={workView}
-                animate={!prefersReducedMotion}
                 busyCode={reservationBusyCode}
+                readOnly={previewMode}
+                now={now}
+                onView={openWorkView}
+                nextHistoryCursor={nextHistoryCursor}
+                historyBusy={historyBusy}
+                onLoadHistory={() => { void loadHistory(); }}
                 actionError={reservationActionError}
                 locale={locale}
                 onAction={(code, action) => { void updateReservation(code, action); }}
               />
+              </>
             ) : !activeAgentAvailable ? (
               <>
                 <div className={styles.workHeading}>
@@ -998,7 +974,9 @@ export function StoreOsShell({
               </>
             ))}
 
-            {!supportOpen && <form className={styles.composer} data-store-composer onSubmit={submitMessage}>
+            {!supportOpen && <details className={styles.commandDisclosure} open={commandsOpen} onToggle={(event) => setCommandsOpen(event.currentTarget.open)}>
+            <summary>{english ? "Advanced commands" : "進階指令"}</summary>
+            <form className={styles.composer} data-store-composer onSubmit={submitMessage}>
               <AgentOrb
                 id="manager"
                 active={activeAgentId === "manager"}
@@ -1021,13 +999,13 @@ export function StoreOsShell({
                     : activeAgentAvailable ? (english ? "Ask the Manager Agent about this demo work…" : "向店長詢問這個 Demo 工作…") : (english ? `${activeAgent.name} is coming soon` : `${activeAgent.name} 即將開通`)}
                 />
               </span>
-              <button type="submit" disabled={!message.trim()} aria-label={english ? "Send message" : "送出訊息"}>
+              <button type="submit" disabled={previewMode || !message.trim()} aria-label={english ? "Send message" : "送出訊息"}>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                   <path d="M12 19V5" />
                   <path d="m7 10 5-5 5 5" />
                 </svg>
               </button>
-            </form>}
+            </form></details>}
             {!supportOpen && <p className={styles.composerNotice} data-tone={composerNoticeTone} aria-live="polite">{composerNotice}</p>}
           </article>
 
@@ -1075,7 +1053,7 @@ export function StoreOsShell({
                 <li>
                   <AgentOrb id="inventory" animated={!prefersReducedMotion} small />
                   <div>
-                    <strong>{english ? "Reservation data and customer context synced" : "預留資料與需求脈絡已同步"}</strong>
+                    <strong>{syncLabel}</strong>
                     <p>{english
                       ? `${liveReservations.length} recent reservation codes. Only customer-consented context is shown; full phone numbers and pickup links are not sent to the browser.`
                       : `${liveReservations.length} 筆近期單號；只顯示顧客同意提供的描述，完整手機與取貨連結不會送到瀏覽器。`}</p>

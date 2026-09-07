@@ -2,8 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { appendRecord } from "@/lib/record";
 import {
+  InvalidHistoryCursorError,
   getByCode,
-  listStoreReservations,
+  listStoreReservationPage,
+  toStoreReservationSummary,
   updateStatus,
   type ReservationStatus,
 } from "@/lib/reservations-store";
@@ -28,8 +30,17 @@ export async function handleGetReservations(
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   }
 
-  const reservations = await listStoreReservations(session.storeSlug);
-  const response = NextResponse.json({ reservations });
+  const historyCursor = request.nextUrl.searchParams.get("historyCursor") ?? undefined;
+  let page;
+  try {
+    page = await listStoreReservationPage(session.storeSlug, historyCursor);
+  } catch (error) {
+    if (error instanceof InvalidHistoryCursorError) {
+      return NextResponse.json({ error: "歷史預留頁面已失效，請重新整理。" }, { status: 400 });
+    }
+    throw error;
+  }
+  const response = NextResponse.json(page);
   response.headers.set("cache-control", "no-store");
   return response;
 }
@@ -56,7 +67,6 @@ interface ActionDependencies {
   readSession: typeof sessionFromRequest;
   findByCode: typeof getByCode;
   transition: typeof updateStatus;
-  listReservations: typeof listStoreReservations;
   record: typeof appendRecord;
 }
 
@@ -64,7 +74,6 @@ const actionDependencies: ActionDependencies = {
   readSession: sessionFromRequest,
   findByCode: getByCode,
   transition: updateStatus,
-  listReservations: listStoreReservations,
   record: appendRecord,
 };
 
@@ -139,12 +148,9 @@ export async function handleUpdateReservation(
     console.error("[store-reservations] audit sink failed", code, String(error).slice(0, 160));
   });
 
-  const reservations = await dependencies.listReservations(session.storeSlug);
-  const summary = reservations.find((item) => item.code === code);
-  if (!summary) {
-    return NextResponse.json({ error: "狀態已更新，但收件匣暫時無法重新載入。" }, { status: 503 });
-  }
-  const response = NextResponse.json({ reservation: summary });
+  const response = NextResponse.json({
+    reservation: toStoreReservationSummary(updated, demoSandbox),
+  });
   response.headers.set("cache-control", "no-store");
   return response;
 }
