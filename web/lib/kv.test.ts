@@ -38,19 +38,24 @@ describe("KV list and batch primitives", () => {
 
   it("rejects an HTTP-success KV error body instead of fabricating missing MGET rows", async () => {
     mockRestSuccessBody({ error: "WRONGTYPE" });
-    await expect(getMany(["r:one"])).rejects.toThrow("KV MGET returned an invalid result");
+    await expect(getMany(["r:one"])).rejects.toThrow("KV command failed");
   });
 
   it("rejects an HTTP-success KV error body instead of fabricating an empty active list", async () => {
     mockRestSuccessBody({ error: "WRONGTYPE" });
-    await expect(listAll("store-reservations:test:active")).rejects.toThrow("KV LRANGE returned an invalid result");
+    await expect(listAll("store-reservations:test:active")).rejects.toThrow("KV command failed");
   });
 
   it("rejects malformed or mixed LRANGE values instead of fabricating empty history", async () => {
     mockRestSuccessBody({ error: "WRONGTYPE" });
-    await expect(lastN("store-reservations:test", 50)).rejects.toThrow("KV LRANGE returned an invalid result");
+    await expect(lastN("store-reservations:test", 50)).rejects.toThrow("KV command failed");
 
     mockRestSuccessBody({ result: ["reservation-token", null] });
     await expect(lastN("store-reservations:test", 50)).rejects.toThrow("KV LRANGE returned an invalid result");
+  });
+
+  it("rejects an HTTP-success KV error body for required index writes", async () => {
+    mockRestSuccessBody({ error: "WRONGTYPE" });
+    await expect(append("store-reservations:test:active", "token", null)).rejects.toThrow("KV command failed");
   });
 });

@@ -47,6 +47,16 @@ function make(over: Partial<StoredReservation> = {}): StoredReservation {
   };
 }
 
+function legacyHistoryKey(storeSlug: string): string {
+  return `store-reservations:${Buffer.from(storeSlug, "utf8").toString("base64url")}`;
+}
+
+async function seedLegacyReservation(r: StoredReservation, historyKey = legacyHistoryKey(r.storeSlug)): Promise<void> {
+  await kv.set(`r:${r.token}`, JSON.stringify(r));
+  await kv.set(`c:${r.code}`, r.token);
+  await kv.append(historyKey, r.token, 500);
+}
+
 beforeEach(() => kv.__resetForTests());
 afterEach(() => vi.restoreAllMocks());
 
@@ -261,6 +271,82 @@ describe("取貨憑證的鍵", () => {
     ]));
   });
 
+  it("bootstraps a full legacy history before the first new row can evict its oldest active record", async () => {
+    const legacy = make({ code: "P-050" });
+    const historyKey = legacyHistoryKey(legacy.storeSlug);
+    await seedLegacyReservation(legacy, historyKey);
+    for (let index = 0; index < 499; index += 1) {
+      await seedLegacyReservation(make({ code: `H-${String(index).padStart(3, "0")}`, status: "picked_up" }), historyKey);
+    }
+
+    await saveReservation(make({ code: "N-050", status: "picked_up" }));
+    await expect(listStoreReservations(legacy.storeSlug)).resolves.toEqual(expect.arrayContaining([
+      expect.objectContaining({ code: legacy.code, status: "pending_store_confirm" }),
+    ]));
+  });
+
+  it("fails bootstrap before trimming history or creating a visible reservation", async () => {
+    const legacy = make({ code: "P-060" });
+    const historyKey = legacyHistoryKey(legacy.storeSlug);
+    await seedLegacyReservation(legacy, historyKey);
+    for (let index = 0; index < 499; index += 1) {
+      await seedLegacyReservation(make({ code: `H-${String(index).padStart(3, "0")}`, status: "picked_up" }), historyKey);
+    }
+    const before = await kv.lastN(historyKey, 500);
+    const created = make({ code: "N-060" });
+    vi.spyOn(kv, "append").mockRejectedValueOnce(new Error("bootstrap promotion unavailable"));
+
+    await expect(saveReservation(created)).rejects.toThrow("bootstrap promotion unavailable");
+    await expect(kv.lastN(historyKey, 500)).resolves.toEqual(before);
+    await expect(getByToken(created.token)).resolves.toBeNull();
+  });
+
+  it("denies a concurrent first writer until bootstrap finishes, without trimming ahead", async () => {
+    const legacy = make({ code: "P-070" });
+    const historyKey = legacyHistoryKey(legacy.storeSlug);
+    const activeKey = `${historyKey}:active`;
+    await seedLegacyReservation(legacy, historyKey);
+    for (let index = 0; index < 499; index += 1) {
+      await seedLegacyReservation(make({ code: `H-${String(index).padStart(3, "0")}`, status: "picked_up" }), historyKey);
+    }
+    const before = await kv.lastN(historyKey, 500);
+    let enteredPromotion!: () => void;
+    let releasePromotion!: () => void;
+    const promotionEntered = new Promise<void>((resolve) => { enteredPromotion = resolve; });
+    const release = new Promise<void>((resolve) => { releasePromotion = resolve; });
+    const originalAppend = kv.append;
+    vi.spyOn(kv, "append").mockImplementation(async (key, value, keepLast) => {
+      if (key === activeKey && value === legacy.token && keepLast === null) {
+        enteredPromotion();
+        await release;
+      }
+      await originalAppend(key, value, keepLast);
+    });
+
+    const first = saveReservation(make({ code: "N-070", status: "picked_up" }));
+    await promotionEntered;
+    await expect(saveReservation(make({ code: "N-071", status: "picked_up" }))).rejects.toThrow(
+      "active index bootstrap in progress",
+    );
+    await expect(kv.lastN(historyKey, 500)).resolves.toEqual(before);
+    releasePromotion();
+    await first;
+  });
+
+  it("bootstraps only ready active records for the current store, excluding other tenants and demo", async () => {
+    const store = "中山藥局";
+    const historyKey = legacyHistoryKey(store);
+    const current = make({ code: "P-080", storeSlug: store });
+    const otherStore = make({ code: "P-081", storeSlug: "另一間藥局" });
+    const demo = make({ code: "P-082", storeSlug: store, demo: true });
+    await seedLegacyReservation(current, historyKey);
+    await seedLegacyReservation(otherStore, historyKey);
+    await seedLegacyReservation(demo, historyKey);
+
+    await saveReservation(make({ code: "N-080", storeSlug: store, status: "picked_up" }));
+    await expect(kv.listAll(`${historyKey}:active`)).resolves.toEqual([current.token]);
+  });
+
   it("fails the page when a legacy active pointer cannot be promoted", async () => {
     const r = make({ code: "P-040" });
     const historyKey = `store-reservations:${Buffer.from(r.storeSlug, "utf8").toString("base64url")}`;
@@ -353,6 +439,23 @@ describe("放鳥計數", () => {
 });
 
 describe("狀態流轉", () => {
+  it("bootstraps terminal history before claiming the bounded transition lock", async () => {
+    const r = make({ code: "C-009" });
+    await seedLegacyReservation(r);
+    const claims: string[] = [];
+    const originalClaim = kv.setIfAbsent;
+    vi.spyOn(kv, "setIfAbsent").mockImplementation(async (...args) => {
+      claims.push(args[0]);
+      return originalClaim(...args);
+    });
+
+    await updateStatus(r.code, "rejected_no_stock", "pending_store_confirm");
+    expect(claims).toEqual([
+      `${legacyHistoryKey(r.storeSlug)}:active-bootstrap-lock`,
+      `reservation-transition:${r.code}`,
+    ]);
+  });
+
   it("holds the transition lock for the bounded KV transport budget", async () => {
     const r = make({ code: "C-000" });
     await saveReservation(r);

@@ -46,7 +46,17 @@ async function command(args: (string | number)[]): Promise<unknown> {
     signal: AbortSignal.timeout(4000),
   });
   if (!res.ok) throw new Error(`KV ${res.status}`);
-  return ((await res.json()) as { result?: unknown }).result;
+  const payload = await res.json() as { result?: unknown; error?: unknown };
+  if (
+    !payload
+    || typeof payload !== "object"
+    || Array.isArray(payload)
+    || "error" in payload
+    || !("result" in payload)
+  ) {
+    throw new Error("KV command failed");
+  }
+  return payload.result;
 }
 
 function filePath(key: string): string {

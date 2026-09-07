@@ -114,6 +114,9 @@ const TTL = 7 * 24 * 3600;
 const HISTORY_RETAINED_MAX = 500;
 const HISTORY_PAGE_SIZE = 50;
 export const TRANSITION_LOCK_TTL_SECONDS = 45;
+// After claim: marker reread, retained-500 LRANGE, MGET, active LRANGE, parallel
+// promotions, marker SET, and best-effort release are each bounded by KV's 4s timeout.
+const ACTIVE_INDEX_BOOTSTRAP_LOCK_TTL_SECONDS = 45;
 
 const set = (key: string, value: string) => kv.set(key, value, TTL);
 const get = (key: string) => kv.get(key);
@@ -132,6 +135,14 @@ function activeReservationKey(indexKey: string): string {
   return `${indexKey}:active`;
 }
 
+function activeIndexBootstrapReadyKey(indexKey: string): string {
+  return `${indexKey}:active-bootstrap-ready`;
+}
+
+function activeIndexBootstrapLockKey(indexKey: string): string {
+  return `${indexKey}:active-bootstrap-lock`;
+}
+
 function reservationIndexKey(r: Pick<StoredReservation, "storeSlug" | "demo">): string {
   return r.demo ? sandboxReservationKey() : storeReservationKey(r.storeSlug);
 }
@@ -144,9 +155,59 @@ function isReservationReady(r: StoredReservation): boolean {
   return r.indexReady !== false;
 }
 
+/**
+ * One bounded, per-store rollout bootstrap. It must complete before the first
+ * post-deploy history trim: a legacy active record at the old 500-item tail
+ * otherwise disappears before Store OS ever reads it. The ready marker follows
+ * every promotion; a crashed claim expires and can be retried without a false
+ * ready state. Concurrent writers fail closed instead of trimming ahead.
+ */
+async function ensureActiveIndexBootstrap(r: Pick<StoredReservation, "storeSlug" | "demo">): Promise<void> {
+  const indexKey = reservationIndexKey(r);
+  const readyKey = activeIndexBootstrapReadyKey(indexKey);
+  if (await kv.get(readyKey)) return;
+
+  const lockKey = activeIndexBootstrapLockKey(indexKey);
+  if (!(await kv.setIfAbsent(lockKey, "1", ACTIVE_INDEX_BOOTSTRAP_LOCK_TTL_SECONDS))) {
+    if (await kv.get(readyKey)) return;
+    throw new Error("active index bootstrap in progress");
+  }
+
+  try {
+    if (await kv.get(readyKey)) return;
+    const historyTokens = await kv.lastN(indexKey, HISTORY_RETAINED_MAX);
+    const tokens = [...new Set(historyTokens)];
+    const rawReservations = await kv.getMany(tokens.map((token) => `r:${token}`));
+    const indexedActiveTokens = new Set(await kv.listAll(activeReservationKey(indexKey)));
+    const sandbox = r.demo === true;
+    const activeTokens: string[] = [];
+    for (let index = 0; index < tokens.length; index += 1) {
+      const raw = rawReservations[index];
+      if (!raw) continue;
+      try {
+        const reservation = JSON.parse(raw) as StoredReservation;
+        if (
+          isReservationReady(reservation)
+          && ownsStoreReservation(reservation, r.storeSlug, sandbox)
+          && isActiveStatus(reservation.status)
+        ) activeTokens.push(tokens[index]);
+      } catch {
+        /* 壞掉的舊單不能阻止其他仍可讀的 active 單被保護。 */
+      }
+    }
+    await Promise.all(activeTokens
+      .filter((token) => !indexedActiveTokens.has(token))
+      .map((token) => kv.append(activeReservationKey(indexKey), token, null)));
+    await kv.set(readyKey, "1");
+  } finally {
+    await kv.del(lockKey).catch(() => undefined);
+  }
+}
+
 export const isStoreAvailable = kv.isAvailable;
 
 export async function saveReservation(r: StoredReservation): Promise<void> {
+  await ensureActiveIndexBootstrap(r);
   // `r:` only becomes externally visible after every required index exists. This
   // lets a failed active-index append reject the POST without creating a phantom
   // reservation; legacy records without the marker remain readable.
@@ -379,6 +440,7 @@ export async function save(r: StoredReservation): Promise<void> {
     // A long-lived active reservation may already be outside the 500-entry history
     // window. Reinsert it before the authoritative write: an index failure must not
     // turn a committed transition into a false 409 response.
+    await ensureActiveIndexBootstrap(r);
     await kv.append(reservationIndexKey(r), r.token, HISTORY_RETAINED_MAX);
   }
   await set(`r:${r.token}`, JSON.stringify(r));
@@ -448,6 +510,14 @@ export async function updateStatus(
   status: ReservationStatus,
   expectedStatus?: ReservationStatus,
 ): Promise<StoredReservation | null> {
+  // Terminal writes append to bounded history. Bootstrap before taking the
+  // transition claim so its one-time retained-500 migration cannot consume the
+  // status lock's transport budget; authority is still rechecked under lock.
+  if (!isActiveStatus(status)) {
+    const bootstrapReservation = await getByCode(code);
+    if (!bootstrapReservation) return null;
+    await ensureActiveIndexBootstrap(bootstrapReservation);
+  }
   const lockKey = `reservation-transition:${code}`;
   if (!(await kv.setIfAbsent(lockKey, "1", TRANSITION_LOCK_TTL_SECONDS))) return null;
   try {
