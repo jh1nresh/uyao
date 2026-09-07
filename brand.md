@@ -19,7 +19,9 @@ _整理於 2026-08-12。這份文件記錄目前已上線的品牌系統；本�
 - 反白版本：`web/public/brand/uyao-logo-v4-reverse.svg`
 - 單色版本：`web/public/brand/uyao-logo-v4-mono.svg`
 - X 頭像：`web/public/brand/uyao-x-avatar-400.png`
-- 圓形裁切安全備用：`web/public/brand/uyao-mark-v2-x-safe-400.png`
+- 圓形裁切安全來源：`web/public/brand/uyao-x-avatar-v4.svg`
+
+Favicon、Apple／PWA icon、結構化資料方形 logo 與社群頭像皆由 v4 SVG 匯出。在 `web/` 執行 `npm run generate:brand-assets` 更新，使用 `npm run check:brand-assets` 檢查所有輸出（包含 ICO 內每個尺寸）。舊公開檔名保留作相容別名，內容同步為 v4；`designs/` 中的歷史素材不屬於網站發布來源。
 
 Logo 是「uYao｜有藥」完整鎖定組合。不要重排字標、替換字型、加醫療十字、盾牌或勾選符號，也不要把圖形解讀成庫存保證。
 
