@@ -25,9 +25,7 @@ describe("P1 reservation and Store OS friction", () => {
     expect(reserveSheet).toMatch(/送出預留|Send reservation/);
   });
 
-  it("reduces reservation inbox meta to the two decision-relevant facts", () => {
-    expect(storeOsShell).toContain("awaiting confirmation");
-    expect(storeOsShell).toContain("with customer context");
+  it("keeps redundant inbox metadata out of the work surface", () => {
     expect(storeOsShell).not.toContain("Newest first");
     expect(storeOsShell).not.toContain("Full phone numbers hidden");
     // Removed the noisy "N shown" / "完整電話未顯示" / "最新單號在上" strip.

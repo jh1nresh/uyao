@@ -462,58 +462,6 @@
   filter: none;
 }
 
-.workNav {
-  margin: 6px 14px 0;
-  padding-top: 6px;
-  display: grid;
-  border-top: 1px dashed var(--line);
-}
-
-.workNav button {
-  width: 100%;
-  min-height: 34px;
-  padding: 0 8px;
-  display: flex;
-  align-items: center;
-  border: 0;
-  border-radius: 7px;
-  background: transparent;
-  color: var(--muted);
-  text-align: left;
-  font-size: var(--fs-body);
-  font-weight: 400;
-  cursor: pointer;
-  transition: background-color 150ms var(--ease-ui), color 150ms var(--ease-ui);
-}
-
-.workNav button:hover {
-  background: var(--surface-hover);
-  color: var(--text);
-}
-
-.workNav .workNavActive,
-.workNav .workNavActive:hover {
-  background: var(--nav-active);
-  color: var(--text);
-  font-weight: 500;
-}
-
-.workNav b {
-  min-width: 20px;
-  height: 18px;
-  margin-left: auto;
-  padding: 0 6px;
-  display: grid;
-  place-items: center;
-  border-radius: 6px;
-  background: var(--count-bg);
-  color: var(--count-text);
-  font-family: var(--font-mono);
-  font-size: var(--fs-meta);
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-}
-
 .sidebarSupport {
   margin-top: auto;
   padding: 12px 8px;
@@ -755,10 +703,6 @@
   margin: 26px 0 0 50px;
 }
 
-.thinkingSlot {
-  margin-top: 8px;
-}
-
 .approvalSlot {
   margin: 14px 0 0 50px;
   display: grid;
@@ -790,7 +734,7 @@
 .reservationList {
   min-height: 0;
   flex: 1;
-  margin: 14px 0 12px 50px;
+  margin: 14px 0 12px;
   padding: 2px 10px 8px 2px;
   display: grid;
   align-content: start;
@@ -896,62 +840,6 @@
   line-height: var(--lh-body);
 }
 
-.reservationIntake {
-  margin-top: 10px;
-  padding: 10px 12px;
-  border: 1px solid var(--notice-border);
-  border-radius: 8px;
-  background: var(--notice-bg);
-}
-
-.reservationIntake header {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.reservationIntake header strong {
-  color: var(--notice-text);
-  font-size: var(--fs-label);
-  font-weight: 500;
-}
-
-.reservationIntake header span,
-.reservationIntake div > span {
-  color: var(--muted);
-  font-family: var(--font-mono);
-  font-size: var(--fs-meta);
-  font-weight: 500;
-  letter-spacing: .04em;
-}
-
-.reservationIntake div {
-  margin-top: 8px;
-}
-
-.reservationIntake div > span {
-  display: block;
-  margin-bottom: 3px;
-}
-
-.reservationIntake div > p {
-  margin: 0;
-  color: var(--text);
-  font-size: var(--fs-body);
-  line-height: var(--lh-body);
-  white-space: pre-wrap;
-  overflow-wrap: anywhere;
-}
-
-.reservationIntake small {
-  display: block;
-  margin-top: 8px;
-  color: var(--muted);
-  font-size: var(--fs-label);
-  line-height: 1.5;
-}
-
 .reservationCard footer {
   margin-top: 10px;
   padding-top: 9px;
@@ -984,7 +872,7 @@
 }
 
 .reservationActions button {
-  min-height: 34px;
+  min-height: 44px;
   padding: 0 12px;
   border: 0;
   border-radius: 8px;
@@ -1495,7 +1383,6 @@
   .screen[data-sidebar="collapsed"] .sectionLabel,
   .screen[data-sidebar="collapsed"] .agentCopy,
   .screen[data-sidebar="collapsed"] .agentState,
-  .screen[data-sidebar="collapsed"] .workNav,
   .screen[data-sidebar="collapsed"] .pharmacyStatus > span {
     display: none;
   }
@@ -1610,8 +1497,7 @@
   .pharmacyStatus small,
   .profileChevron,
   .sidebarToggle,
-  .sectionLabel,
-  .workNav {
+  .sectionLabel {
     display: none;
   }
 
@@ -1817,4 +1703,39 @@
   .composer {
     transition: none;
   }
+}
+
+/* Reservation triage keeps the same controls at every viewport size. */
+.contentGrid[data-reservations="true"] { grid-template-columns: minmax(0, 1fr); }
+.contentGrid[data-reservations="true"] > .contextPanel { display: none; }
+.contentGrid[data-reservations="true"] .workspace { max-width: 1040px; width: 100%; margin: 0 auto; }
+.reservationTabs { display: flex; flex: 0 0 auto; gap: 4px; margin-top: 12px; border-bottom: 1px solid var(--line); }
+.reservationTabs button { flex: 1; min-height: 44px; padding: 8px; color: var(--muted); font-size: var(--fs-body); border: 0; border-bottom: 2px solid transparent; background: transparent; cursor: pointer; white-space: nowrap; }
+.reservationTabs button[aria-current="page"] { color: var(--text); border-bottom-color: var(--blue-soft); font-weight: 600; }
+.reservationTabs b { margin-left: 4px; font-size: var(--fs-meta); font-variant-numeric: tabular-nums; }
+.syncStatus { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex: 0 0 auto; color: var(--muted); font-size: var(--fs-meta); margin-bottom: 8px; }
+.syncStatus[data-state="error"] { color: var(--danger-text); }
+.syncStatus button, .loadHistory { min-height: 44px; padding: 8px 12px; background: var(--button-bg); color: var(--text); border: 1px solid var(--line); border-radius: 6px; cursor: pointer; }
+.syncStatus button { white-space: nowrap; }
+.previewNotice, .operationStatus, .historyNote { color: var(--muted); font-size: var(--fs-meta); margin: 4px 0 8px; }
+.reservationCard > .reservationTiming { margin: 8px 0; color: var(--muted); font-size: var(--fs-label); }
+.reservationCard > .reservationTiming[data-urgent="true"] { color: var(--amber-text); }
+.allergySummary { display: flex; flex-wrap: wrap; gap: 4px 12px; margin: 12px 0 8px; font-size: var(--fs-body); }
+.allergySummary strong { font-size: var(--fs-label); color: var(--muted); }
+.allergySummary p { margin: 0; }
+.allergySummary[data-alert="true"] p { color: var(--amber-text); font-weight: 600; }
+.reservationCard > .customerNote { color: var(--text); font-size: var(--fs-body); line-height: var(--lh-body); }
+.intakeDetails { margin-top: 8px; color: var(--muted); font-size: var(--fs-meta); }
+.intakeDetails summary { min-height: 44px; padding: 12px 0; cursor: pointer; }
+.intakeDetails p { margin: 4px 0; line-height: var(--lh-body); }
+.commandDisclosure { flex: 0 0 auto; border-top: 1px solid var(--line); }
+.commandDisclosure > summary { min-height: 44px; padding: 12px 0; color: var(--muted); font-size: var(--fs-label); cursor: pointer; }
+.commandDisclosure .composer { margin-top: 0; }
+.reservationError { margin-left: 0; }
+@media (max-width: 520px) {
+  .reservationTabs button { padding: 8px 4px; font-size: var(--fs-label); }
+  .reservationTabs b { margin-left: 2px; }
+  .reservationCard { padding: 12px; }
+  .syncStatus { font-size: var(--fs-meta); }
+  .contentGrid[data-reservations="true"] .workspace { padding-top: 8px; }
 }
