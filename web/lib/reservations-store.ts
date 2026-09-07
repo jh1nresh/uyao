@@ -66,8 +66,6 @@ export interface StoredReservation {
   demo?: true;
   /** 顧客明確同意提供的需求脈絡；不進 Web Push、record webhook 或公開取貨頁。 */
   intake?: ReservationIntake;
-  /** 建單索引尚未齊全時的內部 provisional marker；舊資料沒有它，視為已就緒。 */
-  indexReady?: boolean;
 }
 
 /**
@@ -151,10 +149,6 @@ function isActiveStatus(status: ReservationStatus): boolean {
   return status === "pending_store_confirm" || status === "confirmed";
 }
 
-function isReservationReady(r: StoredReservation): boolean {
-  return r.indexReady !== false;
-}
-
 /**
  * One bounded, per-store rollout bootstrap. It must complete before the first
  * post-deploy history trim: a legacy active record at the old 500-item tail
@@ -187,8 +181,7 @@ async function ensureActiveIndexBootstrap(r: Pick<StoredReservation, "storeSlug"
       try {
         const reservation = JSON.parse(raw) as StoredReservation;
         if (
-          isReservationReady(reservation)
-          && ownsStoreReservation(reservation, r.storeSlug, sandbox)
+          ownsStoreReservation(reservation, r.storeSlug, sandbox)
           && isActiveStatus(reservation.status)
         ) activeTokens.push(tokens[index]);
       } catch {
@@ -208,22 +201,16 @@ export const isStoreAvailable = kv.isAvailable;
 
 export async function saveReservation(r: StoredReservation): Promise<void> {
   await ensureActiveIndexBootstrap(r);
-  // `r:` only becomes externally visible after every required index exists. This
-  // lets a failed active-index append reject the POST without creating a phantom
-  // reservation; legacy records without the marker remain readable.
-  await set(`r:${r.token}`, JSON.stringify({ ...r, indexReady: false }));
-  // postback 只帶得回取貨碼，需要一條 code → token 的索引
-  await set(`c:${r.code}`, r.token);
-  // Active queue is required before the record becomes visible. Its retained
-  // history row and the final visible record then commit as one operation.
   const indexKey = reservationIndexKey(r);
-  if (isActiveStatus(r.status)) await kv.append(activeReservationKey(indexKey), r.token, null);
-  await kv.setAndUpdateHistory(
+  await kv.createReservation(
     `r:${r.token}`,
-    JSON.stringify({ ...r, indexReady: true }),
+    JSON.stringify(r),
+    `c:${r.code}`,
+    r.token,
     TTL,
     indexKey,
-    r.token,
+    activeReservationKey(indexKey),
+    isActiveStatus(r.status),
     HISTORY_RETAINED_MAX,
   );
 }
@@ -334,17 +321,12 @@ export async function listStoreReservationPage(
   const tokens = [...new Set([...activeTokens, ...historyTokens])];
   const rawReservations = await kv.getMany(tokens.map((token) => `r:${token}`));
   const byToken = new Map<string, StoredReservation>();
-  const provisionalTokens = new Set<string>();
   for (let index = 0; index < tokens.length; index += 1) {
     const raw = rawReservations[index];
     if (!raw) continue;
     try {
       const reservation = JSON.parse(raw) as StoredReservation;
       if (!ownsStoreReservation(reservation, storeSlug, sandbox)) continue;
-      if (!isReservationReady(reservation)) {
-        provisionalTokens.add(tokens[index]);
-        continue;
-      }
       byToken.set(tokens[index], reservation);
     } catch {
       /* 壞掉的單筆略過，不讓 inbox 整批失敗。 */
@@ -360,7 +342,6 @@ export async function listStoreReservationPage(
     await Promise.all(legacyActiveTokens.map((token) => kv.append(activeKey, token, null)));
   }
   const staleActiveTokens = activeTokens.filter((token) => {
-    if (provisionalTokens.has(token)) return false;
     const reservation = byToken.get(token);
     return !reservation || !isActiveStatus(reservation.status);
   });
@@ -430,7 +411,7 @@ export async function getByToken(token: string): Promise<StoredReservation | nul
   if (!raw) return null;
   try {
     const reservation = JSON.parse(raw) as StoredReservation;
-    return isReservationReady(reservation) ? reservation : null;
+    return reservation;
   } catch {
     return null;
   }
@@ -476,7 +457,7 @@ export async function allActive(): Promise<StoredReservation[]> {
     if (!raw) continue;
     try {
       const r = JSON.parse(raw) as StoredReservation;
-      if (isReservationReady(r) && (r.status === "pending_store_confirm" || r.status === "confirmed")) out.push(r);
+      if (r.status === "pending_store_confirm" || r.status === "confirmed") out.push(r);
       // picked_up 是終態，不進 cron 的掃描範圍
     } catch {
       /* 壞掉的那筆跳過，不要讓整個 cron 掛掉 */

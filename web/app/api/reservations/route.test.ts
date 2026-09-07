@@ -133,7 +133,7 @@ describe("Store OS reservation delivery", () => {
     }));
 
     expect(response.status).toBe(503);
-    expect(await response.json()).toMatchObject({ error: "示範預留未送達，請再試一次" });
+    expect(await response.json()).toMatchObject({ error: "暫時無法確認示範預留狀態，請重新整理後確認" });
     expect(mocks.sendStorePush).not.toHaveBeenCalled();
     expect(mocks.appendRecord).not.toHaveBeenCalled();
   });
@@ -164,7 +164,7 @@ describe("Store OS reservation delivery", () => {
     }));
 
     expect(response.status).toBe(503);
-    expect(await response.json()).toMatchObject({ error: "預留未送達藥局，請再試一次" });
+    expect(await response.json()).toMatchObject({ error: "暫時無法確認預留狀態，請聯絡藥局確認後再試" });
     expect(mocks.sendStorePush).not.toHaveBeenCalled();
     expect(mocks.appendRecord).not.toHaveBeenCalled();
   });

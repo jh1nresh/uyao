@@ -69,6 +69,37 @@ const SET_AND_UPDATE_HISTORY_SCRIPT = [
   "return 'OK'",
 ].join("\n");
 
+const CREATE_RESERVATION_SCRIPT = [
+  "local ttl = tonumber(ARGV[2])",
+  "local keepLast = tonumber(ARGV[4])",
+  "if not ttl or ttl <= 0 or ttl ~= math.floor(ttl) then return redis.error_reply('invalid ttl') end",
+  "if not keepLast or keepLast <= 0 or keepLast ~= math.floor(keepLast) then return redis.error_reply('invalid history size') end",
+  "local recordType = redis.call('TYPE', KEYS[1]).ok",
+  "if recordType ~= 'none' and recordType ~= 'string' then return redis.error_reply('reservation record is not a string') end",
+  "local codeType = redis.call('TYPE', KEYS[2]).ok",
+  "if codeType ~= 'none' and codeType ~= 'string' then return redis.error_reply('reservation code is not a string') end",
+  "local historyType = redis.call('TYPE', KEYS[3]).ok",
+  "if historyType ~= 'none' and historyType ~= 'list' then return redis.error_reply('history index is not a list') end",
+  "if ARGV[5] == '1' then",
+  "  local activeType = redis.call('TYPE', KEYS[4]).ok",
+  "  if activeType ~= 'none' and activeType ~= 'list' then return redis.error_reply('active index is not a list') end",
+  "end",
+  "local existingRecord = redis.call('GET', KEYS[1])",
+  "if existingRecord and existingRecord ~= ARGV[1] then return redis.error_reply('reservation token already reserved') end",
+  "local existingCode = redis.call('GET', KEYS[2])",
+  "if existingCode and existingCode ~= ARGV[3] then return redis.error_reply('pickup code already reserved') end",
+  "redis.call('SET', KEYS[1], ARGV[1], 'EX', ttl)",
+  "redis.call('SET', KEYS[2], ARGV[3], 'EX', ttl)",
+  "redis.call('LREM', KEYS[3], 0, ARGV[3])",
+  "redis.call('RPUSH', KEYS[3], ARGV[3])",
+  "redis.call('LTRIM', KEYS[3], -keepLast, -1)",
+  "if ARGV[5] == '1' then",
+  "  redis.call('LREM', KEYS[4], 0, ARGV[3])",
+  "  redis.call('RPUSH', KEYS[4], ARGV[3])",
+  "end",
+  "return 'OK'",
+].join("\n");
+
 async function readOptionalFile(pathname: string): Promise<string | undefined> {
   try {
     return await readFile(pathname, "utf8");
@@ -84,6 +115,44 @@ async function restoreFile(pathname: string, previous: string | undefined): Prom
     return;
   }
   await writeFile(pathname, previous, "utf8");
+}
+
+interface FileReplacement {
+  pathname: string;
+  previous: string | undefined;
+  next: string;
+}
+
+async function replaceFiles(replacements: FileReplacement[]): Promise<void> {
+  await Promise.all(replacements.map(({ pathname }) => mkdir(path.dirname(pathname), { recursive: true })));
+  const suffix = `${process.pid}.${Date.now()}.${Math.random().toString(36).slice(2)}`;
+  const staged = replacements.map((replacement) => ({
+    ...replacement,
+    temporaryPath: `${replacement.pathname}.${suffix}.tmp`,
+  }));
+  const committed: typeof staged = [];
+  try {
+    await Promise.all(staged.map(({ temporaryPath, next }) => writeFile(temporaryPath, next, "utf8")));
+    try {
+      for (const replacement of staged) {
+        await rename(replacement.temporaryPath, replacement.pathname);
+        committed.push(replacement);
+      }
+    } catch (error) {
+      let rollbackError: unknown;
+      for (const replacement of committed.reverse()) {
+        try {
+          await restoreFile(replacement.pathname, replacement.previous);
+        } catch (restoreError) {
+          rollbackError ??= restoreError;
+        }
+      }
+      if (rollbackError) throw new AggregateError([error, rollbackError], "KV file rollback failed");
+      throw error;
+    }
+  } finally {
+    await Promise.all(staged.map(({ temporaryPath }) => unlink(temporaryPath).catch(() => undefined)));
+  }
 }
 
 function filePath(key: string): string {
@@ -231,25 +300,92 @@ export async function setAndUpdateHistory(
   ]);
   const history = (previousHistory ?? "").split("\n").filter(Boolean);
   const nextHistory = [...history.filter((item) => item !== token), token].slice(-keepLast);
-  const suffix = `${process.pid}.${Date.now()}.${Math.random().toString(36).slice(2)}`;
-  const recordTemp = `${recordPath}.${suffix}.tmp`;
-  const historyTemp = `${historyPath}.${suffix}.tmp`;
-  try {
-    await Promise.all([
-      writeFile(recordTemp, value, "utf8"),
-      writeFile(historyTemp, `${nextHistory.join("\n")}\n`, "utf8"),
-    ]);
-    await rename(historyTemp, historyPath);
-    try {
-      await rename(recordTemp, recordPath);
-    } catch (error) {
-      await restoreFile(historyPath, previousHistory);
-      throw error;
+  await replaceFiles([
+    { pathname: historyPath, previous: previousHistory, next: `${nextHistory.join("\n")}\n` },
+    { pathname: recordPath, previous: previousRecord, next: value },
+  ]);
+}
+
+/**
+ * Atomically create the record, pickup-code mapping, bounded history row, and
+ * optional active pointer. The Redis script validates every key before writes;
+ * its local file fallback stages every replacement and keeps the record last.
+ */
+export async function createReservation(
+  recordKey: string,
+  recordValue: string,
+  codeKey: string,
+  token: string,
+  ttlSeconds: number,
+  historyKey: string,
+  activeKey: string,
+  isActive: boolean,
+  keepLast: number,
+): Promise<void> {
+  if (useMemory()) {
+    const previousRecord = memory.get(recordKey);
+    const previousCode = memory.get(codeKey);
+    if (previousRecord !== undefined && previousRecord !== recordValue) {
+      throw new Error("reservation token already reserved");
     }
-  } finally {
-    await unlink(recordTemp).catch(() => undefined);
-    await unlink(historyTemp).catch(() => undefined);
+    if (previousCode !== undefined && previousCode !== token) {
+      throw new Error("pickup code already reserved");
+    }
+    const history = (memory.get(historyKey) ?? "").split("\n").filter(Boolean);
+    const nextHistory = [...history.filter((item) => item !== token), token].slice(-keepLast);
+    const active = (memory.get(activeKey) ?? "").split("\n").filter(Boolean);
+    const nextActive = [...active.filter((item) => item !== token), token];
+    memory.set(recordKey, recordValue);
+    memory.set(codeKey, token);
+    memory.set(historyKey, `${nextHistory.join("\n")}\n`);
+    if (isActive) memory.set(activeKey, `${nextActive.join("\n")}\n`);
+    return;
   }
+  if (config()) {
+    const result = await command([
+      "EVAL",
+      CREATE_RESERVATION_SCRIPT,
+      4,
+      recordKey,
+      codeKey,
+      historyKey,
+      activeKey,
+      recordValue,
+      ttlSeconds,
+      token,
+      keepLast,
+      isActive ? "1" : "0",
+    ]);
+    if (result !== "OK") throw new Error("KV reservation creation failed");
+    return;
+  }
+  const recordPath = filePath(recordKey);
+  const codePath = filePath(codeKey);
+  const historyPath = filePath(historyKey);
+  const activePath = filePath(activeKey);
+  const [previousRecord, previousCode, previousHistory] = await Promise.all([
+    readOptionalFile(recordPath),
+    readOptionalFile(codePath),
+    readOptionalFile(historyPath),
+  ]);
+  const previousActive = isActive ? await readOptionalFile(activePath) : undefined;
+  if (previousRecord !== undefined && previousRecord !== recordValue) {
+    throw new Error("reservation token already reserved");
+  }
+  if (previousCode !== undefined && previousCode !== token) {
+    throw new Error("pickup code already reserved");
+  }
+  const history = (previousHistory ?? "").split("\n").filter(Boolean);
+  const nextHistory = [...history.filter((item) => item !== token), token].slice(-keepLast);
+  const active = (previousActive ?? "").split("\n").filter(Boolean);
+  const nextActive = [...active.filter((item) => item !== token), token];
+  const replacements: FileReplacement[] = [
+    { pathname: codePath, previous: previousCode, next: token },
+    { pathname: historyPath, previous: previousHistory, next: `${nextHistory.join("\n")}\n` },
+    ...(isActive ? [{ pathname: activePath, previous: previousActive, next: `${nextActive.join("\n")}\n` }] : []),
+    { pathname: recordPath, previous: previousRecord, next: recordValue },
+  ];
+  await replaceFiles(replacements);
 }
 
 /** 移除 list 裡所有相同值。索引清理失敗時讀取端仍會以資料本身過濾。 */
