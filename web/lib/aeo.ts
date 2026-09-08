@@ -130,11 +130,11 @@ export const AEO_PAGES = {
     path: "/zh-tw/guides/find-medicine-nearby",
     enPath: "/en/guides/find-medicine-nearby",
     datePublished: "2026-08-12",
-    dateModified: "2026-09-06",
+    dateModified: "2026-09-08",
     zh: {
       question: "在台灣怎麼找附近藥局並確認品項？",
       directAnswer:
-        "在台灣找附近藥局，先選擇地區，準備品名或成分，查詢公開藥局資料並電話確認營業時間與供應。uYao 可查已收錄地區的藥局與試營運目錄，找不到時留下需求；公開資料不是即時庫存，前往門市前仍須藥局確認。",
+        "在台灣找附近藥局，可用健保署特約醫事機構查詢，依縣市、鄉鎮市與藥局類別找聯絡資料，再電話確認營業時間與品項供應。uYao 可查試營運品項目錄，找不到時留下需求；官方名冊與目錄都不是即時庫存，前往前仍須藥局確認。",
       benchmarkQueries: [
         "在台灣怎麼找附近藥局並確認品項？",
         "附近藥局怎麼找藥？",
@@ -148,7 +148,7 @@ export const AEO_PAGES = {
     en: {
       question: "How do I find a nearby pharmacy and confirm a product in Taiwan?",
       directAnswer:
-        "To find a pharmacy in Taiwan, choose a district, note the product name or ingredient, and use public pharmacy records to call and confirm hours and supply. uYao lists supported areas and trial catalog items; leave a request if nothing matches. Records are not live inventory. Confirm with the pharmacy before travelling.",
+        "To find a pharmacy in Taiwan, use the NHI contracted institution lookup by city, district, and pharmacy category, then call to confirm hours and supply. Search the uYao trial product catalog or leave a request if nothing matches. Neither official records nor catalog entries are live inventory. Confirm with the pharmacy before travelling.",
       benchmarkQueries: [
         "How do I find a nearby pharmacy and confirm a product in Taiwan?",
         "How do I find a medicine at a pharmacy near me?",
