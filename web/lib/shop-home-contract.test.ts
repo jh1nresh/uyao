@@ -1,6 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import { createElement } from "react";
+import { createElement, type ReactNode } from "react";
 import { renderToStaticMarkup } from "react-dom/server";
 
 import { describe, expect, it, vi } from "vitest";
@@ -32,7 +32,7 @@ vi.mock("next/link", async () => {
       ...rest
     }: {
       href: string;
-      children?: unknown;
+      children?: ReactNode;
       [key: string]: unknown;
     }) => createElement("a", { href, ...rest }, children),
   };
@@ -279,14 +279,13 @@ describe("household medicine storefront homepage", () => {
     expect(items).toHaveLength(8);
 
     const html = renderToStaticMarkup(
-      createElement(
-        LocaleProvider,
-        { locale: "zh" },
-        createElement(ProductSwipeShowcase, {
+      createElement(LocaleProvider, {
+        locale: "zh",
+        children: createElement(ProductSwipeShowcase, {
           items,
           hrefPrefix: "/zh-tw/drug",
         }),
-      ),
+      }),
     );
 
     const scenes = [...html.matchAll(/<img\b[^>]*class="product-showcase-scene"[^>]*>/g)].map((match) => match[0]);
