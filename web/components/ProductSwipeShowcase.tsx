@@ -264,17 +264,15 @@ export function ProductSwipeShowcase({
           >
             {cycles.flatMap((cycle) => items.map((item, i) => {
               const name = item.copy[locale].name;
-              const clone = cycle !== 1;
               const scene = (
                 <Image
                   src={item.scene.src}
-                  alt={name}
+                  alt={cycle === 1 ? `${name}${locale === "en" ? " on the shelf — product illustration" : "陳列於木架上的商品示意圖"}` : ""}
                   width={item.scene.width}
                   height={item.scene.height}
                   sizes="(min-width: 768px) 600px, 90vw"
                   loading={cycle === 1 && i < 2 ? "eager" : "lazy"}
                   draggable={false}
-                  aria-hidden={clone || undefined}
                   className="product-showcase-scene"
                 />
               );
