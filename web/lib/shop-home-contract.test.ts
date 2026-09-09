@@ -1,7 +1,42 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { createElement, type ReactNode } from "react";
+import { renderToStaticMarkup } from "react-dom/server";
 
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
+
+vi.mock("next/image", async () => {
+  const { createElement } = await import("react");
+  return {
+    default: (props: {
+      alt?: string;
+      src?: string;
+      className?: string;
+      "aria-hidden"?: boolean;
+    }) =>
+      createElement("img", {
+        alt: props.alt,
+        src: props.src,
+        className: props.className,
+        "aria-hidden": props["aria-hidden"] === true ? "true" : undefined,
+      }),
+  };
+});
+
+vi.mock("next/link", async () => {
+  const { createElement } = await import("react");
+  return {
+    default: ({
+      href,
+      children,
+      ...rest
+    }: {
+      href: string;
+      children?: ReactNode;
+      [key: string]: unknown;
+    }) => createElement("a", { href, ...rest }, children),
+  };
+});
 
 const appPage = readFileSync(
   join(import.meta.dirname, "..", "app", "(consumer)", "app", "page.tsx"),
@@ -94,6 +129,11 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).toContain("product-showcase-stage");
     expect(productSwipeShowcase).toContain("product-showcase-item");
     expect(productSwipeShowcase).toContain("product-showcase-scene");
+    expect(productSwipeShowcase).toContain("alt={name}");
+    expect(productSwipeShowcase).toContain("aria-hidden={clone || undefined}");
+    expect(productSwipeShowcase).toContain("aria-hidden={cycle !== 1}");
+    expect(productSwipeShowcase).not.toMatch(/alt=\{cycle === 1 \?/);
+    expect(productSwipeShowcase).not.toContain("陳列於木架上的商品示意圖");
     expect(productSwipeShowcase).toContain("product-showcase-arrow");
     expect(productSwipeShowcase).toContain("product-showcase-rail");
     expect(productSwipeShowcase).toContain("product-showcase-bay");
@@ -227,6 +267,40 @@ describe("household medicine storefront homepage", () => {
     expect(productSwipeShowcase).not.toMatch(/#[0-9a-fA-F]{6}/);
     expect(productSwipeShowcase).toContain("border-forest bg-forest text-paper");
     expect(productSwipeShowcase).toContain("aria-hidden");
+  });
+
+  it("names visible /zh-tw shelf scenes and hides the loop clones", async () => {
+    const { LocaleProvider } = await import("@/components/LocaleProvider");
+    const { ProductSwipeShowcase } = await import("@/components/ProductSwipeShowcase");
+    const { allDrugs } = await import("./data");
+    const { productShowcaseItems } = await import("./product-showcase");
+
+    const items = productShowcaseItems(allDrugs());
+    expect(items).toHaveLength(8);
+
+    const html = renderToStaticMarkup(
+      createElement(LocaleProvider, {
+        locale: "zh",
+        children: createElement(ProductSwipeShowcase, {
+          items,
+          hrefPrefix: "/zh-tw/drug",
+        }),
+      }),
+    );
+
+    const scenes = [...html.matchAll(/<img\b[^>]*class="product-showcase-scene"[^>]*>/g)].map((match) => match[0]);
+    expect(scenes).toHaveLength(24);
+    expect(scenes.filter((img) => /alt=""/.test(img) || !/\salt="[^"]+"/.test(img))).toEqual([]);
+
+    for (const item of items) {
+      expect(scenes.filter((img) => img.includes(`alt="${item.copy.zh.name}"`))).toHaveLength(3);
+    }
+
+    const bays = [...html.matchAll(/<div\b[^>]*class="product-showcase-bay"[^>]*>/g)].map((match) => match[0]);
+    expect(bays.filter((bay) => /aria-hidden="true"/.test(bay))).toHaveLength(16);
+    expect(bays.filter((bay) => /data-cycle="1"/.test(bay) && /aria-hidden="true"/.test(bay))).toHaveLength(0);
+    expect(scenes.filter((img) => /aria-hidden="true"/.test(img))).toHaveLength(16);
+    expect(scenes.filter((img) => !/aria-hidden="true"/.test(img))).toHaveLength(8);
   });
 
   it("keeps a short mobile hero lead without an empty viewport spacer", () => {
