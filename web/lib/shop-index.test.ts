@@ -167,6 +167,23 @@ describe("category freshness across more than one category", () => {
     expect(dates(DRUGS).get("/zh-tw")! >= "2026-03-04").toBe(true);
   });
 
+  it("dates shared item-page copy without refreshing product records or unrelated categories", () => {
+    const translated = DRUGS.map((drug) => ({ ...drug, nameEn: "Fixture item" }));
+    const before = dates(translated);
+    const revised = translated.map((drug) => drug.slug === "partner-new"
+      ? { ...drug, updatedOn: "2026-09-11" as IsoDate }
+      : drug);
+    const after = dates(revised);
+
+    for (const prefix of ["/zh-tw", "/en"]) {
+      expect(before.get(`${prefix}/drug/partner-new`)).toBe("2026-09-10");
+      expect(after.get(`${prefix}/drug/partner-new`)).toBe("2026-09-11");
+      expect(after.get(`${prefix}/drug/seasonal-only`)).toBe("2026-09-10");
+      expect(after.get(`${prefix}/category/seasonal`)).toBe("2026-02-03");
+    }
+    expect(DRUGS[1].updatedOn).toBe("2026-03-04");
+  });
+
   it("falls back to a real date for a category with no admitted items", () => {
     const byPath = dates(DRUGS.filter((drug) => drug.slug !== "seasonal-only"));
 

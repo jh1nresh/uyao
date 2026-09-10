@@ -53,7 +53,10 @@ const LOCALE_PREFIX: Record<Locale, string> = { zh: "/zh-tw", en: "/en" };
  * 消費端首頁自己的文案更新日。品項改動會經由下面的 `latest()` 帶進來，
  * 這個常數只負責首頁上不是目錄的那些字。改文案才動它。
  */
-const SHOP_HOME_COPY_UPDATED: IsoDate = "2026-09-06";
+const SHOP_HOME_COPY_UPDATED: IsoDate = "2026-09-10";
+
+/** 品項頁共用流程文案的更新日；不改動產品資料本身的 updatedOn。 */
+const CATALOG_PAGE_COPY_UPDATED: IsoDate = "2026-09-10";
 
 /**
  * 藥局頁的內容更新日。
@@ -97,7 +100,7 @@ function newestOf(dates: IsoDate[], fallback: IsoDate): IsoDate {
  * both localized homepages, both locales of each category, and each admitted
  * item in the locales whose copy actually exists.
  *
- * `lastmod` 的重點是「哪幾頁變了」。品項頁用自己的 `updatedOn`；品類頁取
+ * `lastmod` 的重點是「哪幾頁變了」。品項頁取資料與共用流程文案的較新日期；品類頁取
  * **它自己底下**品項的最新日期，首頁取整份目錄的，因為那就是它們各自的
  * 內容。整批同一天不是問題 —— 那是事實；一旦只改一筆，就只有那一頁與
  * 摘要它的頁會動。
@@ -131,7 +134,7 @@ export function sitemapEntriesFor(
       })),
       ...items.map((drug) => ({
         path: `${prefix}/drug/${drug.slug}`,
-        lastModified: drug.updatedOn,
+        lastModified: latest([drug.updatedOn], CATALOG_PAGE_COPY_UPDATED),
       })),
       // 藥局頁的 lastmod 跟品項無關 —— 這一頁的內容是開放資料快照，不是目錄。
       ...(isIndexableStorePage(locale)

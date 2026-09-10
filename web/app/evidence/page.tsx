@@ -19,7 +19,8 @@ import { SHOP_URL } from "@/lib/shop";
  */
 
 const PAGE = AEO_PAGES.evidence;
-const { dateModified: EVIDENCE_DATE } = PAGE;
+// Navigation copy updates do not establish new product evidence or redate past events.
+const EVIDENCE_DATE = "2026-08-18";
 const EN_PATH = PAGE.enPath;
 const PARTNER_LOCATIONS = allStores().filter((store) => partnerForStore(store.slug));
 
@@ -203,7 +204,7 @@ export default async function EvidencePage() {
     name: PAGE[locale].question,
     description: PAGE[locale].directAnswer,
     path: pagePath,
-    dateModified: EVIDENCE_DATE,
+    dateModified: PAGE.dateModified,
     inLanguage: locale === "en" ? "en" : "zh-Hant-TW",
   });
 
@@ -317,6 +318,13 @@ export default async function EvidencePage() {
         <a href={`${SHOP_URL.replace(/\/$/, "")}${localizedPath("/", locale)}`} className="text-forest underline underline-offset-2 hover:text-green">
           {copy.consumerLink}
         </a>
+        <span>
+          {locale === "en" ? "Before using it, see the " : "使用前可先了解"}
+          <Link href={localizedPath("/guides/find-medicine-nearby", locale)} className="text-forest underline underline-offset-2 hover:text-green">
+            {locale === "en" ? "pharmacy lookup and supply confirmation steps" : "附近藥局查詢與供應確認流程"}
+          </Link>
+          {locale === "en" ? "." : "。"}
+        </span>
         {locale === "zh" && (
           <Link href="/zh-tw/compare/uyao-vs-pos" className="text-forest underline underline-offset-2 hover:text-green">
             {copy.compareLink}

@@ -111,7 +111,9 @@ const CONTENT: Record<Locale, GuideCopy> = {
       <>
         uYao 把一個小盒子串在藥局現有的條碼掃描器上，進貨照掃，批號與效期自動記錄；接近退貨窗口時在 Store OS 建立工作並用 Web Push 提醒，藥師只需批准、拒絕或修正，最後記下每批的實際結果。目前為 prototype 並招募試點中——實際做到哪裡、還沒做到哪裡，見
         {inline("zh", "/evidence", "產品證據頁")}
-        。
+        。若正在比較導入方式，可參考
+        {inline("zh", "/guides/ai-tools-pharmacy-inventory", "藥局庫存 AI 工具選擇指南")}
+        ，先確認資料來源與驗證邊界。
       </>
     ),
     limitsHeading: "限制與不可做的事",
@@ -180,7 +182,9 @@ const CONTENT: Record<Locale, GuideCopy> = {
       <>
         uYao connects a small box to the barcode scanner a pharmacy already uses. Deliveries are scanned as usual, and lot numbers and expiry dates are recorded automatically. As a return window approaches, uYao creates work in Store OS and sends a Web Push reminder; the pharmacist only approves, rejects, or corrects it, and the outcome for each lot is recorded. This is a prototype in pilot recruitment — for what is verified and what is not, see
         {inline("en", "/evidence", "the product evidence page")}
-        .
+        . If you are comparing adoption options, see the
+        {inline("en", "/guides/ai-tools-pharmacy-inventory", "guide to choosing pharmacy inventory AI tools")}
+        , and check the data sources and verification limits first.
       </>
     ),
     limitsHeading: "Limits and what this guide will not do",
