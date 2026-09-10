@@ -203,6 +203,13 @@ export default async function DrugPage({
             <p className="shop-kicker">{english ? "ASK BEFORE YOU GO" : "出門前，先問一聲"}</p>
             <h2 id="contact-heading">{english ? "Talk to a pharmacy" : "交給藥師確認"}</h2>
             <p>{english ? "A listed item does not mean it is currently in stock. Contact the pharmacy to confirm." : "收錄品項不代表即時有貨。先聯絡藥局，確認後再前往。"}</p>
+            <p>
+              {english ? "Need help finding a pharmacy? See " : "還不確定怎麼找店家？查看"}
+              <Link href={localizedPath("/guides/find-medicine-nearby", locale)} className="text-forest underline underline-offset-2 hover:text-green">
+                {english ? "how to find one nearby and confirm supply" : "如何查詢附近藥局並確認供應"}
+              </Link>
+              {english ? "." : "。"}
+            </p>
           </header>
           <div className={styles.sectionContent}>
             <StoreBuyBox drug={{ slug: drug.slug, name: displayDrug.name, spec: drug.spec }} rows={rows} carryingStores={partnerStores} />

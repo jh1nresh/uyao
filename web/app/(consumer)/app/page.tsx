@@ -259,6 +259,13 @@ export default async function HomePage({
               ))}
             </ol>
             <p className="mb-0 mt-4 text-[13.5px] leading-[1.6] text-muted-2">
+              {locale === "en" ? "Before heading out, see " : "出發前，可先看"}
+              <Link href={localizedPath("/guides/find-medicine-nearby", locale)} className="text-forest underline underline-offset-2 hover:text-green">
+                {locale === "en" ? "how to find a nearby pharmacy and what to confirm" : "附近藥局查詢與出發前確認步驟"}
+              </Link>
+              {locale === "en" ? "." : "。"}
+            </p>
+            <p className="mb-0 mt-4 text-[13.5px] leading-[1.6] text-muted-2">
               {locale === "en" ? "How should I read availability?" : "庫存狀態怎麼讀？"}
               <Link href={localizedPath("/stock-badges", locale)} className="-my-3 ml-1 inline-flex min-h-11 items-center font-bold text-forest">
                 {locale === "en" ? "Read the freshness labels →" : "看徽章分級說明 →"}
