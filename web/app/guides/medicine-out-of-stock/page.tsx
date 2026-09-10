@@ -25,14 +25,13 @@ export async function generateMetadata(): Promise<Metadata> {
 type OutOfStockCopy = {
   kicker: string;
   stepsHeading: string;
-  steps: [string, string][];
+  steps: [string, React.ReactNode][];
   faqHeading: string;
   /** [0] repeats the page answer for FAQPage schema; the visible list starts at [1]. */
   faq: { question: string; answer: string }[];
   ctaHeading: string;
   ctaBody: string;
   ctaLabel: string;
-  relatedFind: string;
   relatedEvidence: string;
   provenance: { label: string; value: React.ReactNode }[];
 };
@@ -44,7 +43,7 @@ const CONTENT: Record<Locale, OutOfStockCopy> = {
     steps: [
       ["先問原藥局", "請藥局確認目前供應狀態、能否調貨，以及預計何時可以回覆。"],
       ["替代方案交由專業人員判斷", "不要只靠商品名稱或成分文字自行換藥；劑型、劑量、用法與個人狀況都需要確認。"],
-      ["查詢附近藥局", "可使用 uYao 搜尋公開藥局資料，但網站收錄不等於現貨，仍應逐店確認。"],
+      ["查詢附近藥局", <>可使用 uYao 搜尋公開藥局資料，但網站收錄不等於現貨，仍應逐店確認。查詢方式與出發前要問的資訊，見<Link href={localizedPath("/guides/find-medicine-nearby", "zh")} className="text-forest underline underline-offset-2 hover:text-green">附近藥局找藥步驟</Link>。</>],
       ["留下找藥需求", "如果目前找不到，可留下品項與地區需求，等待後續供應確認。"],
       ["需要立即處理時回到醫療端", "處方藥、療程不能中斷或症狀需要立即處理時，請直接聯絡原藥局、開立處方的醫療院所或適當的醫療服務。"],
     ],
@@ -70,7 +69,6 @@ const CONTENT: Record<Locale, OutOfStockCopy> = {
     ctaHeading: "查詢附近公開藥局",
     ctaBody: "uYao 目前不提供即時庫存保證。搜尋或留下需求後，請等待藥局或藥師確認。",
     ctaLabel: "前往 uYao 找藥",
-    relatedFind: "附近藥局找藥步驟",
     relatedEvidence: "查看產品證據與限制",
     provenance: [
       { label: "作者", value: "uYao 團隊" },
@@ -95,7 +93,7 @@ const CONTENT: Record<Locale, OutOfStockCopy> = {
       ],
       [
         "Check nearby pharmacies",
-        "You can search public pharmacy records with uYao, but a listing is not stock on hand — confirm store by store.",
+        <>You can search public pharmacy records with uYao, but a listing is not stock on hand — confirm store by store. For lookup options and what to ask before travelling, see <Link href={localizedPath("/guides/find-medicine-nearby", "en")} className="text-forest underline underline-offset-2 hover:text-green">how to find medicine nearby</Link>.</>,
       ],
       [
         "Leave a medicine request",
@@ -129,7 +127,6 @@ const CONTENT: Record<Locale, OutOfStockCopy> = {
     ctaBody:
       "uYao does not guarantee live stock today. After you search or leave a request, wait for the pharmacy or pharmacist to confirm.",
     ctaLabel: "Open uYao Medicine Finder",
-    relatedFind: "How to find medicine nearby",
     relatedEvidence: "See the product evidence and limits",
     provenance: [
       { label: "Author", value: "uYao team" },
@@ -230,12 +227,6 @@ export default async function MedicineOutOfStockGuidePage() {
         </section>
 
         <section className="mt-10 flex flex-wrap gap-x-7 gap-y-3 border-t border-line pt-8 text-[15px]">
-          <Link
-            href={localizedPath("/guides/find-medicine-nearby", locale)}
-            className="text-forest underline underline-offset-2 hover:text-green"
-          >
-            {content.relatedFind}
-          </Link>
           <Link
             href={localizedPath("/evidence", locale)}
             className="text-forest underline underline-offset-2 hover:text-green"

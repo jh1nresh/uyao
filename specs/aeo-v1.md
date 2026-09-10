@@ -96,11 +96,13 @@ field renders as a mono product code and reads as a drug identifier on a
 非藥品 item (`web/lib/catalog.test.ts` enforces this). Those items stay
 zh-tw-only until a real English name exists.
 
-Every consumer URL carries a real `lastmod`. Item pages use `Drug.updatedOn`,
-hand-maintained per item exactly like `AEO_PAGES`: bump it when the visible
-product copy changes, not when styling moves. Category pages and the consumer
-homepages take the newest date among the items they list, because that is what
-their content is. A uniform date across the catalog is fine and true when the
+Every consumer URL carries a real `lastmod`. Item pages use the later of
+`Drug.updatedOn` and `CATALOG_PAGE_COPY_UPDATED` in `web/lib/shop-index.ts`.
+The former dates each product record; the latter dates shared item-page workflow
+copy. Bump only the date for the content that changed, not for styling. Category
+pages take the newest record date among the items they list; consumer homepages
+also account for their own workflow copy date (`SHOP_HOME_COPY_UPDATED`).
+A uniform date across the catalog is fine and true when the
 records really did land together — the point is that changing one item moves
 only that item's URLs and the pages that summarise it.
 

@@ -57,14 +57,16 @@ describe("sitemap host routing", () => {
     }
   });
 
-  it("gives each consumer item its own freshness rather than one blanket date", async () => {
+  it("dates item pages from record and shared copy while categories track records", async () => {
     host = CANONICAL_HOST;
     const byUrl = new Map(
       (await sitemap()).map((entry) => [entry.url, String(entry.lastModified)]),
     );
 
     for (const drug of indexableCatalogItems("zh")) {
-      expect(byUrl.get(`${SHOP_URL}/zh-tw/drug/${drug.slug}`), drug.slug).toBe(drug.updatedOn);
+      expect(byUrl.get(`${SHOP_URL}/zh-tw/drug/${drug.slug}`), drug.slug).toBe(
+        drug.updatedOn > "2026-09-10" ? drug.updatedOn : "2026-09-10",
+      );
     }
 
     // A category and the homepage summarise the items below them, so they can

@@ -33,7 +33,7 @@ type ToolsCopy = {
   boundaryLabel: string;
   tools: ToolRow[];
   checklistHeading: string;
-  checklist: string[];
+  checklist: React.ReactNode[];
   roleHeading: string;
   role: React.ReactNode;
   limitsHeading: string;
@@ -97,7 +97,7 @@ const CONTENT: Record<Locale, ToolsCopy> = {
     ],
     checklistHeading: "導入前的六項檢查",
     checklist: [
-      "先選一個可量測工作：缺貨、過量、效期、退貨窗口或附近需求，不要一次換掉整套系統。",
+      <>先選一個可量測工作：缺貨、過量、效期、退貨窗口或附近需求，不要一次換掉整套系統。若先處理退貨，請先核對{inline("zh", "/guides/pharmacy-return-window", "向供應商辦理藥品退貨前的確認清單")}。</>,
       "確認輸入資料從哪裡來：POS 匯出、進貨單、條碼掃描、人工盤點或供應商資料。",
       "要求每項建議能說明依據，並讓藥師批准、拒絕或修正，不直接自動執行關鍵決策。",
       "用真實批次跑小規模試點，分開記錄建議、實際執行與最終結果。",
@@ -177,7 +177,7 @@ const CONTENT: Record<Locale, ToolsCopy> = {
     ],
     checklistHeading: "Six checks before you adopt anything",
     checklist: [
-      "Pick one measurable job first — stockouts, overstock, expiry, return windows, or nearby demand. Do not replace a whole system at once.",
+      <>Pick one measurable job first — stockouts, overstock, expiry, return windows, or nearby demand. Do not replace a whole system at once. If you start with returns, check {inline("en", "/guides/pharmacy-return-window", "what to confirm before returning medicines to a supplier")}.</>,
       "Confirm where the input data comes from: POS export, receiving notes, barcode scans, manual counts, or supplier data.",
       "Require every suggestion to show its basis, and keep a pharmacist approving, rejecting, or correcting it. Critical decisions should not execute automatically.",
       "Pilot on a small scope with real lots, and record the suggestion, what was actually done, and the final outcome separately.",
@@ -315,7 +315,7 @@ export default async function AiToolsPharmacyInventoryGuidePage() {
           </h2>
           <ol className="m-0 grid max-w-[42em] gap-4 pl-0">
             {content.checklist.map((item, index) => (
-              <li key={item} className="grid list-none grid-cols-[2.4em,1fr] gap-3">
+              <li key={index} className="grid list-none grid-cols-[2.4em,1fr] gap-3">
                 <span className="num pt-0.5 text-[15px] font-semibold text-oxblood">
                   {String(index + 1).padStart(2, "0")}
                 </span>

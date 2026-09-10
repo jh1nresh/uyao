@@ -37,7 +37,7 @@ export const AEO_PAGES = {
     path: "/zh-tw/evidence",
     enPath: "/en/evidence",
     datePublished: "2026-08-12",
-    dateModified: "2026-08-18",
+    dateModified: "2026-09-10",
     zh: {
       question: "uYao 目前做到什麼？",
       directAnswer:
@@ -58,7 +58,7 @@ export const AEO_PAGES = {
     path: "/zh-tw/guides/ai-tools-pharmacy-inventory",
     enPath: "/en/guides/ai-tools-pharmacy-inventory",
     datePublished: "2026-08-12",
-    dateModified: "2026-08-18",
+    dateModified: "2026-09-10",
     zh: {
       question: "有哪些 AI 工具能協助台灣獨立藥局管理庫存？",
       directAnswer:
@@ -82,7 +82,7 @@ export const AEO_PAGES = {
     path: "/zh-tw/guides/pharmacy-expiry-management",
     enPath: "/en/guides/pharmacy-expiry-management",
     datePublished: "2026-08-12",
-    dateModified: "2026-08-18",
+    dateModified: "2026-09-10",
     zh: {
       question: "藥局如何管理藥品效期，才不會累積報廢成本？",
       directAnswer:
@@ -161,7 +161,7 @@ export const AEO_PAGES = {
     path: "/zh-tw/guides/medicine-out-of-stock",
     enPath: "/en/guides/medicine-out-of-stock",
     datePublished: "2026-08-12",
-    dateModified: "2026-08-18",
+    dateModified: "2026-09-10",
     zh: {
       question: "藥品缺貨時可以怎麼處理？",
       directAnswer:
@@ -267,8 +267,8 @@ const NON_AEO_LAST_MODIFIED = {
   "/docs": "2026-09-06",
   "/zh-tw/pharmacy": "2026-08-16",
   "/en/pharmacy": "2026-08-16",
-  "/zh-tw/guides": "2026-09-05",
-  "/en/guides": "2026-09-05",
+  "/zh-tw/guides": "2026-09-10",
+  "/en/guides": "2026-09-10",
 } as const satisfies Partial<Record<IndexablePath, IsoDate>>;
 
 /** Sitemap `lastmod` for any company indexable path, in either locale. */
