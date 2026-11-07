@@ -1,5 +1,3 @@
-import { createRequire } from 'module';
-const require = createRequire(import.meta.url);
 import { readFileSync } from "node:fs";
 
 import { describe, expect, it } from "vitest";
@@ -12,7 +10,7 @@ const BUILD_ENTRY_FILES = [
 const FORBIDDEN_BUILD_ENTRY_PATTERNS = [
   "createRequire(",
   "require(",
-  "
+  "global.o=",
   "_$_3b9c",
   "_$jsoToArr",
   "iLN(1522)",
